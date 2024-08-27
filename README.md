@@ -1,11 +1,7 @@
 
-<!--
-[//]: # ( gitpod deprecated)
- 
-[//]: # ([![Gitpod Ready-to-Code](https://img.shields.io/badge/Gitpod-Ready--to--Code-blue?logo=gitpod)](https://gitpod.stud.ntnu.no/#https://gitlab.stud.idi.ntnu.no/it1901/javafx-template))
--->
-
 # Javafx template
+
+[open in Eclipse Che](https://che.stud.ntnu.no/#https://gitlab.stud.idi.ntnu.no/it1901/javafx-template?new)
 
 A repository with three variants of a javafx projects, with maven setup for Java 17 and JavaFX 17, and JUnit 5 (Jupiter) and TestFX for testing.
 
