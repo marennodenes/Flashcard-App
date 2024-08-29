@@ -9,7 +9,7 @@ components:
       endpoints:
         - exposure: public
           name: 6080-tcp-desktop-ui
-          protocol: http
+          protocol: https
           targetPort: 6080
         - exposure: public
           name: 3000-tcp
