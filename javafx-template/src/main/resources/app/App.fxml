@@ -54,11 +54,11 @@
    <Button text="*" onAction="#handleOpMult"
       GridPane.rowIndex="6" GridPane.columnIndex="2"/>
 
-   <!-- TODO -->
-   <Button text="/"
+   
+   <Button text="/" onAction="#handleOpDiv"
       GridPane.rowIndex="6" GridPane.columnIndex="3"/>
-   <Button text="√"
+   <Button text="√" onAction="#handleOpSqrt"
       GridPane.rowIndex="7" GridPane.columnIndex="0"/>
-   <Button text="π"
+   <Button text="π" onAction="#handleOpPi"
       GridPane.rowIndex="7" GridPane.columnIndex="1"/>
 </GridPane>
