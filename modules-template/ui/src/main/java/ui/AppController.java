@@ -77,59 +77,88 @@ public class AppController {
     }
 
     private void appendToOperand(String s) {
-        // TODO
+        setOperand(getOperandString() + s);
     }
 
     @FXML
     void handleDigit(ActionEvent ae) {
         if (ae.getSource() instanceof Labeled l) {
-            // TODO append button label to operand
+           appendToOperand(l.getText()); 
         }
     }
 
     @FXML
     void handlePoint() {
         var operandString = getOperandString();
-        if (operandString.contains(".")) {
-            // TODO remove characters after point
+      if (operandString.contains(".")) {
+           setOperand(getOperandString().replaceAll("\\..*", ".")); 
         } else {
-            // TODO append point
+           setOperand(operandString + ".");
         }
     }
 
     @FXML
     void handleClear() {
-        // TODO clear operand
+        setOperand("");
     }
 
     @FXML
     void handleSwap() {
-        // TODO clear operand
+        calc.swap();
+        updateOperandsView();
     }
 
     private void performOperation(UnaryOperator<Double> op) {
-        // TODO
+       calc.performOperation(op);
+    	updateOperandsView();
     }
 
     private void performOperation(boolean swap, BinaryOperator<Double> op) {
         if (hasOperand()) {
-            // TODO push operand first
+            calc.pushOperand(getOperand());  
         }
-        // TODO perform operation, but swap first if needed
+        if (swap) {			
+        	calc.swap(); 
+        }
+        calc.performOperation(op);
+        handleClear();
+        updateOperandsView();
     }
 
     @FXML
     void handleOpAdd() {
-        // TODO
+        BinaryOperator<Double> add = (x, y) -> x + y;
+		performOperation(false, add);
     }
 
     @FXML
     void handleOpSub() {
-        // TODO
+        BinaryOperator<Double> sub = (x, y) -> x - y;
+        performOperation(false, sub);
     }
 
-    @FXML
+   @FXML
     void handleOpMult() {
-        // TODO
+        BinaryOperator<Double> mult = (x, y) -> x * y;
+        performOperation(false, mult);
+
+    }
+
+    @FXML 
+    void handleOpDiv() {
+        BinaryOperator<Double> div = (x, y) -> x / y;
+        performOperation(false, div);
+    }
+
+    @FXML 
+    void handleOpSqrt() {
+        UnaryOperator<Double> sqrt = (x) -> Math.sqrt(x);
+        performOperation(sqrt);
+    }
+
+    @FXML 
+    void handleOpPi() {
+        calc.pushOperand(Math.PI);
+        updateOperandsView();
     }
 }
