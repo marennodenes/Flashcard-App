@@ -24,107 +24,97 @@ import org.testfx.matcher.control.LabeledMatchers;
  */
 public class AppTest extends ApplicationTest {
 
-    private AppController controller;
-    private Parent root;
+  private AppController controller;
+  private Parent root;
 
-    @Override
-    public void start(Stage stage) throws IOException {
-        FXMLLoader fxmlLoader = new FXMLLoader(this.getClass().getResource("App.fxml"));
-        root = fxmlLoader.load();
-        controller = fxmlLoader.getController();
-        stage.setScene(new Scene(root));
-        stage.show();
+  @Override
+  public void start(Stage stage) throws IOException {
+    FXMLLoader fxmlLoader = new FXMLLoader(this.getClass().getResource("App.fxml"));
+    root = fxmlLoader.load();
+    controller = fxmlLoader.getController();
+    stage.setScene(new Scene(root));
+    stage.show();
+  }
+
+  public Parent getRootNode() {
+    return root;
+  }
+
+  private String enterLabel = """
+      E
+      n
+      t
+      e
+      r
+      """.stripTrailing();
+
+  private void click(String... labels) {
+    for (var label : labels) {
+      clickOn(LabeledMatchers.hasText(label));
     }
+  }
 
-    public Parent getRootNode() {
-        return root;
+  private String getOperandString() {
+    return ((Label) getRootNode().lookup("#operandView")).getText();
+  }
+
+  private ListView<Double> getOperandsView() {
+    return (ListView<Double>) getRootNode().lookup("#operandsView");
+  }
+
+  private void checkView(double... operands) {
+    for (int i = 0; i < operands.length; i++) {
+      Assertions.assertEquals(operands[i], controller.getCalc().peekOperand(i),
+          "Wrong value at #" + i + " of operand stack");
     }
-
-    private String enterLabel = """
-        E
-        n
-        t
-        e
-        r
-        """.stripTrailing();
-
-    private void click(String... labels) {
-        for (var label : labels) {
-            clickOn(LabeledMatchers.hasText(label));
-        }
+    List<Double> viewItems = getOperandsView().getItems();
+    for (int i = 0; i < operands.length; i++) {
+      Assertions.assertEquals(operands[i], viewItems.get(viewItems.size() - i - 1),
+          "Wrong value at #" + i + " of operands view");
     }
+  }
 
-    private String getOperandString() {
-        return ((Label) getRootNode().lookup("#operandView")).getText();
-    }
+  private void checkView(String operandString, double... operands) {
+    Assertions.assertEquals(operandString, getOperandString());
+    checkView(operands);
+  }
 
-    private ListView<Double> getOperandsView() {
-        return (ListView<Double>) getRootNode().lookup("#operandsView");
-    }
+  // see https://www.baeldung.com/parameterized-tests-junit-5
+  // about @ParameterizedTest
 
-    private void checkView(double... operands) {
-        for (int i = 0; i < operands.length; i++) {
-            Assertions.assertEquals(operands[i], controller.getCalc().peekOperand(i), "Wrong value at #" + i + " of operand stack");
-        }
-        List<Double> viewItems = getOperandsView().getItems();
-        for (int i = 0; i < operands.length; i++) {
-            Assertions.assertEquals(operands[i], viewItems.get(viewItems.size() - i - 1), "Wrong value at #" + i + " of operands view");
-        }
+  @ParameterizedTest
+  @MethodSource
+  public void testClicksOperand(String labels, String operandString) {
+    for (var label : labels.split(" ")) {
+      click(label);
     }
+    checkView(operandString);
+  }
 
-    private void checkView(String operandString, double... operands) {
-        Assertions.assertEquals(operandString, getOperandString());
-        checkView(operands);
-    }
+  private static Stream<Arguments> testClicksOperand() {
+    return Stream.of(Arguments.of("2 7", "27"), Arguments.of("2 7 .", "27."), Arguments.of("2 7 . 5", "27.5"),
+        Arguments.of("2 7 . 5 .", "27."));
+  }
 
-    // see https://www.baeldung.com/parameterized-tests-junit-5
-    // about @ParameterizedTest
+  @ParameterizedTest
+  @MethodSource
+  public void testClicksOperands(String labels, String operandsString) {
+    for (var label : labels.split(" ")) {
+      click(label.equals("\n") ? enterLabel : label);
+    }
+    checkView("", Stream.of(operandsString.split(" ")).mapToDouble(Double::valueOf).toArray());
+  }
 
-    @ParameterizedTest
-    @MethodSource
-    public void testClicksOperand(String labels, String operandString) {
-        for (var label : labels.split(" ")) {
-            click(label);
-        }
-        checkView(operandString);
-    }
+  private static Stream<Arguments> testClicksOperands() {
+    return Stream.of(Arguments.of("2 7 . 5 \n", "27.5"), Arguments.of("2 7 \n", "27.0"),
+        Arguments.of("2 \n 7 \n 5 \n", "5.0", "7.0", "2.0"), Arguments.of("2 7 . \n", "27.0"),
+        Arguments.of("2 7 . 5 \n", "27.5"), Arguments.of("2 \n 7 +", "9.0"), Arguments.of("2 \n 7 -", "-5.0"),
+        Arguments.of("2 \n 7 *", "14.0"), Arguments.of("6 \n 3 /", "2.0"), Arguments.of("2 5 \n √", "5.0"));
+  }
 
-    private static Stream<Arguments> testClicksOperand() {
-        return Stream.of(
-            Arguments.of("2 7", "27"),
-            Arguments.of("2 7 .", "27."),
-            Arguments.of("2 7 . 5", "27.5"),
-            Arguments.of("2 7 . 5 .", "27.")
-        );
-    }
-    
-    @ParameterizedTest
-    @MethodSource
-    public void testClicksOperands(String labels, String operandsString) {
-        for (var label : labels.split(" ")) {
-            click(label.equals("\n") ? enterLabel : label);
-        }
-        checkView("", Stream.of(operandsString.split(" ")).mapToDouble(Double::valueOf).toArray());
-    }
-
-    private static Stream<Arguments> testClicksOperands() {
-        return Stream.of(
-            Arguments.of("2 7 . 5 \n", "27.5"),
-            Arguments.of("2 7 \n", "27.0"),
-            Arguments.of("2 \n 7 \n 5 \n", "5.0", "7.0", "2.0"),
-            Arguments.of("2 7 . \n", "27.0"),
-            Arguments.of("2 7 . 5 \n", "27.5"),
-            Arguments.of("2 \n 7 +", "9.0"),
-            Arguments.of("2 \n 7 -", "-5.0"),
-            Arguments.of("2 \n 7 *", "14.0"),
-            Arguments.of("6 \n 3 /", "2.0"),
-            Arguments.of("2 5 \n √", "5.0")
-        );
-    }
-
-    @Test
-    public void testPi() {
-        click("π");
-        checkView("", Math.PI);
-    }
+  @Test
+  public void testPi() {
+    click("π");
+    checkView("", Math.PI);
+  }
 }
