@@ -17,31 +17,31 @@
         <dependency>
             <groupId>org.openjfx</groupId>
             <artifactId>javafx-controls</artifactId>
-            <version>17.0.8</version>
+            <version>21</version>
         </dependency>
         <dependency>
             <groupId>org.openjfx</groupId>
             <artifactId>javafx-fxml</artifactId>
-            <version>17.0.8</version>
+            <version>21</version>
         </dependency>
 
         <!-- junit testing with jupiter -->
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-api</artifactId>
-            <version>5.10.0</version>
+            <version>5.12.2</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-engine</artifactId>
-            <version>5.10.0</version>
+            <version>5.12.2</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-params</artifactId>
-            <version>5.10.0</version>
+            <version>5.12.2</version>
             <scope>test</scope>
         </dependency>
 
@@ -49,19 +49,19 @@
 		<dependency>
 			<groupId>org.testfx</groupId>
 			<artifactId>testfx-core</artifactId>
-			<version>4.0.16-alpha</version>
+			<version>4.0.18</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.testfx</groupId>
 			<artifactId>testfx-junit5</artifactId>
-			<version>4.0.16-alpha</version>
+			<version>4.0.18</version>
 			<scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.hamcrest</groupId>
             <artifactId>hamcrest</artifactId>
-            <version>2.2</version>
+            <version>3.0</version>
             <scope>test</scope>
         </dependency>
 
@@ -72,17 +72,19 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.11.0</version>
+                <version>3.14.0</version>
                 <configuration>
                 </configuration>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
         		<artifactId>maven-surefire-plugin</artifactId>
-		        <version>3.1.2</version>
+		        <version>3.5.3</version>
                 <configuration>
                     <argLine>
-                    --add-opens app/app=ALL-UNNAMED --add-exports javafx.graphics/com.sun.javafx.application=ALL-UNNAMED
+                    --add-opens app/app=ALL-UNNAMED 
+                    --add-exports javafx.graphics/com.sun.javafx.application=ALL-UNNAMED
+                    --add-opens javafx.graphics/com.sun.javafx.application=ALL-UNNAMED
                     </argLine>
                 </configuration>
 	        </plugin>
@@ -96,6 +98,56 @@
                 <configuration>
                     <mainClass>app/app.App</mainClass>
                 </configuration>
+            </plugin>
+
+            <!-- Run the checkstyle code quality tool -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-checkstyle-plugin</artifactId>
+                <version>3.6.0</version>
+                <dependencies>
+                    <dependency>
+                        <groupId>com.puppycrawl.tools</groupId>
+                        <artifactId>checkstyle</artifactId>
+                        <version>10.26.1</version>
+                    </dependency>
+                </dependencies>
+                <configuration>
+                    <configLocation>google_checks.xml</configLocation>
+                    <encoding>UTF-8</encoding>
+                    <consoleOutput>true</consoleOutput>
+                    <failsOnError>true</failsOnError>
+                    <linkXRef>false</linkXRef>
+                </configuration>
+                <executions>
+                    <execution>
+                    <id>checkstyle-check</id>
+                    <phase>verify</phase>
+                    <goals>
+                        <goal>check</goal>
+                    </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <!-- Run the spotbugs code quality tool -->
+            <plugin>
+                <groupId>com.github.spotbugs</groupId>
+                <artifactId>spotbugs-maven-plugin</artifactId>
+                <version>4.9.3.0</version>
+                <configuration>
+                    <xmlOutput>false</xmlOutput>
+                    <htmlOutput>true</htmlOutput>
+                    <excludeFilterFile>./config/spotbugs/exclude.xml</excludeFilterFile>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>spotbugs-check</id>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>check</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>
