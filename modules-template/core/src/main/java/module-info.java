@@ -1,3 +1,3 @@
 module calc.core {
-    exports core;
+  exports core;
 }
