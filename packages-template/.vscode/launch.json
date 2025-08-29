@@ -15,7 +15,14 @@
             "name": "Launch packages-template - single-module, multi-package",
             "request": "launch",
             "mainClass": "app/ui.App",
-            "vmArgs": ["--add-opens", "app/core=ALL-UNNAMED","--add-opens", "app/ui=ALL-UNNAMED", "--add-exports", "javafx.graphics/com.sun.javafx.application=ALL-UNNAMED"],
+            "vmArgs": [
+                "--add-opens",
+                "app/core=ALL-UNNAMED",
+                "--add-opens",
+                "app/ui=ALL-UNNAMED",
+                "--add-exports",
+                "javafx.graphics/com.sun.javafx.application=ALL-UNNAMED"
+            ],
             "projectName": "packages-template"
         }
     ]
