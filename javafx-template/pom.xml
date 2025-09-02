@@ -114,10 +114,13 @@
                 </dependencies>
                 <configuration>
                     <configLocation>google_checks.xml</configLocation>
-                    <encoding>UTF-8</encoding>
                     <consoleOutput>true</consoleOutput>
                     <failsOnError>true</failsOnError>
                     <linkXRef>false</linkXRef>
+                    <sourceDirectories>
+                        <sourceDirectory>${project.build.sourceDirectory}</sourceDirectory> 
+                        <sourceDirectory>${project.build.testSourceDirectory}</sourceDirectory> 
+                    </sourceDirectories>
                 </configuration>
                 <executions>
                     <execution>
