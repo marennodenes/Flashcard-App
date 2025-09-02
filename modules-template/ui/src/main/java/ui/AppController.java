@@ -10,10 +10,16 @@ import javafx.scene.control.Label;
 import javafx.scene.control.Labeled;
 import javafx.scene.control.ListView;
 
+/**
+ * Main controller for the application.
+ */
 public class AppController {
 
   private Calc calc;
 
+  /**
+   * Default constructor.
+   */
   public AppController() {
     calc = new Calc(0.0, 0.0, 0.0);
   }
@@ -144,8 +150,9 @@ public class AppController {
   }
 
   @FXML
+  @SuppressWarnings({"java:S1612"})
   void handleOpSqrt() {
-    UnaryOperator<Double> sqrt = (x) -> Math.sqrt(x);
+    UnaryOperator<Double> sqrt = x -> Math.sqrt(x);
     performOperation(sqrt);
   }
 
