@@ -5,10 +5,19 @@ import java.util.List;
 import java.util.function.BinaryOperator;
 import java.util.function.UnaryOperator;
 
+/**
+ * Calculator class.
+ */
+@SuppressWarnings({"S4276", "java:S4276"})
 public class Calc {
 
   private final List<Double> operandStack;
 
+  /**
+   * Construct a calculator object.
+   *
+   * @param operands operands to initialize
+   */
   public Calc(double... operands) {
     operandStack = new ArrayList<>(operands.length + 2);
     for (var d : operands) {
@@ -17,6 +26,8 @@ public class Calc {
   }
 
   /**
+   * Get the number of operands in the stack.
+   *
    * @return the number of operands on the stack
    */
   public int getOperandCount() {
@@ -25,7 +36,7 @@ public class Calc {
 
   /**
    * Pushes a new operand onto top of the stack.
-   * 
+   *
    * @param d the new operand
    */
   public void pushOperand(double d) {
@@ -33,6 +44,8 @@ public class Calc {
   }
 
   /**
+   * Peek in the operand stack at the position n from the top.
+   *
    * @param n the place (from the top) to peek
    * @return the n'th operand from the top
    * @throws IllegalArgumentException if n is larger than the operand count
@@ -46,6 +59,8 @@ public class Calc {
   }
 
   /**
+   * Peek at the top operand.
+   *
    * @return the top operand
    */
   public double peekOperand() {
@@ -54,7 +69,7 @@ public class Calc {
 
   /**
    * Removes and returns the top operand.
-   * 
+   *
    * @return the top operand
    * @throws IllegalStateException if the stack is empty
    */
@@ -68,14 +83,16 @@ public class Calc {
   /**
    * Performs the provided operation in the top operand, and replaces it with the
    * result.
-   * 
+   *
    * @param op the operation to perform
    * @return the result of performing the operation
    * @throws IllegalStateException if the operand stack is empty
    */
   public double performOperation(UnaryOperator<Double> op) throws IllegalStateException {
     if (getOperandCount() == 0) {
-      throw new IllegalStateException("Cannot perform unary operation without an operant in the stack");
+      throw new IllegalStateException(
+                  "Cannot perform unary operation without an operant in the stack"
+                );
     }
     var operand = popOperand();
     var result = op.apply(operand);
@@ -86,7 +103,7 @@ public class Calc {
   /**
    * Performs the provided operation in the two topmost operands, and replaces
    * them with the result.
-   * 
+   *
    * @param op the operation to perform
    * @return the result of performing the operation
    * @throws IllegalStateException if the operand count is less than two
@@ -111,10 +128,10 @@ public class Calc {
     if (getOperandCount() < 2) {
       throw new IllegalStateException("At least 2 operands are needed on the stack");
     } else {
-      var first_operand = popOperand();
-      var second_operand = popOperand();
-      pushOperand(first_operand);
-      pushOperand(second_operand);
+      var firstOperand = popOperand();
+      var secondOperand = popOperand();
+      pushOperand(firstOperand);
+      pushOperand(secondOperand);
     }
   }
 

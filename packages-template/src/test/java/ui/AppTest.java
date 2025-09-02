@@ -1,16 +1,14 @@
 package ui;
 
+import java.io.IOException;
+import java.util.List;
+import java.util.stream.Stream;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.stage.Stage;
-
-import java.io.IOException;
-import java.util.List;
-import java.util.stream.Stream;
-
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -20,9 +18,9 @@ import org.testfx.framework.junit5.ApplicationTest;
 import org.testfx.matcher.control.LabeledMatchers;
 
 /**
- * TestFX App test
+ * TestFX App test suite.
  */
-public class AppTest extends ApplicationTest {
+class AppTest extends ApplicationTest {
 
   private AppController controller;
   private Parent root;
@@ -58,6 +56,7 @@ public class AppTest extends ApplicationTest {
     return ((Label) getRootNode().lookup("#operandView")).getText();
   }
 
+  @SuppressWarnings("unchecked")
   private ListView<Double> getOperandsView() {
     return (ListView<Double>) getRootNode().lookup("#operandsView");
   }
@@ -84,7 +83,7 @@ public class AppTest extends ApplicationTest {
 
   @ParameterizedTest
   @MethodSource
-  public void testClicksOperand(String labels, String operandString) {
+  void testClicksOperand(String labels, String operandString) {
     for (var label : labels.split(" ")) {
       click(label);
     }
@@ -92,13 +91,17 @@ public class AppTest extends ApplicationTest {
   }
 
   private static Stream<Arguments> testClicksOperand() {
-    return Stream.of(Arguments.of("2 7", "27"), Arguments.of("2 7 .", "27."), Arguments.of("2 7 . 5", "27.5"),
-        Arguments.of("2 7 . 5 .", "27."));
+    return Stream.of(
+                      Arguments.of("2 7", "27"), 
+                      Arguments.of("2 7 .", "27."), 
+                      Arguments.of("2 7 . 5", "27.5"),
+                      Arguments.of("2 7 . 5 .", "27.")
+                    );
   }
 
   @ParameterizedTest
   @MethodSource
-  public void testClicksOperands(String labels, String operandsString) {
+  void testClicksOperands(String labels, String operandsString) {
     for (var label : labels.split(" ")) {
       click(label.equals("\n") ? enterLabel : label);
     }
@@ -106,14 +109,21 @@ public class AppTest extends ApplicationTest {
   }
 
   private static Stream<Arguments> testClicksOperands() {
-    return Stream.of(Arguments.of("2 7 . 5 \n", "27.5"), Arguments.of("2 7 \n", "27.0"),
-        Arguments.of("2 \n 7 \n 5 \n", "5.0", "7.0", "2.0"), Arguments.of("2 7 . \n", "27.0"),
-        Arguments.of("2 7 . 5 \n", "27.5"), Arguments.of("2 \n 7 +", "9.0"), Arguments.of("2 \n 7 -", "-5.0"),
-        Arguments.of("2 \n 7 *", "14.0"), Arguments.of("6 \n 3 /", "2.0"), Arguments.of("2 5 \n √", "5.0"));
+    return Stream.of(
+                      Arguments.of("2 7 . 5 \n", "27.5"), 
+                      Arguments.of("2 7 \n", "27.0"),
+                      Arguments.of("2 \n 7 \n 5 \n", "5.0", "7.0", "2.0"), 
+                      Arguments.of("2 7 . \n", "27.0"),
+                      Arguments.of("2 7 . 5 \n", "27.5"), 
+                      Arguments.of("2 \n 7 +", "9.0"), 
+                      Arguments.of("2 \n 7 -", "-5.0"),
+                      Arguments.of("2 \n 7 *", "14.0"), 
+                      Arguments.of("6 \n 3 /", "2.0"), 
+                      Arguments.of("2 5 \n √", "5.0"));
   }
 
   @Test
-  public void testPi() {
+  void testPi() {
     click("π");
     checkView("", Math.PI);
   }

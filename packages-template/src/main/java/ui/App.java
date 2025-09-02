@@ -21,7 +21,12 @@ public class App extends Application {
     stage.show();
   }
 
+  /**
+   * Entrypoint to Launch application.
+   *
+   * @param args application parameters
+   */
   public static void main(String[] args) {
-    launch();
+    launch(args);
   }
 }
