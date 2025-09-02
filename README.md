@@ -27,6 +27,7 @@ Template for  multi-module, multi-package javafx project.
 All projects can be tried out by cd-ing into the corresponding folder and using `mvn`:
 
 - change directory to the desired sample, such as `cd javafx-template`
+- if using the multi-module template run `mvn clean install` to allow local dependencies to be available
 - compile with `mvn compile`
 - test with `mvn test`
 - run quality checks with `mvn verify`
