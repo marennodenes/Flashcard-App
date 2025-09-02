@@ -149,8 +149,9 @@ public class AppController {
   }
 
   @FXML
+  @SuppressWarnings({"java:S1612"})
   void handleOpSqrt() {
-    UnaryOperator<Double> sqrt = (x) -> Math.sqrt(x);
+    UnaryOperator<Double> sqrt = x -> Math.sqrt(x);
     performOperation(sqrt);
   }
 

@@ -8,6 +8,7 @@ import java.util.function.UnaryOperator;
 /**
  * Calculator class.
  */
+@SuppressWarnings({"S4276", "java:S4276"})
 public class Calc {
   private final List<Double> operandStack;
 
