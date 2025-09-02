@@ -1,55 +1,61 @@
 {
-    // Use IntelliSense to learn about possible attributes.
-    // Hover to view descriptions of existing attributes.
-    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
-    "version": "0.2.0",
-    "configurations": [
-        {
-            "type": "java",
-            "name": "Current File",
-            "request": "launch",
-            "mainClass": "${file}"
-        },
-        {
-            "type": "java",
-            "name": "javafx-template App",
-            "request": "launch",
-            "mainClass": "app/app.App",
-            "vmArgs": [
-                "--add-opens",
-                "app/app=ALL-UNNAMED",
-                "--add-exports",
-                "javafx.graphics/com.sun.javafx.application=ALL-UNNAMED"
-            ],
-            "projectName": "javafx-template"
-        },
-        {
-            "type": "java",
-            "name": "modules-template App",
-            "request": "launch",
-            "mainClass": "calc.ui/ui.App",
-            "vmArgs": [
-                "--add-opens",
-                "calc.ui/ui=ALL-UNNAMED",
-                "--add-exports",
-                "javafx.graphics/com.sun.javafx.application=ALL-UNNAMED"
-            ],
-            "projectName": "modules-ui"
-        },
-        {
-            "type": "java",
-            "name": "packages-template App",
-            "request": "launch",
-            "mainClass": "app/ui.App",
-            "vmArgs": [
-                "--add-opens",
-                "app/core=ALL-UNNAMED",
-                "--add-opens",
-                "app/ui=ALL-UNNAMED",
-                "--add-exports",
-                "javafx.graphics/com.sun.javafx.application=ALL-UNNAMED"
-            ],
-            "projectName": "packages-template"
-        }
-    ]
+  // Use IntelliSense to learn about possible attributes.
+  // Hover to view descriptions of existing attributes.
+  // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "type": "java",
+      "name": "Current File",
+      "request": "launch",
+      "mainClass": "${file}"
+    },
+    {
+      "type": "java",
+      "name": "javafx-template App",
+      "request": "launch",
+      "mainClass": "app/app.App",
+      "vmArgs": [
+        "--add-opens",
+        "app/app=ALL-UNNAMED",
+        "--add-exports",
+        "javafx.graphics/com.sun.javafx.application=ALL-UNNAMED",
+        "--add-opens",
+        "javafx.graphics/com.sun.javafx.application=ALL-UNNAMED"
+      ],
+      "projectName": "javafx-template"
+    },
+    {
+      "type": "java",
+      "name": "modules-template App",
+      "request": "launch",
+      "mainClass": "calc.ui/ui.App",
+      "vmArgs": [
+        "--add-opens",
+        "calc.ui/ui=ALL-UNNAMED",
+        "--add-exports",
+        "javafx.graphics/com.sun.javafx.application=ALL-UNNAMED",
+        "--add-opens",
+        "javafx.graphics/com.sun.javafx.application=ALL-UNNAMED"
+      ],
+      "projectName": "modules-ui"
+    },
+    {
+      "type": "java",
+      "name": "packages-template App",
+      "request": "launch",
+      "mainClass": "app/ui.App",
+      "vmArgs": [
+        "--add-opens",
+        "app/core=ALL-UNNAMED",
+        "--add-opens",
+        "app/ui=ALL-UNNAMED",
+        "--add-exports",
+        "javafx.graphics/com.sun.javafx.application=ALL-UNNAMED",
+        "--add-opens",
+        "javafx.graphics/com.sun.javafx.application=ALL-UNNAMED"
+      ],
+      "projectName": "packages-template"
+    }
+  ]
 }
