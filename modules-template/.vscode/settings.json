@@ -14,6 +14,8 @@
         "--add-opens",
         "calc.ui/ui=ALL-UNNAMED",
         "--add-exports",
+        "javafx.graphics/com.sun.javafx.application=ALL-UNNAMED",
+        "--add-opens",
         "javafx.graphics/com.sun.javafx.application=ALL-UNNAMED"
       ]
     }
