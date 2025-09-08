@@ -10,7 +10,7 @@ import javafx.stage.Stage;
 /**
  * JavaFX Calculator App.
  */
-public class App extends Application {
+public class NotesApp extends Application {
 
   @Override
   public void start(Stage stage) throws IOException {
