@@ -1,0 +1,5 @@
+app/Notes.class
+app/NotesApp.class
+app/NotesPersistent.class
+app/NotesController.class
+app/NotesPage.class
