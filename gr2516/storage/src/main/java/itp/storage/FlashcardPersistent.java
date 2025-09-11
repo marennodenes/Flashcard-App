@@ -1,4 +1,4 @@
-package main.java.itp.storage;
+package itp.storage;
 
 public class FlashcardPersistent {
   //file

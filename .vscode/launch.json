@@ -12,7 +12,7 @@
     },
     {
       "type": "java",
-      "name": "javafx-template App",
+      "name": "gr2516 App",
       "request": "launch",
       "mainClass": "app/app.App",
       "vmArgs": [
@@ -23,7 +23,7 @@
         "--add-opens",
         "javafx.graphics/com.sun.javafx.application=ALL-UNNAMED"
       ],
-      "projectName": "javafx-template"
+      "projectName": "gr2516"
     },
     {
       "type": "java",
