@@ -6,6 +6,13 @@
   "configurations": [
     {
       "type": "java",
+      "name": "FlashcardApp",
+      "request": "launch",
+      "mainClass": "ui.FlashcardApp",
+      "projectName": "fxui"
+    },
+    {
+      "type": "java",
       "name": "Current File",
       "request": "launch",
       "mainClass": "${file}"
