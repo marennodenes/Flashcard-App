@@ -17,7 +17,7 @@ We made a simple javaFX window where the user can write a flashcard and submit i
 
 The logic is handled in the core module. This includes creating a new flashcard object and a new flashcard array
 
-The storage of data is handled in the storage module. This handles writing and reading from file. 
+The storage of data is handled in the storage module. This handles writing and reading from file, and also an csv file with user data.
 
 ## Development process
 
