@@ -1,4 +1,4 @@
-package test.java.itp.storage;
+package itp.storage;
 
 public class FlashcardPersistentTest {
   
