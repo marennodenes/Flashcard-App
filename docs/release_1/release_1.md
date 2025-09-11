@@ -32,3 +32,7 @@ As we reflect on this assignment, there are a few areas we aim to improve for fu
 ### Task seperation 
 
 In this first release, the task separation could have been better. We have found it a bit challenging to decide who and when should work in different areas. In the future, we plan to define more distinct boundaries between tasks to avoid redundancy and ensure clearer ownership.
+
+### Git expertise 
+
+In this first milestone, we have been introduced to working as a team on github. We have learned a lot, but still want to improve our skills. For example we need to get better at consistent structure in our commit messages and learn more about how github can be used in our team.
