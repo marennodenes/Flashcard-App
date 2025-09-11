@@ -7,11 +7,21 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
+/**
+ * Main app for flashcards.
+ */
 public class FlashcardApp extends Application{
+  
+  /**
+   * Starts the app.
+   */
   public static void main(String[] args) {
     Application.launch(args);
   }
 
+  /**
+   * Sets up the main window.
+   */
   @Override
   public void start(Stage primaryStage) throws IOException {
       primaryStage.setTitle("Flashcards App");
@@ -21,6 +31,4 @@ public class FlashcardApp extends Application{
       primaryStage.show();
   }
 
-
 }
-

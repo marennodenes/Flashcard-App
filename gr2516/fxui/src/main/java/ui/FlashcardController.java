@@ -11,14 +11,23 @@ public class FlashcardController {
   @FXML private ListView<Flashcard> listView;
   private final FlashcardManager manager = new FlashcardManager();
 
+  /**
+   * Sets up the UI when loaded.
+   */
   @FXML public void initialize(){
     updateUI();
   }
 
+  /**
+   * Updates the flashcard list display.
+   */
   public void updateUI(){
     listView.setItems(manager.getFlashcards());
   }
 
+   /**
+   * Adds a new flashcard when button is clicked.
+   */
   public void whenGenerateButtonClicked(){
     String q = questionField.getText().trim();
     String a = answerField.getText().trim();
