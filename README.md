@@ -39,9 +39,9 @@ The actual Flashcards application is implemented in the gr2516 module.
 
 All projects can be tried out by cd-ing into the corresponding module (e.g. gr2516) and using `mvn`:
 
-- change directory to the desired sample, such as `cd gr2516`
-- if using the multi-module template run `mvn clean install` to allow local dependencies to be available
-- compile with `mvn compile`
-- test with `mvn test`
-- run quality checks with `mvn verify`
-- run with `mvn javafx:run`
+* change directory to the desired sample, such as `cd gr2516`
+* if using the multi-module template run `mvn clean install` to allow local dependencies to be available
+* compile with `mvn compile`
+* test with `mvn test`
+* run quality checks with `mvn verify`
+* run with `mvn javafx:run`
