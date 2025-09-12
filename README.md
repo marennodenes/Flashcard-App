@@ -5,8 +5,12 @@
 
 A repository with three variants of a javafx projects, with maven setup for Java 17+ and JavaFX 21, and JUnit 5 (Jupiter) and TestFX for testing.
 
-To make the project(s) templates more interesting, it is the start of an [RPN](https://en.wikipedia.org/wiki/Reverse_Polish_notation) calculator. 
-The core logic is implemented (in [Calc.java](javafx-template/src/main/java/app/Calc.java)), the fxml file (in [App.fxml](javafx-template/src/main/resources/app/App.fxml) and the controller class (in [AppController.java](javafx-template/src/main/java/app/AppController.java). And last, but not least, there is a TestFX-based test (in [AppTest.java](javafx-template/src/test/java/app/AppTest.java), see the [README](javafx-template/src/test/java/app/README.md) for details about what it tests).
+This project features an app for creating and revising flashcards. Each new user will create a profile to which each list of flashcards will be saved.
+
+The core logic is implemented in [Flashcard.java](gr2516/core/src/main/java/app/Flashcard.java), [FlashcardArray.java](gr2516/core/src/main/java/app/FlashcardArray.java), the fxml file [FlashcardMainUI.fxml](gr2516/fxui/src/main/resources/ui/FlashcardMainUI.fxml), [FlashcardApp.java](gr2516/fxui/src/main/ui/FlashcardApp.java) and the app controller [FlashcardController.java](gr2516/fxui/src/main/ui/FlashcardController.java). 
+
+We also have the TestFX-based test in [InsertAppFileName.java](gr2516/fxui/src/main/test/java/ui/...) (see the [README](gr2516/fxui/src/main/test/java/ui/README.md) for more details abotu the test).
+
 
 ## javafx-template
 
