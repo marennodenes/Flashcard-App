@@ -7,8 +7,9 @@
     <packaging>pom</packaging>
     <modules>
         <module>core</module>
-        <module>fxui</module>
         <module>storage</module>
+        <module>fxui</module>
+        
     </modules>
 
 
@@ -108,7 +109,7 @@
                 <!-- Default configuration for running -->
                 <!-- Usage: mvn javafx:run -->
                 <configuration>
-                    <mainClass>app/app.App</mainClass>
+                    <mainClass>app/ui.FlashcardApp</mainClass>
                 </configuration>
             </plugin>
 
