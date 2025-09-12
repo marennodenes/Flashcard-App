@@ -7,8 +7,9 @@
     <packaging>pom</packaging>
     <modules>
         <module>core</module>
-        <module>fxui</module>
         <module>storage</module>
+        <module>fxui</module>
+        
     </modules>
 
 

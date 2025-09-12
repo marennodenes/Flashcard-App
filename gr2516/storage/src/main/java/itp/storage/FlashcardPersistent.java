@@ -24,17 +24,14 @@ public class FlashcardPersistent {
    * 
    * @throws IOException if an error occurs while writing to the file
    */
-  public void writeToFile(){
-
-    // file writing logic
+  public void writeToFile() {
     try (FileWriter writer = new FileWriter("flashcards.csv")) {
         for (Flashcard flashcard : flashcards) {
-            writer.write(flashcard.getQuestion() + "|" + flashcard.getAnswer() + "\n");
+            writer.write(flashcard.getQuestion() + " | " + flashcard.getAnswer() + "\n");
         }
     } catch (IOException e) {
         e.printStackTrace();
     }
-
   }
 
   /**
@@ -45,22 +42,19 @@ public class FlashcardPersistent {
    * @throws IOException if an error occurs while reading from the file
    * @throws FileNotFoundException if the flashcards.csv file does not exist
    */
-  public void readFromFile(){
-
-    //file reading logic
+  public void readFromFile() {
     try (BufferedReader reader = new BufferedReader(new FileReader("flashcards.csv"))) {
         String line;
         while ((line = reader.readLine()) != null) {
             String[] parts = line.split("\\|");
             if (parts.length == 2) {
-                Flashcard flashcard = new Flashcard(parts[0], parts[1]);
+                Flashcard flashcard = new Flashcard(parts[0].trim(), parts[1].trim());
                 flashcards.add(flashcard);
             }
         }
     } catch (IOException e) {
         e.printStackTrace();
     }
-
   }
 
   /**
@@ -88,3 +82,4 @@ public class FlashcardPersistent {
     flashcards.clear();
   }
 }
+  
