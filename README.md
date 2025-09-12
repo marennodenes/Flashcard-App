@@ -22,16 +22,16 @@ The actual Flashcards application is implemented in the gr2516 module.
 
 ### Key files
 
-* Core logic:
+* core - application logic
   [Flashcard.java](gr2516/core/src/main/java/app/Flashcard.java)
   [FlashcardArray.java](gr2516/core/src/main/java/app/FlashcardArray.java)
-* UI
+* fxui - user interface
   [FlashcardMainUI.fxml](gr2516/fxui/src/main/resources/ui/FlashcardMainUI.fxml)
   [FlashcardController.java](gr2516/fxui/src/main/ui/FlashcardController.java)
   [FlashcardApp.java](gr2516/fxui/src/main/ui/FlashcardApp.java)
-* Tests:
-  TestFX-based UI test under [fxui/src/test/java/ui](gr2516/fxui/src/main/test/java/ui)
-  See the [test README](gr2516/fxui/src/main/test/java/ui/README.md) for more details
+
+There are test located under [fxui/src/test/java/ui](gr2516/fxui/src/main/test/java/ui)
+See the [test README](gr2516/fxui/src/main/test/java/ui/README.md) for more details
 
 ## Getting started
 
