@@ -22,6 +22,8 @@ The actual Flashcards application is implemented in the gr2516 module.
 
 ### Illustration of completed project
 
+[illustration of completed project](images/release_1.JPEG)
+
 ### Key files
 
 * core - application logic
@@ -38,6 +40,10 @@ There are tests located under [fxui/src/test/java/ui](gr2516/fxui/src/main/test/
 See the [test README](gr2516/fxui/src/main/test/java/ui/README.md) for more details
 
 ## Use of AI
+
+As part of this project, we made use of AI-based tools to improve both efficiency and accuracy when working with complex features. In particular, we relied on Claude Sonnet 4 to explore recommended approaches for implementing our app.
+
+In addition we used Chat GPT for more project setup related problems.
 
 ## Getting started
 
