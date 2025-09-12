@@ -22,6 +22,7 @@ The actual Flashcards application is implemented in the gr2516 module.
 
 ### Illustration of completed project
 
+
 ### Key files
 
 * core - application logic
@@ -31,11 +32,14 @@ The actual Flashcards application is implemented in the gr2516 module.
   [FlashcardMainUI.fxml](gr2516/fxui/src/main/resources/ui/FlashcardMainUI.fxml)
   [FlashcardController.java](gr2516/fxui/src/main/ui/FlashcardController.java)
   [FlashcardApp.java](gr2516/fxui/src/main/ui/FlashcardApp.java)
+* storage - saving and handling of files
+  [FlashcardPersistent.java](gr2516/storage/src/main/java/itp/storage/FlashcardPersistent.java)
 
-There are test located under [fxui/src/test/java/ui](gr2516/fxui/src/main/test/java/ui)
+There are tests located under [fxui/src/test/java/ui](gr2516/fxui/src/main/test/java/ui) and [FlashcardPersistentTest.java](gr2516/storage/src/test/java/itp/storage/FlashcardPersistentTest.java)
 See the [test README](gr2516/fxui/src/main/test/java/ui/README.md) for more details
 
 ## Use of AI
+In this project 
 
 ## Getting started
 
