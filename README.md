@@ -1,14 +1,14 @@
 
 # GR2516
 
-[open in Eclipse Che](https://che.stud.ntnu.no/#https://git.ntnu.no/IT1901-dev/javafx-template?new)
-//TODO: Update eclipse che link
+[open in Eclipse Che](https://che.stud.ntnu.no/ailinat-stud-ntnu-no/javafx-template/3100/)
 
 ## Overview
 
 This repository contains an application for creating and revising flashcards. Each user creates a profile, and their flashcard lists are stored under that profile.
 
 The project is built with:
+
 * Java 17+
 * JavaFX 21
 * Maven
