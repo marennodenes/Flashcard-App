@@ -25,7 +25,6 @@ Closes #12
 ```
 ```
 docs(README): finished released_1.md documentation #6
-
 ```
 
 ## Commit Types
@@ -58,7 +57,7 @@ we use are
 The short description should be a one-line summary of the change 
 
 ### (Optional) body 
-Use the body to explain why the change was made
+Use the body to explain why the change was made, and not how the change was implemented. 
 
 ### (Optional) footers 
 We used the footers for additional information, such as references to issues or breaking changes
