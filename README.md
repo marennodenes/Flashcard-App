@@ -2,6 +2,7 @@
 # GR2516
 
 [open in Eclipse Che](https://che.stud.ntnu.no/#https://git.ntnu.no/IT1901-dev/javafx-template?new)
+//TODO: Update eclipse che link
 
 A repository with three variants of a javafx projects, with maven setup for Java 17+ and JavaFX 21, and JUnit 5 (Jupiter) and TestFX for testing.
 
