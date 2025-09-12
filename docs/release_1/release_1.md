@@ -1,4 +1,4 @@
-# Release 1 
+# Release 1
 
 In this first milestone we started the project. Our goals for this milestone were to build the base version of our app without significant logic working. We focused mainly on the modules in our project, and implementing a starting logic.
 
