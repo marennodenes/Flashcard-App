@@ -14,6 +14,13 @@ The project is built with:
 * Maven
 * JUnit 5 (Jupiter) + TestFX for testing
 
+## User stories
+
+The functionalities prioritised for the first release are based on these userstories:
+
+* As a user, I want to create a new deck, so that I can group related flashcards by subject.
+* As a user, I want to add a card with a question/term on one side and an answer/definition on the other, so that I can test myself later.
+
 ## Project structure
 
 This repository is structured with a modules-template.
