@@ -7,6 +7,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import java.io.FileNotFoundException;
+
+
 import app.Flashcard;
 
 public class FlashcardPersistent {
@@ -25,7 +28,9 @@ public class FlashcardPersistent {
    * @throws IOException if an error occurs while writing to the file
    */
   public void writeToFile() {
-    try (FileWriter writer = new FileWriter("flashcards.csv")) {
+    String filePath = getFilePath();
+    
+    try (FileWriter writer = new FileWriter(filePath)) {
         for (Flashcard flashcard : flashcards) {
             writer.write(flashcard.getQuestion() + " | " + flashcard.getAnswer() + "\n");
         }
@@ -33,6 +38,7 @@ public class FlashcardPersistent {
         e.printStackTrace();
     }
   }
+
 
   /**
    * Reads flashcards from a CSV file and populates the flashcards collection.
@@ -43,7 +49,7 @@ public class FlashcardPersistent {
    * @throws FileNotFoundException if the flashcards.csv file does not exist
    */
   public void readFromFile() {
-    try (BufferedReader reader = new BufferedReader(new FileReader("flashcards.csv"))) {
+    try (BufferedReader reader = new BufferedReader(new FileReader(getFilePath()))) {
         String line;
         while ((line = reader.readLine()) != null) {
             String[] parts = line.split("\\|");
@@ -81,5 +87,10 @@ public class FlashcardPersistent {
   public void clearFlashcards() {
     flashcards.clear();
   }
+
+  private String getFilePath() {
+    return "flashcards.csv";
+  }
+
 }
   
