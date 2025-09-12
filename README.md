@@ -20,6 +20,8 @@ This repository is structured with a modules-template.
 
 The actual Flashcards application is implemented in the gr2516 module.
 
+### Illustration of completed project
+
 ### Key files
 
 * core - application logic
@@ -32,6 +34,8 @@ The actual Flashcards application is implemented in the gr2516 module.
 
 There are test located under [fxui/src/test/java/ui](gr2516/fxui/src/main/test/java/ui)
 See the [test README](gr2516/fxui/src/main/test/java/ui/README.md) for more details
+
+## Use of AI
 
 ## Getting started
 
