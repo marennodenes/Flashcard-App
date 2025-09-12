@@ -23,6 +23,13 @@
             <version>${project.version}</version>
         </dependency>
         
+        <!-- Dependency on the storage module -->
+        <dependency>
+            <groupId>it1901</groupId>
+            <artifactId>storage</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        
         <!-- JavaFX dependencies -->
         <dependency>
             <groupId>org.openjfx</groupId>
