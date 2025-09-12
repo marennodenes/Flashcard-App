@@ -43,9 +43,9 @@ See the [test README](gr2516/fxui/src/main/test/java/ui/README.md) for more deta
 
 ### Build and run
 
-All projects can be tried out by cd-ing into the corresponding module (e.g. gr2516) and using `mvn`:
+All projects can be tried out by cd-ing into the corresponding module (e.g. flashcards) and using `mvn`:
 
-* change directory to the desired sample, such as `cd gr2516`
+* change directory to the desired sample, such as `cd flashcards`
 * if using the multi-module template run `mvn clean install` to allow local dependencies to be available
 * compile with `mvn compile`
 * test with `mvn test`
