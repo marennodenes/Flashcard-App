@@ -8,6 +8,12 @@
       "type": "java",
       "name": "FlashcardApp",
       "request": "launch",
+      "mainClass": "gr2516.core/ui.FlashcardApp"
+    },
+    {
+      "type": "java",
+      "name": "FlashcardApp",
+      "request": "launch",
       "mainClass": "gr2516.fxui/ui.FlashcardApp",
       "projectName": "fxui"
     },
