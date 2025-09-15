@@ -38,3 +38,7 @@ In this first release, the task separation could have been better. We have found
 ### Git expertise
 
 In this first milestone, we have been introduced to working as a team on github. We have learned a lot, but still want to improve our skills. For example we need to get better at consistent structure in our commit messages and learn more about how github can be used in our team.
+
+### Project architecture
+
+We have made a modules-template structure in our structure which works well. Despite that, we need to be better at connecting the project together using our module-info.java and pom.xml files.
