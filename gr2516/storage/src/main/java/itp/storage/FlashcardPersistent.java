@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -29,8 +30,8 @@ public class FlashcardPersistent {
    */
   public void writeToFile() {
     String filePath = getFilePath();
-    
-    try (FileWriter writer = new FileWriter(filePath)) {
+
+    try (FileWriter writer = new FileWriter(filePath, StandardCharsets.UTF_8)) {
         for (Flashcard flashcard : flashcards) {
             writer.write(flashcard.getQuestion() + " | " + flashcard.getAnswer() + "\n");
         }
@@ -49,7 +50,7 @@ public class FlashcardPersistent {
    * @throws FileNotFoundException if the flashcards.csv file does not exist
    */
   public void readFromFile() {
-    try (BufferedReader reader = new BufferedReader(new FileReader(getFilePath()))) {
+    try (BufferedReader reader = new BufferedReader(new FileReader(getFilePath(), StandardCharsets.UTF_8))) {
         String line;
         while ((line = reader.readLine()) != null) {
             String[] parts = line.split("\\|");
