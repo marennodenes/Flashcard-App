@@ -29,7 +29,7 @@ The actual Flashcards application is implemented in the gr2516 module.
 
 ### Illustration of completed project
 
-[illustration of completed project](images/release_1.JPEG)
+![illustration of completed project](images/release_1.JPEG)
 
 ### Key files
 
@@ -44,7 +44,6 @@ The actual Flashcards application is implemented in the gr2516 module.
   [FlashcardPersistent.java](gr2516/storage/src/main/java/itp/storage/FlashcardPersistent.java)
 
 There are tests located under [fxui/src/test/java/ui](gr2516/fxui/src/main/test/java/ui) and [FlashcardPersistentTest.java](gr2516/storage/src/test/java/itp/storage/FlashcardPersistentTest.java)
-See the [test README](gr2516/fxui/src/main/test/java/ui/README.md) for more details
 
 ## Use of AI
 
@@ -57,10 +56,11 @@ In addition we used Chat GPT for more project setup related problems.
 ### Build and run
 
 All projects can be tried out by cd-ing into the corresponding module (e.g. flashcards) and using `mvn`:
+All projects can be tried out by cd-ing into the corresponding module (e.g. flashcards) and using `mvn`:
 
-* change directory to the desired sample, such as `cd flashcards`
+* change directory to the desired sample, such as `cd gr2516`
 * if using the multi-module template run `mvn clean install` to allow local dependencies to be available
 * compile with `mvn compile`
 * test with `mvn test`
 * run quality checks with `mvn verify`
-* run with `mvn javafx:run`
+* use `cd fxui` to navigate to the fxui folder and run with `mvn javafx:run` in fxui folder
