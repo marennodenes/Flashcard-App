@@ -63,4 +63,3 @@ All projects can be tried out by cd-ing into the corresponding module (e.g. flas
 * test with `mvn test`
 * run quality checks with `mvn verify`
 * use `cd fxui` to navigate to the fxui folder and run with `mvn javafx:run` in fxui folder
-
