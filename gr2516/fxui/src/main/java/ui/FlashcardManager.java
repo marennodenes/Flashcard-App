@@ -1,14 +1,16 @@
 package ui;
 
 import app.Flashcard;
+import java.util.ArrayList;
+import java.util.List;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
 public class FlashcardManager {
-  private final ObservableList<Flashcard> flashcards = FXCollections.observableArrayList();
+  private final List<Flashcard> flashcards = new ArrayList<>();
 
   public ObservableList<Flashcard> getFlashcards() {
-      return flashcards;
+      return FXCollections.observableList(new ArrayList<>(flashcards));
   }
 
   public void addFlashcard(String question, String answer) {
