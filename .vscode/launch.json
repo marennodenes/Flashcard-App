@@ -8,13 +8,13 @@
       "type": "java",
       "name": "FlashcardApp",
       "request": "launch",
-      "mainClass": "gr2516.core/ui.FlashcardApp"
+      "mainClass": "flashcards.core/ui.FlashcardApp"
     },
     {
       "type": "java",
       "name": "FlashcardApp",
       "request": "launch",
-      "mainClass": "gr2516.fxui/ui.FlashcardApp",
+      "mainClass": "flashcards.fxui/ui.FlashcardApp",
       "projectName": "fxui"
     },
     {
@@ -32,7 +32,7 @@
     },
     {
       "type": "java",
-      "name": "gr2516 App",
+      "name": "flashcards App",
       "request": "launch",
       "mainClass": "app/app.App",
       "vmArgs": [
@@ -43,7 +43,7 @@
         "--add-opens",
         "javafx.graphics/com.sun.javafx.application=ALL-UNNAMED"
       ],
-      "projectName": "gr2516"
+      "projectName": "flashcards"
     },
     {
       "type": "java",

@@ -12,7 +12,7 @@
     },
     {
       "type": "java",
-      "name": "Launch gr2516 - single module, single package",
+      "name": "Launch flashcards - single module, single package",
       "request": "launch",
       "mainClass": "app/app.App",
       "vmArgs": [
@@ -23,7 +23,7 @@
         "--add-opens",
         "javafx.graphics/com.sun.javafx.application=ALL-UNNAMED"
       ],
-      "projectName": "gr2516"
+      "projectName": "flashcards"
     }
   ]
 }

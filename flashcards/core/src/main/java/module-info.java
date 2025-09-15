@@ -1,3 +1,3 @@
-module gr2516.core {
+module flashcards.core {
   exports app;
 }

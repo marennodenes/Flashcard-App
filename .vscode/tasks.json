@@ -7,7 +7,7 @@
 			"command": "mvn",
 			"args": [
 				"-f",
-				"gr2516/fxui/pom.xml",
+				"flashcards/fxui/pom.xml",
 				"javafx:run"
 			],
 			"group": "build",

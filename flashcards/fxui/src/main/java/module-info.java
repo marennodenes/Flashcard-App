@@ -1,6 +1,6 @@
-module gr2516.fxui {
-  requires gr2516.core;
-  requires gr2516.storage;
+module flashcards.fxui {
+  requires flashcards.core;
+  requires flashcards.storage;
   requires javafx.controls;
   requires javafx.fxml;
   
