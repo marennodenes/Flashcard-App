@@ -29,7 +29,8 @@ The actual Flashcards application is implemented in the gr2516 module.
 
 ### Illustration of completed project
 
-![illustration of completed project](images/release_1.JPEG)
+![illustration of ui in release 1](images/release_1.png)
+![illustration of ui in release 1 with questions and answers](images/release_1_example.png)
 
 ### Key files
 
