@@ -1,8 +1,8 @@
 schemaVersion: 2.1.0
 metadata:
-  name: javafx-template
+  name: gr2516
 components:
-  - name: javafx-template
+  - name: gr2516
     container:
       image: adrianstoica/it1901:latest
       memoryLimit: 3Gi

@@ -2,8 +2,16 @@
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>it1901</groupId>
-    <artifactId>javafx-template</artifactId>
+    <artifactId>gr2516</artifactId>
     <version>0.0.1-SNAPSHOT</version>
+    <packaging>pom</packaging>
+    <modules>
+        <module>core</module>
+        <module>storage</module>
+        <module>fxui</module>
+        
+    </modules>
+
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -12,6 +20,7 @@
         <maven.compiler.release>17</maven.compiler.release>
     </properties>
 
+<dependencyManagement>
     <dependencies>
 
         <!-- javafx -->
@@ -27,6 +36,7 @@
         </dependency>
 
         <!-- junit testing with jupiter -->
+        
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-api</artifactId>
@@ -67,8 +77,10 @@
         </dependency>
 
     </dependencies>
+</dependencyManagement>
 
     <build>
+    <pluginManagement>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -97,7 +109,7 @@
                 <!-- Default configuration for running -->
                 <!-- Usage: mvn javafx:run -->
                 <configuration>
-                    <mainClass>app/app.App</mainClass>
+                    <mainClass>app/ui.FlashcardApp</mainClass>
                 </configuration>
             </plugin>
 
@@ -154,5 +166,6 @@
                 </executions>
             </plugin>
         </plugins>
+        </pluginManagement>
     </build>
 </project>

@@ -20,7 +20,7 @@
       ]
     },
     {
-      "name": "javafx-template testing",
+      "name": "gr2516 testing",
       "vmArgs": [
         "--add-opens",
         "app/app=ALL-UNNAMED",

@@ -54,7 +54,11 @@ In addition we used Chat GPT for more project setup related problems.
 ## Getting started
 
 ### Build and run
+## Getting started
 
+### Build and run
+
+All projects can be tried out by cd-ing into the corresponding module (e.g. flashcards) and using `mvn`:
 All projects can be tried out by cd-ing into the corresponding module (e.g. flashcards) and using `mvn`:
 
 * change directory to the desired sample, such as `cd gr2516`
