@@ -6,13 +6,33 @@
   "configurations": [
     {
       "type": "java",
+      "name": "FlashcardApp",
+      "request": "launch",
+      "mainClass": "flashcards.core/ui.FlashcardApp"
+    },
+    {
+      "type": "java",
+      "name": "FlashcardApp",
+      "request": "launch",
+      "mainClass": "flashcards.fxui/ui.FlashcardApp",
+      "projectName": "fxui"
+    },
+    {
+      "type": "java",
+      "name": "FlashcardApp",
+      "request": "launch",
+      "mainClass": "ui.FlashcardApp",
+      "projectName": "fxui"
+    },
+    {
+      "type": "java",
       "name": "Current File",
       "request": "launch",
       "mainClass": "${file}"
     },
     {
       "type": "java",
-      "name": "javafx-template App",
+      "name": "flashcards App",
       "request": "launch",
       "mainClass": "app/app.App",
       "vmArgs": [
@@ -23,7 +43,7 @@
         "--add-opens",
         "javafx.graphics/com.sun.javafx.application=ALL-UNNAMED"
       ],
-      "projectName": "javafx-template"
+      "projectName": "flashcards"
     },
     {
       "type": "java",

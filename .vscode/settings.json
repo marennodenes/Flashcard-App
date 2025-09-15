@@ -20,7 +20,7 @@
       ]
     },
     {
-      "name": "javafx-template testing",
+      "name": "flashcards testing",
       "vmArgs": [
         "--add-opens",
         "app/app=ALL-UNNAMED",
