@@ -1,7 +1,7 @@
 
 # GR2516
 
-[open in Eclipse Che](https://che.stud.ntnu.no/ailinat-stud-ntnu-no/javafx-template/3100/)
+[open in Eclipse Che](https://che.stud.ntnu.no/#https://git.ntnu.no/IT1901-2025-groups/gr2516.git)
 
 ## Overview
 
