@@ -1,5 +1,5 @@
-module gr2516.storage {
-  requires transitive gr2516.core;
+module flashcards.storage {
+  requires transitive flashcards.core;
   
   exports itp.storage;
 }

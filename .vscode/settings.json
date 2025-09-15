@@ -20,7 +20,7 @@
       ]
     },
     {
-      "name": "gr2516 testing",
+      "name": "flashcards testing",
       "vmArgs": [
         "--add-opens",
         "app/app=ALL-UNNAMED",

@@ -5,7 +5,7 @@
   },
   "java.test.config": [
     {
-      "name": "gr2516 testing",
+      "name": "flashcards testing",
       "vmArgs": [
         "--add-opens",
         "app/app=ALL-UNNAMED",
@@ -16,7 +16,7 @@
       ]
     }
   ],
-  "java.test.defaultConfig": "gr2516 testing",
+  "java.test.defaultConfig": "flashcards testing",
   "java.compile.nullAnalysis.mode": "automatic",
   "java.debug.settings.onBuildFailureProceed": true,
   "java.format.settings.url": ".vscode/java-formatter.xml",
