@@ -1,7 +1,0 @@
-<FindBugsFilter>
-    <!-- Testability -->
-    <Match>
-        <Bug pattern="EI_EXPOSE_REP" />
-        <Class name="app.AppController" />
-    </Match>
-</FindBugsFilter>
