@@ -23,28 +23,30 @@ The functionalities prioritised for the first release are based on these usersto
 
 ## Project structure
 
-This repository is structured with a modules-template.
+This repository is structured with a modules-template inside the `gr2516` root folder.
 
-The actual Flashcards application is implemented in the gr2516 module.
-
-### Illustration of completed project
-
-![illustration of ui in release 1](images/release_1.png)
-![illustration of ui in release 1 with questions and answers](images/release_1_example.png)
+The actual Flashcards application is implemented in the `flashcards` module.
 
 ### Key files
 
 * core - application logic
-  [Flashcard.java](gr2516/core/src/main/java/app/Flashcard.java)
-  [FlashcardArray.java](gr2516/core/src/main/java/app/FlashcardArray.java)
+  [Flashcard.java](flashcards/core/src/main/java/app/Flashcard.java)
+  [FlashcardArray.java](flashcards/core/src/main/java/app/FlashcardArray.java)
 * fxui - user interface
-  [FlashcardMainUI.fxml](gr2516/fxui/src/main/resources/ui/FlashcardMainUI.fxml)
-  [FlashcardController.java](gr2516/fxui/src/main/ui/FlashcardController.java)
-  [FlashcardApp.java](gr2516/fxui/src/main/ui/FlashcardApp.java)
+  [FlashcardMainUI.fxml](flashcards/fxui/src/main/resources/ui/FlashcardMainUI.fxml)
+  [FlashcardController.java](flashcards/fxui/src/main/ui/FlashcardController.java)
+  [FlashcardApp.java](flashcards/fxui/src/main/ui/FlashcardApp.java)
 * storage - saving and handling of files
-  [FlashcardPersistent.java](gr2516/storage/src/main/java/itp/storage/FlashcardPersistent.java)
+  [FlashcardPersistent.java](flashcards/storage/src/main/java/itp/storage/FlashcardPersistent.java)
 
-There are tests located under [fxui/src/test/java/ui](gr2516/fxui/src/main/test/java/ui) and [FlashcardPersistentTest.java](gr2516/storage/src/test/java/itp/storage/FlashcardPersistentTest.java)
+There are tests located in files [FlashcardManagerTest.java](flashcards/fxui/src/test/java/ui/FlashcardManagerTest.java) and [FlashcardTest.java](flashcards/core/src/test/java/app/FlashcardTest.java)
+
+### Illustration of completed project
+
+Below you will find some images illustrating how the user interface should when running the application.
+
+![illustration of ui in release 1](images/release_1.png)
+![illustration of ui in release 1 with questions and answers](images/release_1_example.png)
 
 ## Use of AI
 
@@ -57,9 +59,8 @@ In addition we used Chat GPT for more project setup related problems.
 ### Build and run
 
 All projects can be tried out by cd-ing into the corresponding module (e.g. flashcards) and using `mvn`:
-All projects can be tried out by cd-ing into the corresponding module (e.g. flashcards) and using `mvn`:
 
-* change directory to the desired sample, such as `cd gr2516`
+* change directory to the desired sample, such as `cd flashcards`
 * if using the multi-module template run `mvn clean install` to allow local dependencies to be available
 * compile with `mvn compile`
 * test with `mvn test`
