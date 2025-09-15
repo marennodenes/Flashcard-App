@@ -41,4 +41,4 @@ In this first milestone, we have been introduced to working as a team on github.
 
 ### Project architecture
 
-We have made a modules-template structure in our structure which works well. Despite that, we need to be better at connecting the project together using our module-info.java and pom.xml files. 
+We have made a modules-template structure in our structure which works well. Despite that, we need to be better at connecting the project together using our module-info.java and pom.xml files.
