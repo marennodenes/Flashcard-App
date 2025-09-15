@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Module configuration and JaCoCo setup assisted by Claude Sonnet -->
+<!-- Storage module configuration and JaCoCo setup assisted by Claude Sonnet -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" 
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 
@@ -9,14 +9,22 @@
     <!-- Parent reference -->
     <parent>
         <groupId>it1901</groupId>
-        <artifactId>gr2516</artifactId>
+        <artifactId>flashcards</artifactId>
         <version>0.0.1-SNAPSHOT</version>
+        <relativePath>../pom.xml</relativePath>
     </parent>
     
-    <artifactId>core</artifactId>
+    <artifactId>storage</artifactId>
     <packaging>jar</packaging>
     
     <dependencies>
+        <!-- Dependency on the core module -->
+        <dependency>
+            <groupId>it1901</groupId>
+            <artifactId>core</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        
         <!-- JUnit testing dependencies -->
         <dependency>
             <groupId>org.junit.jupiter</groupId>
