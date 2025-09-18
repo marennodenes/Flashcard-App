@@ -25,8 +25,8 @@ public class FlashcardApp extends Application{
   @Override
   public void start(Stage primaryStage) throws IOException {
       primaryStage.setTitle("Flashcards App");
-      Scene scene = new Scene(FXMLLoader.load(getClass().getResource("FlashcardMainUI.fxml")));
-      scene.getStylesheets().add(getClass().getResource("styles.css").toExternalForm());
+      Scene scene = new Scene(FXMLLoader.load(getClass().getResource("FlashcardListUI.fxml")));
+      scene.getStylesheets().add(getClass().getResource("FlashcardList.css").toExternalForm());
       primaryStage.setScene(scene);
       primaryStage.show();
   }

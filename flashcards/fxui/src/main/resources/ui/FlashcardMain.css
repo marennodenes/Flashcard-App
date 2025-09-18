@@ -1,0 +1,46 @@
+#anchorPane {
+    -fx-background-color: #bee7ed;
+}
+
+.create {
+    -fx-background-color: #5c7b80;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+}
+
+.deck {
+    -fx-effect: dropshadow(gaussian, #5c7b80, 0, 1, 5, 5);
+    -fx-background-color: #89b9bf;
+    -fx-border-width: 2;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+}
+
+.delete {
+    -fx-background-color: #f4a261;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-background-radius: 5;
+    -fx-border-color: #5c7b80;
+    -fx-border-radius: 3;
+    -fx-border-width: 1.3;
+    -fx-background-insets: 0;
+
+}
+
+.username {
+    -fx-fill: #5c7b80;
+}
+
+.text-field {
+    -fx-background-color: white;
+    -fx-border-color: #5c7b80;
+    -fx-border-radius: 3;
+    -fx-border-width: 2;
+    -fx-background-radius: 3;
+}
+
+.textForTitles {
+    -fx-fill: #5c7b80;
+    -fx-font-weight: bold;
+}

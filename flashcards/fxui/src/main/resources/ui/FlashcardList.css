@@ -10,6 +10,7 @@
 #listView {
     -fx-border-color: #5c7b80;
     -fx-border-width: 2;
+    -fx-border-radius: 3;
 }
 
 .list-view .list-cell {
@@ -21,6 +22,7 @@
     -fx-border-color: #5c7b80;
     -fx-border-width: 2;
     -fx-background-radius: 3;
+    -fx-border-radius: 3;
 }
 
 .textForTitles {
