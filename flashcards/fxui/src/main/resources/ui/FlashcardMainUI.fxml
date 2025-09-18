@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.gluonhq.charm.glisten.control.TextField?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
+
+<AnchorPane fx:id="anchorPane" prefHeight="264.0" prefWidth="416.0" stylesheets="@FlashcardMain.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ui.FlashcardController">
+    <children>
+      <ImageView fitHeight="59.0" fitWidth="64.0" layoutX="16.0" layoutY="15.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@quiz-submissions-svgrepo-com.png" />
+         </image>
+      </ImageView>
+      <Text layoutX="75.0" layoutY="50.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="textForTitles" text="FLASH">
+         <font>
+            <Font size="23.0" />
+         </font>
+      </Text>
+      <Text layoutX="91.0" layoutY="79.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="textForTitles" text="CARDS">
+         <font>
+            <Font size="23.0" />
+         </font>
+      </Text>
+      <Button fx:id="newDeckButton" layoutX="334.0" layoutY="46.0" mnemonicParsing="false" prefHeight="27.0" prefWidth="73.0" styleClass="create" text="New deck" />
+      <Text layoutX="16.0" layoutY="109.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="textForTitles" text="Your card decks:" wrappingWidth="164.0">
+         <font>
+            <Font size="16.0" />
+         </font>
+      </Text>
+      <Button fx:id="deck_1" layoutX="16.0" layoutY="126.0" mnemonicParsing="false" prefHeight="53.0" prefWidth="82.0" styleClass="deck" text="new deck">
+         <font>
+            <Font size="11.0" />
+         </font></Button>
+      <Button fx:id="deck_5" layoutX="16.0" layoutY="197.0" mnemonicParsing="false" prefHeight="53.0" prefWidth="82.0" styleClass="deck" text="new deck">
+         <font>
+            <Font size="11.0" />
+         </font></Button>
+      <Button layoutX="116.0" layoutY="126.0" mnemonicParsing="false" prefHeight="53.0" prefWidth="82.0" styleClass="deck" text="new deck">
+         <font>
+            <Font size="11.0" />
+         </font></Button>
+      <Button fx:id="deck_6" layoutX="116.0" layoutY="197.0" mnemonicParsing="false" prefHeight="53.0" prefWidth="82.0" styleClass="deck" text="new deck">
+         <font>
+            <Font size="11.0" />
+         </font></Button>
+      <Button fx:id="deck_3" layoutX="221.0" layoutY="126.0" mnemonicParsing="false" prefHeight="53.0" prefWidth="82.0" styleClass="deck" text="new deck">
+         <font>
+            <Font size="11.0" />
+         </font></Button>
+      <Button fx:id="deck_7" layoutX="221.0" layoutY="197.0" mnemonicParsing="false" prefHeight="53.0" prefWidth="82.0" styleClass="deck" text="new deck">
+         <font>
+            <Font size="11.0" />
+         </font></Button>
+      <Button fx:id="deck_4" layoutX="321.0" layoutY="126.0" mnemonicParsing="false" prefHeight="53.0" prefWidth="82.0" styleClass="deck" text="new deck">
+         <font>
+            <Font size="11.0" />
+         </font></Button>
+      <Button fx:id="deck_8" layoutX="321.0" layoutY="197.0" mnemonicParsing="false" prefHeight="53.0" prefWidth="82.0" styleClass="deck" text="new deck">
+         <font>
+            <Font size="11.0" />
+         </font></Button>
+      <TextField fx:id="decknameInput" layoutX="219.0" layoutY="44.0" prefHeight="26.0" prefWidth="105.0" promptText="deckname..." />
+      <Button fx:id="deleteDeck_5" layoutX="9.0" layoutY="190.0" mnemonicParsing="false" prefHeight="7.0" prefWidth="6.0" styleClass="delete" text="X">
+         <font>
+            <Font size="7.0" />
+         </font>
+      </Button>
+      <Button fx:id="deleteDeck_1" layoutX="9.0" layoutY="119.0" mnemonicParsing="false" prefHeight="7.0" prefWidth="6.0" styleClass="delete" text="X">
+         <font>
+            <Font size="7.0" />
+         </font>
+      </Button>
+      <Button fx:id="deleteDeck_2" layoutX="109.0" layoutY="119.0" mnemonicParsing="false" prefHeight="7.0" prefWidth="6.0" styleClass="delete" text="X">
+         <font>
+            <Font size="7.0" />
+         </font>
+      </Button>
+      <Button fx:id="deleteDeck_6" layoutX="109.0" layoutY="192.0" mnemonicParsing="false" prefHeight="7.0" prefWidth="6.0" styleClass="delete" text="X">
+         <font>
+            <Font size="7.0" />
+         </font>
+      </Button>
+      <Button fx:id="deleteDeck_3" layoutX="214.0" layoutY="121.0" mnemonicParsing="false" prefHeight="7.0" prefWidth="6.0" styleClass="delete" text="X">
+         <font>
+            <Font size="7.0" />
+         </font>
+      </Button>
+      <Button fx:id="deleteDeck_7" layoutX="214.0" layoutY="192.0" mnemonicParsing="false" prefHeight="7.0" prefWidth="6.0" styleClass="delete" text="X">
+         <font>
+            <Font size="7.0" />
+         </font>
+      </Button>
+      <Button fx:id="deleteDeck_4" layoutX="314.0" layoutY="119.0" mnemonicParsing="false" prefHeight="7.0" prefWidth="6.0" styleClass="delete" text="X">
+         <font>
+            <Font size="7.0" />
+         </font>
+      </Button>
+      <Button fx:id="deleteDeck_8" layoutX="314.0" layoutY="190.0" mnemonicParsing="false" prefHeight="7.0" prefWidth="6.0" styleClass="delete" text="X">
+         <font>
+            <Font size="7.0" />
+         </font>
+      </Button>
+      <Text layoutX="220.0" layoutY="28.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="username" text="username: " />
+      <Text fx:id="usernameField" layoutX="285.0" layoutY="28.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="username" text="..." wrappingWidth="24.21630859375" />
+      <Button fx:id="LogOutButton" layoutX="334.0" layoutY="10.0" mnemonicParsing="false" prefHeight="27.0" prefWidth="73.0" styleClass="create" text="Log out" />
+    </children>
+</AnchorPane>
