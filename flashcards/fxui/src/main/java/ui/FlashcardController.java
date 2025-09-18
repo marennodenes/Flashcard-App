@@ -1,17 +1,22 @@
 package ui;
 
 import app.Flashcard;
+import app.FlashcardDeck;
+import itp.storage.FlashcardPersistent;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
-import itp.storage.FlashcardPersistent;
 
+/**
+ * Controller class for managing flashcard operations in the UI. */
 public class FlashcardController {
   @FXML private TextField questionField;
   @FXML private TextField answerField;
   @FXML private ListView<Flashcard> listView;
 
-  private final FlashcardManager manager = new FlashcardManager();
+  private final FlashcardDeck deck = new FlashcardDeck();
   private final FlashcardPersistent storage = new FlashcardPersistent(); 
 
 
@@ -19,18 +24,18 @@ public class FlashcardController {
    * Sets up the UI when loaded.
    * Loads existing flashcards from CSV file
    */
-  @FXML public void initialize(){
-    updateUI();
+  @FXML public void initialize() {
+    updateUi();
     loadFlashcardsFromFile();
   }
 
   /**
-   * Loads flashcards from CSV file into the manager.
+   * Loads flashcards from CSV file into the deck.
    */
   private void loadFlashcardsFromFile() {
     storage.readFromFile();  // Read from CSV file
     for (Flashcard card : storage.getFlashcards()) { 
-        manager.addFlashcard(card.getQuestion(), card.getAnswer()); // Add to manager
+      deck.addFlashcard(card.getQuestion(), card.getAnswer()); // Add to deck
     }
   }
 
@@ -42,21 +47,22 @@ public class FlashcardController {
   /**
    * Updates the flashcard list display.
    */
-  public void updateUI(){
-    listView.setItems(manager.getFlashcards());
+  public void updateUi() {
+    ObservableList<Flashcard> ob = FXCollections.observableArrayList(deck.getFlashcards());
+    listView.setItems(ob);
   }
 
-   /**
+  /**
    * Adds a new flashcard when button is clicked.
    */
-  public void whenGenerateButtonClicked(){
+  public void whenGenerateButtonClicked() {
     String q = questionField.getText().trim();
     String a = answerField.getText().trim();
 
     if (!q.isEmpty() && !a.isEmpty()) {
       
       //add to memory
-      manager.addFlashcard(q, a);
+      deck.addFlashcard(q, a);
 
       //save to CSV file 
       Flashcard newFlashcard = new Flashcard(q, a);
@@ -66,7 +72,7 @@ public class FlashcardController {
       clearInputFields();
 
       //update UI
-      updateUI();
+      updateUi();
     }
 
   }
