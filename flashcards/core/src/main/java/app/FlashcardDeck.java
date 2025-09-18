@@ -11,6 +11,7 @@ public class FlashcardDeck {
   
   /** List of all flashcards. */
   private final List<Flashcard> flashcards = new ArrayList<>();
+  private String deckName;
 
   /**
    * Gets all flashcards as an observable list.
@@ -21,6 +22,14 @@ public class FlashcardDeck {
   public List<Flashcard> getFlashcards() { //Changed from ObservableList to list
       return new ArrayList<>(flashcards);
   }
+
+    public String getDeckName() {
+        return deckName;
+    }
+
+    public void setDeckName(String deckName) {
+        this.deckName = deckName;
+    }
 
   /**
    * Adds a new flashcard.
