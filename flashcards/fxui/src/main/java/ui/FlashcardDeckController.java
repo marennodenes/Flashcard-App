@@ -88,7 +88,7 @@ public class FlashcardDeckController {
   public void updateUi() {
     FlashcardDeck currentDeck = getCurrentDeck();
     if (currentDeck != null) {
-      ObservableList<Flashcard> ob = FXCollections.observableArrayList(currentDeck.getFlashcards());
+      ObservableList<Flashcard> ob = FXCollections.observableArrayList(currentDeck.getDeck());
       listView.setItems(ob);
     }
   }
@@ -103,8 +103,9 @@ public class FlashcardDeckController {
     if (!q.isEmpty() && !a.isEmpty()) {
       FlashcardDeck currentDeck = getCurrentDeck();
       if (currentDeck != null) {
-        // Add to deck
-        currentDeck.addFlashcard(q, a);
+        // Create flashcard and add to deck
+        Flashcard newFlashcard = new Flashcard(q, a);
+        currentDeck.addFlashcard(newFlashcard);
         
         // Save to file
         saveUserData();

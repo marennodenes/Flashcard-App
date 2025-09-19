@@ -25,7 +25,16 @@ public class FlashcardPersistent {
    * @throws IOException if saving fails
    */
   public void writeDeck(String username, FlashcardDeckManager deckManager) throws IOException {
-    File file = new File(username + ".json");
+    // Create data directory if it doesn't exist
+    File dataDir = new File("data");
+    if (!dataDir.exists()) {
+      boolean created = dataDir.mkdirs();
+      if (!created) {
+        throw new IOException("Failed to create data directory: " + dataDir.getAbsolutePath());
+      }
+    }
+    
+    File file = new File(dataDir, username + ".json");
     objectMapper.writerWithDefaultPrettyPrinter().writeValue(file, deckManager);
   }
 
@@ -37,7 +46,7 @@ public class FlashcardPersistent {
    * @throws IOException if loading fails
    */
   public FlashcardDeckManager readDeck(String username) throws IOException {
-    File file = new File(username + ".json");
+    File file = new File("data", username + ".json");
     
     if (file.exists()) {
       return objectMapper.readValue(file, FlashcardDeckManager.class);

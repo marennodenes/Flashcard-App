@@ -2,6 +2,7 @@ package app;
 
 import java.util.ArrayList;
 import java.util.List;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 
 /**
@@ -11,7 +12,7 @@ public class FlashcardDeck {
   
   /** List of all flashcards. */
   @JsonProperty("deck")
-  private final List<Flashcard> deck;
+  private List<Flashcard> deck;
 
   @JsonProperty("deckName")
   private String deckName;
@@ -35,7 +36,7 @@ public class FlashcardDeck {
       return new ArrayList<>(deck);
   }
 
-  public void setDeck(List<Deck> deck){
+  public void setDeck(List<Flashcard> deck){
     this.deck = new ArrayList<>(deck);
   }
 
