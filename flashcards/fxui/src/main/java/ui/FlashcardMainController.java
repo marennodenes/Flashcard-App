@@ -1,13 +1,19 @@
 package ui;
 
 import javafx.scene.text.Text;
+import javafx.stage.Stage;
 import javafx.scene.control.TextField;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import app.FlashcardDeck;
+
+import java.io.IOException;
 import java.util.List;
 import app.FlashcardDeckManager;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 
 public class FlashcardMainController {
   @FXML private Button deck_1;
@@ -131,9 +137,23 @@ public class FlashcardMainController {
 
   @FXML
   public void whenADeckIsClicked(ActionEvent event){
-    // Button clickedButton = (Button) event.getSource();
-    // FlashcardDeck deck = (FlashcardDeck) clickedButton.getUserData();
-    //go to next scene when that is implemented
+    try {
+        Button clickedButton = (Button) event.getSource();
+        FlashcardDeck selectedDeck = (FlashcardDeck) clickedButton.getUserData();
+
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("FlashcardListUI.fxml"));
+        Parent root = loader.load();
+
+        FlashcardDeckController controller = loader.getController();
+        controller.setDeck(selectedDeck);  // send valgt deck
+
+        Stage stage = (Stage) clickedButton.getScene().getWindow();
+        stage.setScene(new Scene(root));
+        stage.show();
+
+      } catch (IOException e) {
+          e.printStackTrace();
+    }
   }
 
   @FXML
