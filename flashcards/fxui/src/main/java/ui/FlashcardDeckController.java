@@ -1,5 +1,7 @@
 package ui;
 
+import java.io.IOException;
+
 import app.Flashcard;
 import app.FlashcardDeck;
 import app.FlashcardDeckManager;
@@ -7,9 +9,12 @@ import itp.storage.FlashcardPersistent;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
-import java.io.IOException;
+import javafx.stage.Stage;
 
 /**
  * Controller class for managing flashcard operations in the UI.
@@ -21,6 +26,21 @@ public class FlashcardDeckController {
   @FXML private TextField usernameField;
   @FXML private TextField deckNameField;
 
+
+
+  private FlashcardDeck deck;
+
+  public void setDeck(FlashcardDeck originalDeck) {
+    this.deck = new FlashcardDeck();
+    this.deck.setDeckName(originalDeck.getDeckName());
+    
+    // Kopier alle flashcards
+    for (Flashcard card : originalDeck.getDeck()) {
+        Flashcard newCard = new Flashcard(card.getQuestion(), card.getAnswer());
+        this.deck.addFlashcard(newCard);
+    }
+    updateUi();
+  }
   private FlashcardDeckManager deckManager;
   private FlashcardPersistent storage;
   private String currentUsername = "defaultUserName";
@@ -155,5 +175,14 @@ public class FlashcardDeckController {
   private void clearInputFields() {
     questionField.clear();
     answerField.clear();
+  } 
+
+  @FXML
+  private void onBackButtonClicked() throws IOException {
+    FXMLLoader loader = new FXMLLoader(getClass().getResource("FlashcardMainUI.fxml"));
+    Parent root = loader.load();
+    Stage stage = (Stage) questionField.getScene().getWindow(); // eller en annen UI-node
+    stage.setScene(new Scene(root));
+    stage.show();
   }
 }
