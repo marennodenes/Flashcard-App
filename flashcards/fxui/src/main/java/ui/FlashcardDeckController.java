@@ -4,6 +4,7 @@ import java.io.IOException;
 
 import app.Flashcard;
 import app.FlashcardDeck;
+import app.FlashcardDeckManager;
 import itp.storage.FlashcardPersistent;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -16,14 +17,18 @@ import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 
 /**
- * Controller class for managing flashcard operations in the UI. */
+ * Controller class for managing flashcard operations in the UI.
+ */
 public class FlashcardDeckController {
   @FXML private TextField questionField;
   @FXML private TextField answerField;
   @FXML private ListView<Flashcard> listView;
+  @FXML private TextField usernameField;
+  @FXML private TextField deckNameField;
+
+
 
   private FlashcardDeck deck;
-  private final FlashcardPersistent storage = new FlashcardPersistent(); 
 
   public void setDeck(FlashcardDeck originalDeck) {
     this.deck = new FlashcardDeck();
@@ -31,42 +36,81 @@ public class FlashcardDeckController {
     
     // Kopier alle flashcards
     for (Flashcard card : originalDeck.getDeck()) {
-        this.deck.addFlashcard(card.getQuestion(), card.getAnswer());
+        Flashcard newCard = new Flashcard(card.getQuestion(), card.getAnswer());
+        this.deck.addFlashcard(newCard);
     }
     updateUi();
   }
+  private FlashcardDeckManager deckManager;
+  private FlashcardPersistent storage;
+  private String currentUsername = "defaultUserName";
+  private String currentDeckName = "My deck";
 
   /**
    * Sets up the UI when loaded.
-   * Loads existing flashcards from CSV file
    */
-  @FXML public void initialize() {
-    deck = new FlashcardDeck();
-    loadDeckFromFile();
+  @FXML 
+  public void initialize() {
+    storage = new FlashcardPersistent();
+    loadUserData();
     updateUi();
   }
 
   /**
-   * Loads deck from CSV file into the deck.
+   * Loads user data from JSON file.
    */
-  private void loadDeckFromFile() {
-    storage.readFromFile();  // Read from CSV file
-    for (Flashcard card : storage.getDeck()) { 
-      deck.addFlashcard(card.getQuestion(), card.getAnswer()); // Add to deck
+  private void loadUserData() {
+    try {
+      deckManager = storage.readDeck(currentUsername);
+      
+      // Check if default deck exists, if not - create it
+      if (getCurrentDeck() == null) {
+        FlashcardDeck newDeck = new FlashcardDeck();
+        newDeck.setDeckName(currentDeckName);
+        deckManager.addDeck(newDeck);
+        saveUserData();
+      }
+    } catch (IOException e) {
+      e.printStackTrace();
+      deckManager = new FlashcardDeckManager();
+      FlashcardDeck newDeck = new FlashcardDeck();
+      newDeck.setDeckName(currentDeckName);
+      deckManager.addDeck(newDeck);
     }
   }
 
-  private void saveFlashcardToFile(Flashcard card) {
-    storage.addFlashcard(card); // Add to storage
-    storage.writeToFile();      // Write to CSV file
+  /**
+   * Gets the current active deck.
+   */
+  private FlashcardDeck getCurrentDeck() {
+    for (FlashcardDeck deck : deckManager.getDecks()) {
+      if (deck.getDeckName().equals(currentDeckName)) {
+        return deck;
+      }
+    }
+    return null;
+  }
+
+  /**
+   * Saves user data to JSON file.
+   */
+  private void saveUserData() {
+    try {
+      storage.writeDeck(currentUsername, deckManager);
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
   }
 
   /**
    * Updates the flashcard list display.
    */
   public void updateUi() {
-    ObservableList<Flashcard> ob = FXCollections.observableArrayList(deck.getDeck());
-    listView.setItems(ob);
+    FlashcardDeck currentDeck = getCurrentDeck();
+    if (currentDeck != null) {
+      ObservableList<Flashcard> ob = FXCollections.observableArrayList(currentDeck.getDeck());
+      listView.setItems(ob);
+    }
   }
 
   /**
@@ -77,21 +121,52 @@ public class FlashcardDeckController {
     String a = answerField.getText().trim();
 
     if (!q.isEmpty() && !a.isEmpty()) {
-      
-      //add to memory
-      deck.addFlashcard(q, a);
-
-      //save to CSV file 
-      Flashcard newFlashcard = new Flashcard(q, a);
-      saveFlashcardToFile(newFlashcard);
-
-      //clear input fields
-      clearInputFields();
-
-      //update UI
+      FlashcardDeck currentDeck = getCurrentDeck();
+      if (currentDeck != null) {
+        // Create flashcard and add to deck
+        Flashcard newFlashcard = new Flashcard(q, a);
+        currentDeck.addFlashcard(newFlashcard);
+        
+        // Save to file
+        saveUserData();
+        
+        // Clear fields and update UI
+        clearInputFields();
+        updateUi();
+      }
+    }
+  }
+  
+  /**
+   * Changes username and loads their data.
+   */
+  public void changeUser() {
+    String newUsername = usernameField.getText().trim();
+    if (!newUsername.isEmpty()) {
+      currentUsername = newUsername;
+      loadUserData();
       updateUi();
     }
+  }
 
+  /**
+   * Changes deck name.
+   */
+  public void changeDeck() {
+    String newDeckName = deckNameField.getText().trim();
+    if (!newDeckName.isEmpty()) {
+      currentDeckName = newDeckName;
+      
+      // Create deck if it doesn't exist
+      if (getCurrentDeck() == null) {
+        FlashcardDeck newDeck = new FlashcardDeck();
+        newDeck.setDeckName(currentDeckName);
+        deckManager.addDeck(newDeck);
+        saveUserData();
+      }
+      
+      updateUi();
+    }
   }
   
   /**
