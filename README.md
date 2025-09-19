@@ -32,7 +32,7 @@ The actual Flashcards application is implemented in the `flashcards` module.
 * core - application logic
   [Flashcard.java](flashcards/core/src/main/java/app/Flashcard.java)
 * fxui - user interface
-  [FlashcardMainUI.fxml](flashcards/fxui/src/main/resources/ui/FlashcardMainUI.fxml)
+  [FlashcardListUI.fxml](flashcards/fxui/src/main/resources/ui/FlashcardMainUI.fxml)
   [FlashcardController.java](flashcards/fxui/src/main/ui/FlashcardController.java)
   [FlashcardApp.java](flashcards/fxui/src/main/ui/FlashcardApp.java)
 * storage - saving and handling of files

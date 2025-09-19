@@ -1,0 +1,28 @@
+#anchorPane {
+    -fx-background-color: #bee7ed;
+}
+
+#card {
+    -fx-background-color: white;
+    -fx-border-color: #5c7b80;
+    -fx-border-width: 2;
+    -fx-background-radius: 3;
+}
+
+.textForTitles {
+    -fx-fill: #5c7b80;
+    -fx-font-weight: bold;
+}
+
+.button {
+    -fx-background-color: #5c7b80;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+}
+
+.text-field {
+    -fx-background-color: white;
+    -fx-border-color: #5c7b80;
+    -fx-border-width: 2;
+    -fx-background-radius: 3;
+}
