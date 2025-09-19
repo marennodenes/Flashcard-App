@@ -2,6 +2,7 @@ package app;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 
@@ -59,4 +60,20 @@ public class FlashcardDeck {
         deck.add(flashcard);
       
   }
+
+  /**
+   * Checks if the text displayed on the card is a question or answer
+   * 
+   * @param current the question text to check
+   * @return true if the question exists in the deck, false otherwise
+   */
+  public boolean isQuestion(String current){
+    for (Flashcard card : deck) {
+        if (card.getQuestion().equals(current)) {
+            return true;
+        }
+    }
+    return false;
+  }
+  
 }
