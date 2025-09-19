@@ -10,7 +10,7 @@ import java.util.List;
 public class FlashcardDeck {
   
   /** List of all flashcards. */
-  private final List<Flashcard> flashcards = new ArrayList<>();
+  private final List<Flashcard> deck = new ArrayList<>();
   private String deckName;
 
   /**
@@ -19,8 +19,8 @@ public class FlashcardDeck {
    * 
    * @return observable list of flashcards
    */
-  public List<Flashcard> getFlashcards() { //Changed from ObservableList to list
-      return new ArrayList<>(flashcards);
+  public List<Flashcard> getDeck() { //Changed from ObservableList to list
+      return new ArrayList<>(deck);
   }
 
     public String getDeckName() {
@@ -39,7 +39,7 @@ public class FlashcardDeck {
    */
   public void addFlashcard(String question, String answer) {
       if (question != null && !question.isBlank() && answer != null && !answer.isBlank()) {
-          flashcards.add(new Flashcard(question, answer));
+          deck.add(new Flashcard(question, answer));
       }
   }
 }

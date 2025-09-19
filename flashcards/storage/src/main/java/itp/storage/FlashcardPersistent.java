@@ -15,15 +15,15 @@ import app.Flashcard;
 
 public class FlashcardPersistent {
 
-  private List<Flashcard> flashcards;
+  private List<Flashcard> deck;
 
   public FlashcardPersistent() {
-    this.flashcards = new ArrayList<>();
+    this.deck = new ArrayList<>();
   }
 
   /**
-   * Writes all flashcards to a CSV file using pipe (|) as delimiter.
-   * Creates a new file or overwrites existing file with current flashcard collection.
+   * Writes all flashcards in deck to a CSV file using pipe (|) as delimiter.
+   * Creates a new file or overwrites existing file with current deck.
    * Each flashcard is written as one line with format: question|answer
    * 
    * @throws IOException if an error occurs while writing to the file
@@ -32,7 +32,7 @@ public class FlashcardPersistent {
     String filePath = getFilePath();
 
     try (FileWriter writer = new FileWriter(filePath, StandardCharsets.UTF_8)) {
-        for (Flashcard flashcard : flashcards) {
+        for (Flashcard flashcard : deck) {
             writer.write(flashcard.getQuestion() + " | " + flashcard.getAnswer() + "\n");
         }
     } catch (IOException e) {
@@ -42,12 +42,12 @@ public class FlashcardPersistent {
 
 
   /**
-   * Reads flashcards from a CSV file and populates the flashcards collection.
+   * Reads flashcards from a CSV file and populates the deck.
    * Expects each line to contain a flashcard in format: question|answer
    * Splits lines using pipe (|) as delimiter and creates Flashcard objects.
    * 
    * @throws IOException if an error occurs while reading from the file
-   * @throws FileNotFoundException if the flashcards.csv file does not exist
+   * @throws FileNotFoundException if the deck.csv file does not exist
    */
   public void readFromFile() {
     try (BufferedReader reader = new BufferedReader(new FileReader(getFilePath(), StandardCharsets.UTF_8))) {
@@ -56,7 +56,7 @@ public class FlashcardPersistent {
             String[] parts = line.split("\\|");
             if (parts.length == 2) {
                 Flashcard flashcard = new Flashcard(parts[0].trim(), parts[1].trim());
-                flashcards.add(flashcard);
+                deck.add(flashcard);
             }
         }
     } catch (IOException e) {
@@ -65,32 +65,32 @@ public class FlashcardPersistent {
   }
 
   /**
-   * Adds a flashcard to the collection.
+   * Adds a flashcard to the deck.
    * 
    * @param flashcard the flashcard to add
    */
   public void addFlashcard(Flashcard flashcard) {
-    flashcards.add(flashcard);
+    deck.add(flashcard);
   }
 
   /**
-   * Gets all flashcards in the collection.
+   * Gets all flashcards in the deck.
    * 
    * @return list of all flashcards
    */
-  public List<Flashcard> getFlashcards() {
-    return new ArrayList<>(flashcards);
+  public List<Flashcard> getDeck() {
+    return new ArrayList<>(deck);
   }
 
   /**
-   * Clears all flashcards from the collection.
+   * Clears all flashcards from the deck.
    */
-  public void clearFlashcards() {
-    flashcards.clear();
+  public void clearDeck() {
+    deck.clear();
   }
 
   private String getFilePath() {
-    return "flashcards.csv";
+    return "deck.csv";
   }
 
 }
