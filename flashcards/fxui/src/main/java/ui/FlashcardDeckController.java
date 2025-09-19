@@ -13,6 +13,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
 /**
@@ -21,6 +22,7 @@ public class FlashcardDeckController {
   @FXML private TextField questionField;
   @FXML private TextField answerField;
   @FXML private ListView<Flashcard> listView;
+  @FXML private Text usernameField;
 
   private FlashcardDeck deck;
   private final FlashcardPersistent storage = new FlashcardPersistent(); 
@@ -29,7 +31,6 @@ public class FlashcardDeckController {
     this.deck = new FlashcardDeck();
     this.deck.setDeckName(originalDeck.getDeckName());
     
-    // Kopier alle flashcards
     for (Flashcard card : originalDeck.getDeck()) {
         this.deck.addFlashcard(card.getQuestion(), card.getAnswer());
     }
@@ -65,6 +66,7 @@ public class FlashcardDeckController {
    * Updates the flashcard list display.
    */
   public void updateUi() {
+    usernameField.setText("user");
     ObservableList<Flashcard> ob = FXCollections.observableArrayList(deck.getDeck());
     listView.setItems(ob);
   }
@@ -72,7 +74,7 @@ public class FlashcardDeckController {
   /**
    * Adds a new flashcard when button is clicked.
    */
-  public void whenGenerateButtonClicked() {
+  public void whenGenerateButtonIsClicked() {
     String q = questionField.getText().trim();
     String a = answerField.getText().trim();
 
@@ -103,11 +105,19 @@ public class FlashcardDeckController {
   } 
 
   @FXML
-  private void onBackButtonClicked() throws IOException {
+  private void whenBackButtonIsClicked() throws IOException {
     FXMLLoader loader = new FXMLLoader(getClass().getResource("FlashcardMainUI.fxml"));
     Parent root = loader.load();
-    Stage stage = (Stage) questionField.getScene().getWindow(); // eller en annen UI-node
+    Stage stage = (Stage) questionField.getScene().getWindow();
     stage.setScene(new Scene(root));
     stage.show();
+  }
+
+  @FXML private void whenStartLearningButtonIsClicked() {
+    //go to learning scene when that is implemented
+  }
+
+  @FXML private void whenLogOut() {
+    //go to login scene when that is implemented
   }
 }

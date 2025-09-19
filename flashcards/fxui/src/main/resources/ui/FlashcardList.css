@@ -29,3 +29,15 @@
     -fx-fill: #5c7b80;
     -fx-font-weight: bold;
 }
+
+.username {
+    -fx-fill: #5c7b80;
+}
+
+#startLearning {
+    -fx-font-size: 18;
+}
+
+#back {
+    -fx-font-size: 16;
+}
