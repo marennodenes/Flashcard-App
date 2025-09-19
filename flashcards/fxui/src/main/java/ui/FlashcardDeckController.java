@@ -24,7 +24,7 @@ public class FlashcardDeckController {
   @FXML private TextField questionField;
   @FXML private TextField answerField;
   @FXML private ListView<Flashcard> listView;
-  @FXML private TextField usernameField;
+  @FXML private Text usernameField;
   @FXML private TextField deckNameField;
 
 
