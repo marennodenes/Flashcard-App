@@ -15,8 +15,8 @@
         <Text layoutX="14.0" layoutY="106.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="textForTitles" text="Question" />
         <Text layoutX="15.0" layoutY="168.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="textForTitles" text="Answer" />
         <TextField fx:id="answerField" layoutX="14.0" layoutY="175.0" prefHeight="26.0" prefWidth="150.0" />
-        <Button id="button" fx:id="generateButton" layoutX="16.0" layoutY="216.0" mnemonicParsing="false" onAction="#whenGenerateButtonClicked" text="Generate card" />
-        <ListView fx:id="listView" layoutX="182.0" layoutY="15.0" prefHeight="234.0" prefWidth="217.0" />
+        <Button fx:id="generateButton" layoutX="15.0" layoutY="215.0" mnemonicParsing="false" onAction="#whenGenerateButtonIsClicked" text="Generate card" />
+        <ListView fx:id="listView" layoutX="182.0" layoutY="46.0" prefHeight="159.0" prefWidth="217.0" />
       <ImageView fitHeight="59.0" fitWidth="64.0" layoutX="16.0" layoutY="15.0" pickOnBounds="true" preserveRatio="true">
          <image>
             <Image url="@quiz-submissions-svgrepo-com.png" />
@@ -32,5 +32,18 @@
             <Font size="23.0" />
          </font>
       </Text>
+      <Button id="startLearning" fx:id="startLearning" layoutX="183.0" layoutY="216.0" mnemonicParsing="false" onAction="#whenStartLearningButtonIsClicked" prefHeight="39.0" prefWidth="132.0" text="Start learning">
+         <font>
+            <Font size="18.0" />
+         </font>
+      </Button>
+      <Text layoutX="211.0" layoutY="27.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="username" text="username: " />
+      <Text fx:id="usernameField" layoutX="276.0" layoutY="27.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="username" text="..." wrappingWidth="24.21630859375" />
+      <Button fx:id="logOutButton" layoutX="325.0" layoutY="9.0" mnemonicParsing="false" onAction="#whenLogOut" prefHeight="27.0" prefWidth="73.0" text="Log out" />
+      <Button id="back" fx:id="backButton" layoutX="332.0" layoutY="216.0" mnemonicParsing="false" onAction="#whenBackButtonIsClicked" prefHeight="39.0" prefWidth="66.0" text="Back">
+         <font>
+            <Font size="16.0" />
+         </font>
+      </Button>
     </children>
 </AnchorPane>
