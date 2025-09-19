@@ -10,8 +10,20 @@ import java.util.List;
 public class FlashcardDeck {
   
   /** List of all flashcards. */
-  private final List<Flashcard> deck = new ArrayList<>();
+  @JsonProperty("deck")
+  private final List<Flashcard> deck;
+
+  @JsonProperty("deckName")
   private String deckName;
+
+  public FlashcardDeck(){
+    this.deck = new ArrayList<>();
+  }
+
+  public FlashcardDeck(String deckName){
+    this.deckName = deckName;
+    this.deck = new ArrayList<>();
+  }
 
   /**
    * Gets all flashcards as an observable list.
@@ -21,6 +33,10 @@ public class FlashcardDeck {
    */
   public List<Flashcard> getDeck() { //Changed from ObservableList to list
       return new ArrayList<>(deck);
+  }
+
+  public void setDeck(List<Deck> deck){
+    this.deck = new ArrayList<>(deck);
   }
 
     public String getDeckName() {
@@ -37,9 +53,9 @@ public class FlashcardDeck {
    * @param question the question text
    * @param answer the answer text
    */
-  public void addFlashcard(String question, String answer) {
-      if (question != null && !question.isBlank() && answer != null && !answer.isBlank()) {
-          deck.add(new Flashcard(question, answer));
-      }
+  public void addFlashcard(Flashcard flashcard) {
+        flashcard.setNumber(deck.size() + 1);
+        deck.add(flashcard);
+      
   }
 }
