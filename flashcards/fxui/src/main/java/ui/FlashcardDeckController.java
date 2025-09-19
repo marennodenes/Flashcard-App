@@ -26,15 +26,15 @@ public class FlashcardDeckController {
    */
   @FXML public void initialize() {
     updateUi();
-    loadFlashcardsFromFile();
+    loadDeckFromFile();
   }
 
   /**
-   * Loads flashcards from CSV file into the deck.
+   * Loads deck from CSV file into the deck.
    */
-  private void loadFlashcardsFromFile() {
+  private void loadDeckFromFile() {
     storage.readFromFile();  // Read from CSV file
-    for (Flashcard card : storage.getFlashcards()) { 
+    for (Flashcard card : storage.getDeck()) { 
       deck.addFlashcard(card.getQuestion(), card.getAnswer()); // Add to deck
     }
   }
@@ -48,7 +48,7 @@ public class FlashcardDeckController {
    * Updates the flashcard list display.
    */
   public void updateUi() {
-    ObservableList<Flashcard> ob = FXCollections.observableArrayList(deck.getFlashcards());
+    ObservableList<Flashcard> ob = FXCollections.observableArrayList(deck.getDeck());
     listView.setItems(ob);
   }
 
