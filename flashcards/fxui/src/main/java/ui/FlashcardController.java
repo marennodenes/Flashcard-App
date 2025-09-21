@@ -15,6 +15,15 @@ public class FlashcardController {
   @FXML private Button nextCard;
   @FXML private Button previousCard;
 
+
+  /**
+   * Handles the event when the "Back" button is clicked.
+   * Navigates from the current scene to the flashcard list page by loading
+   * the FlashcardListUI.fxml file and switching the scene.
+   * 
+   * @throws IOException if the FXML file cannot be loaded or found
+   * @author Claude (AI Assistant) - Javadoc documentation
+   */
   @FXML
   private void whenBackButtonIsClicked() throws IOException {
     FXMLLoader loader = new FXMLLoader(getClass().getResource("FlashcardListUI.fxml"));

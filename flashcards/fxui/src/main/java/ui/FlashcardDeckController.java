@@ -187,9 +187,16 @@ public class FlashcardDeckController {
     stage.show();
   }
 
+  /**
+   * Handles the event when the "Start Learning" button is clicked.
+   * Navigates from the current scene to the flashcard learning page by loading
+   * the FlashcardPageUI.fxml file and switching the scene.
+   * 
+   * @throws IOException if the FXML file cannot be loaded or found
+   * @author Claude (AI Assistant) - Javadoc documentation
+   */
   @FXML
   private void whenStartLearningButtonIsClicked() throws IOException {
-    //go to learning scene when that is implemented
     FXMLLoader loader = new FXMLLoader(getClass().getResource("FlashcardPageUI.fxml"));
     Parent root = loader.load();
     Stage stage = (Stage) startLearning.getScene().getWindow();
