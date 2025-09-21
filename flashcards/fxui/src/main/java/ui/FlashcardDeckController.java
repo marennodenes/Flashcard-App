@@ -12,6 +12,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
 import javafx.scene.text.Text;
@@ -26,8 +27,7 @@ public class FlashcardDeckController {
   @FXML private ListView<Flashcard> listView;
   @FXML private Text usernameField;
   @FXML private TextField deckNameField;
-
-
+  @FXML private Button startLearning;
 
   private FlashcardDeck deck;
 
@@ -187,8 +187,21 @@ public class FlashcardDeckController {
     stage.show();
   }
 
-  @FXML private void whenStartLearningButtonIsClicked() {
-    //go to learning scene when that is implemented
+  /**
+   * Handles the event when the "Start Learning" button is clicked.
+   * Navigates from the current scene to the flashcard learning page by loading
+   * the FlashcardPageUI.fxml file and switching the scene.
+   * 
+   * @throws IOException if the FXML file cannot be loaded or found
+   * @author Claude (AI Assistant) - Javadoc documentation
+   */
+  @FXML
+  private void whenStartLearningButtonIsClicked() throws IOException {
+    FXMLLoader loader = new FXMLLoader(getClass().getResource("FlashcardPageUI.fxml"));
+    Parent root = loader.load();
+    Stage stage = (Stage) startLearning.getScene().getWindow();
+    stage.setScene(new Scene(root));
+    stage.show();
   }
 
   @FXML private void whenLogOut() {
