@@ -12,6 +12,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
 import javafx.scene.text.Text;
@@ -26,8 +27,7 @@ public class FlashcardDeckController {
   @FXML private ListView<Flashcard> listView;
   @FXML private Text usernameField;
   @FXML private TextField deckNameField;
-
-
+  @FXML private Button startLearning;
 
   private FlashcardDeck deck;
 
@@ -187,8 +187,14 @@ public class FlashcardDeckController {
     stage.show();
   }
 
-  @FXML private void whenStartLearningButtonIsClicked() {
+  @FXML
+  private void whenStartLearningButtonIsClicked() throws IOException {
     //go to learning scene when that is implemented
+    FXMLLoader loader = new FXMLLoader(getClass().getResource("FlashcardPageUI.fxml"));
+    Parent root = loader.load();
+    Stage stage = (Stage) startLearning.getScene().getWindow();
+    stage.setScene(new Scene(root));
+    stage.show();
   }
 
   @FXML private void whenLogOut() {
