@@ -12,6 +12,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ProgressBar;
 import javafx.stage.Stage;
+import app.FlashcardDeck;
 
 /**
  * Controller class for managing flashcard UI interactions.
@@ -26,33 +27,36 @@ public class FlashcardController {
   @FXML private Button card;
   @FXML private ProgressBar progressBar;
 
+  
   private List<Flashcard> deck = new ArrayList<>();
   //private HashMap<String, FlashcardDeck> allDecks;
 
   private int currentCardI;
 
+  private FlashcardDeck originalDeck;
 
-  public void initialize(){
-    //mocked cards and deck for implementing the methods before file reading is working corectly:
-    Flashcard tryCard = new Flashcard("Qusestion", "answer");
-    Flashcard tryCard1 = new Flashcard("Qusestion1", "answer1");
-    Flashcard tryCard2 = new Flashcard("Qusestion2", "answer2");
-    Flashcard tryCard3 = new Flashcard("Qusestion3", "answer3");
-    Flashcard tryCard4 = new Flashcard("Qusestion4", "answer4");
-    Flashcard tryCard5 = new Flashcard("Qusestion5", "answer5");
-    deck.add(tryCard);
-    deck.add(tryCard1);
-    deck.add(tryCard2);
-    deck.add(tryCard3);
-    deck.add(tryCard4);
-    deck.add(tryCard5);
-    if (card != null) {
-      card.setText(deck.get(0).getQuestion());
+  public void setDeck(FlashcardDeck deck) {
+    // bug fix for spotbugs
+    // this.originalDeck = deck; - old
+    this.originalDeck = new FlashcardDeck(deck.getDeckName());
+    for (Flashcard card : deck.getDeck()) {
+        this.originalDeck.addFlashcard(new Flashcard(card.getQuestion(), card.getAnswer()));
     }
+    
+    this.deck = new ArrayList<>(deck.getDeck()); // Copy flashcards from the deck
     currentCardI = 0;
     updateUi();
 
     updateProgress();
+}
+
+
+  public void initialize(){
+    currentCardI = 0;
+    /* updateUi(); */
+    if (!deck.isEmpty()) {
+      updateUi();
+    }
   }
 
 
@@ -81,38 +85,37 @@ public class FlashcardController {
   private void whenBackButtonIsClicked() throws IOException {
     FXMLLoader loader = new FXMLLoader(getClass().getResource("FlashcardListUI.fxml"));
     Parent root = loader.load();
+
+    FlashcardDeckController controller = loader.getController();
+    if(originalDeck!= null){
+      controller.setDeck(originalDeck);
+
+    }
+
     Stage stage = (Stage) nextCard.getScene().getWindow();
     stage.setScene(new Scene(root));
     stage.show();
   }
 
+
+
   @FXML
   private void whenNextCardButtonClicked() {
-    //go to next card when that is implemented
     
-    if (currentCardI < deck.size()) {
-      currentCardI += 1;
-      updateUi();
-    } 
-
-    if (currentCardI == deck.size()) {
-      currentCardI = 0;
+   if (!deck.isEmpty()) {
+      currentCardI = (currentCardI + 1) % deck.size(); // making it a loop
       updateUi();
     }
 
     updateProgress();
+
   }
 
   @FXML
   private void whenPreviousCardButtonClicked() {
-    //go to previous card when that is implemented
-    if (currentCardI > 0) {
-      currentCardI -= 1;
-      updateUi();
-    } 
-
-    if (currentCardI == 0) {
-      currentCardI = 0;
+    
+    if (!deck.isEmpty()) {
+      currentCardI = (currentCardI - 1 + deck.size()) % deck.size(); // making it a loop
       updateUi();
     }
 
