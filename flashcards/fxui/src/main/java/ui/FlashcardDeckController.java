@@ -28,8 +28,13 @@ public class FlashcardDeckController {
   @FXML private Text usernameField;
   @FXML private TextField deckNameField;
   @FXML private Button startLearning;
+  @FXML private Button deleteCardButton;
 
   private FlashcardDeck deck;
+  private FlashcardDeckManager deckManager;
+  private FlashcardPersistent storage;
+  private String currentUsername = "defaultUserName";
+  private String currentDeckName = "My deck";
 
   public void setDeck(FlashcardDeck originalDeck) {
     this.deck = new FlashcardDeck();
@@ -41,10 +46,6 @@ public class FlashcardDeckController {
     }
     updateUi();
   }
-  private FlashcardDeckManager deckManager;
-  private FlashcardPersistent storage;
-  private String currentUsername = "defaultUserName";
-  private String currentDeckName = "My deck";
 
   /**
    * Sets up the UI when loaded.
@@ -53,6 +54,11 @@ public class FlashcardDeckController {
   public void initialize() {
     storage = new FlashcardPersistent();
     loadUserData();
+
+    listView.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+      deleteCardButton.setDisable(newValue == null);
+    });
+
     updateUi();
   }
 
@@ -111,13 +117,19 @@ public class FlashcardDeckController {
     if (currentDeck != null) {
       ObservableList<Flashcard> ob = FXCollections.observableArrayList(currentDeck.getDeck());
       listView.setItems(ob);
+    } else {
+      listView.setItems(FXCollections.observableArrayList());
     }
+
+    deleteCardButton.setDisable(listView.getSelectionModel().getSelectedItem() == null);
+
+    clearInputFields();
   }
 
   /**
    * Adds a new flashcard when button is clicked.
    */
-  public void whenGenerateButtonIsClicked() {
+  public void whenCreateButtonIsClicked() {
     String q = questionField.getText().trim();
     String a = answerField.getText().trim();
 
@@ -135,6 +147,20 @@ public class FlashcardDeckController {
         clearInputFields();
         updateUi();
       }
+    }
+  }
+
+  public void whenDeleteCardButtonIsClicked() {
+    int selectedIndex = listView.getSelectionModel().getSelectedIndex();
+    FlashcardDeck currentDeck = getCurrentDeck();
+
+    if (selectedIndex >= 0 && currentDeck != null) {
+        boolean removed = currentDeck.removeFlashcardByIndex(selectedIndex);
+        
+        if (removed) {
+            saveUserData();
+            updateUi();
+        }
     }
   }
   

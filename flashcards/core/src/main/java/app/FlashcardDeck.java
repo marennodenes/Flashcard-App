@@ -61,6 +61,18 @@ public class FlashcardDeck {
       
   }
 
+  public boolean removeFlashcardByIndex(int index) {
+    if (index >= 0 && index < deck.size()) {
+        deck.remove(index);
+        // Oppdater nummerering for alle kort etter det slettede
+        for (int i = index; i < deck.size(); i++) {
+            deck.get(i).setNumber(i + 1);
+        }
+        return true;
+    }
+    return false;
+  }
+
   /**
    * Checks if the text displayed on the card is a question or answer
    * 
