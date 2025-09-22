@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import app.Flashcard;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -115,9 +116,28 @@ public class FlashcardController {
   private void whenCardButtonClicked(){
     if (card.getText().equals(deck.get(currentCardI).getQuestion())) {
       card.setText(deck.get(currentCardI).getAnswer());
+      card.setStyle("""
+            -fx-background-color: #5c7b80; /* ny bakgrunn for svar */
+            -fx-effect: dropshadow(gaussian, #89b9bf, 0, 1, 5, 5); /* ny shadow for svar */
+            -fx-border-width: 2;
+            -fx-background-radius: 3;
+            -fx-font-weight: bold;
+        """);
     } else {
       card.setText(deck.get(currentCardI).getQuestion());
+      card.setStyle("""
+            -fx-background-color: #89b9bf; /* spørsmål default */
+            -fx-effect: dropshadow(gaussian, #5c7b80, 0, 1, 5, 5); /* shadow default */
+            -fx-border-width: 2;
+            -fx-background-radius: 3;
+            -fx-font-weight: bold;
+        """);
     }
+  }
+
+  @FXML
+  public void whenLogOut(ActionEvent event){
+    //go to login scene when that is implemented
   }
   
 }

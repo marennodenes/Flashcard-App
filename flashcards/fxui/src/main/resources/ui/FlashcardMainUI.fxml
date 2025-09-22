@@ -63,7 +63,7 @@
          <font>
             <Font size="11.0" />
          </font></Button>
-      <TextField fx:id="deckNameInput" layoutX="210.0" layoutY="43.0" prefHeight="26.0" prefWidth="105.0" promptText="deckname..." />
+      <TextField fx:id="deckNameInput" layoutX="184.0" layoutY="43.0" prefHeight="30.0" prefWidth="131.0" promptText="deckname..." />
       <Button fx:id="deleteDeck_5" layoutX="9.0" layoutY="190.0" mnemonicParsing="false" onAction="#whenDeleteDeckButtonIsClicked" prefHeight="7.0" prefWidth="6.0" styleClass="delete" text="X">
          <font>
             <Font size="7.0" />
@@ -104,8 +104,8 @@
             <Font size="7.0" />
          </font>
       </Button>
-      <Text layoutX="211.0" layoutY="27.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="username" text="username: " />
-      <Text fx:id="usernameField" layoutX="276.0" layoutY="27.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="username" text="..." wrappingWidth="24.21630859375" />
+      <Text layoutX="186.0" layoutY="27.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="username" text="username: " />
+      <Text fx:id="usernameField" layoutX="250.0" layoutY="27.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="username" text="..." wrappingWidth="68.53955078125" />
       <Button fx:id="logOutButton" layoutX="325.0" layoutY="9.0" mnemonicParsing="false" onAction="#whenLogOut" prefHeight="27.0" prefWidth="73.0" styleClass="create" text="Log out" />
       <Text fx:id="alertMessage" layoutX="209.0" layoutY="97.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="username" text="Alert" />
       <Text fx:id="noDecks" layoutX="150.0" layoutY="177.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="username" text="You have no decks" />
