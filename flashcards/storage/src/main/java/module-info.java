@@ -5,4 +5,5 @@ module flashcards.storage {
   requires java.base;
   
   exports itp.storage;
+  opens itp.storage to com.fasterxml.jackson.databind;
 }

@@ -1,0 +1,17 @@
+{
+  "decks" : [ {
+    "deckName" : "thisfirstdeck",
+    "flashcards" : [ {
+      "number" : 1,
+      "question" : "question",
+      "answer" : "answer"
+    } ]
+  }, {
+    "deckName" : "seconddeeeeck",
+    "flashcards" : [ {
+      "number" : 1,
+      "question" : "helloquestion",
+      "answer" : "helloanswer"
+    } ]
+  } ]
+}
