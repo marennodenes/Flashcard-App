@@ -30,7 +30,7 @@
       </Text>
       <Button id="button" fx:id="nextCard" layoutX="289.0" layoutY="103.0" mnemonicParsing="false" onAction="#whenNextCardButtonClicked" prefHeight="59.0" prefWidth="112.0" text="Next Card -&gt;" />
       <Button id="button" fx:id="previousCard" layoutX="289.0" layoutY="181.0" mnemonicParsing="false" onAction="#whenPreviousCardButtonClicked" prefHeight="59.0" prefWidth="112.0" text="Previous Card -&gt;" />
-      <Button fx:id="card" layoutX="21.0" layoutY="93.0" mnemonicParsing="false" prefHeight="141.0" prefWidth="249.0" />
+      <Button id="button" fx:id="card" layoutX="21.0" layoutY="93.0" mnemonicParsing="false" onAction="#whenCardButtonClicked" prefHeight="141.0" prefWidth="249.0" />
       <TextField fx:id="theme" layoutX="176.0" layoutY="26.0" prefHeight="27.0" prefWidth="104.0" />
       <ProgressBar fx:id="progressBar" layoutX="21.0" layoutY="241.0" prefHeight="15.0" prefWidth="249.0" progress="0.0" />
    </children>
