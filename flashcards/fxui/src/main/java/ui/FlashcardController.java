@@ -10,6 +10,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.ProgressBar;
 import javafx.stage.Stage;
 
 /**
@@ -23,6 +24,7 @@ public class FlashcardController {
   @FXML private Button nextCard;
   @FXML private Button previousCard;
   @FXML private Button card;
+  @FXML private ProgressBar progressBar;
 
   private List<Flashcard> deck = new ArrayList<>();
   //private HashMap<String, FlashcardDeck> allDecks;
@@ -49,6 +51,8 @@ public class FlashcardController {
     }
     currentCardI = 0;
     updateUi();
+
+    updateProgress();
   }
 
 
@@ -95,6 +99,8 @@ public class FlashcardController {
       currentCardI = 0;
       updateUi();
     }
+
+    updateProgress();
   }
 
   @FXML
@@ -109,6 +115,8 @@ public class FlashcardController {
       currentCardI = 0;
       updateUi();
     }
+
+    updateProgress();
   }
 
   @FXML
@@ -118,6 +126,11 @@ public class FlashcardController {
     } else {
       card.setText(deck.get(currentCardI).getQuestion());
     }
+  }
+
+  @FXML
+  private void updateProgress() {
+    progressBar.setProgress((currentCardI +1)/ (double) deck.size());
   }
   
 }
