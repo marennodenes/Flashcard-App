@@ -2,6 +2,7 @@ package app;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
@@ -61,4 +62,32 @@ public class FlashcardDeck {
         deck.add(flashcard);
       
   }
+
+  public boolean removeFlashcardByIndex(int index) {
+    if (index >= 0 && index < deck.size()) {
+        deck.remove(index);
+        // Oppdater nummerering for alle kort etter det slettede
+        for (int i = index; i < deck.size(); i++) {
+            deck.get(i).setNumber(i + 1);
+        }
+        return true;
+    }
+    return false;
+  }
+
+  /**
+   * Checks if the text displayed on the card is a question or answer
+   * 
+   * @param current the question text to check
+   * @return true if the question exists in the deck, false otherwise
+   */
+  public boolean isQuestion(String current){
+    for (Flashcard card : deck) {
+        if (card.getQuestion().equals(current)) {
+            return true;
+        }
+    }
+    return false;
+  }
+  
 }

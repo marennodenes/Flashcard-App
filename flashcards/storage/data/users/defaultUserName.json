@@ -5,17 +5,13 @@
       "number" : 1,
       "question" : "question",
       "answer" : "answer"
-    }, {
-      "number" : 2,
-      "question" : "yey",
-      "answer" : "heyhey"
-    }, {
-      "number" : 3,
-      "question" : "quest",
-      "answer" : "answer"
     } ]
   }, {
     "deckName" : "seconddeeeeck",
-    "flashcards" : [ ]
+    "flashcards" : [ {
+      "number" : 1,
+      "question" : "helloquestion",
+      "answer" : "helloanswer"
+    } ]
   } ]
 }

@@ -12,8 +12,10 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
 /**
@@ -23,19 +25,17 @@ public class FlashcardDeckController {
   @FXML private TextField questionField;
   @FXML private TextField answerField;
   @FXML private ListView<Flashcard> listView;
-  @FXML private TextField usernameField;
+  @FXML private Text usernameField;
   @FXML private TextField deckNameField;
-
-
+  @FXML private Button startLearning;
+  @FXML private Button deleteCardButton;
 
   private FlashcardDeck flashcards;
+  private FlashcardDeckManager deckManager;
+  private FlashcardPersistent storage;
+  private String currentUsername = "defaultUserName";
+  private String currentDeckName = "My deck";
 
-  /**
-   * Sets the deck to be displayed and edited in this controller.
-   * Creates a copy of the original deck to avoid modifying the original.
-   * 
-   * @param originalDeck the deck to be displayed and edited
-   */
   public void setDeck(FlashcardDeck originalDeck) {
     this.flashcards = new FlashcardDeck();
     this.flashcards.setDeckName(originalDeck.getDeckName());
@@ -49,10 +49,6 @@ public class FlashcardDeckController {
     currentDeckName = originalDeck.getDeckName();
     updateUi();
   }
-  private FlashcardDeckManager deckManager;
-  private FlashcardPersistent storage;
-  private String currentUsername = "defaultUserName";
-  private String currentDeckName = "My deck";
 
   /**
    * Sets up the UI when loaded.
@@ -61,6 +57,11 @@ public class FlashcardDeckController {
   public void initialize() {
     storage = new FlashcardPersistent();
     loadUserData();
+
+    listView.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+      deleteCardButton.setDisable(newValue == null);
+    });
+
     updateUi();
   }
 
@@ -111,11 +112,18 @@ public class FlashcardDeckController {
    * Shows all flashcards from the current deck in the ListView.
    */
   public void updateUi() {
+    usernameField.setText("user");
     FlashcardDeck currentDeck = getCurrentDeck();
     if (currentDeck != null) {
       ObservableList<Flashcard> ob = FXCollections.observableArrayList(currentDeck.getDeck());
       listView.setItems(ob);
+    } else {
+      listView.setItems(FXCollections.observableArrayList());
     }
+
+    deleteCardButton.setDisable(listView.getSelectionModel().getSelectedItem() == null);
+
+    clearInputFields();
   }
 
   /**
@@ -123,7 +131,7 @@ public class FlashcardDeckController {
    * Creates a flashcard from the question and answer fields,
    * adds it to the current deck, saves to file, and updates the UI.
    */
-  public void whenGenerateButtonClicked() {
+  public void whenCreateButtonIsClicked() {
     String q = questionField.getText().trim();
     String a = answerField.getText().trim();
 
@@ -141,6 +149,20 @@ public class FlashcardDeckController {
         clearInputFields();
         updateUi();
       }
+    }
+  }
+
+  public void whenDeleteCardButtonIsClicked() {
+    int selectedIndex = listView.getSelectionModel().getSelectedIndex();
+    FlashcardDeck currentDeck = getCurrentDeck();
+
+    if (selectedIndex >= 0 && currentDeck != null) {
+        boolean removed = currentDeck.removeFlashcardByIndex(selectedIndex);
+        
+        if (removed) {
+            saveUserData();
+            updateUi();
+        }
     }
   }
   
@@ -198,11 +220,32 @@ public class FlashcardDeckController {
    * @throws IOException if the FXML file cannot be loaded
    */
   @FXML
-  private void onBackButtonClicked() throws IOException {
+  private void whenBackButtonIsClicked() throws IOException {
     FXMLLoader loader = new FXMLLoader(getClass().getResource("FlashcardMainUI.fxml"));
     Parent root = loader.load();
-    Stage stage = (Stage) questionField.getScene().getWindow(); // eller en annen UI-node
+    Stage stage = (Stage) questionField.getScene().getWindow();
     stage.setScene(new Scene(root));
     stage.show();
+  }
+
+  /**
+   * Handles the event when the "Start Learning" button is clicked.
+   * Navigates from the current scene to the flashcard learning page by loading
+   * the FlashcardPageUI.fxml file and switching the scene.
+   * 
+   * @throws IOException if the FXML file cannot be loaded or found
+   * @author Claude (AI Assistant) - Javadoc documentation
+   */
+  @FXML
+  private void whenStartLearningButtonIsClicked() throws IOException {
+    FXMLLoader loader = new FXMLLoader(getClass().getResource("FlashcardPageUI.fxml"));
+    Parent root = loader.load();
+    Stage stage = (Stage) startLearning.getScene().getWindow();
+    stage.setScene(new Scene(root));
+    stage.show();
+  }
+
+  @FXML private void whenLogOut() {
+    //go to login scene when that is implemented
   }
 }
