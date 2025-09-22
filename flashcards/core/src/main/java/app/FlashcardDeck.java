@@ -4,19 +4,21 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
 
 /**
  * Manages flashcards for the application.
  */
+@JsonPropertyOrder({"deckName", "flashcards"})
 public class FlashcardDeck {
   
-  /** List of all flashcards. */
-  @JsonProperty("deck")
-  private List<Flashcard> deck;
-
   @JsonProperty("deckName")
   private String deckName;
+
+  /** List of all flashcards. */
+  @JsonProperty("flashcards")
+  private List<Flashcard> deck;
 
   public FlashcardDeck(){
     this.deck = new ArrayList<>();
@@ -59,6 +61,18 @@ public class FlashcardDeck {
         flashcard.setNumber(deck.size() + 1);
         deck.add(flashcard);
       
+  }
+
+  public boolean removeFlashcardByIndex(int index) {
+    if (index >= 0 && index < deck.size()) {
+        deck.remove(index);
+        // Oppdater nummerering for alle kort etter det slettede
+        for (int i = index; i < deck.size(); i++) {
+            deck.get(i).setNumber(i + 1);
+        }
+        return true;
+    }
+    return false;
   }
 
   /**

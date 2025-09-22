@@ -26,7 +26,7 @@ public class FlashcardPersistent {
    */
   public void writeDeck(String username, FlashcardDeckManager deckManager) throws IOException {
     // Create data directory if it doesn't exist
-    File dataDir = new File("data");
+    File dataDir = new File(System.getProperty("user.dir") + "/../storage/data/users");
     if (!dataDir.exists()) {
       boolean created = dataDir.mkdirs();
       if (!created) {
@@ -46,15 +46,15 @@ public class FlashcardPersistent {
    * @throws IOException if loading fails
    */
   public FlashcardDeckManager readDeck(String username) throws IOException {
-    File file = new File("data", username + ".json");
     
+    File file = new File(System.getProperty("user.dir") + "/../storage/data/users", username + ".json");    
     if (file.exists()) {
       return objectMapper.readValue(file, FlashcardDeckManager.class);
     } else {
       return new FlashcardDeckManager(); // Return empty for new setup
     }
   }
-
+  
   /**
    * Checks if flashcards file exists for a user.
    * 
@@ -62,7 +62,7 @@ public class FlashcardPersistent {
    * @return true if file exists
    */
   public boolean dataExists(String username) {
-    File file = new File(username + ".json");
+    File file = new File(System.getProperty("user.dir") + "/../storage/data/users", username + ".json");
     return file.exists();
   }
 }

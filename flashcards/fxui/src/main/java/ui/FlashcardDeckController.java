@@ -28,23 +28,27 @@ public class FlashcardDeckController {
   @FXML private Text usernameField;
   @FXML private TextField deckNameField;
   @FXML private Button startLearning;
+  @FXML private Button deleteCardButton;
 
-  private FlashcardDeck deck;
-
-  public void setDeck(FlashcardDeck originalDeck) {
-    this.deck = new FlashcardDeck();
-    this.deck.setDeckName(originalDeck.getDeckName());
-    
-    for (Flashcard card : originalDeck.getDeck()) {
-        Flashcard newCard = new Flashcard(card.getQuestion(), card.getAnswer());
-        this.deck.addFlashcard(newCard);
-    }
-    updateUi();
-  }
+  private FlashcardDeck flashcards;
   private FlashcardDeckManager deckManager;
   private FlashcardPersistent storage;
   private String currentUsername = "defaultUserName";
   private String currentDeckName = "My deck";
+
+  public void setDeck(FlashcardDeck originalDeck) {
+    this.flashcards = new FlashcardDeck();
+    this.flashcards.setDeckName(originalDeck.getDeckName());
+    
+    for (Flashcard card : originalDeck.getDeck()) {
+        Flashcard newCard = new Flashcard(card.getQuestion(), card.getAnswer());
+        this.flashcards.addFlashcard(newCard);
+    }
+    
+    // Oppdater currentDeckName til det faktiske deck navnet
+    currentDeckName = originalDeck.getDeckName();
+    updateUi();
+  }
 
   /**
    * Sets up the UI when loaded.
@@ -53,34 +57,33 @@ public class FlashcardDeckController {
   public void initialize() {
     storage = new FlashcardPersistent();
     loadUserData();
+
+    listView.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+      deleteCardButton.setDisable(newValue == null);
+    });
+
     updateUi();
   }
 
   /**
    * Loads user data from JSON file.
+   * Attempts to read the user's flashcard deck collection from persistent storage.
+   * If reading fails, creates a new empty deck manager.
    */
   private void loadUserData() {
     try {
       deckManager = storage.readDeck(currentUsername);
-      
-      // Check if default deck exists, if not - create it
-      if (getCurrentDeck() == null) {
-        FlashcardDeck newDeck = new FlashcardDeck();
-        newDeck.setDeckName(currentDeckName);
-        deckManager.addDeck(newDeck);
-        saveUserData();
-      }
     } catch (IOException e) {
       e.printStackTrace();
       deckManager = new FlashcardDeckManager();
-      FlashcardDeck newDeck = new FlashcardDeck();
-      newDeck.setDeckName(currentDeckName);
-      deckManager.addDeck(newDeck);
     }
   }
 
   /**
    * Gets the current active deck.
+   * Searches through all decks to find the one matching the current deck name.
+   * 
+   * @return the current active FlashcardDeck, or null if not found
    */
   private FlashcardDeck getCurrentDeck() {
     for (FlashcardDeck deck : deckManager.getDecks()) {
@@ -93,6 +96,8 @@ public class FlashcardDeckController {
 
   /**
    * Saves user data to JSON file.
+   * Persists the current deck manager state to the storage system.
+   * Prints stack trace if an IOException occurs during saving.
    */
   private void saveUserData() {
     try {
@@ -104,6 +109,7 @@ public class FlashcardDeckController {
 
   /**
    * Updates the flashcard list display.
+   * Shows all flashcards from the current deck in the ListView.
    */
   public void updateUi() {
     usernameField.setText("user");
@@ -111,13 +117,21 @@ public class FlashcardDeckController {
     if (currentDeck != null) {
       ObservableList<Flashcard> ob = FXCollections.observableArrayList(currentDeck.getDeck());
       listView.setItems(ob);
+    } else {
+      listView.setItems(FXCollections.observableArrayList());
     }
+
+    deleteCardButton.setDisable(listView.getSelectionModel().getSelectedItem() == null);
+
+    clearInputFields();
   }
 
   /**
    * Adds a new flashcard when button is clicked.
+   * Creates a flashcard from the question and answer fields,
+   * adds it to the current deck, saves to file, and updates the UI.
    */
-  public void whenGenerateButtonIsClicked() {
+  public void whenCreateButtonIsClicked() {
     String q = questionField.getText().trim();
     String a = answerField.getText().trim();
 
@@ -137,9 +151,24 @@ public class FlashcardDeckController {
       }
     }
   }
+
+  public void whenDeleteCardButtonIsClicked() {
+    int selectedIndex = listView.getSelectionModel().getSelectedIndex();
+    FlashcardDeck currentDeck = getCurrentDeck();
+
+    if (selectedIndex >= 0 && currentDeck != null) {
+        boolean removed = currentDeck.removeFlashcardByIndex(selectedIndex);
+        
+        if (removed) {
+            saveUserData();
+            updateUi();
+        }
+    }
+  }
   
   /**
    * Changes username and loads their data.
+   * Switches to a different user's flashcard collection.
    */
   public void changeUser() {
     String newUsername = usernameField.getText().trim();
@@ -152,32 +181,44 @@ public class FlashcardDeckController {
 
   /**
    * Changes deck name.
+   * Updates the name of the current deck or creates a new deck if it doesn't exist.
    */
   public void changeDeck() {
     String newDeckName = deckNameField.getText().trim();
     if (!newDeckName.isEmpty()) {
-      currentDeckName = newDeckName;
+      FlashcardDeck currentDeck = getCurrentDeck();
       
-      // Create deck if it doesn't exist
-      if (getCurrentDeck() == null) {
+      if (currentDeck != null) {
+        // Update existing deck name
+        currentDeck.setDeckName(newDeckName);
+      } else {
+        // Create new deck if it doesn't exist
         FlashcardDeck newDeck = new FlashcardDeck();
-        newDeck.setDeckName(currentDeckName);
+        newDeck.setDeckName(newDeckName);
         deckManager.addDeck(newDeck);
-        saveUserData();
       }
       
+      currentDeckName = newDeckName;
+      saveUserData();
       updateUi();
     }
   }
   
   /**
    * Clears the input fields.
+   * Resets both question and answer text fields to empty.
    */
   private void clearInputFields() {
     questionField.clear();
     answerField.clear();
   } 
 
+  /**
+   * Handles the back button click event.
+   * Navigates back to the main flashcard UI.
+   * 
+   * @throws IOException if the FXML file cannot be loaded
+   */
   @FXML
   private void whenBackButtonIsClicked() throws IOException {
     FXMLLoader loader = new FXMLLoader(getClass().getResource("FlashcardMainUI.fxml"));

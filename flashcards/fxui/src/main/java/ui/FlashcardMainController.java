@@ -7,6 +7,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import app.FlashcardDeck;
+import itp.storage.FlashcardPersistent;
 
 import java.io.IOException;
 import java.util.List;
@@ -48,6 +49,8 @@ public class FlashcardMainController {
 
 
   private FlashcardDeckManager deckManager = new FlashcardDeckManager();
+  private FlashcardPersistent storage = new FlashcardPersistent();
+  private String currentUsername = "defaultUserName";
   private boolean showAlert = false;
   private String error = "";
 
@@ -61,7 +64,7 @@ public class FlashcardMainController {
                                      deleteDeck_5, deleteDeck_6, deleteDeck_7, deleteDeck_8 };
 
     hideAllDeckButtons();
-
+    loadUserData();
     updateUi();
   }
 
@@ -112,6 +115,29 @@ public class FlashcardMainController {
     deckNameInput.clear();
   }
 
+  /**
+   * Loads user data from JSON file.
+   */
+  private void loadUserData() {
+    try {
+      deckManager = storage.readDeck(currentUsername);
+    } catch (Exception e) {
+      // If file doesn't exist or error reading, create new deck manager
+      deckManager = new FlashcardDeckManager();
+    }
+  }
+
+  /**
+   * Saves user data to JSON file.
+   */
+  private void saveUserData() {
+    try {
+      storage.writeDeck(currentUsername, deckManager);
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+  }
+
   @FXML
   public void whenNewDeckButtonIsClicked(ActionEvent event){
     try {
@@ -119,6 +145,7 @@ public class FlashcardMainController {
       FlashcardDeck newDeck = new FlashcardDeck();
       newDeck.setDeckName(deckName);
       deckManager.addDeck(newDeck);
+      saveUserData();
       updateUi();
     } catch (IllegalArgumentException e) {
       error = e.getMessage();
@@ -132,6 +159,7 @@ public class FlashcardMainController {
     Button clickedButton = (Button) event.getSource();
     FlashcardDeck deck = (FlashcardDeck) clickedButton.getUserData();
     deckManager.removeDeck(deck);
+    saveUserData();
     updateUi();
   }
 
