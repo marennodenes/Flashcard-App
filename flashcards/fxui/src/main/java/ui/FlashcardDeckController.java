@@ -36,32 +36,18 @@ public class FlashcardDeckController {
   private String currentUsername = "defaultUserName";
   private String currentDeckName = "My deck";
 
-  private FlashcardDeck currentActiveDeck;
-
   public void setDeck(FlashcardDeck originalDeck) {
-
-    if(originalDeck!= null){
-      this.currentActiveDeck = originalDeck;
-      this.currentDeckName = originalDeck.getDeckName();
-
-      if (deckManager != null){
-        boolean foundDeck = false;
-        for (int i = 0; i < deckManager.getDecks().size(); i++) {
-          FlashcardDeck deck = deckManager.getDecks().get(i);
-          if (deck.getDeckName().equals(originalDeck.getDeckName())) {
-            deckManager.getDecks().set(i, originalDeck);
-            foundDeck = true;
-            break;
-          }
-        }
-
-        // If deck not found in manager, add it
-        if (!foundDeck) {
-          deckManager.addDeck(originalDeck);
-        }
-      }
-      updateUi();
+    this.flashcards = new FlashcardDeck();
+    this.flashcards.setDeckName(originalDeck.getDeckName());
+    
+    for (Flashcard card : originalDeck.getDeck()) {
+        Flashcard newCard = new Flashcard(card.getQuestion(), card.getAnswer());
+        this.flashcards.addFlashcard(newCard);
     }
+    
+    // Oppdater currentDeckName til det faktiske deck navnet
+    currentDeckName = originalDeck.getDeckName();
+    updateUi();
   }
 
   /**
@@ -254,13 +240,6 @@ public class FlashcardDeckController {
   private void whenStartLearningButtonIsClicked() throws IOException {
     FXMLLoader loader = new FXMLLoader(getClass().getResource("FlashcardPageUI.fxml"));
     Parent root = loader.load();
-
-    FlashcardController controller = loader.getController();
-    FlashcardDeck currentDeck = getCurrentDeck();
-    if(currentDeck != null){
-      controller.setDeck(currentDeck);
-    }
-
     Stage stage = (Stage) startLearning.getScene().getWindow();
     stage.setScene(new Scene(root));
     stage.show();
