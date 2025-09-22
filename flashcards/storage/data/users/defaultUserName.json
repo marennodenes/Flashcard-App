@@ -1,0 +1,10 @@
+{
+  "decks" : [ {
+    "deckName" : "My deck",
+    "flashcards" : [ {
+      "number" : 1,
+      "question" : "question",
+      "answer" : "answer"
+    } ]
+  } ]
+}

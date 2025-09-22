@@ -28,16 +28,16 @@ public class FlashcardDeckController {
 
 
 
-  private FlashcardDeck deck;
+  private FlashcardDeck flashcards;
 
   public void setDeck(FlashcardDeck originalDeck) {
-    this.deck = new FlashcardDeck();
-    this.deck.setDeckName(originalDeck.getDeckName());
+    this.flashcards = new FlashcardDeck();
+    this.flashcards.setDeckName(originalDeck.getDeckName());
     
     // Kopier alle flashcards
     for (Flashcard card : originalDeck.getDeck()) {
         Flashcard newCard = new Flashcard(card.getQuestion(), card.getAnswer());
-        this.deck.addFlashcard(newCard);
+        this.flashcards.addFlashcard(newCard);
     }
     updateUi();
   }
@@ -155,16 +155,20 @@ public class FlashcardDeckController {
   public void changeDeck() {
     String newDeckName = deckNameField.getText().trim();
     if (!newDeckName.isEmpty()) {
-      currentDeckName = newDeckName;
+      FlashcardDeck currentDeck = getCurrentDeck();
       
-      // Create deck if it doesn't exist
-      if (getCurrentDeck() == null) {
+      if (currentDeck != null) {
+        // Update existing deck name
+        currentDeck.setDeckName(newDeckName);
+      } else {
+        // Create new deck if it doesn't exist
         FlashcardDeck newDeck = new FlashcardDeck();
-        newDeck.setDeckName(currentDeckName);
+        newDeck.setDeckName(newDeckName);
         deckManager.addDeck(newDeck);
-        saveUserData();
       }
       
+      currentDeckName = newDeckName;
+      saveUserData();
       updateUi();
     }
   }
