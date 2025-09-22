@@ -117,7 +117,7 @@ public class FlashcardDeckController {
   /**
    * Adds a new flashcard when button is clicked.
    */
-  public void whenGenerateButtonIsClicked() {
+  public void whenCreateButtonIsClicked() {
     String q = questionField.getText().trim();
     String a = answerField.getText().trim();
 
@@ -136,6 +136,10 @@ public class FlashcardDeckController {
         updateUi();
       }
     }
+  }
+
+  public void whenDeleteCardButtonIsClicked() {
+    // Not implemented yet
   }
   
   /**

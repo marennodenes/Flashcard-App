@@ -5,6 +5,8 @@
     -fx-background-color: #5c7b80;
     -fx-text-fill: white;
     -fx-font-weight: bold;
+    -fx-font-size: 12;
+
 }
 
 #listView {
@@ -35,9 +37,9 @@
 }
 
 #startLearning {
-    -fx-font-size: 18;
+    -fx-font-size: 15;
 }
 
 #back {
-    -fx-font-size: 16;
+    -fx-font-size: 15;
 }
