@@ -28,14 +28,14 @@
          </font>
       </Text>
       <Button fx:id="nextCard" layoutX="283.0" layoutY="93.0" mnemonicParsing="false" onAction="#whenNextCardButtonClicked" prefHeight="59.0" prefWidth="112.0" text="Next Card -&gt;" />
-      <Button fx:id="previousCard" layoutX="282.0" layoutY="166.0" mnemonicParsing="false" onAction="#whenPreviousCardButtonClicked" prefHeight="59.0" prefWidth="112.0" text="Previous Card -&gt;" />
+      <Button fx:id="previousCard" layoutX="283.0" layoutY="166.0" mnemonicParsing="false" onAction="#whenPreviousCardButtonClicked" prefHeight="59.0" prefWidth="112.0" text="Previous Card -&gt;" />
       <Button fx:id="card" layoutX="21.0" layoutY="93.0" mnemonicParsing="false" onAction="#whenCardButtonClicked" prefHeight="127.0" prefWidth="238.0" />
-      <ProgressBar id="progressBar" fx:id="progressBar" layoutX="44.0" layoutY="237.0" prefHeight="15.0" prefWidth="221.0" progress="0.0" />
-      <Text layoutX="196.0" layoutY="27.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="username" text="username: " />
-      <Text fx:id="usernameField" layoutX="261.0" layoutY="28.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="username" text="..." wrappingWidth="61.3995361328125" />
+      <ProgressBar id="progressBar" fx:id="progressBar" layoutX="38.0" layoutY="237.0" prefHeight="15.0" prefWidth="227.0" progress="0.0" />
+      <Text layoutX="185.0" layoutY="27.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="nameTag" text="username: " />
+      <Text fx:id="usernameField" layoutX="241.0" layoutY="27.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="nameField" text="..." wrappingWidth="79.88915010326423" />
       <Button fx:id="logOutButton" layoutX="324.0" layoutY="10.0" mnemonicParsing="false" onAction="#whenLogOut" prefHeight="27.0" prefWidth="73.0" text="Log out" />
-      <Text fx:id="cardNumber" layoutX="28.0" layoutY="249.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="textForTitles" text="0" />
-      <Text layoutX="194.0" layoutY="73.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="username" text="deckname:" />
-      <Text fx:id="decknameField" layoutX="262.0" layoutY="74.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="username" text="..." wrappingWidth="58.5665283203125" />
+      <Text fx:id="cardNumber" layoutX="24.0" layoutY="249.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="textForTitles" text="1" />
+      <Text layoutX="185.0" layoutY="68.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="nameTag" text="deckname:" />
+      <Text fx:id="decknameField" layoutX="244.0" layoutY="68.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="nameField" text="..." wrappingWidth="76.3672689997486" />
    </children>
 </AnchorPane>

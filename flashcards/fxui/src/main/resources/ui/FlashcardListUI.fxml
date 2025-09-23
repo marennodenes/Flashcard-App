@@ -13,9 +13,9 @@
     <children>
         <TextField fx:id="questionField" layoutX="14.0" layoutY="113.0" prefHeight="30.0" prefWidth="170.0" />
         <Text layoutX="14.0" layoutY="106.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="textForTitles" text="Question" />
-        <Text layoutX="15.0" layoutY="168.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="textForTitles" text="Answer" />
+        <Text layoutX="14.0" layoutY="168.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="textForTitles" text="Answer" />
         <TextField fx:id="answerField" layoutX="14.0" layoutY="175.0" prefHeight="30.0" prefWidth="170.0" />
-        <Button fx:id="createButton" layoutX="15.0" layoutY="216.0" mnemonicParsing="false" onAction="#whenCreateButtonIsClicked" prefHeight="21.0" prefWidth="80.0" text="Create card">
+        <Button fx:id="createButton" layoutX="14.0" layoutY="216.0" mnemonicParsing="false" onAction="#whenCreateButtonIsClicked" prefHeight="21.0" prefWidth="80.0" text="Create card">
          <font>
             <Font size="11.0" />
          </font></Button>
@@ -35,14 +35,14 @@
             <Font size="23.0" />
          </font>
       </Text>
-      <Button id="startLearning" fx:id="startLearning" layoutX="202.0" layoutY="216.0" mnemonicParsing="false" onAction="#whenStartLearningButtonIsClicked" prefHeight="39.0" prefWidth="117.0" text="Start learning">
+      <Button id="startLearning" fx:id="startLearning" layoutX="201.0" layoutY="216.0" mnemonicParsing="false" onAction="#whenStartLearningButtonIsClicked" prefHeight="39.0" prefWidth="117.0" text="Start learning">
          <font>
             <Font size="16.0" />
          </font>
       </Button>
-      <Text layoutX="184.0" layoutY="28.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="username" text="username: " />
-      <Text fx:id="usernameField" layoutX="246.0" layoutY="29.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="username" text="..." wrappingWidth="73.0" />
-      <Button fx:id="logOutButton" layoutX="325.0" layoutY="9.0" mnemonicParsing="false" onAction="#whenLogOut" prefHeight="27.0" prefWidth="73.0" text="Log out" />
+      <Text layoutX="185.0" layoutY="27.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="nameTag" text="username: " />
+      <Text fx:id="usernameField" layoutX="241.0" layoutY="27.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="nameField" text="..." wrappingWidth="80.57280347321964" />
+      <Button fx:id="logOutButton" layoutX="324.0" layoutY="10.0" mnemonicParsing="false" onAction="#whenLogOut" prefHeight="27.0" prefWidth="73.0" text="Log out" />
       <Button id="back" fx:id="backButton" layoutX="332.0" layoutY="216.0" mnemonicParsing="false" onAction="#whenBackButtonIsClicked" prefHeight="39.0" prefWidth="66.0" text="Back">
          <font>
             <Font size="16.0" />

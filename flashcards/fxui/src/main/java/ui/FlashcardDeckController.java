@@ -33,7 +33,7 @@ public class FlashcardDeckController {
   private FlashcardDeckManager deckManager;
   private FlashcardPersistent storage;
   private String currentUsername = "defaultUserName";
-  private String currentDeckName = "My deck";
+  private String currentDeckName = "defaultDeckName";
 
   private FlashcardDeck currentActiveDeck;
 
@@ -133,7 +133,7 @@ public class FlashcardDeckController {
    * Shows all flashcards from the current deck in the ListView.
    */
   public void updateUi() {
-    usernameField.setText("user");
+    usernameField.setText(currentUsername);
     FlashcardDeck currentDeck = getCurrentDeck();
     if (currentDeck != null) {
       ObservableList<Flashcard> ob = FXCollections.observableArrayList(currentDeck.getDeck());

@@ -21,8 +21,16 @@
     -fx-font-weight: bold;
 }
 
-.username {
+.nameTag {
     -fx-fill: #5c7b80;
+    -fx-font-size: 12;
+    -fx-font-weight: bold;
+
+}
+
+.nameField {
+    -fx-fill: #5c7b80;
+    -fx-font-size: 9.5;
 }
 
 #progressBar {
@@ -40,4 +48,5 @@
 #progressBar .bar {
     -fx-background-color: #f4a261;
     -fx-background-radius: 3;
+    -fx-background-insets: 1.5;
 }

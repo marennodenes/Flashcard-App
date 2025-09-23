@@ -12,6 +12,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ProgressBar;
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import app.FlashcardDeck;
 
@@ -27,12 +28,16 @@ public class FlashcardController {
   @FXML private Button previousCard;
   @FXML private Button card;
   @FXML private ProgressBar progressBar;
+  @FXML private Text usernameField;
+  @FXML private Text decknameField;
+  @FXML private Text cardNumber;
 
   
   private List<Flashcard> deck = new ArrayList<>();
   //private HashMap<String, FlashcardDeck> allDecks;
 
   private int currentCardI;
+  private String currentUsername = "defaultUserName";
 
   private FlashcardDeck originalDeck;
 
@@ -68,6 +73,8 @@ public class FlashcardController {
    * Github Copilot Claude Sonnet 4
    */
   public void updateUi() {
+    decknameField.setText(originalDeck.getDeckName());
+    usernameField.setText(currentUsername);
     if (card != null && !deck.isEmpty() && currentCardI >= 0 && currentCardI < deck.size()) {
       card.setText(deck.get(currentCardI).getQuestion());
     }
@@ -154,6 +161,8 @@ public class FlashcardController {
   @FXML
   private void updateProgress() {
     progressBar.setProgress((currentCardI +1)/ (double) deck.size());
+    cardNumber.setText(Integer.toString(currentCardI + 1));
+
   }
   
 }
