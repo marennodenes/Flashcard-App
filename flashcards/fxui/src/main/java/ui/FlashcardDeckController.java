@@ -30,7 +30,6 @@ public class FlashcardDeckController {
   @FXML private Button startLearning;
   @FXML private Button deleteCardButton;
 
-  private FlashcardDeck flashcards;
   private FlashcardDeckManager deckManager;
   private FlashcardPersistent storage;
   private String currentUsername = "defaultUserName";
@@ -41,7 +40,15 @@ public class FlashcardDeckController {
   public void setDeck(FlashcardDeck originalDeck) {
 
     if(originalDeck!= null){
-      this.currentActiveDeck = originalDeck;
+      // Bug fix for spotbugs
+      // this.currentActiveDeck = originalDeck;
+      this.currentActiveDeck = new FlashcardDeck(originalDeck.getDeckName());
+        for (Flashcard card : originalDeck.getDeck()) {
+            this.currentActiveDeck.addFlashcard(
+                new Flashcard(card.getQuestion(), card.getAnswer())
+            );
+        }
+        
       this.currentDeckName = originalDeck.getDeckName();
 
       if (deckManager != null){

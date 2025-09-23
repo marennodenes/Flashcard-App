@@ -12,6 +12,22 @@
       "number" : 1,
       "question" : "helloquestion",
       "answer" : "helloanswer"
+    }, {
+      "number" : 2,
+      "question" : "andre",
+      "answer" : "svar 2"
+    }, {
+      "number" : 3,
+      "question" : "trede",
+      "answer" : "svar 3"
+    }, {
+      "number" : 4,
+      "question" : "fjerde",
+      "answer" : "svar 4"
+    }, {
+      "number" : 5,
+      "question" : "femte",
+      "answer" : "svar 5"
     } ]
   } ]
 }
