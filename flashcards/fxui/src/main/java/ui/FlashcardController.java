@@ -5,13 +5,18 @@ import java.util.ArrayList;
 import java.util.List;
 
 import app.Flashcard;
+import javafx.animation.RotateTransition;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ProgressBar;
+import javafx.scene.text.Text;
+import javafx.scene.transform.Rotate;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 import app.FlashcardDeck;
 
 /**
@@ -26,12 +31,34 @@ public class FlashcardController {
   @FXML private Button previousCard;
   @FXML private Button card;
   @FXML private ProgressBar progressBar;
+  @FXML private Text usernameField;
+  @FXML private Text decknameField;
+  @FXML private Text cardNumber;
 
   
   private List<Flashcard> deck = new ArrayList<>();
   //private HashMap<String, FlashcardDeck> allDecks;
 
   private int currentCardI;
+  private String currentUsername = "defaultUserName";
+
+  private String questionStyle = """
+            -fx-background-color: #89b9bf; /* spørsmål default */
+            -fx-effect: dropshadow(gaussian, #5c7b80, 0, 1, 5, 5);
+            -fx-border-width: 2;
+            -fx-background-radius: 3;
+            -fx-font-weight: bold;
+        """;
+  
+  private String answerStyle = """
+                -fx-background-color: #5c7b80;
+                -fx-effect: dropshadow(gaussian, #89b9bf, 0, 1, 5, 5);
+                -fx-border-width: 2;
+                -fx-background-radius: 3;
+                -fx-font-weight: bold;
+            """;
+
+  private boolean isShowingAnswer = false;
 
   private FlashcardDeck originalDeck;
 
@@ -67,8 +94,12 @@ public class FlashcardController {
    * Github Copilot Claude Sonnet 4
    */
   public void updateUi() {
+    isShowingAnswer = false;
+    decknameField.setText(originalDeck.getDeckName());
+    usernameField.setText(currentUsername);
     if (card != null && !deck.isEmpty() && currentCardI >= 0 && currentCardI < deck.size()) {
       card.setText(deck.get(currentCardI).getQuestion());
+      card.setStyle(questionStyle);
     }
   }
 
@@ -124,16 +155,48 @@ public class FlashcardController {
 
   @FXML
   private void whenCardButtonClicked(){
-    if (card.getText().equals(deck.get(currentCardI).getQuestion())) {
-      card.setText(deck.get(currentCardI).getAnswer());
-    } else {
-      card.setText(deck.get(currentCardI).getQuestion());
+    if (!deck.isEmpty()) {
+      flipCard();
     }
+  }
+
+  private void flipCard() {
+    RotateTransition rotateOut = new RotateTransition(Duration.millis(150), card);
+    rotateOut.setAxis(Rotate.X_AXIS);
+    rotateOut.setFromAngle(0);
+    rotateOut.setToAngle(90);
+
+    RotateTransition rotateIn = new RotateTransition(Duration.millis(150), card);
+    rotateIn.setAxis(Rotate.X_AXIS);
+    rotateIn.setFromAngle(270);
+    rotateIn.setToAngle(360);
+
+    rotateOut.setOnFinished(e -> {
+        // Toggle between question and answer
+        if (!isShowingAnswer) {
+            card.setText(deck.get(currentCardI).getAnswer());
+            card.setStyle(answerStyle);
+        } else {
+            card.setText(deck.get(currentCardI).getQuestion());
+            card.setStyle(questionStyle);
+        }
+        isShowingAnswer = !isShowingAnswer;
+        rotateIn.play();
+    });
+
+    rotateOut.play();
+  }
+
+  @FXML
+  public void whenLogOut(ActionEvent event){
+    //go to login scene when that is implemented
   }
 
   @FXML
   private void updateProgress() {
     progressBar.setProgress((currentCardI +1)/ (double) deck.size());
+    cardNumber.setText(Integer.toString(currentCardI + 1));
+
   }
   
 }
