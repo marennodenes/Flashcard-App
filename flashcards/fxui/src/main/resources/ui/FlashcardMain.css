@@ -62,3 +62,8 @@
     -fx-fill: #5c7b80;
     -fx-font-weight: bold;
 }
+
+.alerts {
+    -fx-fill: #5c7b80;
+    -fx-font-size: 13;
+}

@@ -138,8 +138,10 @@ public class FlashcardDeckController {
     if (currentDeck != null) {
       ObservableList<Flashcard> ob = FXCollections.observableArrayList(currentDeck.getDeck());
       listView.setItems(ob);
+      startLearning.setDisable(currentDeck.getDeck().isEmpty());
     } else {
       listView.setItems(FXCollections.observableArrayList());
+      startLearning.setDisable(true);
     }
 
     deleteCardButton.setDisable(listView.getSelectionModel().getSelectedItem() == null);
