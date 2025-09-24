@@ -30,18 +30,25 @@ public class FlashcardDeckController {
   @FXML private Button startLearning;
   @FXML private Button deleteCardButton;
 
-  private FlashcardDeck flashcards;
   private FlashcardDeckManager deckManager;
   private FlashcardPersistent storage;
   private String currentUsername = "defaultUserName";
-  private String currentDeckName = "My deck";
+  private String currentDeckName = "defaultDeckName";
 
   private FlashcardDeck currentActiveDeck;
 
   public void setDeck(FlashcardDeck originalDeck) {
 
     if(originalDeck!= null){
-      this.currentActiveDeck = originalDeck;
+      // Bug fix for spotbugs
+      // this.currentActiveDeck = originalDeck;
+      this.currentActiveDeck = new FlashcardDeck(originalDeck.getDeckName());
+        for (Flashcard card : originalDeck.getDeck()) {
+            this.currentActiveDeck.addFlashcard(
+                new Flashcard(card.getQuestion(), card.getAnswer())
+            );
+        }
+        
       this.currentDeckName = originalDeck.getDeckName();
 
       if (deckManager != null){
@@ -126,13 +133,15 @@ public class FlashcardDeckController {
    * Shows all flashcards from the current deck in the ListView.
    */
   public void updateUi() {
-    usernameField.setText("user");
+    usernameField.setText(currentUsername);
     FlashcardDeck currentDeck = getCurrentDeck();
     if (currentDeck != null) {
       ObservableList<Flashcard> ob = FXCollections.observableArrayList(currentDeck.getDeck());
       listView.setItems(ob);
+      startLearning.setDisable(currentDeck.getDeck().isEmpty());
     } else {
       listView.setItems(FXCollections.observableArrayList());
+      startLearning.setDisable(true);
     }
 
     deleteCardButton.setDisable(listView.getSelectionModel().getSelectedItem() == null);

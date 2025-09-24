@@ -79,7 +79,7 @@ public class FlashcardMainController {
   }
 
   public void updateUi(){
-    usernameField.setText("user"); //until we have login implemented
+    usernameField.setText(currentUsername); //until we have login implemented
 
     List<FlashcardDeck> decks = deckManager.getDecks();
 
