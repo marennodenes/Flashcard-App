@@ -99,6 +99,7 @@ public class FlashcardController {
     usernameField.setText(currentUsername);
     if (card != null && !deck.isEmpty() && currentCardI >= 0 && currentCardI < deck.size()) {
       card.setText(deck.get(currentCardI).getQuestion());
+      card.setWrapText(true);
       card.setStyle(questionStyle);
     }
   }
@@ -175,9 +176,12 @@ public class FlashcardController {
         // Toggle between question and answer
         if (!isShowingAnswer) {
             card.setText(deck.get(currentCardI).getAnswer());
+            card.setWrapText(true);
+            
             card.setStyle(answerStyle);
         } else {
             card.setText(deck.get(currentCardI).getQuestion());
+            card.setWrapText(true);
             card.setStyle(questionStyle);
         }
         isShowingAnswer = !isShowingAnswer;
