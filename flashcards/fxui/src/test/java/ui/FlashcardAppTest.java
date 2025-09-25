@@ -18,18 +18,7 @@ import javafx.stage.Stage;
 /**
  * Test class for FlashcardApp.
  * This class tests the main JavaFX application class to ensure proper initialization
- * and startup behavior. It provides comprehensive test coverage for JaCoCo requirements
- * while adhering to Checkstyle and Spotbugs code quality standards.
- * 
- * <p>The test class covers:
- * <ul>
- *   <li>Main method accessibility and existence</li>
- *   <li>Application startup functionality</li>
- *   <li>Resource loading verification</li>
- *   <li>Error handling for edge cases</li>
- *   <li>Scene and stage initialization</li>
- * </ul>
- * </p>
+ * and startup behavior.
  */
 public class FlashcardAppTest extends ApplicationTest {
 
