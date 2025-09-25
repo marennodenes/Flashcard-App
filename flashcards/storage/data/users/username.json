@@ -1,0 +1,13 @@
+{
+  "decks" : [ {
+    "deckName" : "newdeck",
+    "flashcards" : [ {
+      "number" : 1,
+      "question" : "first question",
+      "answer" : "first answer"
+    } ]
+  }, {
+    "deckName" : "firstdeck",
+    "flashcards" : [ ]
+  } ]
+}

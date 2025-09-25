@@ -1,9 +1,15 @@
 package ui;
 
+import java.io.IOException;
+
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.scene.text.Text;
+import javafx.stage.Stage;
 
 public class FlashcardLoginController {
   @FXML private Text alertMessage;
@@ -18,6 +24,10 @@ public class FlashcardLoginController {
     updateUi();
   }
 
+  /**
+   * Updates the UI elements based on the current state.
+   * Shows or hides alert messages as needed.
+   */
   public void updateUi(){
     if (showAlert) {
       alertMessage.setText(error);
@@ -29,18 +39,49 @@ public class FlashcardLoginController {
 
   }
 
+  /**
+   * Handles login button click event.
+   * Validates username and password fields, then navigates to main app if valid.
+   * Shows error message if fields are empty.
+   */
   public void whenLoginButtonClicked() {
-    String username = usernameField.getText();
-    String password = passwordField.getText();
+    String username = usernameField.getText().trim();
+    String password = passwordField.getText().trim();
 
     if (username.isEmpty() || password.isEmpty()) {
       error = "Username and password\ncannot be empty";
       showAlert = true;
-    // Add more validation
+      updateUi();
     } else {
-      // Proceed to main scene with decks for this user
-      showAlert = false;
+      // Basic validation passed - proceed to main app
+      try {
+        navigateToMainApp(username);
+      } catch (IOException e) {
+        error = "Failed to load main app";
+        showAlert = true;
+        updateUi();
+      }
     }
-    updateUi();
+  }
+
+  /**
+   * Navigates to the main flashcard application.
+   * Loads the FlashcardMainUI and passes the username to the controller.
+   * 
+   * @param username the logged-in username to pass to the main controller
+   * @throws IOException if the FXML file cannot be loaded
+   */
+  private void navigateToMainApp(String username) throws IOException {
+    FXMLLoader loader = new FXMLLoader(getClass().getResource("FlashcardMainUI.fxml"));
+    Parent root = loader.load();
+    
+    // Get the controller and set the username
+    FlashcardMainController mainController = loader.getController();
+    mainController.setCurrentUsername(username);
+    
+    // Switch to the main scene
+    Stage stage = (Stage) loginButton.getScene().getWindow();
+    stage.setScene(new Scene(root));
+    stage.show();
   }
 }

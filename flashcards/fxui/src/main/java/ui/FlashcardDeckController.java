@@ -37,37 +37,56 @@ public class FlashcardDeckController {
 
   private FlashcardDeck currentActiveDeck;
 
+  /**
+   * Sets the current deck to work with.
+   * Creates a defensive copy of the deck to avoid external modifications.
+   * 
+   * @param originalDeck the deck to set as current
+   */
   public void setDeck(FlashcardDeck originalDeck) {
-
-    if(originalDeck!= null){
-      // Bug fix for spotbugs
-      // this.currentActiveDeck = originalDeck;
+    if(originalDeck != null){
       this.currentActiveDeck = new FlashcardDeck(originalDeck.getDeckName());
-        for (Flashcard card : originalDeck.getDeck()) {
-            this.currentActiveDeck.addFlashcard(
-                new Flashcard(card.getQuestion(), card.getAnswer())
-            );
-        }
+      for (Flashcard card : originalDeck.getDeck()) {
+          this.currentActiveDeck.addFlashcard(
+              new Flashcard(card.getQuestion(), card.getAnswer())
+          );
+      }
         
       this.currentDeckName = originalDeck.getDeckName();
-
+      
+      // Load the user data to get the correct deckManager
+      loadUserData();
+      
+      // Update the deck in the deckManager if it exists
       if (deckManager != null){
         boolean foundDeck = false;
         for (int i = 0; i < deckManager.getDecks().size(); i++) {
           FlashcardDeck deck = deckManager.getDecks().get(i);
           if (deck.getDeckName().equals(originalDeck.getDeckName())) {
-            deckManager.getDecks().set(i, originalDeck);
+            // Update existing deck instead of adding new one
+            deckManager.getDecks().set(i, this.currentActiveDeck);
             foundDeck = true;
             break;
           }
         }
 
-        // If deck not found in manager, add it
+        // Only add if deck truly doesn't exist (this shouldn't happen when navigating from main)
         if (!foundDeck) {
-          deckManager.addDeck(originalDeck);
+          System.out.println("Warning: Deck not found in manager, this might indicate a problem");
         }
       }
       updateUi();
+    }
+  }
+
+  /**
+   * Sets the current username for loading user data.
+   * 
+   * @param username the username to set
+   */
+  public void setCurrentUsername(String username) {
+    if (username != null && !username.trim().isEmpty()) {
+      this.currentUsername = username.trim();
     }
   }
 
@@ -246,6 +265,11 @@ public class FlashcardDeckController {
   private void whenBackButtonIsClicked() throws IOException {
     FXMLLoader loader = new FXMLLoader(getClass().getResource("FlashcardMainUI.fxml"));
     Parent root = loader.load();
+    
+    // Send current username back to main controller
+    FlashcardMainController mainController = loader.getController();
+    mainController.setCurrentUsername(currentUsername);
+    
     Stage stage = (Stage) questionField.getScene().getWindow();
     stage.setScene(new Scene(root));
     stage.show();
@@ -267,6 +291,7 @@ public class FlashcardDeckController {
     FlashcardController controller = loader.getController();
     FlashcardDeck currentDeck = getCurrentDeck();
     if(currentDeck != null){
+      controller.setCurrentUsername(currentUsername);  // Send current username
       controller.setDeck(currentDeck);
     }
 
@@ -275,7 +300,27 @@ public class FlashcardDeckController {
     stage.show();
   }
 
+  /**
+   * Handles log out button click event.
+   * Navigates back to the login screen.
+   */
   @FXML private void whenLogOut() {
-    //go to login scene when that is implemented
+    try {
+      // Save current user data before logging out
+      saveUserData();
+      
+      // Load login screen
+      FXMLLoader loader = new FXMLLoader(getClass().getResource("FlashcardLoginUI.fxml"));
+      Parent root = loader.load();
+      
+      // Switch to login scene
+      Stage stage = (Stage) questionField.getScene().getWindow();
+      Scene scene = new Scene(root);
+      scene.getStylesheets().add(getClass().getResource("FlashcardLogin.css").toExternalForm());
+      stage.setScene(scene);
+      stage.show();
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
   }
 }

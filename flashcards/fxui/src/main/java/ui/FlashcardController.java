@@ -20,9 +20,8 @@ import javafx.util.Duration;
 import app.FlashcardDeck;
 
 /**
- * Controller class for managing flashcard UI interactions.
- * Handles navigation between flashcards, displaying questions and answers,
- * and managing the flashcard deck state.
+ * Controller for the flashcard learning interface.
+ * Handles navigation between cards, flipping animations, and progress tracking.
  */
 public class FlashcardController {
 
@@ -35,9 +34,7 @@ public class FlashcardController {
   @FXML private Text decknameField;
   @FXML private Text cardNumber;
 
-  
   private List<Flashcard> deck = new ArrayList<>();
-  //private HashMap<String, FlashcardDeck> allDecks;
 
   private int currentCardI;
   private String currentUsername = "defaultUserName";
@@ -62,6 +59,12 @@ public class FlashcardController {
 
   private FlashcardDeck originalDeck;
 
+  /**
+   * Sets the deck to be used for learning.
+   * Creates a defensive copy to avoid external modifications and initializes the UI.
+   * 
+   * @param deck the flashcard deck to set for learning
+   */
   public void setDeck(FlashcardDeck deck) {
     // bug fix for spotbugs
     // this.originalDeck = deck; - old
@@ -75,9 +78,23 @@ public class FlashcardController {
     updateUi();
 
     updateProgress();
-}
+  }
 
+  /**
+   * Sets the current username for display in the UI.
+   * 
+   * @param username the username to set
+   */
+  public void setCurrentUsername(String username) {
+    if (username != null && !username.trim().isEmpty()) {
+      this.currentUsername = username.trim();
+    }
+  }
 
+  /**
+   * Initializes the controller after FXML loading.
+   * Sets up the initial card index and updates the UI if deck is not empty.
+   */
   public void initialize(){
     currentCardI = 0;
     /* updateUi(); */
@@ -120,8 +137,8 @@ public class FlashcardController {
 
     FlashcardDeckController controller = loader.getController();
     if(originalDeck!= null){
+      controller.setCurrentUsername(currentUsername);  // Send current username
       controller.setDeck(originalDeck);
-
     }
 
     Stage stage = (Stage) nextCard.getScene().getWindow();
@@ -131,6 +148,10 @@ public class FlashcardController {
 
 
 
+  /**
+   * Handles next card button click.
+   * Advances to the next card in the deck with looping behavior.
+   */
   @FXML
   private void whenNextCardButtonClicked() {
     
@@ -143,6 +164,10 @@ public class FlashcardController {
 
   }
 
+  /**
+   * Handles previous card button click.
+   * Moves to the previous card in the deck with looping behavior.
+   */
   @FXML
   private void whenPreviousCardButtonClicked() {
     
@@ -154,6 +179,10 @@ public class FlashcardController {
     updateProgress();
   }
 
+  /**
+   * Handles card button click to flip between question and answer.
+   * Triggers the card flip animation if deck is not empty.
+   */
   @FXML
   private void whenCardButtonClicked(){
     if (!deck.isEmpty()) {
@@ -161,6 +190,10 @@ public class FlashcardController {
     }
   }
 
+  /**
+   * Performs the card flip animation and toggles between question and answer.
+   * Uses JavaFX rotation transitions to create a smooth flip effect.
+   */
   private void flipCard() {
     RotateTransition rotateOut = new RotateTransition(Duration.millis(150), card);
     rotateOut.setAxis(Rotate.X_AXIS);
@@ -191,11 +224,34 @@ public class FlashcardController {
     rotateOut.play();
   }
 
+  /**
+   * Handles log out button click event.
+   * Navigates back to the login screen.
+   * 
+   * @param event the action event from clicking the log out button
+   */
   @FXML
   public void whenLogOut(ActionEvent event){
-    //go to login scene when that is implemented
+    try {
+      // Load login screen
+      FXMLLoader loader = new FXMLLoader(getClass().getResource("FlashcardLoginUI.fxml"));
+      Parent root = loader.load();
+      
+      // Switch to login scene
+      Stage stage = (Stage) backButton.getScene().getWindow();
+      Scene scene = new Scene(root);
+      scene.getStylesheets().add(getClass().getResource("FlashcardLogin.css").toExternalForm());
+      stage.setScene(scene);
+      stage.show();
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
   }
 
+  /**
+   * Updates the progress bar and card number display.
+   * Shows current position in the deck and progress as a percentage.
+   */
   @FXML
   private void updateProgress() {
     progressBar.setProgress((currentCardI +1)/ (double) deck.size());
