@@ -1,0 +1,40 @@
+#anchorPane {
+    -fx-background-color: #bee7ed;
+}
+
+.textForTitles {
+    -fx-fill: #5c7b80;
+    -fx-font-weight: bold;
+}
+
+.text-field {
+    -fx-background-color: white;
+    -fx-border-color: #5c7b80;
+    -fx-border-width: 2;
+    -fx-background-radius: 3;
+    -fx-border-radius: 3;
+}
+
+.button {
+    -fx-background-color: #5c7b80;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-font-size: 14;
+
+}
+
+.alerts {
+    -fx-fill: #5c7b80;
+    -fx-font-size: 13;
+}
+
+.nameTag {
+    -fx-fill: #5c7b80;
+    -fx-font-size: 14;
+    -fx-font-weight: bold;
+
+}
+
+.password-field {
+    -fx-font-size: 7pt;
+}
