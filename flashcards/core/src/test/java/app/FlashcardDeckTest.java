@@ -1,23 +1,65 @@
-// package app;
+package app;
 
-// import static org.junit.jupiter.api.Assertions.assertEquals;
 
-// import org.junit.jupiter.api.Test;
-// import java.util.List;
-// import java.util.ArrayList;
+import java.util.ArrayList;
+import java.util.List;
 
-// import app.FlashcardDeck;
-// import app.Flashcard;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-// public class FlashcardDeckTest {
+
+
+public class FlashcardDeckTest {
+
+  private static Flashcard flashcard;
+  private static FlashcardDeck flashcardDeck;
   
-//   @Test
-//   void testAddFlashcard() {
-//     FlashcardDeck flashcardDeck = new FlashcardDeck();
-//     flashcardDeck.addFlashcard("Question", "Answer");
-//     Flashcard card = flashcardDeck.getFlashcards().get(0);
-//     assertEquals("Question", card.getQuestion());
-//     assertEquals("Answer", card.getAnswer());
-//   }
+  @BeforeAll
+  static void setUp(){
+    flashcard = new Flashcard("question", "answer");
+    flashcardDeck = new FlashcardDeck();
+  }
 
-// }
+  
+  @Test
+  void testAddFlashcard() {
+    flashcardDeck.addFlashcard(flashcard);
+
+    Flashcard card = flashcardDeck.getDeck().get(0);
+    assertEquals("question", card.getQuestion());
+    assertEquals("answer", card.getAnswer());
+  }
+
+  @Test
+  void testGetDeckName(){
+    flashcardDeck.setDeckName("test");
+    assertEquals("test", flashcardDeck.getDeckName());
+  }
+
+  @Test
+  void testIsQuestion(){
+    assertFalse(flashcardDeck.isQuestion("wrong"));
+  }
+
+  @Test
+  void testRemoveFlashcardByIndex(){
+    flashcardDeck.addFlashcard(flashcard);
+    Flashcard flashcard2 = new Flashcard("question2", "answer2");
+    flashcardDeck.addFlashcard(flashcard2);
+    assertFalse(flashcardDeck.removeFlashcardByIndex(-1));
+    assertTrue(flashcardDeck.removeFlashcardByIndex(1));
+    assertEquals(flashcard, flashcardDeck.getDeck().get(0));
+  }
+
+  @Test
+  void testSetDeck(){
+    List<Flashcard> deck = new ArrayList<>();
+    Flashcard flashcard2 = new Flashcard("question2", "answer2");
+    deck.add(flashcard2);
+    flashcardDeck.setDeck(deck);
+    assertEquals(1, flashcardDeck.getDeck().size());
+  }
+}
