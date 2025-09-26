@@ -2,16 +2,27 @@ package app;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
+/**
+ * Test class for FlashcardDeckManager functionality.
+ * Tests deck management operations including adding and removing decks.
+ * 
+ * @author Generated with Claude Sonnet 4 via GitHub Copilot
+ */
 public class FlashcardDeckManagerTest {
 
   private static FlashcardDeckManager manager;
   private static FlashcardDeck flashcardDeck;
   private static Flashcard flashcard;
   
+  /**
+   * Sets up test fixtures before all tests.
+   * Initializes a FlashcardDeckManager, FlashcardDeck, and sample Flashcard.
+   * 
+   * @author Generated with Claude Sonnet 4 via GitHub Copilot
+   */
   @BeforeAll
   static void setUp(){
     flashcard = new Flashcard("question", "answer");
@@ -19,6 +30,19 @@ public class FlashcardDeckManagerTest {
     manager = new FlashcardDeckManager();
   }
 
+  /**
+   * Tests the addDeck method of FlashcardDeckManager with various scenarios.
+   * Verifies that:
+   * - Adding an empty deck (no flashcards) throws IllegalArgumentException
+   * - Adding a deck without a name throws IllegalArgumentException  
+   * - Adding a valid deck with name and flashcards succeeds
+   * - Adding a duplicate deck name throws IllegalArgumentException
+   * - Adding a deck with blank/whitespace name throws IllegalArgumentException
+   * - Adding a null-named deck throws IllegalArgumentException
+   * - Multiple valid decks can be added successfully
+   * 
+   * @author Generated with Claude Sonnet 4 via GitHub Copilot
+   */
   @Test
   void testAddDeck(){
     assertThrows(IllegalArgumentException.class,() -> manager.addDeck(flashcardDeck));
@@ -66,6 +90,14 @@ public class FlashcardDeckManagerTest {
 
   }
 
+  /**
+   * Tests the removeDeck method of FlashcardDeckManager.
+   * Verifies that:
+   * - Removing an existing deck decreases the deck count by 1
+   * - Manager correctly updates its internal collection after removal
+   * 
+   * @author Generated with Claude Sonnet 4 via GitHub Copilot
+   */
   @Test
   void testRemoveDeck(){
     manager.removeDeck(flashcardDeck);
