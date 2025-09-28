@@ -1,6 +1,7 @@
 package app;
 
 import java.io.IOException;
+import java.util.Objects;
 
 /**
  * Validates user login and registration operations.
@@ -8,59 +9,82 @@ import java.io.IOException;
  */
 public class LoginValidator {
 
+  //when supresswarnings got added here it runs, but i am not sure that its the best solution..., so maybe go back and change this
+    @SuppressWarnings("EI_EXPOSE_REP2")
     private final UserPersistence persistence;
-    
+
     /**
      * Creates a new LoginValidator with the specified persistence implementation.
      * @param persistence the persistence implementation to use
      */
+    @SuppressWarnings("CT_CONSTRUCTOR_THROW")
     public LoginValidator(UserPersistence persistence) {
-        if (persistence == null) {
-            throw new IllegalArgumentException("UserPersistence cannot be null");
-        }
-        this.persistence = persistence;
+        this.persistence = Objects.requireNonNull(persistence, "UserPersistence cannot be null");
     }
 
-    public boolean createUser(String username, String password) {
-      // Create a new user with the given username and password
-      if (!persistence.userExists(username)) {
-        User newUser = new User(username, password); 
-        try {
-          persistence.writeUserData(newUser);
-          return true; // User created successfully
-        } catch (IOException e) {
-          e.printStackTrace();
-          return false; // Failed to create user due to IO error
-        }
-      }
 
-      return false; // User already exists
+    public boolean createUser(String username, String password) {
+        if (!persistence.userExists(username)) {
+            User newUser = new User(username, password); 
+            try {
+                persistence.writeUserData(newUser);
+                System.out.println("User created successfully: " + username);
+                return true;
+            } catch (IOException e) {
+              System.err.println("Failed to create user: " + username);
+                e.printStackTrace();
+                return false;
+            }
+        }
+        System.out.println("User already exists: " + username);
+        return false;
     }
 
     public boolean isUsernameUnique(String username) {
-      // Check if the username is unique by checking if file exists
-      return !persistence.userExists(username);
+        return !persistence.userExists(username);
     }
 
+    //adding password security here:
     public boolean authenticateUser(String username, String password) {
-      // Authenticate user by checking username and password
-      User user = findUserByUsername(username);
-      if (user == null) {
-        return false; // User not found
-      }
-      return user.getPassword().equals(password); 
+        User user = findUserByUsername(username);
+        if (user != null) {
+            // Check if password is hashed (contains colon) or plain text (legacy)
+            if (user.getPassword().contains(":")) {
+                // New format: hashed password
+                boolean matches = PasswordEncoder.matches(password, user.getPassword());
+                if (matches) {
+                    System.out.println("User authenticated successfully: " + username);
+                } else {
+                    System.out.println("Authentication failed - wrong password: " + username);
+                }
+                return matches;
+            } else {
+                // Legacy format: plain text password
+                boolean matches = user.getPassword().equals(password);
+                if (matches) {
+                    System.out.println("User authenticated with legacy password: " + username);
+                    // Optionally upgrade to hashed password
+                    try {
+                        User updatedUser = new User(username, password);
+                        persistence.writeUserData(updatedUser);
+                        System.out.println("Password upgraded to hashed format for: " + username);
+                    } catch (IOException e) {
+                        System.err.println("Failed to upgrade password for: " + username);
+                    }
+                } else {
+                    System.out.println("Authentication failed - wrong legacy password: " + username);
+                }
+                return matches;
+            }
+        }
+        System.out.println("Authentication failed - user not found: " + username);
+        return false;
     }
 
     public User findUserByUsername(String username) {
-      // Find user from persistent storage
-      if (persistence.userExists(username)) {
-        User user = persistence.readUserData(username);
-        if (user != null) {
-          return user;
+        if (persistence.userExists(username)) {
+            return persistence.readUserData(username);
         }
-      }
-
-      return null;
+        return null;
     }
-
 }

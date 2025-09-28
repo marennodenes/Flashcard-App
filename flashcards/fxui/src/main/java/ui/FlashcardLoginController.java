@@ -65,18 +65,6 @@ public class FlashcardLoginController {
       return;
     }
 
-    // check if user exists, if not create new user and open main app
-    else if (loginValidator.createUser(username, password)) {
-      System.out.println("User created: " + username);
-      try {
-        navigateToMainApp(username);
-      } catch (IOException e) {
-        error = "Failed to load main application";
-        showAlert = true;
-        updateUi();
-      }
-    }
-
     // if user exists, authenticate password and open main app
     else if (loginValidator.authenticateUser(username, password)) {
       System.out.println("User authenticated: " + username);
@@ -88,6 +76,21 @@ public class FlashcardLoginController {
         updateUi();
       }
     }
+
+    // check if user exists, if not create new user and open main app
+    else if (loginValidator.createUser(username, password)) {
+      //her hopper den foreløpig inn
+      System.out.println("User created: " + username);
+      try {
+        navigateToMainApp(username);
+      } catch (IOException e) {
+        error = "Failed to load main application";
+        showAlert = true;
+        updateUi();
+      }
+    }
+
+    
 
     // if user exists but password is wrong
     else {

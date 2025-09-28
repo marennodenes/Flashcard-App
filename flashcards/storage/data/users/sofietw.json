@@ -1,35 +1,17 @@
 {
-    "user": "sofietw",
-    "decks": [
-      {
-        "deckName": "Algoritmer",
-        "flashcards": [
-          {
-            "number": 1,
-            "question": "Hva er tidkompleksiteten til mergesort?",
-            "answer": "O(n log n)"
-          },
-          {
-            "number": 2,
-            "question": "Hva er tidkompleksiteten til quicksort i verstefall?",
-            "answer": "O(n^2)"
-          }
-        ]
-      },
-      {
-        "deckName": "Geografi",
-        "flashcards": [
-          {
-            "number": 1,
-            "question": "Hva er hovedstaden i Norge?",
-            "answer": "Oslo"
-          },
-          {
-            "number": 2,
-            "question": "Hva heter den bydelen i Oslo",
-            "answer": "Ullern"
-          }
-        ]
-      }
-    ]
+  "username" : "sofietw",
+  "password" : "3YFYPAibFxnfT0gN+mPc9A==:+hu/wRoS1J/pNbQF5ZjxKpojXG/taEp1tW3rcj9ybXQ=",
+  "deckManager" : {
+    "decks" : [ {
+      "deckName" : "afaf",
+      "flashcards" : [ {
+        "number" : 1,
+        "question" : "adfadsf",
+        "answer" : "adsfadsf"
+      } ]
+    }, {
+      "deckName" : "asdfasg",
+      "flashcards" : [ ]
+    } ]
   }
+}
