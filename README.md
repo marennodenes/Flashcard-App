@@ -59,6 +59,13 @@ After running `mvn test`, you can generate test coverage reports via JaCoCo:
 2. Run `mvn jacoco:report`
 3. Open the HTML report in `target/site/jacoco/index.html`
 
+**Current test coverage:**
+
+- **core**: 88 missed instructions | 76 missed branches
+- **fxui**: Run `mvn jacoco:report` to generate coverage report
+- **storage**: Run `mvn jacoco:report` to generate coverage report
+- **total**: 88 missed instructions | 76 missed branches
+
 Current coverage targets focus on core business logic and critical user workflows.
 
 ## Coding standards
@@ -78,9 +85,6 @@ For detailed project documentation, navigate to [docs](/docs/):
 
 - [Release 1](/docs/release_1/) - Initial implementation and basic functionality
 - [Release 2](/docs/release_2/) - Enhanced features, user authentication, and quality improvements
-  - [Code Quality](/docs/release_2/code-quality.md) - Detailed code quality practices
-  - [Teamwork](/docs/release_2/teamwork.md) - Development process and team coordination
-  - [AI Tools](/docs/release_2/ai_tools.md) - Use of AI assistance in development
 
 ## User stories
 

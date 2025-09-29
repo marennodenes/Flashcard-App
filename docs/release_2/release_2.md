@@ -36,11 +36,6 @@ This module contains the business logic and domain models for flashcards and dec
 This module is responsible for JSON persistence and user data management.
 This module handles all JavaFX user interface components and controllers.
 
-**core (flashcards/core):**
-This module contains the business logic and domain models for flashcards and decks.
-
-**storage (flashcards/storage):**
-This module is responsible for JSON persistence and user data management.
 
 ## Learning System Implementation
 
@@ -67,8 +62,8 @@ Key quality measures include:
 ## Architecture Documentation
 
 We have updated our UML documentation to accurately reflect the current application structure:
-- **Class diagrams** show the relationships between domain models and controllers
-- **Package diagrams** illustrate the three-module architecture
-- **Architecture diagrams** provide an overview of the application's component structure
+- **[Class diagrams](uml_documentation/class.puml)** show the relationships between domain models and controllers
+- **[Package diagrams](uml_documentation/package.puml)** illustrate the three-module architecture
+- **[Architecture diagrams](uml_documentation/Architecture.puml)** provide an overview of the application's component structure
 
 For the current release, the application provides a solid foundation for flashcard-based learning with room for future enhancements such as spaced repetition algorithms and advanced statistics tracking.
