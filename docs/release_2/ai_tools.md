@@ -19,5 +19,3 @@ Below are the specific AI tools we used and how they contributed to our project:
 ## **Claude AI**: 
 - Architecture suggestions and code review
 - Generated javadoc documentation
-
-
