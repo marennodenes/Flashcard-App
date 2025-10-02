@@ -223,24 +223,24 @@ public class FlashcardMainController {
    * @param event the action event from clicking a deck button
    */
   @FXML
-  public void whenADeckIsClicked(ActionEvent event){
+  public void whenADeckIsClicked(ActionEvent event) {
     try {
-        Button clickedButton = (Button) event.getSource();
-        FlashcardDeck selectedDeck = (FlashcardDeck) clickedButton.getUserData();
+      Button clickedButton = (Button) event.getSource();
+      FlashcardDeck selectedDeck = (FlashcardDeck) clickedButton.getUserData();
 
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("FlashcardListUI.fxml"));
-        Parent root = loader.load();
+      FXMLLoader loader = new FXMLLoader(getClass().getResource("FlashcardListUI.fxml"));
+      Parent root = loader.load();
 
-        FlashcardDeckController controller = loader.getController();
-        controller.setCurrentUsername(currentUsername);  // Send current username
-        controller.setDeck(selectedDeck);  // send valgt deck
+      FlashcardDeckController controller = loader.getController();
+      controller.setCurrentUsername(currentUsername);  // Send current username
+      controller.setDeck(selectedDeck);  // send valgt deck
 
-        Stage stage = (Stage) clickedButton.getScene().getWindow();
-        stage.setScene(new Scene(root));
-        stage.show();
+      Stage stage = (Stage) clickedButton.getScene().getWindow();
+      stage.setScene(new Scene(root));
+      stage.show();
 
-      } catch (IOException e) {
-          e.printStackTrace();
+    } catch (IOException e) {
+      e.printStackTrace();
     }
   }
 
