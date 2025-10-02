@@ -156,16 +156,74 @@ public class FlashcardMainControllerTest extends ApplicationTest {
     }
     
     /**
-     * Cleans up after each test by hiding the stage.
+     * Cleans up after each test by hiding the stage and clearing all test data.
+     * Ensures a clean state for each test by removing all decks and resetting controller state.
      * 
      * @throws Exception if cleanup fails
      */
     @AfterEach
     public void tearDown() throws Exception {
         try {
+            // Clean up all decks and reset controller state
+            if (controller != null) {
+                Platform.runLater(() -> {
+                    try {
+                        cleanupControllerState();
+                    } catch (Exception e) {
+                        // Log but don't fail test on cleanup issues
+                        System.err.println("Warning: Controller cleanup failed: " + e.getMessage());
+                    }
+                });
+                waitForJavaFX();
+            }
+            
             FxToolkit.hideStage();
         } catch (Exception e) {
             // Ignore cleanup exceptions
+        }
+    }
+    
+    /**
+     * Cleans up controller state by clearing all decks and resetting UI components.
+     * This method provides comprehensive cleanup functionality for testing purposes.
+     */
+    private void cleanupControllerState() {
+        try {
+            // Clear input field
+            if (deckNameInput != null) {
+                deckNameInput.clear();
+            }
+            
+            // Hide alert message
+            if (alertMessage != null) {
+                alertMessage.setVisible(false);
+            }
+            
+            // Reset to clean state - create new deck manager and save empty state
+            controller.setCurrentUsername("testUser"); // Reset to test user
+            
+            // Access the deck manager through reflection to clear it
+            java.lang.reflect.Field deckManagerField = controller.getClass().getDeclaredField("deckManager");
+            deckManagerField.setAccessible(true);
+            app.FlashcardDeckManager newDeckManager = new app.FlashcardDeckManager();
+            deckManagerField.set(controller, newDeckManager);
+            
+            // Save the empty state
+            java.lang.reflect.Method saveUserDataMethod = controller.getClass().getDeclaredMethod("saveUserData");
+            saveUserDataMethod.setAccessible(true);
+            saveUserDataMethod.invoke(controller);
+            
+            // Update UI to reflect changes
+            controller.updateUi();
+            
+        } catch (Exception e) {
+            System.err.println("Error during controller cleanup: " + e.getMessage());
+            // Fall back to just updating UI
+            try {
+                controller.updateUi();
+            } catch (Exception uiException) {
+                System.err.println("Even UI update failed: " + uiException.getMessage());
+            }
         }
     }
     
