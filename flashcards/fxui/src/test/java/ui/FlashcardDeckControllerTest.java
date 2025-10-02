@@ -50,7 +50,7 @@ public class FlashcardDeckControllerTest extends ApplicationTest {
     private TextField questionField;
     private TextField answerField;
     private ListView<Flashcard> listView;
-    private Text usernameField;
+    private Text username;
     private TextField deckNameField;
     private Button startLearning;
     private Button deleteCardButton;
@@ -126,7 +126,7 @@ public class FlashcardDeckControllerTest extends ApplicationTest {
             questionField = lookup("#questionField").query();
             answerField = lookup("#answerField").query();
             listView = lookup("#listView").query();
-            usernameField = lookup("#username").query();
+            username = lookup("#username").query();
 
             startLearning = lookup("#startLearning").query();
             deleteCardButton = lookup("#deleteCardButton").query();
@@ -298,8 +298,8 @@ public class FlashcardDeckControllerTest extends ApplicationTest {
         if (listView != null) {
             assertNotNull(listView, "List view should be initialized");
         }
-        if (usernameField != null) {
-            assertNotNull(usernameField, "Username field should be initialized");
+        if (username != null) {
+            assertNotNull(username, "Username field should be initialized");
         }
         if (deckNameField != null) {
             assertNotNull(deckNameField, "Deck name field should be initialized");
@@ -352,7 +352,7 @@ public class FlashcardDeckControllerTest extends ApplicationTest {
         waitForJavaFX();
         
         // Verify username is displayed
-        assertEquals(TEST_USERNAME, usernameField.getText(),
+        assertEquals(TEST_USERNAME, username.getText(),
                     "Username should be displayed correctly");
         
         // Verify input fields are cleared
@@ -526,45 +526,6 @@ public class FlashcardDeckControllerTest extends ApplicationTest {
         
         // Should be disabled again
         assertTrue(startLearning.isDisabled(), "Start learning button should be disabled when deck becomes empty");
-    }
-    
-    /**
-     * Tests the user change functionality.
-     * Verifies that changing users properly loads their data.
-     */
-    @Test
-    public void testChangeUser() {
-        // Set a different username in the field
-                    // Clear all input fields
-        Platform.runLater(() -> {
-            controller.setCurrentUsername("newUser123");
-            controller.updateUi();
-        });
-        waitForJavaFX();
-        assertEquals("newUser123", usernameField.getText());
-    }
-    
-    /**
-     * Tests the deck name change functionality.
-     * Verifies that deck names can be changed properly.
-     */
-    @Test
-    public void testChangeDeck() {
-        // Set a new deck name
-        clickOn(deckNameField).write("New Deck Name");
-        
-        Platform.runLater(() -> controller.changeDeck());
-        waitForJavaFX();
-        
-        // Verify the change was processed (exact behavior depends on implementation)
-        assertTrue(deckNameField.getText().isEmpty(), "Deck name field should be cleared after change");
-        
-        // Test with empty deck name (should not change)
-        clickOn(deckNameField).write("   ");
-        Platform.runLater(() -> controller.changeDeck());
-        waitForJavaFX();
-        
-        assertTrue(true, "Changing to empty deck name should be handled gracefully");
     }
     
     /**

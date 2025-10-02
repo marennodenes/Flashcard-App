@@ -202,47 +202,6 @@ public class FlashcardDeckController {
   }
   
   /**
-   * Changes username and loads their data.
-   * Switches to a different user's flashcard collection.
-   */
-  public void changeUser() {
-    String newUsername = username.getText().trim();
-    if (!newUsername.isEmpty()) {
-      currentUsername = newUsername;
-      loadUserData();
-      updateUi();
-    }
-  }
-
-  /**
-   * Changes deck name.
-   * Updates the name of the current deck or creates a new deck if it doesn't exist.
-   * Note: Only works if deckNameField is present in the FXML.
-   */
-  public void changeDeck() {
-    if (deckNameField != null) {
-      String newDeckName = deckNameField.getText().trim();
-      if (!newDeckName.isEmpty()) {
-        FlashcardDeck currentDeck = getCurrentDeck();
-        
-        if (currentDeck != null) {
-          // Update existing deck name
-          currentDeck.setDeckName(newDeckName);
-        } else {
-          // Create new deck if it doesn't exist
-          FlashcardDeck newDeck = new FlashcardDeck();
-          newDeck.setDeckName(newDeckName);
-          deckManager.addDeck(newDeck);
-        }
-        
-        currentDeckName = newDeckName;
-        saveUserData();
-        updateUi();
-      }
-    }
-  }
-  
-  /**
    * Clears the input fields.
    * Resets both question and answer text fields to empty.
    */
