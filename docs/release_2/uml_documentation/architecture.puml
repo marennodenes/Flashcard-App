@@ -1,0 +1,42 @@
+@startuml architecture
+!theme plain
+skinparam monochrome true
+skinparam shadowing false
+!pragma layout smetana
+
+actor User
+
+package "Flashcards Application" {
+    
+    node "FXUI Module" as fxui {
+        component FlashcardLoginController
+        component FlashcardMainController
+        component FlashcardDeckController
+        component FlashcardController
+        component "FXML Files"
+    }
+
+    node "Core Module" as core {
+        component Flashcard
+        component FlashcardDeck
+        component FlashcardDeckManager
+    }
+
+    node "Storage Module" as storage {
+        component FlashcardPersistent
+        component "JSON File I/O"
+        component "User Data Files"
+    }
+}
+
+User --> fxui : Interacts with JavaFX GUI
+fxui --> core : Uses domain models and logic
+fxui --> storage : Persists user data
+storage --> core : Serializes core objects
+
+note right of storage
+JSON files stored in
+storage/data/users/
+end note
+
+@enduml
