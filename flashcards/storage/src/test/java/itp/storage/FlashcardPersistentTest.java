@@ -65,6 +65,7 @@ public class FlashcardPersistentTest {
     assertTrue(jsonContent.contains("Q3"));
     assertTrue(jsonContent.contains("A4"));
     dataFile.delete();
+    
   }
 
 
@@ -164,6 +165,7 @@ public class FlashcardPersistentTest {
     FlashcardDeckManager manager = persistent.readDeck("non_existing_user");
     // Should return an empty manager
     assertTrue(manager.getDecks().isEmpty());
-}
+  }
 
 }
+

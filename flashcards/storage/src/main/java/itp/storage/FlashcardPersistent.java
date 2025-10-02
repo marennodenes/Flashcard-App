@@ -27,12 +27,12 @@ public class FlashcardPersistent {
   public void writeDeck(String username, FlashcardDeckManager deckManager) throws IOException {
     // Create data directory if it doesn't exist
     File dataDir = new File(System.getProperty("user.dir") + "/../storage/data/users");
-    if (!dataDir.exists()) {
-      boolean created = dataDir.mkdirs();
-      if (!created) {
-        throw new IOException("Failed to create data directory: " + dataDir.getAbsolutePath());
-      }
-    }
+    // if (!dataDir.exists()) {
+    //   boolean created = dataDir.mkdirs();
+    //   if (!created) {
+    //     throw new IOException("Failed to create data directory: " + dataDir.getAbsolutePath());
+    //   }
+    // } this would be triggered if the directory is missing
     
     File file = new File(dataDir, username + ".json");
     objectMapper.writerWithDefaultPrettyPrinter().writeValue(file, deckManager);
