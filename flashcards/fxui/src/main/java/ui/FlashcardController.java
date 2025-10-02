@@ -67,7 +67,6 @@ public class FlashcardController {
    */
   public void setDeck(FlashcardDeck deck) {
     // bug fix for spotbugs
-    // this.originalDeck = deck; - old
     this.originalDeck = new FlashcardDeck(deck.getDeckName());
     for (Flashcard card : deck.getDeck()) {
         this.originalDeck.addFlashcard(new Flashcard(card.getQuestion(), card.getAnswer()));
@@ -121,7 +120,6 @@ public class FlashcardController {
     }
   }
 
-
   /**
    * Handles the event when the "Back" button is clicked.
    * Navigates from the current scene to the flashcard list page by loading
@@ -164,7 +162,7 @@ public class FlashcardController {
 
   }
 
-  /**
+  /** 
    * Handles previous card button click.
    * Moves to the previous card in the deck with looping behavior.
    */
