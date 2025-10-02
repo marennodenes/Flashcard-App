@@ -7,18 +7,34 @@
 
 This repository contains a JavaFX application for creating and studying flashcards. Users can create profiles, organize flashcards into decks, and track their learning progress through an interactive study interface.
 
-## Building and running the project
+## Quickstart
+
+To quickly test the application:
+
+1. `cd flashcards`
+2. `mvn clean install`
+3. `cd fxui`
+4. `mvn javafx:run`
+
+Alternatively, use the VS Code task "Run JavaFX App" which is configured in the workspace.
+
+## Building the project
 
 This project uses Maven for building and running.
 
-To build and run this project:
+To build all modules and run tests:
 
-1. First change into the flashcards folder: `cd flashcards`
-2. Run `mvn clean install` to build all modules and run tests
-3. Navigate to the UI module: `cd fxui`
-4. Run the application: `mvn javafx:run`
+1. Navigate to the flashcards folder: `cd flashcards`
+2. Build all modules: `mvn clean install`
 
-Alternatively, you can use the VS Code task "Run JavaFX App" which is configured in the workspace.
+## Running the application
+
+### Method 1: Maven
+1. Navigate to the UI module: `cd flashcards/fxui`
+2. Run the application: `mvn javafx:run`
+
+### Method 2: VS Code
+Use the configured task "Run JavaFX App" from the VS Code command palette.
 
 ## Code structure
 
@@ -85,16 +101,6 @@ For detailed project documentation, navigate to [docs](/docs/):
 
 - [Release 1](/docs/release_1/) - Initial implementation and basic functionality
 - [Release 2](/docs/release_2/) - Enhanced features, user authentication, and quality improvements
-
-## User stories
-
-The application addresses these key user needs:
-
-- As a user, I want to create a login profile, so that my flashcards are saved separately from other users
-- As a user, I want to create a new deck, so that I can group related flashcards by subject
-- As a user, I want to add flashcards with questions and answers, so that I can test my knowledge
-- As a user, I want to study my flashcards with a flip interface, so that I can practice active recall
-- As a user, I want to track my progress, so that I can see which cards I need to review
 
 ## Use of AI
 

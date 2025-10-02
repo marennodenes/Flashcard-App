@@ -1,0 +1,21 @@
+# Generated with assistance from GitHub Copilot (Claude Sonnet 4.0)
+
+# Maven
+target/
+
+# Java
+*.class
+*.jar
+*.log
+
+# IDE files
+.idea/
+*.iml
+.vscode/settings.json
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Test coverage
+jacoco.exec

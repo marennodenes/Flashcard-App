@@ -2,6 +2,16 @@
 
 I this second milestone, our primary goal was to deliver a fully functional base version of the app. The milestone introduces a user login system, per-user JSON data storage, a dedicated deck overview page, and a robust flashcard learning interface featuring card navigation and progress tracking. These enhancements establish a stable platform for future development and advanced learning features.
 
+## User stories
+
+The application addresses these key user needs:
+
+- As a user, I want to create a login profile, so that my flashcards are saved separately from other users
+- As a user, I want to create a new deck, so that I can group related flashcards by subject
+- As a user, I want to add flashcards with questions and answers, so that I can test my knowledge
+- As a user, I want to study my flashcards with a flip interface, so that I can practice active recall
+- As a user, I want to track my progress, so that I can see which cards I need to review
+
 ## Key Focus Areas
 
 ### 1. User Authentication and Data Management
