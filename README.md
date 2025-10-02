@@ -77,10 +77,13 @@ After running `mvn test`, you can generate test coverage reports via JaCoCo:
 
 **Current test coverage:**
 
-- **core**: 88 missed instructions | 76 missed branches
-- **fxui**: Run `mvn jacoco:report` to generate coverage report
-- **storage**: Run `mvn jacoco:report` to generate coverage report
-- **total**: 88 missed instructions | 76 missed branches
+- **core**: Instruction Coverage: 91% | Branch Coverage: 76%
+- **fxui**: Instruction Coverage: 90% | Branch Coverage: 81%  
+- **storage**: Instruction Coverage: 100% | Branch Coverage: 100%
+
+<img src="images/jaCoCo/coreJaCoCo.png" alt="Core module JaCoCo coverage" width="600">
+<img src="images/jaCoCo/fxuiJaCoCo.png" alt="FXUI module JaCoCo coverage" width="600">
+<img src="images/jaCoCo/storageJaCoCo.png" alt="Storage module JaCoCo coverage" width="600">
 
 Current coverage targets focus on core business logic and critical user workflows.
 

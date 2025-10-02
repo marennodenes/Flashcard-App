@@ -69,6 +69,10 @@ Key quality measures include:
 - Unit and integration testing with coverage goals
 - Updated UML documentation reflecting current architecture
 
+## Further improvements 
+
+- Include secure login system that safely saves username and password
+
 ## Architecture Documentation
 
 We have updated our UML documentation to accurately reflect the current application structure:

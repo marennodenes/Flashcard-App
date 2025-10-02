@@ -1,27 +1,3 @@
 {
-  "decks" : [ {
-    "deckName" : "Deck 1",
-    "flashcards" : [ ]
-  }, {
-    "deckName" : "Deck 2",
-    "flashcards" : [ ]
-  }, {
-    "deckName" : "Deck 3",
-    "flashcards" : [ ]
-  }, {
-    "deckName" : "Deck 4",
-    "flashcards" : [ ]
-  }, {
-    "deckName" : "Deck 5",
-    "flashcards" : [ ]
-  }, {
-    "deckName" : "Deck 6",
-    "flashcards" : [ ]
-  }, {
-    "deckName" : "Deck 7",
-    "flashcards" : [ ]
-  }, {
-    "deckName" : "Valid Deck Name",
-    "flashcards" : [ ]
-  } ]
+  "decks" : [ ]
 }

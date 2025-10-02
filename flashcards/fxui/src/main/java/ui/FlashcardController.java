@@ -96,7 +96,6 @@ public class FlashcardController {
    */
   public void initialize(){
     currentCardI = 0;
-    /* updateUi(); */
     if (!deck.isEmpty()) {
       updateUi();
     }

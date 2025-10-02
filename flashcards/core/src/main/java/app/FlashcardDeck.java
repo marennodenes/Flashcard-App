@@ -16,14 +16,22 @@ public class FlashcardDeck {
   @JsonProperty("deckName")
   private String deckName;
 
-  /** List of all flashcards. */
+  /** List of all flashcards in this deck. */
   @JsonProperty("flashcards")
   private List<Flashcard> deck;
 
+  /**
+   * Default constructor that creates an empty deck.
+   */
   public FlashcardDeck(){
     this.deck = new ArrayList<>();
   }
 
+  /**
+   * Constructor that creates a deck with a specified name.
+   * 
+   * @param deckName the name of the deck
+   */
   public FlashcardDeck(String deckName){
     this.deckName = deckName;
     this.deck = new ArrayList<>();
@@ -63,10 +71,18 @@ public class FlashcardDeck {
       
   }
 
+  /**
+   * Removes a flashcard from the deck at the specified index.
+   * After removal, all subsequent flashcards have their numbers updated
+   * to maintain sequential numbering.
+   * 
+   * @param index the index of the flashcard to remove (0-based)
+   * @return true if the flashcard was successfully removed, false if index is invalid
+   */
   public boolean removeFlashcardByIndex(int index) {
     if (index >= 0 && index < deck.size()) {
         deck.remove(index);
-        // Oppdater nummerering for alle kort etter det slettede
+        //Updates numbers
         for (int i = index; i < deck.size(); i++) {
             deck.get(i).setNumber(i + 1);
         }
