@@ -44,39 +44,32 @@ public class FlashcardDeckController {
    * @param originalDeck the deck to set as current
    */
   public void setDeck(FlashcardDeck originalDeck) {
-    if(originalDeck != null){
-      this.currentActiveDeck = new FlashcardDeck(originalDeck.getDeckName());
-      for (Flashcard card : originalDeck.getDeck()) {
-          this.currentActiveDeck.addFlashcard(
-              new Flashcard(card.getQuestion(), card.getAnswer())
-          );
-      }
-        
-      this.currentDeckName = originalDeck.getDeckName();
-      
-      // Load the user data to get the correct deckManager
-      loadUserData();
-      
-      // Update the deck in the deckManager if it exists
-      if (deckManager != null){
-        boolean foundDeck = false;
-        for (int i = 0; i < deckManager.getDecks().size(); i++) {
-          FlashcardDeck deck = deckManager.getDecks().get(i);
-          if (deck.getDeckName().equals(originalDeck.getDeckName())) {
-            // Update existing deck instead of adding new one
+    if (originalDeck == null) return;
+
+    this.currentActiveDeck = new FlashcardDeck(originalDeck.getDeckName());
+    for (Flashcard card : originalDeck.getDeck()) {
+        this.currentActiveDeck.addFlashcard(new Flashcard(card.getQuestion(), card.getAnswer()));
+    }
+    this.currentDeckName = originalDeck.getDeckName();
+
+    loadUserData();
+
+    boolean foundDeck = false;
+    for (int i = 0; i < deckManager.getDecks().size(); i++) {
+        FlashcardDeck deck = deckManager.getDecks().get(i);
+        if (deck.getDeckName().equals(originalDeck.getDeckName())) {
             deckManager.getDecks().set(i, this.currentActiveDeck);
             foundDeck = true;
             break;
-          }
         }
-
-        // Only add if deck truly doesn't exist (this shouldn't happen when navigating from main)
-        if (!foundDeck) {
-          System.out.println("Warning: Deck not found in manager, this might indicate a problem");
-        }
-      }
-      updateUi();
     }
+    if (!foundDeck) {
+        // NEW: add when missing
+        deckManager.addDeck(this.currentActiveDeck);
+    }
+
+    saveUserData();
+    updateUi();
   }
 
   /**
@@ -262,7 +255,7 @@ public class FlashcardDeckController {
    * @throws IOException if the FXML file cannot be loaded
    */
   @FXML
-  private void whenBackButtonIsClicked() throws IOException {
+  public void whenBackButtonIsClicked() throws IOException {
     FXMLLoader loader = new FXMLLoader(getClass().getResource("FlashcardMainUI.fxml"));
     Parent root = loader.load();
     
@@ -284,7 +277,7 @@ public class FlashcardDeckController {
    * @author Claude (AI Assistant) - Javadoc documentation
    */
   @FXML
-  private void whenStartLearningButtonIsClicked() throws IOException {
+  public void whenStartLearningButtonIsClicked() throws IOException {
     FXMLLoader loader = new FXMLLoader(getClass().getResource("FlashcardPageUI.fxml"));
     Parent root = loader.load();
 
@@ -304,7 +297,8 @@ public class FlashcardDeckController {
    * Handles log out button click event.
    * Navigates back to the login screen.
    */
-  @FXML private void whenLogOut() {
+  @FXML 
+  public void whenLogOut() {
     try {
       // Save current user data before logging out
       saveUserData();
