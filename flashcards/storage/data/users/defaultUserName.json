@@ -1,55 +1,25 @@
 {
   "decks" : [ {
-    "deckName" : "thisfirstdeck",
+    "deckName" : "new deck 1",
     "flashcards" : [ {
       "number" : 1,
-      "question" : "question",
-      "answer" : "answer"
+      "question" : "question 1",
+      "answer" : "answer 2"
     }, {
       "number" : 2,
-      "question" : "tar inn et drit langt spm hmylord tar inn et drit langt spm hmylord",
-      "answer" : "tar inn et drit langt spm hmylord tar inn et drit langt spm hmylord"
+      "question" : "question 2",
+      "answer" : "answer 2"
     } ]
   }, {
-    "deckName" : "seconddeeeeck",
+    "deckName" : "new deck 2",
     "flashcards" : [ {
       "number" : 1,
-      "question" : "helloquestion",
-      "answer" : "helloanswer"
+      "question" : "question 1",
+      "answer" : "answer 1"
     }, {
       "number" : 2,
-      "question" : "andre",
-      "answer" : "svar 2"
-    }, {
-      "number" : 3,
-      "question" : "trede",
-      "answer" : "svar 3"
-    }, {
-      "number" : 4,
-      "question" : "fjerde",
-      "answer" : "svar 4"
-    }, {
-      "number" : 5,
-      "question" : "femte",
-      "answer" : "svar 5"
+      "question" : "question 2",
+      "answer" : "answer 2"
     } ]
-  }, {
-    "deckName" : "new",
-    "flashcards" : [ ]
-  }, {
-    "deckName" : "other",
-    "flashcards" : [ ]
-  }, {
-    "deckName" : "many",
-    "flashcards" : [ ]
-  }, {
-    "deckName" : "f",
-    "flashcards" : [ ]
-  }, {
-    "deckName" : "s",
-    "flashcards" : [ ]
-  }, {
-    "deckName" : "wer",
-    "flashcards" : [ ]
   } ]
 }
