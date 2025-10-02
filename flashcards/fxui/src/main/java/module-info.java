@@ -3,6 +3,8 @@ module flashcards.fxui {
   requires flashcards.storage;
   requires javafx.controls;
   requires javafx.fxml;
+  requires javafx.graphics;
+  requires javafx.base;
   
   opens ui to javafx.graphics, javafx.fxml;
 }

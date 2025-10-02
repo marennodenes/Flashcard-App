@@ -1,0 +1,138 @@
+@startuml class
+!theme plain
+skinparam monochrome true
+skinparam shadowing false
+!pragma layout smetana
+
+' Class diagram generated with assistance from Claude Sonnet 4 for field and method completion
+
+
+package core {
+
+    class Flashcard {
+        - String question
+        - String answer
+        - int correctAnswers
+        - int totalAnswers
+
+        + Flashcard(String question, String answer)
+        + String getQuestion()
+        + void setQuestion(String question)
+        + String getAnswer()
+        + void setAnswer(String answer)
+        + int getCorrectAnswers()
+        + void incrementCorrectAnswers()
+        + int getTotalAnswers()
+        + void incrementTotalAnswers()
+        + double getSuccessRate()
+        + String toString()
+        + boolean equals(Object obj)
+        + int hashCode()
+    }
+
+    class FlashcardDeck {
+        - String name
+        - List<Flashcard> flashcards
+
+        + FlashcardDeck(String name)
+        + String getName()
+        + void setName(String name)
+        + List<Flashcard> getFlashcards()
+        + void addFlashcard(Flashcard flashcard)
+        + void removeFlashcard(Flashcard flashcard)
+        + int size()
+        + boolean isEmpty()
+        + Flashcard getFlashcard(int index)
+        + String toString()
+        + boolean equals(Object obj)
+        + int hashCode()
+    }
+
+    class FlashcardDeckManager {
+        - List<FlashcardDeck> decks
+
+        + FlashcardDeckManager()
+        + List<FlashcardDeck> getDecks()
+        + void addDeck(FlashcardDeck deck)
+        + void removeDeck(FlashcardDeck deck)
+        + FlashcardDeck getDeck(String name)
+        + boolean hasDeck(String name)
+        + int size()
+        + boolean isEmpty()
+        + String toString()
+    }
+}
+
+package storage {
+    class FlashcardPersistent {
+        - ObjectMapper objectMapper
+
+        + FlashcardPersistent()
+        + void saveFlashcardDeckManager(FlashcardDeckManager manager, String username)
+        + FlashcardDeckManager loadFlashcardDeckManager(String username)
+        + boolean userExists(String username)
+        + void deleteUser(String username)
+        + List<String> getAllUsers()
+    }
+}
+
+package ui {
+    class FlashcardLoginController {
+        + void initialize()
+        + void whenLoginButtonClicked()
+        + void whenCreateNewUserButtonClicked()
+    }
+
+    class FlashcardMainController {
+        - String currentUsername
+        - FlashcardDeckManager manager
+
+        + void initialize()
+        + void setCurrentUsername(String username)
+        + void whenADeckIsClicked(FlashcardDeck deck)
+        + void whenCreateNewDeckButtonClicked()
+        + void whenDeleteDeckButtonClicked()
+        + void whenBackButtonClicked()
+    }
+
+    class FlashcardDeckController {
+        - String currentUsername
+        - FlashcardDeck currentDeck
+
+        + void initialize()
+        + void setCurrentUsername(String username)
+        + void setDeck(FlashcardDeck deck)
+        + void whenCreateNewFlashcardButtonClicked()
+        + void whenDeleteFlashcardButtonClicked()
+        + void whenStartLearningButtonClicked()
+        + void whenBackButtonClicked()
+    }
+
+    class FlashcardController {
+        - String currentUsername
+        - FlashcardDeck currentDeck
+        - int currentFlashcardIndex
+
+        + void initialize()
+        + void setCurrentUsername(String username)
+        + void setDeck(FlashcardDeck deck)
+        + void whenFlipButtonClicked()
+        + void whenNextButtonClicked()
+        + void whenPreviousButtonClicked()
+        + void whenCorrectButtonClicked()
+        + void whenIncorrectButtonClicked()
+        + void whenBackButtonClicked()
+    }
+}
+
+' Relationships
+FlashcardDeck "1" *-- "0..*" Flashcard : contains
+FlashcardDeckManager "1" *-- "0..*" FlashcardDeck : manages
+FlashcardPersistent ..> FlashcardDeckManager : persists/loads
+FlashcardMainController --> FlashcardDeckManager : uses
+FlashcardDeckController --> FlashcardDeck : uses
+FlashcardController --> FlashcardDeck : uses
+FlashcardMainController --> FlashcardPersistent : saves/loads
+FlashcardDeckController --> FlashcardPersistent : saves
+
+@enduml

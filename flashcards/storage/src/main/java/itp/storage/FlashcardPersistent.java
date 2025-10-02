@@ -1,97 +1,68 @@
 package itp.storage;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.FileWriter;
+import java.io.File;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.List;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
-import java.io.FileNotFoundException;
+import app.FlashcardDeckManager;
 
-
-import app.Flashcard;
-
+/**
+ * Handles saving and loading flashcard decks to/from JSON files.
+ */
 public class FlashcardPersistent {
 
-  private List<Flashcard> flashcards;
+  private final ObjectMapper objectMapper;
 
   public FlashcardPersistent() {
-    this.flashcards = new ArrayList<>();
+    this.objectMapper = new ObjectMapper();
   }
 
   /**
-   * Writes all flashcards to a CSV file using pipe (|) as delimiter.
-   * Creates a new file or overwrites existing file with current flashcard collection.
-   * Each flashcard is written as one line with format: question|answer
+   * Saves flashcard deck manager to JSON file.
    * 
-   * @throws IOException if an error occurs while writing to the file
+   * @param username the username for the filename
+   * @param deckManager the deck manager to save
+   * @throws IOException if saving fails
    */
-  public void writeToFile() {
-    String filePath = getFilePath();
+  public void writeDeck(String username, FlashcardDeckManager deckManager) throws IOException {
+    // Create data directory if it doesn't exist
+    File dataDir = new File(System.getProperty("user.dir") + "/../storage/data/users");
+    // if (!dataDir.exists()) {
+    //   boolean created = dataDir.mkdirs();
+    //   if (!created) {
+    //     throw new IOException("Failed to create data directory: " + dataDir.getAbsolutePath());
+    //   }
+    // } this would be triggered if the directory is missing
+    
+    File file = new File(dataDir, username + ".json");
+    objectMapper.writerWithDefaultPrettyPrinter().writeValue(file, deckManager);
+  }
 
-    try (FileWriter writer = new FileWriter(filePath, StandardCharsets.UTF_8)) {
-        for (Flashcard flashcard : flashcards) {
-            writer.write(flashcard.getQuestion() + " | " + flashcard.getAnswer() + "\n");
-        }
-    } catch (IOException e) {
-        e.printStackTrace();
+  /**
+   * Loads flashcard deck manager from JSON file.
+   * 
+   * @param username the username for the filename
+   * @return the deck manager, or new empty one if file doesn't exist
+   * @throws IOException if loading fails
+   */
+  public FlashcardDeckManager readDeck(String username) throws IOException {
+    
+    File file = new File(System.getProperty("user.dir") + "/../storage/data/users", username + ".json");    
+    if (file.exists()) {
+      return objectMapper.readValue(file, FlashcardDeckManager.class);
+    } else {
+      return new FlashcardDeckManager(); // Return empty for new setup
     }
   }
-
-
-  /**
-   * Reads flashcards from a CSV file and populates the flashcards collection.
-   * Expects each line to contain a flashcard in format: question|answer
-   * Splits lines using pipe (|) as delimiter and creates Flashcard objects.
-   * 
-   * @throws IOException if an error occurs while reading from the file
-   * @throws FileNotFoundException if the flashcards.csv file does not exist
-   */
-  public void readFromFile() {
-    try (BufferedReader reader = new BufferedReader(new FileReader(getFilePath(), StandardCharsets.UTF_8))) {
-        String line;
-        while ((line = reader.readLine()) != null) {
-            String[] parts = line.split("\\|");
-            if (parts.length == 2) {
-                Flashcard flashcard = new Flashcard(parts[0].trim(), parts[1].trim());
-                flashcards.add(flashcard);
-            }
-        }
-    } catch (IOException e) {
-        e.printStackTrace();
-    }
-  }
-
-  /**
-   * Adds a flashcard to the collection.
-   * 
-   * @param flashcard the flashcard to add
-   */
-  public void addFlashcard(Flashcard flashcard) {
-    flashcards.add(flashcard);
-  }
-
-  /**
-   * Gets all flashcards in the collection.
-   * 
-   * @return list of all flashcards
-   */
-  public List<Flashcard> getFlashcards() {
-    return new ArrayList<>(flashcards);
-  }
-
-  /**
-   * Clears all flashcards from the collection.
-   */
-  public void clearFlashcards() {
-    flashcards.clear();
-  }
-
-  private String getFilePath() {
-    return "flashcards.csv";
-  }
-
-}
   
+  /**
+   * Checks if flashcards file exists for a user.
+   * 
+   * @param username the username to check
+   * @return true if file exists
+   */
+  public boolean dataExists(String username) {
+    File file = new File(System.getProperty("user.dir") + "/../storage/data/users", username + ".json");
+    return file.exists();
+  }
+}
