@@ -24,7 +24,6 @@ import org.testfx.framework.junit5.ApplicationTest;
 
 import app.Flashcard;
 import app.FlashcardDeck;
-import app.FlashcardDeckManager;
 import itp.storage.FlashcardPersistent;
 import javafx.application.Platform;
 import javafx.collections.ObservableList;
@@ -51,7 +50,7 @@ public class FlashcardDeckControllerTest extends ApplicationTest {
     private TextField answerField;
     private ListView<Flashcard> listView;
     private Text username;
-    private TextField deckNameField;
+    // private TextField deckNameField;
     private Button startLearning;
     private Button deleteCardButton;
     private Button createButton;
@@ -162,21 +161,18 @@ public class FlashcardDeckControllerTest extends ApplicationTest {
      */
     @BeforeEach
     public void setUp() {
+        // Clean up any existing test data FIRST
+        cleanupTestData();
+        
+        // Reset controller to completely clean state
+        resetControllerState();
+        
+        // Verify we start with empty deck
         Platform.runLater(() -> {
-            // Clear all input fields
-            if (questionField != null) questionField.clear();
-            if (answerField != null) answerField.clear();
-            if (deckNameField != null) deckNameField.clear();
-            
-            // Reset controller state with clean test data
-            controller.setCurrentUsername(TEST_USERNAME);
-            FlashcardDeck cleanDeck = new FlashcardDeck(TEST_DECK_NAME);
-            controller.setDeck(cleanDeck);
+            assertEquals(0, listView.getItems().size(), 
+                        "Test should start with empty deck");
         });
         waitForJavaFX();
-        
-        // Clean up any existing test data
-        cleanupTestData();
     }
     
     /**
@@ -202,30 +198,72 @@ public class FlashcardDeckControllerTest extends ApplicationTest {
      */
     private void cleanupTestData() {
         try {
-            // Delete the JSON file for the test user
-            Path userDataPath = Paths.get("storage.data.users", TEST_USERNAME + ".json");
-            Files.deleteIfExists(userDataPath);
+            // Get the correct path to the storage directory
+            Path storageBase = Paths.get(System.getProperty("user.dir"))
+                .getParent() // go up from fxui
+                .resolve("storage/data/users");
             
-            // Also clean up the storage directory if it's empty
-            Path storageDir = Paths.get("storage.data.users");
-            if (Files.exists(storageDir) && Files.isDirectory(storageDir)) {
+            // Delete all test user files
+            String[] testUsers = {TEST_USERNAME, "newTestUser", "workflowTestUser", 
+                                "defaultUserName", "username", "myuser", "testUser", 
+                                "test_read", "firstuser", "newuser"};
+            
+            for (String user : testUsers) {
+                Path userDataPath = storageBase.resolve(user + ".json");
                 try {
-                    // Try to delete directory if empty (will fail silently if not empty)
-                    Files.deleteIfExists(storageDir);
+                    Files.deleteIfExists(userDataPath);
+                    System.out.println("Deleted test file: " + userDataPath);
                 } catch (Exception e) {
-                    // Directory not empty, that's fine
+                    System.err.println("Could not delete " + userDataPath + ": " + e.getMessage());
                 }
             }
             
-            // Reset controller with clean data on JavaFX thread
+            // Also clean up any remaining test files in storage directory
+            if (Files.exists(storageBase) && Files.isDirectory(storageBase)) {
+                try {
+                    Files.list(storageBase)
+                        .filter(path -> {
+                            String fileName = path.getFileName().toString().toLowerCase();
+                            return fileName.contains("test") || fileName.startsWith("new") || 
+                                   fileName.equals("username.json") || fileName.equals("myuser.json") ||
+                                   fileName.equals("defaultUserName.json");
+                        })
+                        .forEach(path -> {
+                            try {
+                                Files.deleteIfExists(path);
+                                System.out.println("Cleaned up test file: " + path);
+                            } catch (Exception e) {
+                                System.err.println("Could not clean up " + path + ": " + e.getMessage());
+                            }
+                        });
+                } catch (Exception e) {
+                    System.err.println("Could not list storage directory: " + e.getMessage());
+                }
+            }
+            
+            // Force reset controller state on JavaFX thread
             Platform.runLater(() -> {
-                FlashcardDeck cleanDeck = new FlashcardDeck(TEST_DECK_NAME);
-                controller.setDeck(cleanDeck);
-                controller.updateUi();
+                try {
+                    // Create completely fresh deck
+                    FlashcardDeck cleanDeck = new FlashcardDeck(TEST_DECK_NAME);
+                    controller.setDeck(cleanDeck);
+                    
+                    // Reset username
+                    controller.setCurrentUsername(TEST_USERNAME);
+                    
+                    // Force UI update
+                    controller.updateUi();
+                    
+                    // Clear input fields again
+                    if (questionField != null) questionField.clear();
+                    if (answerField != null) answerField.clear();
+                } catch (Exception e) {
+                    System.err.println("Warning: Could not reset controller state: " + e.getMessage());
+                }
             });
             waitForJavaFX();
             
-        } catch (IOException e) {
+        } catch (Exception e) {
             System.err.println("Warning: Could not clean up test data: " + e.getMessage());
         }
     }
@@ -263,9 +301,30 @@ public class FlashcardDeckControllerTest extends ApplicationTest {
     }
     
     /**
-     * Helper method to wait for JavaFX thread operations to complete.
-     * Uses CountDownLatch to ensure proper synchronization with JavaFX Application Thread.
+     * Helper method to completely reset the controller state to ensure clean tests
      */
+    private void resetControllerState() {
+        Platform.runLater(() -> {
+            try {
+                // Create completely clean deck with no flashcards
+                FlashcardDeck emptyDeck = new FlashcardDeck(TEST_DECK_NAME);
+                
+                // Set fresh state
+                controller.setCurrentUsername(TEST_USERNAME);
+                controller.setDeck(emptyDeck);
+                controller.updateUi();
+                
+                // Verify UI is in expected state
+                if (questionField != null) questionField.clear();
+                if (answerField != null) answerField.clear();
+                
+            } catch (Exception e) {
+                System.err.println("Error resetting controller state: " + e.getMessage());
+                e.printStackTrace();
+            }
+        });
+        waitForJavaFX();
+    }
     private void waitForJavaFX() {
         CountDownLatch latch = new CountDownLatch(1);
         Platform.runLater(latch::countDown);
@@ -301,9 +360,9 @@ public class FlashcardDeckControllerTest extends ApplicationTest {
         if (username != null) {
             assertNotNull(username, "Username field should be initialized");
         }
-        if (deckNameField != null) {
-            assertNotNull(deckNameField, "Deck name field should be initialized");
-        }
+        // if (deckNameField != null) {
+        //     assertNotNull(deckNameField, "Deck name field should be initialized");
+        // }
         if (startLearning != null) {
             assertNotNull(startLearning, "Start learning button should be initialized");
         }
@@ -400,23 +459,39 @@ public class FlashcardDeckControllerTest extends ApplicationTest {
      */
     @Test
     public void testCreateFlashcardWithEmptyInputs() {
-        // Try to create flashcard with empty question
+        // Test 1: Try to create flashcard with empty question but valid answer
+        Platform.runLater(() -> {
+            questionField.clear();
+            answerField.clear();
+        });
+        waitForJavaFX();
+        
         clickOn(answerField).write("Answer without question");
         Platform.runLater(() -> controller.whenCreateButtonIsClicked());
         waitForJavaFX();
         
         assertEquals(0, listView.getItems().size(), "Should not create flashcard with empty question");
         
-        // Clear and try with empty answer
-        clickOn(answerField).eraseText("Answer without question".length());
+        // Test 2: Try to create flashcard with valid question but empty answer
+        Platform.runLater(() -> {
+            questionField.clear();
+            answerField.clear();
+        });
+        waitForJavaFX();
+        
         clickOn(questionField).write("Question without answer");
         Platform.runLater(() -> controller.whenCreateButtonIsClicked());
         waitForJavaFX();
         
         assertEquals(0, listView.getItems().size(), "Should not create flashcard with empty answer");
         
-        // Try with both empty
-        clickOn(questionField).eraseText("Question without answer".length());
+        // Test 3: Try to create flashcard with both fields empty
+        Platform.runLater(() -> {
+            questionField.clear();
+            answerField.clear();
+        });
+        waitForJavaFX();
+        
         Platform.runLater(() -> controller.whenCreateButtonIsClicked());
         waitForJavaFX();
         
@@ -430,18 +505,14 @@ public class FlashcardDeckControllerTest extends ApplicationTest {
     @Test
     public void testDeleteFlashcard() {
         // First create some flashcards
-        Platform.runLater(() -> {
-            clickOn(questionField).write("Question 1");
-            clickOn(answerField).write("Answer 1");
-            controller.whenCreateButtonIsClicked();
-        });
+        clickOn(questionField).write("Question 1");
+        clickOn(answerField).write("Answer 1");
+        Platform.runLater(() -> controller.whenCreateButtonIsClicked());
         waitForJavaFX();
         
-        Platform.runLater(() -> {
-            clickOn(questionField).write("Question 2");
-            clickOn(answerField).write("Answer 2");
-            controller.whenCreateButtonIsClicked();
-        });
+        clickOn(questionField).write("Question 2");
+        clickOn(answerField).write("Answer 2");
+        Platform.runLater(() -> controller.whenCreateButtonIsClicked());
         waitForJavaFX();
         
         assertEquals(2, listView.getItems().size(), "Should have 2 flashcards before deletion");
