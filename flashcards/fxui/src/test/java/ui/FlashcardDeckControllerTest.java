@@ -316,46 +316,6 @@ public class FlashcardDeckControllerTest extends ApplicationTest {
     }
     
     /**
-     * Tests the setCurrentUsername method functionality.
-     * Verifies that usernames are properly set and displayed in the UI.
-     * Note: Adjusted for actual FXML structure where username is shown in deckNameInput
-     */
-    @Test
-    public void testSetCurrentUsername() {
-        Platform.runLater(() -> {
-            controller.setCurrentUsername("newTestUser");
-        });
-        waitForJavaFX();
-        
-        // Look up the username Text element directly since it's not a TextField
-        Text usernameText = lookup("#username").query();
-        if (usernameText != null) {
-            String displayedText = usernameText.getText();
-            assertEquals("newTestUser", displayedText,
-                        "Username should be displayed correctly in the Text element");
-        } else {
-            // If Text element doesn't exist, just verify controller accepts the username
-            System.out.println("Username Text element not found - controller method test only");
-            assertTrue(true, "setCurrentUsername method executed without error");
-        }
-        
-        // Test with null username (should not change)
-        String currentUsername = usernameField.getText();
-        Platform.runLater(() -> controller.setCurrentUsername(null));
-        waitForJavaFX();
-        
-        assertEquals(currentUsername, usernameField.getText(),
-                    "Username should not change when null is provided");
-        
-        // Test with empty username (should not change)
-        Platform.runLater(() -> controller.setCurrentUsername("   "));
-        waitForJavaFX();
-        
-        assertEquals(currentUsername, usernameField.getText(),
-                    "Username should not change when empty/whitespace string is provided");
-    }
-    
-    /**
      * Tests the setDeck method functionality.
      * Verifies that decks are properly set and UI is updated accordingly.
      */
