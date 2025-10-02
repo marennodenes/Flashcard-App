@@ -25,7 +25,7 @@ public class FlashcardDeckController {
   @FXML private TextField questionField;
   @FXML private TextField answerField;
   @FXML private ListView<Flashcard> listView;
-  @FXML private Text usernameField;
+  @FXML private Text username;
   @FXML private TextField deckNameField;
   @FXML private Button startLearning;
   @FXML private Button deleteCardButton;
@@ -145,7 +145,7 @@ public class FlashcardDeckController {
    * Shows all flashcards from the current deck in the ListView.
    */
   public void updateUi() {
-    usernameField.setText(currentUsername);
+    username.setText(currentUsername);
     FlashcardDeck currentDeck = getCurrentDeck();
     if (currentDeck != null) {
       ObservableList<Flashcard> ob = FXCollections.observableArrayList(currentDeck.getDeck());
@@ -206,7 +206,7 @@ public class FlashcardDeckController {
    * Switches to a different user's flashcard collection.
    */
   public void changeUser() {
-    String newUsername = usernameField.getText().trim();
+    String newUsername = username.getText().trim();
     if (!newUsername.isEmpty()) {
       currentUsername = newUsername;
       loadUserData();
@@ -217,25 +217,28 @@ public class FlashcardDeckController {
   /**
    * Changes deck name.
    * Updates the name of the current deck or creates a new deck if it doesn't exist.
+   * Note: Only works if deckNameField is present in the FXML.
    */
   public void changeDeck() {
-    String newDeckName = deckNameField.getText().trim();
-    if (!newDeckName.isEmpty()) {
-      FlashcardDeck currentDeck = getCurrentDeck();
-      
-      if (currentDeck != null) {
-        // Update existing deck name
-        currentDeck.setDeckName(newDeckName);
-      } else {
-        // Create new deck if it doesn't exist
-        FlashcardDeck newDeck = new FlashcardDeck();
-        newDeck.setDeckName(newDeckName);
-        deckManager.addDeck(newDeck);
+    if (deckNameField != null) {
+      String newDeckName = deckNameField.getText().trim();
+      if (!newDeckName.isEmpty()) {
+        FlashcardDeck currentDeck = getCurrentDeck();
+        
+        if (currentDeck != null) {
+          // Update existing deck name
+          currentDeck.setDeckName(newDeckName);
+        } else {
+          // Create new deck if it doesn't exist
+          FlashcardDeck newDeck = new FlashcardDeck();
+          newDeck.setDeckName(newDeckName);
+          deckManager.addDeck(newDeck);
+        }
+        
+        currentDeckName = newDeckName;
+        saveUserData();
+        updateUi();
       }
-      
-      currentDeckName = newDeckName;
-      saveUserData();
-      updateUi();
     }
   }
   
