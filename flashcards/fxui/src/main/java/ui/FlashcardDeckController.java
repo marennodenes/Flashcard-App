@@ -25,8 +25,7 @@ public class FlashcardDeckController {
   @FXML private TextField questionField;
   @FXML private TextField answerField;
   @FXML private ListView<Flashcard> listView;
-  @FXML private Text usernameField;
-  @FXML private TextField deckNameField;
+  @FXML private Text username;
   @FXML private Button startLearning;
   @FXML private Button deleteCardButton;
 
@@ -44,39 +43,32 @@ public class FlashcardDeckController {
    * @param originalDeck the deck to set as current
    */
   public void setDeck(FlashcardDeck originalDeck) {
-    if(originalDeck != null){
-      this.currentActiveDeck = new FlashcardDeck(originalDeck.getDeckName());
-      for (Flashcard card : originalDeck.getDeck()) {
-          this.currentActiveDeck.addFlashcard(
-              new Flashcard(card.getQuestion(), card.getAnswer())
-          );
-      }
-        
-      this.currentDeckName = originalDeck.getDeckName();
-      
-      // Load the user data to get the correct deckManager
-      loadUserData();
-      
-      // Update the deck in the deckManager if it exists
-      if (deckManager != null){
-        boolean foundDeck = false;
-        for (int i = 0; i < deckManager.getDecks().size(); i++) {
-          FlashcardDeck deck = deckManager.getDecks().get(i);
-          if (deck.getDeckName().equals(originalDeck.getDeckName())) {
-            // Update existing deck instead of adding new one
+    if (originalDeck == null) return;
+
+    this.currentActiveDeck = new FlashcardDeck(originalDeck.getDeckName());
+    for (Flashcard card : originalDeck.getDeck()) {
+        this.currentActiveDeck.addFlashcard(new Flashcard(card.getQuestion(), card.getAnswer()));
+    }
+    this.currentDeckName = originalDeck.getDeckName();
+
+    loadUserData();
+
+    boolean foundDeck = false;
+    for (int i = 0; i < deckManager.getDecks().size(); i++) {
+        FlashcardDeck deck = deckManager.getDecks().get(i);
+        if (deck.getDeckName().equals(originalDeck.getDeckName())) {
             deckManager.getDecks().set(i, this.currentActiveDeck);
             foundDeck = true;
             break;
-          }
         }
-
-        // Only add if deck truly doesn't exist (this shouldn't happen when navigating from main)
-        if (!foundDeck) {
-          System.out.println("Warning: Deck not found in manager, this might indicate a problem");
-        }
-      }
-      updateUi();
     }
+    if (!foundDeck) {
+        // NEW: add when missing
+        deckManager.addDeck(this.currentActiveDeck);
+    }
+
+    saveUserData();
+    updateUi();
   }
 
   /**
@@ -152,7 +144,7 @@ public class FlashcardDeckController {
    * Shows all flashcards from the current deck in the ListView.
    */
   public void updateUi() {
-    usernameField.setText(currentUsername);
+    username.setText(currentUsername);
     FlashcardDeck currentDeck = getCurrentDeck();
     if (currentDeck != null) {
       ObservableList<Flashcard> ob = FXCollections.observableArrayList(currentDeck.getDeck());
@@ -209,44 +201,6 @@ public class FlashcardDeckController {
   }
   
   /**
-   * Changes username and loads their data.
-   * Switches to a different user's flashcard collection.
-   */
-  public void changeUser() {
-    String newUsername = usernameField.getText().trim();
-    if (!newUsername.isEmpty()) {
-      currentUsername = newUsername;
-      loadUserData();
-      updateUi();
-    }
-  }
-
-  /**
-   * Changes deck name.
-   * Updates the name of the current deck or creates a new deck if it doesn't exist.
-   */
-  public void changeDeck() {
-    String newDeckName = deckNameField.getText().trim();
-    if (!newDeckName.isEmpty()) {
-      FlashcardDeck currentDeck = getCurrentDeck();
-      
-      if (currentDeck != null) {
-        // Update existing deck name
-        currentDeck.setDeckName(newDeckName);
-      } else {
-        // Create new deck if it doesn't exist
-        FlashcardDeck newDeck = new FlashcardDeck();
-        newDeck.setDeckName(newDeckName);
-        deckManager.addDeck(newDeck);
-      }
-      
-      currentDeckName = newDeckName;
-      saveUserData();
-      updateUi();
-    }
-  }
-  
-  /**
    * Clears the input fields.
    * Resets both question and answer text fields to empty.
    */
@@ -262,7 +216,7 @@ public class FlashcardDeckController {
    * @throws IOException if the FXML file cannot be loaded
    */
   @FXML
-  private void whenBackButtonIsClicked() throws IOException {
+  public void whenBackButtonIsClicked() throws IOException {
     FXMLLoader loader = new FXMLLoader(getClass().getResource("FlashcardMainUI.fxml"));
     Parent root = loader.load();
     
@@ -284,7 +238,7 @@ public class FlashcardDeckController {
    * @author Claude (AI Assistant) - Javadoc documentation
    */
   @FXML
-  private void whenStartLearningButtonIsClicked() throws IOException {
+  public void whenStartLearningButtonIsClicked() throws IOException {
     FXMLLoader loader = new FXMLLoader(getClass().getResource("FlashcardPageUI.fxml"));
     Parent root = loader.load();
 
@@ -304,7 +258,8 @@ public class FlashcardDeckController {
    * Handles log out button click event.
    * Navigates back to the login screen.
    */
-  @FXML private void whenLogOut() {
+  @FXML 
+  public void whenLogOut() {
     try {
       // Save current user data before logging out
       saveUserData();

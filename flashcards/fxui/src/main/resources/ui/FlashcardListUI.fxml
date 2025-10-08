@@ -41,7 +41,7 @@
          </font>
       </Button>
       <Text layoutX="185.0" layoutY="27.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="nameTag" text="username: " />
-      <Text fx:id="usernameField" layoutX="241.0" layoutY="27.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="nameField" text="..." wrappingWidth="80.57280347321964" />
+      <Text fx:id="username" layoutX="241.0" layoutY="27.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="nameField" text="..." wrappingWidth="80.57280347321964" />
       <Button fx:id="logOutButton" layoutX="324.0" layoutY="10.0" mnemonicParsing="false" onAction="#whenLogOut" prefHeight="27.0" prefWidth="73.0" text="Log out" />
       <Button id="back" fx:id="backButton" layoutX="332.0" layoutY="216.0" mnemonicParsing="false" onAction="#whenBackButtonIsClicked" prefHeight="39.0" prefWidth="66.0" text="Back">
          <font>

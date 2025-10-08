@@ -2,6 +2,13 @@
 
 In this first milestone we started the project. Our goals for this milestone were to build the base version of our app without significant logic working. We focused mainly on the modules in our project, and implementing a starting logic.
 
+## User stories
+
+The functionalities prioritised for the first release are based on these user stories:
+
+- As a user, I want to create a new deck, so that I can group related flashcards by subject.
+- As a user, I want to add a card with a question/term on one side and an answer/definition on the other, so that I can test myself later.
+
 ## Modules setup
 
 Currently we have made 3 different modules in our project

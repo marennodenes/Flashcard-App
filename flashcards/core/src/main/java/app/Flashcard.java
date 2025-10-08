@@ -1,8 +1,10 @@
 package app;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+
 /**
- * A flashcard with a question and answer.
+ * Represents a flashcard with a question and answer.
+ * Used for studying and learning purposes in the flashcard application.
  */
 public class Flashcard {
   @JsonProperty("number")
@@ -15,7 +17,7 @@ public class Flashcard {
   private String answer;
 
   public Flashcard(){
-    //for jackson
+    // Default constructor for Jackson JSON serialization
   }
 
   /**
@@ -30,6 +32,13 @@ public class Flashcard {
     this.number = 1;
   }
 
+  /**
+   * Creates a flashcard with number, question and answer.
+   * 
+   * @param number the flashcard number
+   * @param question the question text
+   * @param answer the answer text
+   */
   public Flashcard(int number, String question, String answer){
     this.number = number;
     this.question = question;
@@ -79,10 +88,20 @@ this.answer = answer;
     return answer;
   }
 
+  /**
+   * Gets the flashcard number.
+   * 
+   * @return the number of this flashcard
+   */
   public int getNumber(){
     return number;
   }
 
+  /**
+   * Sets the flashcard number.
+   * 
+   * @param number the number to assign to this flashcard
+   */
   public void setNumber(int number){
     this.number = number;
   }
