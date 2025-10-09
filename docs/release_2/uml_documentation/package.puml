@@ -1,0 +1,32 @@
+@startuml package
+!theme plain
+skinparam monochrome true
+skinparam shadowing false
+!pragma layout smetana
+title flashcards
+
+package "flashcards" {
+
+    package "core" {
+        [itp.core]
+    }
+    
+    package "fxui" {
+        [itp.fxui]
+    }
+
+
+    package "config" {
+        [itp.config]
+    }
+
+    package "storage" {
+        [itp.storage]
+    }
+}
+
+"itp.fxui" --> "itp.core" : "Dependent on"
+"itp.fxui" --> "itp.storage" : "Dependent on"
+"itp.storage" --> "itp.core" : "Dependent on"
+
+@enduml
