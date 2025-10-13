@@ -18,36 +18,9 @@ public class FlashcardPersistent implements UserPersistence {
 
     private final ObjectMapper objectMapper;
 
-<<<<<<< HEAD
     public FlashcardPersistent() {
         this.objectMapper = new ObjectMapper();
     }
-=======
-  public FlashcardPersistent() {
-    this.objectMapper = new ObjectMapper();
-  }
-
-  /**
-   * Saves flashcard deck manager to JSON file.
-   * 
-   * @param username the username for the filename
-   * @param deckManager the deck manager to save
-   * @throws IOException if saving fails
-   */
-  public void writeDeck(String username, FlashcardDeckManager deckManager) throws IOException {
-    // Create data directory if it doesn't exist
-    File dataDir = new File(System.getProperty("user.dir") + "/../storage/data/users");
-    // if (!dataDir.exists()) {
-    //   boolean created = dataDir.mkdirs();
-    //   if (!created) {
-    //     throw new IOException("Failed to create data directory: " + dataDir.getAbsolutePath());
-    //   }
-    // } this would be triggered if the directory is missing
-    
-    File file = new File(dataDir, username + ".json");
-    objectMapper.writerWithDefaultPrettyPrinter().writeValue(file, deckManager);
-  }
->>>>>>> origin/dev
 
     /**
      * Saves flashcard deck manager for a user while preserving credentials.
