@@ -13,6 +13,12 @@ import javafx.scene.control.TextField;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
+/**
+ * Controller for the flashcard sign-up page.
+ * Handles user registration with validation and navigation to the main application.
+ * @author @sofietw
+ * @author @ailinat
+ */
 public class FlashcardSignUpController {
   @FXML private Text alertMessage;
   @FXML private TextField usernameField;
@@ -24,12 +30,14 @@ public class FlashcardSignUpController {
   private String error = "";
   private LoginValidator loginValidator;
   
-  //initialize
+  /**
+   * Initializes the controller after FXML loading.
+   * Sets up the LoginValidator with persistence implementation and updates the UI.
+   */
   public void initialize() {
     // Initialize LoginValidator with persistence implementation
     loginValidator = new LoginValidator(new FlashcardPersistent());
     updateUi();
-
   }
 
   /**
@@ -44,19 +52,19 @@ public class FlashcardSignUpController {
     } else {
       alertMessage.setVisible(false);
     }
-
   }
 
-
-  /*
-   * Handles when sign in button is clicked
-   * 
+  /**
+   * Handles the sign-in button click event.
+   * Validates user input, checks for username uniqueness, verifies password confirmation,
+   * creates a new user account, and navigates to the main application on success.
+   * Shows appropriate error messages for validation failures.
    */
+  @FXML
   public void whenSignInButtonClicked() {
     String username = usernameField.getText().trim();
     String password = passwordField.getText().trim();
     String confirmedPassword = confirmPasswordField.getText().trim();
-
 
     // if username or password field is empty
     if (username.isEmpty() || password.isEmpty() || confirmedPassword.isEmpty()) {
@@ -94,8 +102,6 @@ public class FlashcardSignUpController {
     }
   }
 
-
-  
   /**
    * Navigates to the main flashcard application.
    * Loads the FlashcardMainUI and passes the username to the controller.
@@ -116,5 +122,4 @@ public class FlashcardSignUpController {
     stage.setScene(new Scene(root));
     stage.show();
   }
-
 }
