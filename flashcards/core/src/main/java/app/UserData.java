@@ -36,8 +36,15 @@ public class UserData {
                     @JsonProperty("deckManager") FlashcardDeckManager deckManager) {
         this.username = username;
         this.password = password;
-        if (deckManager == null) this.deckManager = new FlashcardDeckManager();
-        else this.deckManager = deckManager;
+        if (deckManager == null) {
+            this.deckManager = new FlashcardDeckManager();
+        } else {
+            // Create defensive copy to avoid storing externally mutable object
+            this.deckManager = new FlashcardDeckManager();
+            for (FlashcardDeck deck : deckManager.getDecks()) {
+                this.deckManager.addDeck(deck);
+            }
+        }
     }
 
     /**
