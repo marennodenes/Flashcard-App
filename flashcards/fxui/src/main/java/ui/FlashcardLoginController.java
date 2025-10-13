@@ -141,8 +141,6 @@ public class FlashcardLoginController {
     FXMLLoader loader = new FXMLLoader(getClass().getResource("FlashcardSignUpUI.fxml"));
     Parent root = loader.load();
 
-    FlashcardSignUpController signUpController = loader.getController();
-
     Stage stage = (Stage) signUpButton.getScene().getWindow();
     stage.setScene(new Scene(root));
     stage.show();
