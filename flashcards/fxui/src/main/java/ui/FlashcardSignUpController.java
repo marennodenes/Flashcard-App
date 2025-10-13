@@ -2,6 +2,8 @@ package ui;
 
 import java.io.IOException;
 
+import app.LoginValidator;
+import itp.storage.FlashcardPersistent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -10,28 +12,24 @@ import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
-import app.LoginValidator;
-import itp.storage.FlashcardPersistent;
 
-/**
- * Controller for the Flashcard Login UI.
- * Handles user login and account creation.
- */
-public class FlashcardLoginController {
+public class FlashcardSignUpController {
   @FXML private Text alertMessage;
-  @FXML private Button loginButton;
   @FXML private TextField usernameField;
   @FXML private TextField passwordField;
-  @FXML private Button signUpButton;
+  @FXML private TextField confirmPasswordField;
+  @FXML private Button signInButton;
 
   private boolean showAlert = false;
   private String error = "";
   private LoginValidator loginValidator;
-
+  
+  //initialize
   public void initialize() {
     // Initialize LoginValidator with persistence implementation
     loginValidator = new LoginValidator(new FlashcardPersistent());
     updateUi();
+
   }
 
   /**
@@ -49,72 +47,55 @@ public class FlashcardLoginController {
 
   }
 
-  /**
-   * Handles login button click event.
-   * Validates username and password fields, then navigates to main app if valid.
-   * Shows error message if fields are empty or invalid.
+
+  /*
+   * Handles when sign in button is clicked
+   * 
    */
-  public void whenLoginButtonClicked() {
+  public void whenSignInButtonClicked() {
     String username = usernameField.getText().trim();
     String password = passwordField.getText().trim();
+    String confirmedPassword = confirmPasswordField.getText().trim();
+
 
     // if username or password field is empty
-    if (username.isEmpty() || password.isEmpty()) {
-      error = "Username and password\ncannot be empty";
+    if (username.isEmpty() || password.isEmpty() || confirmedPassword.isEmpty()) {
+      error = "Username and password fields\ncannot be empty";
       showAlert = true;
       updateUi();
       return;
     }
 
-    // if user exists, authenticate password and open main app
-    else if (loginValidator.authenticateUser(username, password)) {
-      System.out.println("User authenticated: " + username);
-      try {
-        navigateToMainApp(username);
-      } catch (IOException e) {
-        error = "Failed to load main application";
-        showAlert = true;
-        updateUi();
-      }
+    // if user exists, give alert to user
+    else if (!loginValidator.isUsernameUnique(username)) {
+      System.out.println("Username already exists " + username);
+      error = "Username already exists,\ntry with another username";
+      showAlert = true;
+      updateUi(); 
     }
 
-    //TODO
-    // check if user exists, if not create new user and open main app
-    else if (loginValidator.createUser(username, password)) {
-      //her hopper den foreløpig inn
-      System.out.println("User created: " + username);
-      try {
-        navigateToMainApp(username);
-      } catch (IOException e) {
-        error = "Failed to load main application";
-        showAlert = true;
-        updateUi();
-      }
+    else if (!loginValidator.equalPasswords(password, confirmedPassword)) {
+      System.out.println("Passwords must be equal");
+      error = "Passwords must be equal";
+      showAlert = true;
+      updateUi(); 
     }
-    
-    // if user exists but password is wrong
+
+    // username is unique and passwords match, user is created and navigated to main app 
     else {
-      error = "Wrong password";
-      showAlert = true;
-      updateUi();
-      return;
+      if (loginValidator.createUser(username, password)) System.out.println("User created: " + username);
+      try {
+        navigateToMainApp(username);
+      } catch (IOException e) {
+        error = "Failed to load main application";
+        showAlert = true;
+        updateUi();
+      }
     }
-
   }
 
-  public void whenSignUpButtonClicked(){
-    try{
-      navigateToSignUpPage();
-    }
-    catch(IOException e){
-      error = "Failed to load signup page";
-      showAlert=true;
-      updateUi();
-    }
-    
 
-  }
-
+  
   /**
    * Navigates to the main flashcard application.
    * Loads the FlashcardMainUI and passes the username to the controller.
@@ -131,20 +112,9 @@ public class FlashcardLoginController {
     mainController.setCurrentUsername(username);
     
     // Switch to the main scene
-    Stage stage = (Stage) loginButton.getScene().getWindow();
+    Stage stage = (Stage) signInButton.getScene().getWindow();
     stage.setScene(new Scene(root));
     stage.show();
   }
 
-
-  private void navigateToSignUpPage() throws IOException{
-    FXMLLoader loader = new FXMLLoader(getClass().getResource("FlashcardSignUpUI.fxml"));
-    Parent root = loader.load();
-
-    FlashcardSignUpController signUpController = loader.getController();
-
-    Stage stage = (Stage) signUpButton.getScene().getWindow();
-    stage.setScene(new Scene(root));
-    stage.show();
-  }
 }

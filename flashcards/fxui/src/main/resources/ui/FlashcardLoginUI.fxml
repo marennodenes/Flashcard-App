@@ -34,12 +34,7 @@
       <Button fx:id="loginButton" layoutX="133.0" layoutY="212.0" mnemonicParsing="false" onAction="#whenLoginButtonClicked" prefHeight="32.0" prefWidth="62.0" text="Log in" />
       <Text fx:id="alertMessage" layoutX="223.0" layoutY="49.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="alerts" text="Alert" />
       <PasswordField fx:id="passwordField" layoutX="128.0" layoutY="167.0" prefHeight="31.0" prefWidth="165.0" />
-      <Button fx:id="loginButton1" layoutX="212.0" layoutY="212.0" mnemonicParsing="false" onAction="#whenLoginButtonClicked" prefHeight="32.0" prefWidth="73.0" text="Sign up">
-         <styleClass>
-            <String fx:value="signUpButton" />
-            <String fx:value="button" />
-         </styleClass>
-      </Button>
+      <Button fx:id="signUpButton" layoutX="212.0" layoutY="212.0" mnemonicParsing="false" onAction="#whenSignUpButtonClicked" prefHeight="32.0" prefWidth="73.0" text="Sign up" />
       <Text layoutX="128.0" layoutY="107.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="textForTitles" text="New user: click &quot;sign up&quot;" wrappingWidth="143.9228515625" />
    </children>
 </AnchorPane>
