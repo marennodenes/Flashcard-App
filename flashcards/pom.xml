@@ -10,6 +10,7 @@
         <module>core</module>
         <module>storage</module>
         <module>fxui</module>
+        <module>shared</module>
         
     </modules>
 
