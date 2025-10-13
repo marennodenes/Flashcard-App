@@ -41,6 +41,10 @@ public class LoginValidator {
         return !persistence.userExists(username);
     }
 
+    public boolean equalPasswords(String password, String confirmedPassword) {
+        return password.equals(confirmedPassword); 
+    }
+
     //adding password security here:
     public boolean authenticateUser(String username, String password) {
         User user = findUserByUsername(username);
