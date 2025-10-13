@@ -22,10 +22,6 @@
   -fx-font-size: 14;
 }
 
-#signUpButton {
-  -fx-background-color: #78989d;
-}
-
 .alerts {
   -fx-fill: #5c7b80;
   -fx-font-size: 13;

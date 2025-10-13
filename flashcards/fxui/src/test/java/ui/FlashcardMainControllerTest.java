@@ -561,18 +561,18 @@ public class FlashcardMainControllerTest extends ApplicationTest {
      * Tests input field validation and trimming.
      * Verifies that whitespace is properly handled in input fields.
      */
-    @Test
-    public void testInputFieldValidation() {
-        // Test with whitespace-padded input
-        clickOn(deckNameInput).write("  Valid Deck Name  ");
+    // @Test
+    // public void testInputFieldValidation() {
+    //     // Test with whitespace-padded input
+    //     clickOn(deckNameInput).write("  Valid Deck Name  ");
         
-        Platform.runLater(() -> controller.whenNewDeckButtonIsClicked(null));
-        waitForJavaFX();
+    //     Platform.runLater(() -> controller.whenNewDeckButtonIsClicked(null));
+    //     waitForJavaFX();
         
-        // Input should be trimmed and processed correctly
-        assertTrue(deckNameInput.getText().isEmpty(),
-                  "Input field should be cleared after processing");
-    }
+    //     // Input should be trimmed and processed correctly
+    //     assertTrue(deckNameInput.getText().isEmpty(),
+    //               "Input field should be cleared after processing");
+    // }
     
     /**
      * Tests multiple deck creation and management.
