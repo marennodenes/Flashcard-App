@@ -9,15 +9,12 @@ import java.util.Objects;
  */
 public class LoginValidator {
 
-  //when supresswarnings got added here it runs, but i am not sure that its the best solution..., so maybe go back and change this
-    @SuppressWarnings("EI_EXPOSE_REP2")
     private final UserPersistence persistence;
 
     /**
      * Creates a new LoginValidator with the specified persistence implementation.
      * @param persistence the persistence implementation to use
      */
-    @SuppressWarnings("CT_CONSTRUCTOR_THROW")
     public LoginValidator(UserPersistence persistence) {
         this.persistence = Objects.requireNonNull(persistence, "UserPersistence cannot be null");
     }

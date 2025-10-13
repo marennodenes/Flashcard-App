@@ -7,7 +7,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  * Combined data structure that holds both user credentials and flashcard data.
  * This prevents user credentials from being overwritten when flashcards are saved.
  */
-@SuppressWarnings({"EI_EXPOSE_REP", "EI_EXPOSE_REP2", "EI"})
 public class UserData {
     private String username;
     private String password;
@@ -49,19 +48,30 @@ public class UserData {
     }
 
     /**
-     * Returns the deck manager.
-     * Note: Returns direct reference for performance - caller should not modify.
+     * Returns a copy of the deck manager to prevent external modification.
+     * Creates a defensive copy to avoid exposing internal representation.
      */
     public FlashcardDeckManager getDeckManager() {
-        return deckManager;
+        FlashcardDeckManager copy = new FlashcardDeckManager();
+        for (FlashcardDeck deck : deckManager.getDecks()) {
+            copy.addDeck(deck);
+        }
+        return copy;
     }
 
     /**
-     * Sets the deck manager.
-     * Note: Stores direct reference for performance.
+     * Sets the deck manager using a defensive copy.
+     * Creates a copy to avoid storing externally mutable objects.
      */
     public void setDeckManager(FlashcardDeckManager deckManager) {
-        this.deckManager = deckManager;
+        if (deckManager == null) {
+            this.deckManager = new FlashcardDeckManager();
+        } else {
+            this.deckManager = new FlashcardDeckManager();
+            for (FlashcardDeck deck : deckManager.getDecks()) {
+                this.deckManager.addDeck(deck);
+            }
+        }
     }
 
     /**

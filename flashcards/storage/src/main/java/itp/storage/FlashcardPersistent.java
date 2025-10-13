@@ -135,7 +135,7 @@ public class FlashcardPersistent implements UserPersistence {
                 UserData userData = objectMapper.readValue(file, UserData.class);
                 System.out.println("DEBUG: Successfully read as UserData for: " + username);
                 return userData;
-            } catch (Exception e) {
+            } catch (IOException e) {
                 System.out.println("DEBUG: Failed to read as UserData, trying User format for: " + username);
                 
                 try {
@@ -143,7 +143,7 @@ public class FlashcardPersistent implements UserPersistence {
                     User user = objectMapper.readValue(file, User.class);
                     System.out.println("DEBUG: Successfully read as User, converting to UserData for: " + username);
                     return new UserData(user.getUsername(), user.getPassword());
-                } catch (Exception e2) {
+                } catch (IOException e2) {
                     System.out.println("DEBUG: Failed to read as User, trying FlashcardDeckManager for: " + username);
                     
                     try {
@@ -151,7 +151,7 @@ public class FlashcardPersistent implements UserPersistence {
                         FlashcardDeckManager deckManager = objectMapper.readValue(file, FlashcardDeckManager.class);
                         System.out.println("File exists but doesn't contain user credentials: " + username);
                         return null;
-                    } catch (Exception e3) {
+                    } catch (IOException e3) {
                         System.err.println("Failed to read user data for: " + username + " - " + e3.getMessage());
                         return null;
                     }
