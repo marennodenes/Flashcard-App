@@ -10,7 +10,13 @@ import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
+import app.LoginValidator;
+import itp.storage.FlashcardPersistent;
 
+/**
+ * Controller for the Flashcard Login UI.
+ * Handles user login and account creation.
+ */
 public class FlashcardLoginController {
   @FXML private Text alertMessage;
   @FXML private Button loginButton;
@@ -19,8 +25,11 @@ public class FlashcardLoginController {
 
   private boolean showAlert = false;
   private String error = "";
+  private LoginValidator loginValidator;
 
   public void initialize() {
+    // Initialize LoginValidator with persistence implementation
+    loginValidator = new LoginValidator(new FlashcardPersistent());
     updateUi();
   }
 
@@ -42,26 +51,55 @@ public class FlashcardLoginController {
   /**
    * Handles login button click event.
    * Validates username and password fields, then navigates to main app if valid.
-   * Shows error message if fields are empty.
+   * Shows error message if fields are empty or invalid.
    */
   public void whenLoginButtonClicked() {
     String username = usernameField.getText().trim();
     String password = passwordField.getText().trim();
 
+    // if username or password field is empty
     if (username.isEmpty() || password.isEmpty()) {
       error = "Username and password\ncannot be empty";
       showAlert = true;
       updateUi();
-    } else {
-      // Basic validation passed - proceed to main app
+      return;
+    }
+
+    // if user exists, authenticate password and open main app
+    else if (loginValidator.authenticateUser(username, password)) {
+      System.out.println("User authenticated: " + username);
       try {
         navigateToMainApp(username);
       } catch (IOException e) {
-        error = "Failed to load main app";
+        error = "Failed to load main application";
         showAlert = true;
         updateUi();
       }
     }
+
+    // check if user exists, if not create new user and open main app
+    else if (loginValidator.createUser(username, password)) {
+      //her hopper den foreløpig inn
+      System.out.println("User created: " + username);
+      try {
+        navigateToMainApp(username);
+      } catch (IOException e) {
+        error = "Failed to load main application";
+        showAlert = true;
+        updateUi();
+      }
+    }
+
+    
+
+    // if user exists but password is wrong
+    else {
+      error = "Wrong password";
+      showAlert = true;
+      updateUi();
+      return;
+    }
+
   }
 
   /**

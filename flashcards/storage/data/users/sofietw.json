@@ -1,0 +1,17 @@
+{
+  "username" : "sofietw",
+  "password" : "3YFYPAibFxnfT0gN+mPc9A==:+hu/wRoS1J/pNbQF5ZjxKpojXG/taEp1tW3rcj9ybXQ=",
+  "deckManager" : {
+    "decks" : [ {
+      "deckName" : "afaf",
+      "flashcards" : [ {
+        "number" : 1,
+        "question" : "adfadsf",
+        "answer" : "adsfadsf"
+      } ]
+    }, {
+      "deckName" : "asdfasg",
+      "flashcards" : [ ]
+    } ]
+  }
+}
