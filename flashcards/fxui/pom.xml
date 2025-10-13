@@ -30,6 +30,13 @@
             <artifactId>storage</artifactId>
             <version>${project.version}</version>
         </dependency>
+
+        <!-- Dependency on the shared module -->
+        <!-- <dependency>
+            <groupId>it1901</groupId>
+            <artifactId>shared</artifactId>
+            <version>${project.version}</version>
+        </dependency> -->
         
         <!-- JavaFX dependencies -->
         <dependency>
@@ -39,6 +46,16 @@
         <dependency>
             <groupId>org.openjfx</groupId>
             <artifactId>javafx-fxml</artifactId>
+        </dependency>
+
+        <!-- Jackson for JSON processing -->
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.datatype</groupId>
+            <artifactId>jackson-datatype-jsr310</artifactId>
         </dependency>
 
         <!-- Testing dependencies -->

@@ -1,11 +1,12 @@
 package ui;
 
 import java.io.IOException;
-
+// import java.net.http.HttpResponse;
+// import com.fasterxml.jackson.core.type.TypeReference;
 import app.Flashcard;
 import app.FlashcardDeck;
 import app.FlashcardDeckManager;
-import itp.storage.FlashcardPersistent;
+import itp.storage.FlashcardPersistent; //delete
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -30,7 +31,7 @@ public class FlashcardDeckController {
   @FXML private Button deleteCardButton;
 
   private FlashcardDeckManager deckManager;
-  private FlashcardPersistent storage;
+  private FlashcardPersistent storage; //delete
   private String currentUsername = "defaultUserName";
   private String currentDeckName = "defaultDeckName";
 
@@ -87,7 +88,7 @@ public class FlashcardDeckController {
    */
   @FXML 
   public void initialize() {
-    storage = new FlashcardPersistent();
+    storage = new FlashcardPersistent(); //delete 
     loadUserData();
 
     listView.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
@@ -110,6 +111,27 @@ public class FlashcardDeckController {
       deckManager = new FlashcardDeckManager();
     }
   }
+
+  // private void loadUserData() {
+  //   HttpResponse<String> response = APIClient.performRequest(
+  //     "http://localhost:8080/api/users/" + currentUsername + "/decks", 
+  //     "GET", 
+  //     null
+  //   );
+
+  //   if (response != null && response.statusCode() == 200) {
+  //     try {
+  //       // Parse når shared module er klar
+  //       // List<FlashcardDeckDTO> deckDTOs = APIClient.parseResponse(response.body(), ...);
+  //       // deckManager = convertFromDTOs(deckDTOs);
+  //       deckManager = new FlashcardDeckManager(); // Midlertidig
+  //     } catch (Exception e) {
+  //       deckManager = new FlashcardDeckManager();
+  //     }
+  //   } else {
+  //     deckManager = new FlashcardDeckManager();
+  //   }
+  // }
 
   /**
    * Gets the current active deck.
@@ -138,6 +160,19 @@ public class FlashcardDeckController {
       e.printStackTrace();
     }
   }
+
+  // private void saveUserData() {
+  //   HttpResponse<String> response = APIClient.performRequest(
+  //     "http://localhost:8080/api/users/" + currentUsername + "/decks", 
+  //     "PUT", 
+  //     deckManager  //convert to JSON
+  //   );
+
+  //   if (response == null || response.statusCode() != 200) {
+  //     // Kunne brukt APIClient.showAlert("Error", "Could not save data");
+  //     System.err.println("Failed to save deck data");
+  //   }
+  // }
 
   /**
    * Updates the flashcard list display.

@@ -255,5 +255,7 @@ public class FlashcardController {
     cardNumber.setText(Integer.toString(currentCardI + 1));
 
   }
+
+  
   
 }

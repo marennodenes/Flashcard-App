@@ -1,7 +1,8 @@
 package ui;
 
 import java.io.IOException;
-
+// import java.net.http.HttpResponse;
+// import com.fasterxml.jackson.core.type.TypeReference;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -63,6 +64,46 @@ public class FlashcardLoginController {
       }
     }
   }
+
+  // public void whenLoginButtonClicked() {
+  //   String username = usernameField.getText().trim();
+  //   String password = passwordField.getText().trim();
+
+  //   if (username.isEmpty() || password.isEmpty()) {
+  //       error = "Username and password\ncannot be empty";
+  //       showAlert = true;
+  //       updateUi();
+  //   } else {
+  //       // Send login request to server
+  //       HttpResponse<String> response = APIClient.performRequest(
+  //           "http://localhost:8080/api/auth/login", 
+  //           "POST", 
+  //           new LoginRequestDTO(username, password)  // from shared module
+  //       );
+
+  //       if (response != null && response.statusCode() == 200) {
+  //           try {
+  //               // Parse login response
+  //               LoginResponseDTO loginResponse = APIClient.parseResponse(
+  //                   response.body(), 
+  //                   new TypeReference<LoginResponseDTO>() {}
+  //               );
+                
+  //               // Store auth token if needed
+  //               // APIClient kunne ha en setAuthToken() metode
+                
+  //               navigateToMainApp(username);
+  //           } catch (Exception e) {
+  //               error = "Login failed";
+  //               showAlert = true;
+  //               updateUi();
+  //           }
+  //       } else {
+  //           error = "Invalid username or password";
+  //           showAlert = true;
+  //           updateUi();
+  //       }
+  //   }
 
   /**
    * Navigates to the main flashcard application.

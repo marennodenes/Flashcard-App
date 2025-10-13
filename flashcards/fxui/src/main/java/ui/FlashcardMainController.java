@@ -7,8 +7,8 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import app.FlashcardDeck;
-import itp.storage.FlashcardPersistent;
-
+import itp.storage.FlashcardPersistent; //delete
+// import java.net.http.HttpResponse;
 import java.io.IOException;
 import java.util.List;
 import app.FlashcardDeckManager;
@@ -50,7 +50,7 @@ public class FlashcardMainController {
 
   private FlashcardDeckManager deckManager = new FlashcardDeckManager();
   
-  private FlashcardPersistent storage = new FlashcardPersistent();
+  private FlashcardPersistent storage = new FlashcardPersistent(); //delete
   
   private String currentUsername = "defaultUserName";
   
@@ -148,6 +148,25 @@ public class FlashcardMainController {
     }
   }
 
+  // private void loadUserData() {
+  //   HttpResponse<String> response = APIClient.performRequest(
+  //     "http://localhost:8080/api/users/" + currentUsername + "/decks", 
+  //     "GET", 
+  //     null
+  //   );
+
+  //   if (response != null && response.statusCode() == 200) {
+  //     try {
+  //       List<FlashcardDeckDTO> deckDTOs = APIClient.parseResponse(response.body(), new TypeReference<List<FlashcardDeckDTO>>() {});
+  //       deckManager = convertFromDTOs(deckDTOs);
+  //     } catch (Exception e) {
+  //       deckManager = new FlashcardDeckManager();
+  //     }
+  //   } else {
+  //     deckManager = new FlashcardDeckManager();
+  //   }
+  // }
+
   /**
    * Saves user data to JSON file.
    * Persists the current deck manager state to the storage system.
@@ -160,6 +179,18 @@ public class FlashcardMainController {
       e.printStackTrace();
     }
   }
+
+//   private void saveUserData() {
+//     HttpResponse<String> response = APIClient.performRequest(
+//       "http://localhost:8080/api/users/" + currentUsername + "/decks", 
+//       "PUT", 
+//       deckManager  // APIClient converts to JSON
+//     );
+
+//     if (response == null || response.statusCode() != 200) {
+//       APIClient.showAlert("Error", "Could not save data");
+//     }
+// }
 
   /**
    * Sets the current username and loads their data.
