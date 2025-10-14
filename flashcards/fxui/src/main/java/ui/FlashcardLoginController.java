@@ -15,7 +15,10 @@ import itp.storage.FlashcardPersistent;
 
 /**
  * Controller for the Flashcard Login UI.
- * Handles user login and account creation.
+ * Handles user login.
+ * @author @marieroe
+ * @author @sofietw
+ * @author @ailinat
  */
 public class FlashcardLoginController {
   @FXML private Text alertMessage;
@@ -28,6 +31,10 @@ public class FlashcardLoginController {
   private String error = "";
   private LoginValidator loginValidator;
 
+  /**
+   * Initializes the controller after FXML loading.
+   * Sets up the LoginValidator with persistence implementation and updates the UI.
+   */
   public void initialize() {
     // Initialize LoginValidator with persistence implementation
     loginValidator = new LoginValidator(new FlashcardPersistent());
@@ -77,20 +84,6 @@ public class FlashcardLoginController {
         updateUi();
       }
     }
-
-    //TODO
-    // check if user exists, if not create new user and open main app
-    else if (loginValidator.createUser(username, password)) {
-      //her hopper den foreløpig inn
-      System.out.println("User created: " + username);
-      try {
-        navigateToMainApp(username);
-      } catch (IOException e) {
-        error = "Failed to load main application";
-        showAlert = true;
-        updateUi();
-      }
-    }
     
     // if user exists but password is wrong
     else {
@@ -102,6 +95,12 @@ public class FlashcardLoginController {
 
   }
 
+  /**
+   * Handles the sign-up button click event.
+   * Navigates to the sign-up page where users can create new accounts.
+   * Shows error message if the sign-up page fails to load.
+   */
+  @FXML
   public void whenSignUpButtonClicked(){
     try{
       navigateToSignUpPage();
@@ -111,8 +110,21 @@ public class FlashcardLoginController {
       showAlert=true;
       updateUi();
     }
-    
+  }
 
+  /**
+   * Navigates to the sign-up page.
+   * Loads the FlashcardSignUpUI FXML file and switches to the sign-up scene.
+   * 
+   * @throws IOException if the FXML file cannot be loaded
+   */
+  private void navigateToSignUpPage() throws IOException{
+    FXMLLoader loader = new FXMLLoader(getClass().getResource("FlashcardSignUpUI.fxml"));
+    Parent root = loader.load();
+
+    Stage stage = (Stage) signUpButton.getScene().getWindow();
+    stage.setScene(new Scene(root));
+    stage.show();
   }
 
   /**
@@ -132,18 +144,6 @@ public class FlashcardLoginController {
     
     // Switch to the main scene
     Stage stage = (Stage) loginButton.getScene().getWindow();
-    stage.setScene(new Scene(root));
-    stage.show();
-  }
-
-
-  private void navigateToSignUpPage() throws IOException{
-    FXMLLoader loader = new FXMLLoader(getClass().getResource("FlashcardSignUpUI.fxml"));
-    Parent root = loader.load();
-
-    FlashcardSignUpController signUpController = loader.getController();
-
-    Stage stage = (Stage) signUpButton.getScene().getWindow();
     stage.setScene(new Scene(root));
     stage.show();
   }
