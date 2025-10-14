@@ -1,4 +1,4 @@
-package shared;
+package dto;
 
 import java.util.List;
 import jakarta.validation.constraints.NotBlank;

@@ -1,6 +1,6 @@
-module flashcards.shared {
+module flashcards.dto {
   requires com.fasterxml.jackson.annotation;
   requires jakarta.validation;
   
-  exports shared;
+  exports dto;
 }
