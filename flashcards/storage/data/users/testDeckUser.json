@@ -1,0 +1,10 @@
+{
+  "username" : "testDeckUser",
+  "password" : null,
+  "deckManager" : {
+    "decks" : [ {
+      "deckName" : "Test Deck",
+      "flashcards" : [ ]
+    } ]
+  }
+}
