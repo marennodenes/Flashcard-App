@@ -22,13 +22,15 @@ public class FlashcardDeckManagerDto {
    */
   @Max(8)
   @JsonProperty("decks")
-  private List<FlashcardDeckDto> decks = new ArrayList<>();
+  private final List<FlashcardDeckDto> decks;
 
   /**
    * Default constructor for FlashcardDeckManagerDto.
    * Required for frameworks that use reflection, such as Jackson.
    */
-  public FlashcardDeckManagerDto() {}
+  public FlashcardDeckManagerDto() {
+    this.decks = new ArrayList<>();
+  }
 
   /**
    * Constructs a new FlashcardDeckManagerDto with the specified list of decks.
@@ -36,8 +38,9 @@ public class FlashcardDeckManagerDto {
    * @param decks the list of flashcard decks; must not exceed 8 decks
    */
   public FlashcardDeckManagerDto(List<FlashcardDeckDto> decks) {
-    this.decks = decks;
+    this.decks = List.copyOf(decks);
   }
+  
 
   /**
    * Gets the list of flashcard decks managed by this DTO.
@@ -45,15 +48,6 @@ public class FlashcardDeckManagerDto {
    * @return the list of flashcard decks
    */
   public List<FlashcardDeckDto> getDecks() {
-    return decks;
-  }
-
-  /**
-   * Sets the list of flashcard decks managed by this DTO.
-   *
-   * @param decks the new list of flashcard decks; must not exceed 8 decks
-   */
-  public void setDecks(List<FlashcardDeckDto> decks) {
-    this.decks = decks;
+    return new ArrayList<>(decks);
   }
 }
