@@ -18,7 +18,7 @@ public class LoginRequestDto {
      */
     @NotBlank
     @JsonProperty("username")
-    private String username;
+    private final String username;
     
     /**
      * The password of the user attempting to log in.
@@ -26,14 +26,7 @@ public class LoginRequestDto {
      */
     @NotBlank
     @JsonProperty("password")
-    private String password;
-    
-    /**
-     * Default constructor for LoginRequestDto.
-     * Required for frameworks that use reflection, such as Jackson.
-     */
-    public LoginRequestDto() {
-    }
+    private final String password;
     
     /**
      * Constructs a new LoginRequestDto with the specified username and password.
@@ -56,29 +49,11 @@ public class LoginRequestDto {
     }
     
     /**
-     * Sets the username of the user.
-     *
-     * @param username the new username of the user; must not be null or blank
-     */
-    public void setUsername(String username) {
-        this.username = username;
-    }
-    
-    /**
      * Gets the password of the user.
      *
      * @return the password of the user
      */
     public String getPassword() {
         return password;
-    }
-    
-    /**
-     * Sets the password of the user.
-     *
-     * @param password the new password of the user; must not be null or blank
-     */
-    public void setPassword(String password) {
-        this.password = password;
     }
 }

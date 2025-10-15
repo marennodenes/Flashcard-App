@@ -1,5 +1,6 @@
 package dto;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
@@ -16,28 +17,22 @@ public class LoginResponseDto {
      * Indicates whether the login was successful.
      */
     @JsonProperty("success")
-    private boolean success;
+    private final boolean success;
     
     /**
      * A message providing additional information about the login result.
      * For example: "Login successful" or "Invalid credentials".
      */
     @JsonProperty("message")
-    private String message;
+    private final String message;
     
     /**
      * The user data, included if login was successful.
      * Will be null if login failed.
      */
     @JsonProperty("userData")
-    private UserDataDto userData;
-    
-    /**
-     * Default constructor for LoginResponseDto.
-     * Required for frameworks that use reflection, such as Jackson.
-     */
-    public LoginResponseDto() {
-    }
+    private final UserDataDto userData;
+
     
     /**
      * Constructs a new LoginResponseDto with the specified success status, message, and user data.
@@ -46,7 +41,8 @@ public class LoginResponseDto {
      * @param message a message providing additional information about the login result
      * @param userData the user data if login was successful, null otherwise
      */
-    public LoginResponseDto(boolean success, String message, UserDataDto userData) {
+    @JsonCreator
+    public LoginResponseDto(@JsonProperty("success") boolean success, @JsonProperty("message") String message, @JsonProperty("userData") UserDataDto userData) {
         this.success = success;
         this.message = message;
         this.userData = userData;
@@ -61,14 +57,6 @@ public class LoginResponseDto {
         return success;
     }
     
-    /**
-     * Sets the success status of the login attempt.
-     *
-     * @param success true if login was successful, false otherwise
-     */
-    public void setSuccess(boolean success) {
-        this.success = success;
-    }
     
     /**
      * Gets the message providing additional information about the login result.
@@ -80,29 +68,11 @@ public class LoginResponseDto {
     }
     
     /**
-     * Sets the message providing additional information about the login result.
-     *
-     * @param message the new message about the login result
-     */
-    public void setMessage(String message) {
-        this.message = message;
-    }
-    
-    /**
      * Gets the user data if login was successful.
      *
      * @return the user data, or null if login failed
      */
     public UserDataDto getUserData() {
         return userData;
-    }
-    
-    /**
-     * Sets the user data.
-     *
-     * @param userData the user data to set
-     */
-    public void setUserData(UserDataDto userData) {
-        this.userData = userData;
     }
 }
