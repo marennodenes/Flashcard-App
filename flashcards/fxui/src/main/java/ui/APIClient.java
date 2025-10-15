@@ -30,7 +30,7 @@ import javafx.stage.Modality;
  * APIClient in Oddvar112’s ITP-Prosjekt/flightradar</a>.</p>
  *
  * @author marennod
- * @author marieroed
+ * @author marieroe
  */
 
 public final class APIClient {

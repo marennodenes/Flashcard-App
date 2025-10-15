@@ -141,11 +141,27 @@ public class FlashcardMainController {
   }
 
   /**
-   * Loads user data from REST API or creates new deck manager if loading fails.
-   * Attempts to read the user's flashcard deck collection from the server.
-   * If reading fails or server is unavailable, falls back to file-based storage.
+   * Loads user data from REST API or local storage.
+   * First attempts to retrieve the user's flashcard deck collection from the REST API.
+   * If the API call fails or returns an error, falls back to reading from local JSON storage.
+   * If both methods fail, creates a new empty deck manager.
    */
   private void loadUserData() {
+    // Try to load from API first
+    if (loadFromAPI()) {
+      return; // Successfully loaded from API
+    }
+    
+    // Fallback to local storage
+    loadFromLocalStorage();
+  }
+
+  /**
+   * Attempts to load deck data from the REST API.
+   * 
+   * @return true if successfully loaded from API, false otherwise
+   */
+  private boolean loadFromAPI() {
     try {
       HttpResponse<String> response = APIClient.performRequest(
         "http://localhost:8080/api/users/" + currentUsername + "/decks", 
@@ -156,17 +172,25 @@ public class FlashcardMainController {
       if (response != null && response.statusCode() == 200) {
         List<FlashcardDeckDto> deckDTOs = APIClient.parseResponse(response.body(), new TypeReference<List<FlashcardDeckDto>>() {});
         deckManager = convertFromDTOs(deckDTOs);
-      } else {
-        // Use file-based storage if API fails
-        deckManager = storage.readDeck(currentUsername);
+        return true; // Successfully loaded and parsed
       }
-    } catch (RuntimeException | java.io.IOException e) {
-      // Use file-based storage if API fails
-      try {
-        deckManager = storage.readDeck(currentUsername);
-      } catch (Exception ex) {
-        deckManager = new FlashcardDeckManager();
-      }
+    } catch (Exception e) {
+      System.err.println("API call failed: " + e.getMessage());
+    }
+    
+    return false; // Failed to load from API
+  }
+
+  /**
+   * Loads deck data from local storage as fallback.
+   * Creates empty deck manager if local storage also fails.
+   */
+  private void loadFromLocalStorage() {
+    try {
+      deckManager = storage.readDeck(currentUsername);
+    } catch (Exception e) {
+      System.err.println("Local storage fallback failed: " + e.getMessage());
+      deckManager = new FlashcardDeckManager();
     }
   }
 

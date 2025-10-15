@@ -3,7 +3,7 @@ package ui;
 import java.io.IOException;
 import java.net.http.HttpResponse;
 
-// import java.net.http.HttpResponse;
+import com.fasterxml.jackson.databind.ObjectMapper;
 // import com.fasterxml.jackson.core.type.TypeReference;
 // import com.fasterxml.jackson.core.type.TypeReference;
 // import dto.FlashcardDeckDto;
@@ -24,7 +24,23 @@ import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
 /**
- * Controller class for managing flashcard operations in the UI.
+ * Controller class for managing flashcard deck operations in the JavaFX UI.
+ * 
+ * <p>This controller handles the main deck management interface where users can:
+ * <ul>
+ *   <li>View and manage flashcards within a specific deck</li>
+ *   <li>Create new flashcards with questions and answers</li>
+ *   <li>Delete existing flashcards from the deck</li>
+ *   <li>Navigate to the learning interface to study flashcards</li>
+ *   <li>Save and load deck data using both REST API and local storage</li>
+ * </ul>
+ * 
+ * <p>The controller integrates with both remote API endpoints and local file storage
+ * for persistent data management, providing fallback mechanisms for offline usage.
+ * 
+ * @author chrsom
+ * @author marennod
+ * @author marieroe
  */
 public class FlashcardDeckController {
   @FXML private TextField questionField;
@@ -68,7 +84,6 @@ public class FlashcardDeckController {
         }
     }
     if (!foundDeck) {
-        // NEW: add when missing
         deckManager.addDeck(this.currentActiveDeck);
     }
 
@@ -102,11 +117,27 @@ public class FlashcardDeckController {
   }
 
   /**
-   * Loads user data from JSON file.
-   * Attempts to read the user's flashcard deck collection from persistent storage.
-   * If reading fails, creates a new empty deck manager.
+   * Loads user data from remote API or local storage.
+   * First attempts to retrieve the user's flashcard deck collection from the REST API.
+   * If the API call fails or returns an error, falls back to reading from local JSON storage.
+   * If both methods fail, creates a new empty deck manager.
    */
   private void loadUserData() {
+    // Try to load from API first
+    if (loadFromAPI()) {
+      return; // Successfully loaded from API
+    }
+    
+    // Fallback to local storage
+    loadFromLocalStorage();
+  }
+
+  /**
+   * Attempts to load deck data from the REST API.
+   * 
+   * @return true if successfully loaded from API, false otherwise
+   */
+  private boolean loadFromAPI() {
     try {
       HttpResponse<String> response = APIClient.performRequest(
         "http://localhost:8080/api/users/" + currentUsername + "/decks", 
@@ -115,18 +146,26 @@ public class FlashcardDeckController {
       );
 
       if (response != null && response.statusCode() == 200) {
-        // TODO: Parse DTO response when shared module is ready
-        // For now, fall through to local storage
+        ObjectMapper mapper = new ObjectMapper();
+        deckManager = mapper.readValue(response.body(), FlashcardDeckManager.class);
+        return true; // Successfully loaded and parsed
       }
-      // If API failed or succeeded but not parsed, use local storage fallback
     } catch (Exception e) {
-      // API call failed, continue to local storage fallback
+      System.err.println("API call failed: " + e.getMessage());
     }
     
-    // Common fallback: try local storage
+    return false; // Failed to load from API
+  }
+
+  /**
+   * Loads deck data from local storage as fallback.
+   * Creates empty deck manager if local storage also fails.
+   */
+  private void loadFromLocalStorage() {
     try {
       deckManager = storage.readDeck(currentUsername);
     } catch (Exception e) {
+      System.err.println("Local storage fallback failed: " + e.getMessage());
       deckManager = new FlashcardDeckManager();
     }
   }
@@ -147,32 +186,51 @@ public class FlashcardDeckController {
   }
 
   /**
-   * Saves user data to JSON file.
-   * Persists the current deck manager state to the storage system.
-   * Prints stack trace if an IOException occurs during saving.
+   * Saves user data to remote API or local storage.
+   * First attempts to save the deck manager to the REST API.
+   * If the API call fails or returns an error, falls back to saving to local JSON storage.
    */
   private void saveUserData() {
+    // Try to save to API first
+    if (saveToAPI()) {
+      return; // Successfully saved to API
+    }
+    
+    // Fallback to local storage
+    saveToLocalStorage();
+  }
+
+  /**
+   * Attempts to save deck data to the REST API.
+   * 
+   * @return true if successfully saved to API, false otherwise
+   */
+  private boolean saveToAPI() {
     try {
       HttpResponse<String> response = APIClient.performRequest(
         "http://localhost:8080/api/users/" + currentUsername + "/decks", 
         "PUT", 
-        deckManager  //convert to JSON
+        deckManager
       );
 
       if (response != null && response.statusCode() == 200) {
-        // Success - data saved to server
-        return;
-      } else {
-        // API failed, fallback to local storage
-        storage.writeDeck(currentUsername, deckManager);
+        return true; // Successfully saved to API
       }
     } catch (Exception e) {
-      // API call failed, use local storage
-      try {
-        storage.writeDeck(currentUsername, deckManager);
-      } catch (Exception ex) {
-        System.err.println("Failed to save deck data: " + ex.getMessage());
-      }
+      System.err.println("API save failed: " + e.getMessage());
+    }
+    
+    return false; // Failed to save to API
+  }
+
+  /**
+   * Saves deck data to local storage as fallback.
+   */
+  private void saveToLocalStorage() {
+    try {
+      storage.writeDeck(currentUsername, deckManager);
+    } catch (Exception e) {
+      System.err.println("Local storage save failed: " + e.getMessage());
     }
   }
 

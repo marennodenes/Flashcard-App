@@ -22,6 +22,7 @@ import app.FlashcardDeck;
 /**
  * Controller for the flashcard learning interface.
  * Handles navigation between cards, flipping animations, and progress tracking.
+ * @author marieroe
  */
 public class FlashcardController {
 
@@ -66,7 +67,6 @@ public class FlashcardController {
    * @param deck the flashcard deck to set for learning
    */
   public void setDeck(FlashcardDeck deck) {
-    // bug fix for spotbugs
     this.originalDeck = new FlashcardDeck(deck.getDeckName());
     for (Flashcard card : deck.getDeck()) {
         this.originalDeck.addFlashcard(new Flashcard(card.getQuestion(), card.getAnswer()));
