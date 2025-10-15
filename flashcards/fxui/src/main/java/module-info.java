@@ -16,5 +16,5 @@ module flashcards.fxui {
   
   // Exports the UI package to allow access from other modules
   opens ui to javafx.graphics, javafx.fxml;
-  // requires flashcards.shared;
+  requires flashcards.dto;
 }

@@ -1,8 +1,12 @@
 package ui;
 
 import java.io.IOException;
+import java.net.http.HttpResponse;
+
 // import java.net.http.HttpResponse;
 // import com.fasterxml.jackson.core.type.TypeReference;
+// import com.fasterxml.jackson.core.type.TypeReference;
+// import dto.FlashcardDeckDto;
 import app.Flashcard;
 import app.FlashcardDeck;
 import app.FlashcardDeckManager;
@@ -31,11 +35,11 @@ public class FlashcardDeckController {
   @FXML private Button deleteCardButton;
 
   private FlashcardDeckManager deckManager;
-  private FlashcardPersistent storage; //delete
   private String currentUsername = "defaultUserName";
   private String currentDeckName = "defaultDeckName";
 
   private FlashcardDeck currentActiveDeck;
+  private FlashcardPersistent storage = new FlashcardPersistent();
 
   /**
    * Sets the current deck to work with.
@@ -88,7 +92,6 @@ public class FlashcardDeckController {
    */
   @FXML 
   public void initialize() {
-    storage = new FlashcardPersistent(); //delete 
     loadUserData();
 
     listView.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
@@ -105,33 +108,28 @@ public class FlashcardDeckController {
    */
   private void loadUserData() {
     try {
+      HttpResponse<String> response = APIClient.performRequest(
+        "http://localhost:8080/api/users/" + currentUsername + "/decks", 
+        "GET", 
+        null
+      );
+
+      if (response != null && response.statusCode() == 200) {
+        // TODO: Parse DTO response when shared module is ready
+        // For now, fall through to local storage
+      }
+      // If API failed or succeeded but not parsed, use local storage fallback
+    } catch (Exception e) {
+      // API call failed, continue to local storage fallback
+    }
+    
+    // Common fallback: try local storage
+    try {
       deckManager = storage.readDeck(currentUsername);
-    } catch (IOException e) {
-      e.printStackTrace();
+    } catch (Exception e) {
       deckManager = new FlashcardDeckManager();
     }
   }
-
-  // private void loadUserData() {
-  //   HttpResponse<String> response = APIClient.performRequest(
-  //     "http://localhost:8080/api/users/" + currentUsername + "/decks", 
-  //     "GET", 
-  //     null
-  //   );
-
-  //   if (response != null && response.statusCode() == 200) {
-  //     try {
-  //       // Parse når shared module er klar
-  //       // List<FlashcardDeckDTO> deckDTOs = APIClient.parseResponse(response.body(), ...);
-  //       // deckManager = convertFromDTOs(deckDTOs);
-  //       deckManager = new FlashcardDeckManager(); // Midlertidig
-  //     } catch (Exception e) {
-  //       deckManager = new FlashcardDeckManager();
-  //     }
-  //   } else {
-  //     deckManager = new FlashcardDeckManager();
-  //   }
-  // }
 
   /**
    * Gets the current active deck.
@@ -155,24 +153,28 @@ public class FlashcardDeckController {
    */
   private void saveUserData() {
     try {
-      storage.writeDeck(currentUsername, deckManager);
-    } catch (IOException e) {
-      e.printStackTrace();
+      HttpResponse<String> response = APIClient.performRequest(
+        "http://localhost:8080/api/users/" + currentUsername + "/decks", 
+        "PUT", 
+        deckManager  //convert to JSON
+      );
+
+      if (response != null && response.statusCode() == 200) {
+        // Success - data saved to server
+        return;
+      } else {
+        // API failed, fallback to local storage
+        storage.writeDeck(currentUsername, deckManager);
+      }
+    } catch (Exception e) {
+      // API call failed, use local storage
+      try {
+        storage.writeDeck(currentUsername, deckManager);
+      } catch (Exception ex) {
+        System.err.println("Failed to save deck data: " + ex.getMessage());
+      }
     }
   }
-
-  // private void saveUserData() {
-  //   HttpResponse<String> response = APIClient.performRequest(
-  //     "http://localhost:8080/api/users/" + currentUsername + "/decks", 
-  //     "PUT", 
-  //     deckManager  //convert to JSON
-  //   );
-
-  //   if (response == null || response.statusCode() != 200) {
-  //     // Kunne brukt APIClient.showAlert("Error", "Could not save data");
-  //     System.err.println("Failed to save deck data");
-  //   }
-  // }
 
   /**
    * Updates the flashcard list display.

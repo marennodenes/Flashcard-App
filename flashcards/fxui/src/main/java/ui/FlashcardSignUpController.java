@@ -1,8 +1,10 @@
 package ui;
 
 import java.io.IOException;
+import java.net.http.HttpResponse;
 
 import app.LoginValidator;
+import dto.LoginRequestDto;
 import itp.storage.FlashcardPersistent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -56,9 +58,7 @@ public class FlashcardSignUpController {
 
   /**
    * Handles the sign-in button click event.
-   * Validates user input, checks for username uniqueness, verifies password confirmation,
-   * creates a new user account, and navigates to the main application on success.
-   * Shows appropriate error messages for validation failures.
+   * Validates user input and initiates the user registration process.
    */
   @FXML
   public void whenSignInButtonClicked() {
@@ -66,39 +66,131 @@ public class FlashcardSignUpController {
     String password = passwordField.getText().trim();
     String confirmedPassword = confirmPasswordField.getText().trim();
 
-    // if username or password field is empty
-    if (username.isEmpty() || password.isEmpty() || confirmedPassword.isEmpty()) {
-      error = "Username and password fields\ncannot be empty";
-      showAlert = true;
-      updateUi();
+    // Validate input fields
+    if (!validateInput(username, password, confirmedPassword)) {
       return;
     }
 
-    // if user exists, give alert to user
-    else if (!loginValidator.isUsernameUnique(username)) {
-      System.out.println("Username already exists " + username);
-      error = "Username already exists,\ntry with another username";
-      showAlert = true;
-      updateUi(); 
+    // Attempt to create user
+    createUser(username, password);
+  }
+
+  /**
+   * Validates user input fields.
+   * 
+   * @param username the entered username
+   * @param password the entered password
+   * @param confirmedPassword the confirmed password
+   * @return true if all validation passes, false otherwise
+   */
+  private boolean validateInput(String username, String password, String confirmedPassword) {
+    // Check for empty fields
+    if (username.isEmpty() || password.isEmpty() || confirmedPassword.isEmpty()) {
+      showError("Username and password fields\ncannot be empty");
+      return false;
     }
 
-    else if (!loginValidator.equalPasswords(password, confirmedPassword)) {
+    // Check if passwords match
+    if (!password.equals(confirmedPassword)) {
       System.out.println("Passwords must be equal");
-      error = "Passwords must be equal";
-      showAlert = true;
-      updateUi(); 
+      showError("Passwords must be equal");
+      return false;
     }
 
-    // username is unique and passwords match, user is created and navigated to main app 
-    else {
-      if (loginValidator.createUser(username, password)) System.out.println("User created: " + username);
+    return true;
+  }
+
+  /**
+   * Attempts to create a new user via REST API, with fallback to local storage.
+   * 
+   * @param username the username to create
+   * @param password the password for the user
+   */
+  private void createUser(String username, String password) {
+    try {
+      if (tryCreateUserViaAPI(username, password)) {
+        return; // Success via API
+      }
+      
+      // API failed, fall back to local storage
+      System.out.println("API failed, falling back to local storage");
+      createUserWithFallback(username, password);
+      
+    } catch (Exception e) {
+      // API call failed, fall back to local storage
+      System.out.println("API error, falling back to local storage: " + e.getMessage());
+      createUserWithFallback(username, password);
+    }
+  }
+
+  /**
+   * Try to create user via REST API
+   * @param username the username for the new user
+   * @param password the password for the user
+   * @return true if user was successfully created via API, false if API call failed
+   */
+  private boolean tryCreateUserViaAPI(String username, String password) {
+    HttpResponse<String> response = APIClient.performRequest(
+      "http://localhost:8080/api/users/register", 
+      "POST", 
+      new LoginRequestDto(username, password)
+    );
+
+    if (response != null && response.statusCode() == 201) {
+      // User created successfully via API
+      System.out.println("User created via API: " + username);
       try {
         navigateToMainApp(username);
+        return true;
       } catch (IOException e) {
-        error = "Failed to load main application";
-        showAlert = true;
-        updateUi();
+        showError("Failed to load main application");
+        return false;
       }
+    } else if (response != null && response.statusCode() == 409) {
+      // Username already exists
+      showError("Username already exists,\ntry with another username");
+      return false;
+    }
+    
+    // API call failed or returned unexpected status
+    return false;
+  }
+
+  /**
+   * Shows an error message to the user.
+   * 
+   * @param message the error message to display
+   */
+  private void showError(String message) {
+    error = message;
+    showAlert = true;
+    updateUi();
+  }
+
+  /**
+   * Creates user using local storage as fallback when API is unavailable.
+   * 
+   * @param username the username to create
+   * @param password the password for the user
+   */
+  private void createUserWithFallback(String username, String password) {
+    try {
+      // Check if user exists locally
+      if (!loginValidator.isUsernameUnique(username)) {
+        System.out.println("Username already exists " + username);
+        showError("Username already exists,\ntry with another username");
+        return;
+      }
+
+      // Create user locally
+      if (loginValidator.createUser(username, password)) {
+        System.out.println("User created locally: " + username);
+        navigateToMainApp(username);
+      } else {
+        showError("Failed to create user account");
+      }
+    } catch (IOException e) {
+      showError("Failed to load main application");
     }
   }
 

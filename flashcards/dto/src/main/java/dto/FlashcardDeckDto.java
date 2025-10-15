@@ -39,7 +39,7 @@ public class FlashcardDeckDto {
    */
   public FlashcardDeckDto(String deckName, List<FlashcardDto> deck) {
     this.deckName = deckName;
-    this.deck = deck;
+    this.deck = deck == null ? null : new java.util.ArrayList<>(deck);
   }
 
   /**
@@ -66,7 +66,7 @@ public class FlashcardDeckDto {
    * @return the list of flashcards in the deck
    */
   public List<FlashcardDto> getDeck() {
-    return deck;
+    return deck == null ? null : new java.util.ArrayList<>(deck);
   }
 
   /**
@@ -75,6 +75,6 @@ public class FlashcardDeckDto {
    * @param deck the new list of flashcards in the deck; must contain at least one flashcard
    */
   public void setDeck(List<FlashcardDto> deck) {
-    this.deck = deck;
+    this.deck = deck == null ? null : new java.util.ArrayList<>(deck);
   }
 }
