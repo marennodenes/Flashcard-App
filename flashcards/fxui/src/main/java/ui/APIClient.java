@@ -101,14 +101,14 @@ public final class APIClient {
      * 
      * <p>Example usage:
      * <pre>{@code
-     * List<FlashcardDTO> flashcards = parseResponse(jsonString, 
-     *     new TypeReference<List<FlashcardDTO>>() {});
+     * List<FlashcardDto> flashcards = parseResponse(jsonString, 
+     *     new TypeReference<List<FlashcardDto>>() {});
      * }</pre>
      *
      * @param <T> The type of the object to be returned.
      * @param json The JSON string to deserialize. Must be valid JSON.
      * @param typeReference The {@code TypeReference} indicating the type of the target object.
-     *                      Use this for generic types like {@code List<FlashcardDTO>}.
+     *                      Use this for generic types like {@code List<FlashcardDto>}.
      * @return The deserialized object of type T.
      * @throws JsonProcessingException If an error occurs during JSON deserialization,
      *                                such as malformed JSON or type mismatch.
@@ -123,7 +123,7 @@ public final class APIClient {
      * 
      * <p>Example usage:
      * <pre>{@code
-     * FlashcardDTO flashcard = new FlashcardDTO("Question", "Answer");
+     * FlashcardDto flashcard = new FlashcardDto("Question", "Answer");
      * String json = convertObjectToJson(flashcard);
      * }</pre>
      *

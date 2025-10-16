@@ -17,13 +17,6 @@
     <packaging>jar</packaging>
     
     <dependencies>
-        <!-- Dependency on the core module -->
-        <dependency>
-            <groupId>it1901</groupId>
-            <artifactId>core</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        
         <!-- Dependency on the storage module -->
         <dependency>
             <groupId>it1901</groupId>
