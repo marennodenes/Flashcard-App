@@ -24,7 +24,8 @@ All public classes and methods are documented using **Javadoc** comments. Our do
 - **Return value documentation**: What the method returns and under what conditions
 - **Usage examples**: Where appropriate, showing how to use complex methods
 
-Example of our Javadoc standard:
+Example of our Javadoc standard
+
 ```java
 /**
  * Sets the current deck and updates the UI to display its flashcards.
@@ -90,4 +91,3 @@ We continuously improve code quality through:
 - Maintaining consistent coding standards across the team
 
 This comprehensive approach to code quality ensures our flashcard application is maintainable, reliable, and easy to understand for future development.
-
