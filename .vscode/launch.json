@@ -6,6 +6,13 @@
   "configurations": [
     {
       "type": "java",
+      "name": "ServerApplication",
+      "request": "launch",
+      "mainClass": "flashcards.server/server.ServerApplication",
+      "projectName": "server"
+    },
+    {
+      "type": "java",
       "name": "FlashcardApp",
       "request": "launch",
       "mainClass": "flashcards.core/ui.FlashcardApp"
