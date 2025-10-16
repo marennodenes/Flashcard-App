@@ -8,8 +8,20 @@
       "type": "java",
       "name": "ServerApplication",
       "request": "launch",
-      "mainClass": "flashcards.server/server.ServerApplication",
-      "projectName": "server"
+      "mainClass": "server.ServerApplication",
+      "projectName": "server",
+      "vmArgs": [
+        "--add-reads",
+        "flashcards.server=ALL-UNNAMED",
+        "--add-opens",
+        "flashcards.server/server=ALL-UNNAMED",
+        "--add-opens",
+        "flashcards.server/server.controller=ALL-UNNAMED",
+        "--add-opens",
+        "flashcards.server/server.service=ALL-UNNAMED",
+        "--add-opens",
+        "java.base/java.lang=ALL-UNNAMED"
+      ]
     },
     {
       "type": "java",
