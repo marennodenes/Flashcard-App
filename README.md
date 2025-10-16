@@ -30,10 +30,12 @@ To build all modules and run tests:
 ## Running the application
 
 ### Method 1: Maven
+
 1. Navigate to the UI module: `cd flashcards/fxui`
 2. Run the application: `mvn javafx:run`
 
 ### Method 2: VS Code
+
 Use the configured task "Run JavaFX App" from the VS Code command palette.
 
 ## Code structure
@@ -51,10 +53,12 @@ This structure helps separate concerns and makes the project easy to navigate.
 
 ## App design
 
+```html
 <img src="images/FlashcardLogin_release2.png" alt="Login interface" width="400">
 <img src="images/FlashcardMain_release2.png" alt="Main dashboard" width="400">
 <img src="images/FlashcardList_release2.png" alt="Deck management" width="400">
 <img src="images/FlashcardPage_release2.png" alt="Learning interface" width="400">
+```
 
 ## Dependencies
 
@@ -81,9 +85,11 @@ After running `mvn test`, you can generate test coverage reports via JaCoCo:
 - **fxui**: Instruction Coverage: 90% | Branch Coverage: 81%  
 - **storage**: Instruction Coverage: 100% | Branch Coverage: 100%
 
+```html
 <img src="images/jaCoCo/coreJaCoCo.png" alt="Core module JaCoCo coverage" width="600">
 <img src="images/jaCoCo/fxuiJaCoCo.png" alt="FXUI module JaCoCo coverage" width="600">
 <img src="images/jaCoCo/storageJaCoCo.png" alt="Storage module JaCoCo coverage" width="600">
+```
 
 Current coverage targets focus on core business logic and critical user workflows.
 
