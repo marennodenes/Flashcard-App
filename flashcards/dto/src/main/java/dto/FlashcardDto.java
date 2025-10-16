@@ -67,20 +67,21 @@ public class FlashcardDto {
   }
 
   /**
-   * Sets the question on the flashcard.
-   *
-   * @param question the new question on the flashcard; must not be null or blank
-   */
-  public void setQuestion(String question) {
-    this.question = question;
-  }
-
-  /**
    * Gets the answer on the flashcard.
    *
    * @return the answer on the flashcard
    */
   public String getAnswer() {
     return answer;
+  }
+
+
+  /**
+   * Gets the unique number of the flashcard.
+   *
+   * @return the unique number of the flashcard
+   */
+  public int getNumber() {
+    return number;
   }
 }

@@ -21,7 +21,7 @@ public class FlashcardDeckDto {
    */
   @NotBlank
   @JsonProperty("deckName")
-  private String deckName;
+  private final String deckName;
 
   /**
    * The list of flashcards in the deck.
@@ -29,7 +29,7 @@ public class FlashcardDeckDto {
    */
   @Min(1)
   @JsonProperty("flashcards")
-  private List<FlashcardDto> deck;
+  private final List<FlashcardDto> deck;
 
   /**
    * Constructs a new FlashcardDeckDto with the specified deck name and list of flashcards.
@@ -51,14 +51,6 @@ public class FlashcardDeckDto {
     return deckName;
   }
 
-  /**
-   * Sets the name of the flashcard deck.
-   *
-   * @param deckName the new name of the flashcard deck; must not be null or blank
-   */
-  public void setDeckName(String deckName) {
-    this.deckName = deckName;
-  }
 
   /**
    * Gets the list of flashcards in the deck.

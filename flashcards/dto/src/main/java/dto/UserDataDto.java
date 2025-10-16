@@ -3,6 +3,7 @@ package dto;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import jakarta.validation.constraints.Min;
@@ -24,7 +25,7 @@ public class UserDataDto {
    */
   @NotBlank
   @JsonProperty("username")
-  private String username;
+  private final String username;
 
   /**
    * The password of the user.
@@ -33,7 +34,7 @@ public class UserDataDto {
    */
   @NotBlank
   @JsonProperty("password")
-  private String password;
+  private final String password;
 
   /**
    * The flashcard deck manager associated with the user.
@@ -41,13 +42,9 @@ public class UserDataDto {
    */
   @Min(1)
   @JsonProperty("deckManager")
-  private List<FlashcardDeckManagerDto> deckManager = new ArrayList<>();
+  private final List<FlashcardDeckManagerDto> deckManager;
+  
 
-  /**
-   * Default constructor for UserDataDto.
-   * Required for frameworks that use reflection, such as Jackson.
-   */
-  public UserDataDto() {}
 
   /**
    * Constructs a new UserDataDto with the specified username and password.
@@ -59,6 +56,7 @@ public class UserDataDto {
   public UserDataDto(String username, String password) {
     this.username = username;
     this.password = password;
+    this.deckManager = new ArrayList<>();
   }
 
   /**
@@ -68,9 +66,22 @@ public class UserDataDto {
    * @param password the password of the user; must not be null or blank
    * @param decks the list of flashcard decks associated with the user
    */
-  public UserDataDto(String username, String password, List<FlashcardDeckDto> decks) {
+  @JsonCreator
+  public UserDataDto(@JsonProperty("username") String username, 
+                    @JsonProperty("password") String password, 
+                    @JsonProperty("deckManager") List<FlashcardDeckManagerDto> decks) {
     this.username = username;
     this.password = password;
+
+    if (decks == null) {
+      this.deckManager = new ArrayList<>();
+    } else {
+      List<FlashcardDeckManagerDto> copied = new ArrayList<>();
+      for (FlashcardDeckManagerDto deck : decks) {
+        copied.add(new FlashcardDeckManagerDto(deck.getDecks()));
+      }
+      this.deckManager = copied;
+    }
   }
 
   /**
@@ -82,14 +93,6 @@ public class UserDataDto {
     return username;
   }
 
-  /**
-   * Sets the username of the user.
-   *
-   * @param username the new username of the user
-   */
-  public void setUsername(String username) {
-    this.username = username;
-  }
 
   /**
    * Gets the password of the user.
@@ -101,29 +104,15 @@ public class UserDataDto {
   }
 
   /**
-   * Sets the password of the user.
-   *
-   * @param password the new password of the user
-   */
-  public void setPassword(String password) {
-    this.password = password;
-  }
-
-  /**
    * Gets the flashcard deck manager associated with the user.
    *
    * @return the list of flashcard deck managers
    */
   public List<FlashcardDeckManagerDto> getDeckManager() {
-    return deckManager;
-  }
-
-  /**
-   * Sets the flashcard deck manager associated with the user.
-   *
-   * @param deckManager the new list of flashcard deck managers
-   */
-  public void setDeckManager(List<FlashcardDeckManagerDto> deckManager) {
-    this.deckManager = deckManager;
+    List<FlashcardDeckManagerDto> copy = new ArrayList<>();
+    for (FlashcardDeckManagerDto manager : deckManager) {
+      copy.add(new FlashcardDeckManagerDto(manager.getDecks()));
+    }
+    return copy;
   }
 }
