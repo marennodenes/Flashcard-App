@@ -9,6 +9,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 
+import app.User;
+
 /**
  * A Data Transfer Object (DTO) representing user data.
  * This class is used to transfer user-related data, including username, password,

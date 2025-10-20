@@ -30,6 +30,13 @@
 
   <dependencies>
 
+    <!-- Internal dependencies -->
+    <dependency>
+      <groupId>it1901</groupId>
+      <artifactId>core</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+
     <!-- Jackson JSON -->
     <dependency>
       <groupId>com.fasterxml.jackson.core</groupId>
