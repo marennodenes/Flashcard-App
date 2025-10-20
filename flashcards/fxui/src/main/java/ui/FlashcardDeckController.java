@@ -19,7 +19,9 @@ import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
 /**
- * Controller class for managing flashcard operations in the UI.
+ * Controller for managing individual flashcard deck operations.
+ * Handles adding, deleting, and viewing flashcards within a specific deck.
+ * Provides navigation to the learning interface and back to the main deck list.
  */
 public class FlashcardDeckController {
   @FXML private TextField questionField;
@@ -34,40 +36,77 @@ public class FlashcardDeckController {
   private String currentUsername = "defaultUserName";
   private String currentDeckName = "defaultDeckName";
 
-  private FlashcardDeck currentActiveDeck;
+  /**
+   * Initializes the controller after FXML loading.
+   * Sets up the storage implementation, configures ListView selection listeners,
+   * and updates the initial UI state.
+   */
+  @FXML 
+  public void initialize() {
+    storage = new FlashcardPersistent();
+    
+    // Enable delete button only when a card is selected
+    listView.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+      deleteCardButton.setDisable(newValue == null);
+    });
+    
+    updateUi();
+  }
 
   /**
-   * Sets the current deck to work with.
-   * Creates a defensive copy of the deck to avoid external modifications.
-   * 
-   * @param originalDeck the deck to set as current
+   * Updates the flashcard list display.
+   * Shows all flashcards from the current deck in the ListView.
    */
-  public void setDeck(FlashcardDeck originalDeck) {
-    if (originalDeck == null) return;
-
-    this.currentActiveDeck = new FlashcardDeck(originalDeck.getDeckName());
-    for (Flashcard card : originalDeck.getDeck()) {
-        this.currentActiveDeck.addFlashcard(new Flashcard(card.getQuestion(), card.getAnswer()));
+  public void updateUi() {
+    username.setText(currentUsername);
+    
+    // Check if we have a deck manager and current deck
+    if (deckManager == null) {
+      // No data loaded yet, show empty state
+      listView.setItems(FXCollections.observableArrayList());
+      startLearning.setDisable(true);
+      deleteCardButton.setDisable(true);
+      clearInputFields();
+      return;
     }
-    this.currentDeckName = originalDeck.getDeckName();
-
-    loadUserData();
-
-    boolean foundDeck = false;
-    for (int i = 0; i < deckManager.getDecks().size(); i++) {
-        FlashcardDeck deck = deckManager.getDecks().get(i);
-        if (deck.getDeckName().equals(originalDeck.getDeckName())) {
-            deckManager.getDecks().set(i, this.currentActiveDeck);
-            foundDeck = true;
-            break;
-        }
-    }
-    if (!foundDeck) {
-        // NEW: add when missing
-        deckManager.addDeck(this.currentActiveDeck);
+    
+    FlashcardDeck currentDeck = getCurrentDeck();
+    if (currentDeck != null) {
+      ObservableList<Flashcard> ob = FXCollections.observableArrayList(currentDeck.getDeck());
+      listView.setItems(ob);
+      startLearning.setDisable(currentDeck.getDeck().isEmpty());
+    } else {
+      listView.setItems(FXCollections.observableArrayList());
+      startLearning.setDisable(true);
     }
 
-    saveUserData();
+    deleteCardButton.setDisable(listView.getSelectionModel().getSelectedItem() == null);
+
+    clearInputFields();
+  }
+
+  /**
+   * Sets the deck manager and current deck to work with.
+   * This ensures that changes are saved to the complete deck collection.
+   * 
+   * @param deckManager the complete deck manager
+   * @param selectedDeck the specific deck to work with
+   */
+  public void setDeckManager(FlashcardDeckManager deckManager, FlashcardDeck selectedDeck) {
+    this.deckManager = deckManager;
+    this.currentDeckName = selectedDeck.getDeckName();
+    
+    // Ensure the deck exists in the manager (defensive programming)
+    FlashcardDeck existingDeck = getCurrentDeck();
+    if (existingDeck == null) {
+      // If deck not found, add it to the manager
+      FlashcardDeck newDeck = new FlashcardDeck(selectedDeck.getDeckName());
+      for (Flashcard card : selectedDeck.getDeck()) {
+        newDeck.addFlashcard(new Flashcard(card.getQuestion(), card.getAnswer()));
+      }
+      deckManager.addDeck(newDeck);
+    }
+    
     updateUi();
   }
 
@@ -82,34 +121,6 @@ public class FlashcardDeckController {
     }
   }
 
-  /**
-   * Sets up the UI when loaded.
-   */
-  @FXML 
-  public void initialize() {
-    storage = new FlashcardPersistent();
-    loadUserData();
-
-    listView.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
-      deleteCardButton.setDisable(newValue == null);
-    });
-
-    updateUi();
-  }
-
-  /**
-   * Loads user data from JSON file.
-   * Attempts to read the user's flashcard deck collection from persistent storage.
-   * If reading fails, creates a new empty deck manager.
-   */
-  private void loadUserData() {
-    try {
-      deckManager = storage.readDeck(currentUsername);
-    } catch (IOException e) {
-      e.printStackTrace();
-      deckManager = new FlashcardDeckManager();
-    }
-  }
 
   /**
    * Gets the current active deck.
@@ -139,26 +150,6 @@ public class FlashcardDeckController {
     }
   }
 
-  /**
-   * Updates the flashcard list display.
-   * Shows all flashcards from the current deck in the ListView.
-   */
-  public void updateUi() {
-    username.setText(currentUsername);
-    FlashcardDeck currentDeck = getCurrentDeck();
-    if (currentDeck != null) {
-      ObservableList<Flashcard> ob = FXCollections.observableArrayList(currentDeck.getDeck());
-      listView.setItems(ob);
-      startLearning.setDisable(currentDeck.getDeck().isEmpty());
-    } else {
-      listView.setItems(FXCollections.observableArrayList());
-      startLearning.setDisable(true);
-    }
-
-    deleteCardButton.setDisable(listView.getSelectionModel().getSelectedItem() == null);
-
-    clearInputFields();
-  }
 
   /**
    * Adds a new flashcard when button is clicked.
@@ -186,6 +177,11 @@ public class FlashcardDeckController {
     }
   }
 
+  /**
+   * Handles the delete card button click event.
+   * Removes the selected flashcard from the current deck, saves the updated data,
+   * and refreshes the UI display.
+   */
   public void whenDeleteCardButtonIsClicked() {
     int selectedIndex = listView.getSelectionModel().getSelectedIndex();
     FlashcardDeck currentDeck = getCurrentDeck();
@@ -212,17 +208,22 @@ public class FlashcardDeckController {
   /**
    * Handles the back button click event.
    * Navigates back to the main flashcard UI.
+   * Saves current data and sends the updated deck manager back to main controller.
    * 
    * @throws IOException if the FXML file cannot be loaded
    */
   @FXML
   public void whenBackButtonIsClicked() throws IOException {
+    // Save current data before navigating back
+    saveUserData();
+    
     FXMLLoader loader = new FXMLLoader(getClass().getResource("FlashcardMainUI.fxml"));
     Parent root = loader.load();
     
-    // Send current username back to main controller
+    // Send current username and updated deck manager back to main controller
     FlashcardMainController mainController = loader.getController();
     mainController.setCurrentUsername(currentUsername);
+    mainController.setDeckManager(deckManager);
     
     Stage stage = (Stage) questionField.getScene().getWindow();
     stage.setScene(new Scene(root));
@@ -246,7 +247,7 @@ public class FlashcardDeckController {
     FlashcardDeck currentDeck = getCurrentDeck();
     if(currentDeck != null){
       controller.setCurrentUsername(currentUsername);  // Send current username
-      controller.setDeck(currentDeck);
+      controller.setDeckManager(deckManager, currentDeck);  // Send complete deck manager and current deck
     }
 
     Stage stage = (Stage) startLearning.getScene().getWindow();
@@ -256,7 +257,8 @@ public class FlashcardDeckController {
 
   /**
    * Handles log out button click event.
-   * Navigates back to the login screen.
+   * Saves current user data before logging out, navigates back to the login screen,
+   * and applies appropriate CSS styling.
    */
   @FXML 
   public void whenLogOut() {
