@@ -13,6 +13,8 @@ import javafx.scene.control.TextField;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import dto.LoginRequestDto;
+import shared.ApiResponse;
+import shared.ApiEndpoints;
 import dto.LoginResponseDto;
 /**
  * Controller for the Flashcard Login UI. Handles user login.

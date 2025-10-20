@@ -13,8 +13,8 @@
     <version>0.0.1-SNAPSHOT</version>
   </parent>
 
-  <artifactId>dto</artifactId>
-  <name>dto</name>
+  <artifactId>shared</artifactId>
+  <name>shared</name>
   <packaging>jar</packaging>
   <description>Shared DTOs, API interfaces, and utilities for the Flashcards application.</description>
 

@@ -1,4 +1,4 @@
-package ui;
+package shared;
 
 /**
  * Generic API response wrapper class that encapsulates the result of API operations.

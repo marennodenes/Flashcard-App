@@ -5,6 +5,8 @@ import java.io.IOException;
 import com.fasterxml.jackson.core.type.TypeReference;
 
 import dto.LoginRequestDto;
+import shared.ApiResponse;
+import shared.ApiEndpoints;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;

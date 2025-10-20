@@ -24,10 +24,10 @@
             <version>${project.version}</version>
         </dependency>
 
-        <!-- Dependency on the dto module -->
+        <!-- Dependency on the shared module -->
         <dependency>
             <groupId>it1901</groupId>
-            <artifactId>dto</artifactId>
+            <artifactId>shared</artifactId>
             <version>${project.version}</version>
         </dependency>
         
