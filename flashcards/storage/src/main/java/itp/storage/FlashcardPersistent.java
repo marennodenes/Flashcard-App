@@ -232,19 +232,4 @@ public class FlashcardPersistent implements UserPersistence {
         System.out.println("DEBUG: getUserFile for " + username + ": " + path);
         return new File(path);
     }
-
-
-    public static void main(String[] args) {
-        // Simple test
-        FlashcardPersistent storage = new FlashcardPersistent();
-        try {
-            User testUser = new User("sofietw", "passord");
-            storage.writeUserData(testUser);
-            
-            User loadedUser = storage.readUserData("sofietw");
-            System.out.println("Loaded User: " + loadedUser.getUsername());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
 }

@@ -1,6 +1,5 @@
 package app;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
@@ -23,7 +22,7 @@ public class User {
 
         encodePassword();
     }
-    
+
     /**
      * Gets the username of the user.
      * @return the username
