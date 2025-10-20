@@ -94,6 +94,7 @@ public class FlashcardController {
    * Initializes the controller after FXML loading.
    * Sets up the initial card index and updates the UI if deck is not empty.
    */
+  @FXML
   public void initialize(){
     currentCardI = 0;
     if (!deck.isEmpty()) {

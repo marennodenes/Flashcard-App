@@ -1,11 +1,10 @@
 package ui;
 
 import java.io.IOException;
-import java.net.http.HttpResponse;
 
-import app.LoginValidator;
+import com.fasterxml.jackson.core.type.TypeReference;
+
 import dto.LoginRequestDto;
-import itp.storage.FlashcardPersistent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -18,8 +17,8 @@ import javafx.stage.Stage;
 /**
  * Controller for the flashcard sign-up page.
  * Handles user registration with validation and navigation to the main application.
- * @author @sofietw
- * @author @ailinat
+ * @author sofietw
+ * @author ailinat
  */
 public class FlashcardSignUpController {
   @FXML private Text alertMessage;
@@ -30,15 +29,12 @@ public class FlashcardSignUpController {
 
   private boolean showAlert = false;
   private String error = "";
-  private LoginValidator loginValidator;
   
   /**
    * Initializes the controller after FXML loading.
-   * Sets up the LoginValidator with persistence implementation and updates the UI.
+   * Updates the UI to initial state.
    */
   public void initialize() {
-    // Initialize LoginValidator with persistence implementation
-    loginValidator = new LoginValidator(new FlashcardPersistent());
     updateUi();
   }
 
@@ -101,59 +97,35 @@ public class FlashcardSignUpController {
   }
 
   /**
-   * Attempts to create a new user via REST API, with fallback to local storage.
+   * Attempts to create a new user via REST API.
    * 
    * @param username the username to create
    * @param password the password for the user
    */
   private void createUser(String username, String password) {
-    try {
-      if (tryCreateUserViaAPI(username, password)) {
-        return; // Success via API
-      }
-      
-      // API failed, fall back to local storage
-      System.out.println("API failed, falling back to local storage");
-      createUserWithFallback(username, password);
-      
-    } catch (Exception e) {
-      // API call failed, fall back to local storage
-      System.out.println("API error, falling back to local storage: " + e.getMessage());
-      createUserWithFallback(username, password);
-    }
-  }
-
-  /**
-   * Try to create user via REST API
-   * @param username the username for the new user
-   * @param password the password for the user
-   * @return true if user was successfully created via API, false if API call failed
-   */
-  private boolean tryCreateUserViaAPI(String username, String password) {
-    HttpResponse<String> response = APIClient.performRequest(
-      "http://localhost:8080/api/users/register", 
+    ApiResponse<String> result = ApiClient.performApiRequest(
+      ApiEndpoints.REGISTER_URL, 
       "POST", 
-      new LoginRequestDto(username, password)
+      new LoginRequestDto(username, password),
+      new TypeReference<String>() {}
     );
 
-    if (response != null && response.statusCode() == 201) {
+    if (result.isSuccess()) {
       // User created successfully via API
       System.out.println("User created via API: " + username);
       try {
         navigateToMainApp(username);
-        return true;
       } catch (IOException e) {
-        showError("Failed to load main application");
-        return false;
+        ApiClient.showAlert("Error", "Failed to load main application");
       }
-    } else if (response != null && response.statusCode() == 409) {
-      // Username already exists
-      showError("Username already exists,\ntry with another username");
-      return false;
+    } else {
+      // Handle different types of errors
+      if (result.getMessage().contains("409") || result.getMessage().toLowerCase().contains("already exists")) {
+        showError("Username already exists,\ntry with another username");
+      } else {
+        ApiClient.showAlert("Registration Error", result.getMessage());
+      }
     }
-    
-    // API call failed or returned unexpected status
-    return false;
   }
 
   /**
@@ -165,33 +137,6 @@ public class FlashcardSignUpController {
     error = message;
     showAlert = true;
     updateUi();
-  }
-
-  /**
-   * Creates user using local storage as fallback when API is unavailable.
-   * 
-   * @param username the username to create
-   * @param password the password for the user
-   */
-  private void createUserWithFallback(String username, String password) {
-    try {
-      // Check if user exists locally
-      if (!loginValidator.isUsernameUnique(username)) {
-        System.out.println("Username already exists " + username);
-        showError("Username already exists,\ntry with another username");
-        return;
-      }
-
-      // Create user locally
-      if (loginValidator.createUser(username, password)) {
-        System.out.println("User created locally: " + username);
-        navigateToMainApp(username);
-      } else {
-        showError("Failed to create user account");
-      }
-    } catch (IOException e) {
-      showError("Failed to load main application");
-    }
   }
 
   /**

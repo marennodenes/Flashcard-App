@@ -33,7 +33,7 @@ import javafx.stage.Modality;
  * @author marieroe
  */
 
-public final class APIClient {
+public final class ApiClient {
 
     /** The HTTP client instance used for all requests */
     private static final HttpClient HTTP_CLIENT = HttpClient.newHttpClient();
@@ -44,7 +44,7 @@ public final class APIClient {
     /**
      * Private constructor to prevent instantiation of this utility class.
      */
-    private APIClient() {
+    private ApiClient() {
         throw new UnsupportedOperationException("Utility class");
     }
 
@@ -152,30 +152,52 @@ public final class APIClient {
         alert.showAndWait();
     }
 
-  /**
-     * Sends an API request with specified URL, HTTP method, and data.
-     * Converts the data to JSON format if provided, and sends the request using the specified HTTP method.
-     * Handles exceptions by displaying alerts and returns null if an error occurs.
+    /**
+     * Performs an API request and returns a structured ApiResponse.
+     * This method wraps the raw HTTP response in an ApiResponse object for better error handling.
      *
-     * @param url The URL endpoint for the API request.
-     * @param method The HTTP method to use, such as "GET" or "POST".
-     * @param data The data to be sent with the request, which will be serialized to JSON if not null.
-     * @return The HTTP response if the request succeeds; otherwise, returns null.
+     * @param <T> The type of data expected in the response
+     * @param url The URL endpoint for the API request
+     * @param method The HTTP method to use
+     * @param data The data to send with the request
+     * @param responseType TypeReference for the expected response data type
+     * @return ApiResponse containing success status, message, and data
      */
-    public static HttpResponse<String> performRequest(final String url, final String method, final Object data) {
-        String json = null;
+    public static <T> ApiResponse<T> performApiRequest(final String url, final String method, 
+                                                      final Object data, final TypeReference<T> responseType) {
         try {
+            // Convert data to JSON if provided
+            String json = null;
             if (data != null) {
-                json = APIClient.convertObjectToJson(data);
+                json = convertObjectToJson(data);
             }
-            return APIClient.sendRequest(url, method, json);
+            
+            // Send the HTTP request
+            HttpResponse<String> response = sendRequest(url, method, json);
+            
+            // Check if the response status indicates success (2xx)
+            if (response.statusCode() >= 200 && response.statusCode() < 300) {
+                T responseData = null;
+                // Parse response body if we have data and a type reference
+                if (responseType != null && response.body() != null && !response.body().trim().isEmpty()) {
+                    responseData = parseResponse(response.body(), responseType);
+                }
+                return new ApiResponse<>(true, "Request successful", responseData);
+            } else {
+                // Server returned an error status code
+                return new ApiResponse<>(false, "Server error: " + response.statusCode(), null);
+            }
+            
+        } catch (JsonProcessingException e) {
+            return new ApiResponse<>(false, "Failed to parse server response: " + e.getMessage(), null);
         } catch (IOException e) {
-            showAlert("Network Error", "Error connecting to server. Please try again.");
+            return new ApiResponse<>(false, "Network error: " + e.getMessage(), null);
         } catch (InterruptedException e) {
-            showAlert("Request Interrupted", "The request was interrupted. Please try again.");
             Thread.currentThread().interrupt(); // Re-interrupt the thread to preserve its interrupted status
+            return new ApiResponse<>(false, "Request interrupted: " + e.getMessage(), null);
+        } catch (Exception e) {
+            return new ApiResponse<>(false, "Request failed: " + e.getMessage(), null);
         }
-        return null;
     }
 
 }

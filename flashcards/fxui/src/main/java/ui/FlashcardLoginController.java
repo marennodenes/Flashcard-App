@@ -1,7 +1,6 @@
 package ui;
 
 import java.io.IOException;
-import java.net.http.HttpResponse;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 
@@ -18,9 +17,9 @@ import dto.LoginResponseDto;
 /**
  * Controller for the Flashcard Login UI. Handles user login.
  * 
- * @author @marieroe
- * @author @sofietw
- * @author @ailinat
+ * @author marieroe
+ * @author sofietw
+ * @author ailinat
  */
 public class FlashcardLoginController {
   @FXML
@@ -65,37 +64,47 @@ public class FlashcardLoginController {
    * then navigates to main app if valid. Shows error message if fields are empty
    * or invalid.
    */
+  @FXML
   public void whenLoginButtonClicked() {
     String username = usernameField.getText().trim();
     String password = passwordField.getText().trim();
 
+    // Validate that both fields have content
     if (username.isEmpty() || password.isEmpty()) {
       error = "Username and password\ncannot be empty";
       showAlert = true;
       updateUi();
     } else {
       // Send login request to server
-      HttpResponse<String> response = APIClient.performRequest("http://localhost:8080/api/auth/login", "POST",
-          new LoginRequestDto(username, password) // from dto module
+      ApiResponse<LoginResponseDto> result = ApiClient.performApiRequest(
+        ApiEndpoints.LOGIN_URL, 
+        "POST",
+        new LoginRequestDto(username, password),
+        new TypeReference<LoginResponseDto>() {}
       );
 
-      if (response != null && response.statusCode() == 200) {
-        try {
-          LoginResponseDto loginResponse = APIClient.parseResponse(
-            response.body(), new TypeReference<LoginResponseDto>() {}
-        );
-          navigateToMainApp(username);
-          
-        } catch (RuntimeException | java.io.IOException e) {
-          error = "Login failed";
-          showAlert = true;
-          updateUi();
+      if (result.isSuccess() && result.getData() != null) {
+        LoginResponseDto loginResponse = result.getData();
+        
+        // Check if server confirmed login success
+        if (loginResponse.isSuccess()) {
+          try {
+            navigateToMainApp(username);
+            return; // Exit early on success
+          } catch (IOException e) {
+            error = "Failed to load main application";
+          }
+        } else {
+          // Use server's specific error message
+          error = loginResponse.getMessage();
         }
       } else {
-        error = "Invalid username or password";
-        showAlert = true;
-        updateUi();
+        error = result.getMessage();
       }
+      
+      // Show error (only reached if login failed)
+      showAlert = true;
+      updateUi();
     }
   }
 

@@ -8,19 +8,30 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 
 /**
- * Main app for flashcards.
+ * Main JavaFX application class for the Flashcards application.
+ * Handles application startup and initial scene configuration.
+ * 
+ * @author marennod
+ * @author marieroe
  */
 public class FlashcardApp extends Application{
   
   /**
-   * Starts the app.
+   * Main entry point for the application.
+   * Launches the JavaFX application.
+   * 
+   * @param args command line arguments
    */
   public static void main(String[] args) {
     Application.launch(args);
   }
 
   /**
-   * Sets up the main window.
+   * Sets up and displays the primary stage with the login scene.
+   * Configures the window title, loads the login UI, and applies styling.
+   * 
+   * @param primaryStage the primary stage for this application
+   * @throws IOException if the FXML file cannot be loaded
    */
   @Override
   public void start(Stage primaryStage) throws IOException {

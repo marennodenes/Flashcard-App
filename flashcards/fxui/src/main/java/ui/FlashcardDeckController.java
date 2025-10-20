@@ -1,16 +1,11 @@
 package ui;
 
 import java.io.IOException;
-import java.net.http.HttpResponse;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-// import com.fasterxml.jackson.core.type.TypeReference;
-// import com.fasterxml.jackson.core.type.TypeReference;
-// import dto.FlashcardDeckDto;
+import com.fasterxml.jackson.core.type.TypeReference;
 import app.Flashcard;
 import app.FlashcardDeck;
 import app.FlashcardDeckManager;
-import itp.storage.FlashcardPersistent; //delete
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -32,11 +27,11 @@ import javafx.stage.Stage;
  *   <li>Create new flashcards with questions and answers</li>
  *   <li>Delete existing flashcards from the deck</li>
  *   <li>Navigate to the learning interface to study flashcards</li>
- *   <li>Save and load deck data using both REST API and local storage</li>
+ *   <li>Save and load deck data using REST API</li>
  * </ul>
  * 
- * <p>The controller integrates with both remote API endpoints and local file storage
- * for persistent data management, providing fallback mechanisms for offline usage.
+ * <p>The controller integrates with remote API endpoints for persistent data management.
+ * If API calls fail, users are notified and the app continues with empty state.
  * 
  * @author chrsom
  * @author marennod
@@ -55,7 +50,6 @@ public class FlashcardDeckController {
   private String currentDeckName = "defaultDeckName";
 
   private FlashcardDeck currentActiveDeck;
-  private FlashcardPersistent storage = new FlashcardPersistent();
 
   /**
    * Sets the current deck to work with.
@@ -63,9 +57,17 @@ public class FlashcardDeckController {
    * 
    * @param originalDeck the deck to set as current
    */
+  /**
+   * Sets the deck to be edited and synchronizes it with the deck manager.
+   * Creates a copy of the original deck, loads user data, and ensures the deck
+   * is properly integrated into the deck manager before saving.
+   * 
+   * @param originalDeck the deck to set as the current active deck
+   */
   public void setDeck(FlashcardDeck originalDeck) {
     if (originalDeck == null) return;
 
+    // Create a copy of the original deck to avoid modifying the original
     this.currentActiveDeck = new FlashcardDeck(originalDeck.getDeckName());
     for (Flashcard card : originalDeck.getDeck()) {
         this.currentActiveDeck.addFlashcard(new Flashcard(card.getQuestion(), card.getAnswer()));
@@ -74,6 +76,7 @@ public class FlashcardDeckController {
 
     loadUserData();
 
+    // Find and replace the deck in the manager, or add it if not found
     boolean foundDeck = false;
     for (int i = 0; i < deckManager.getDecks().size(); i++) {
         FlashcardDeck deck = deckManager.getDecks().get(i);
@@ -116,57 +119,41 @@ public class FlashcardDeckController {
     updateUi();
   }
 
-  /**
-   * Loads user data from remote API or local storage.
-   * First attempts to retrieve the user's flashcard deck collection from the REST API.
-   * If the API call fails or returns an error, falls back to reading from local JSON storage.
-   * If both methods fail, creates a new empty deck manager.
+      /**
+   * Loads user data from REST API.
+   * Attempts to retrieve the user's flashcard deck collection from the REST API.
+   * If the API call fails, shows error to user and creates empty deck manager.
    */
   private void loadUserData() {
-    // Try to load from API first
-    if (loadFromAPI()) {
-      return; // Successfully loaded from API
-    }
-    
-    // Fallback to local storage
-    loadFromLocalStorage();
-  }
+    ApiResponse<FlashcardDeckManager> result = ApiClient.performApiRequest(
+      ApiEndpoints.getUserDecksUrl(currentUsername),
+      "GET",
+      null,
+      new TypeReference<FlashcardDeckManager>() {}
+    );
 
-  /**
-   * Attempts to load deck data from the REST API.
-   * 
-   * @return true if successfully loaded from API, false otherwise
-   */
-  private boolean loadFromAPI() {
-    try {
-      HttpResponse<String> response = APIClient.performRequest(
-        "http://localhost:8080/api/users/" + currentUsername + "/decks", 
-        "GET", 
-        null
-      );
-
-      if (response != null && response.statusCode() == 200) {
-        ObjectMapper mapper = new ObjectMapper();
-        deckManager = mapper.readValue(response.body(), FlashcardDeckManager.class);
-        return true; // Successfully loaded and parsed
-      }
-    } catch (Exception e) {
-      System.err.println("API call failed: " + e.getMessage());
-    }
-    
-    return false; // Failed to load from API
-  }
-
-  /**
-   * Loads deck data from local storage as fallback.
-   * Creates empty deck manager if local storage also fails.
-   */
-  private void loadFromLocalStorage() {
-    try {
-      deckManager = storage.readDeck(currentUsername);
-    } catch (Exception e) {
-      System.err.println("Local storage fallback failed: " + e.getMessage());
+    if (result.isSuccess() && result.getData() != null) {
+      deckManager = result.getData();
+    } else {
+      ApiClient.showAlert("Load Error", result.getMessage());
       deckManager = new FlashcardDeckManager();
+    }
+  }
+
+  /**
+   * Saves user data to remote API.
+   * If the API call fails, shows error to user.
+   */
+  private void saveUserData() {
+    ApiResponse<String> result = ApiClient.performApiRequest(
+      ApiEndpoints.getUserDecksUrl(currentUsername),
+      "PUT",
+      deckManager,
+      new TypeReference<String>() {}
+    );
+
+    if (!result.isSuccess()) {
+      ApiClient.showAlert("Save Error", result.getMessage());
     }
   }
 
@@ -183,55 +170,6 @@ public class FlashcardDeckController {
       }
     }
     return null;
-  }
-
-  /**
-   * Saves user data to remote API or local storage.
-   * First attempts to save the deck manager to the REST API.
-   * If the API call fails or returns an error, falls back to saving to local JSON storage.
-   */
-  private void saveUserData() {
-    // Try to save to API first
-    if (saveToAPI()) {
-      return; // Successfully saved to API
-    }
-    
-    // Fallback to local storage
-    saveToLocalStorage();
-  }
-
-  /**
-   * Attempts to save deck data to the REST API.
-   * 
-   * @return true if successfully saved to API, false otherwise
-   */
-  private boolean saveToAPI() {
-    try {
-      HttpResponse<String> response = APIClient.performRequest(
-        "http://localhost:8080/api/users/" + currentUsername + "/decks", 
-        "PUT", 
-        deckManager
-      );
-
-      if (response != null && response.statusCode() == 200) {
-        return true; // Successfully saved to API
-      }
-    } catch (Exception e) {
-      System.err.println("API save failed: " + e.getMessage());
-    }
-    
-    return false; // Failed to save to API
-  }
-
-  /**
-   * Saves deck data to local storage as fallback.
-   */
-  private void saveToLocalStorage() {
-    try {
-      storage.writeDeck(currentUsername, deckManager);
-    } catch (Exception e) {
-      System.err.println("Local storage save failed: " + e.getMessage());
-    }
   }
 
   /**
@@ -260,10 +198,12 @@ public class FlashcardDeckController {
    * Creates a flashcard from the question and answer fields,
    * adds it to the current deck, saves to file, and updates the UI.
    */
+  @FXML
   public void whenCreateButtonIsClicked() {
     String q = questionField.getText().trim();
     String a = answerField.getText().trim();
 
+    // Only create card if both fields have content
     if (!q.isEmpty() && !a.isEmpty()) {
       FlashcardDeck currentDeck = getCurrentDeck();
       if (currentDeck != null) {
@@ -281,10 +221,17 @@ public class FlashcardDeckController {
     }
   }
 
+  /**
+   * Deletes the selected flashcard when delete button is clicked.
+   * Removes the selected flashcard from the current deck, saves the data,
+   * and updates the UI to reflect the changes.
+   */
+  @FXML
   public void whenDeleteCardButtonIsClicked() {
     int selectedIndex = listView.getSelectionModel().getSelectedIndex();
     FlashcardDeck currentDeck = getCurrentDeck();
 
+    // Check if a card is selected and deck exists
     if (selectedIndex >= 0 && currentDeck != null) {
         boolean removed = currentDeck.removeFlashcardByIndex(selectedIndex);
         

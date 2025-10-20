@@ -8,9 +8,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import app.FlashcardDeck;
 import app.Flashcard;
-import itp.storage.FlashcardPersistent;
 import java.io.IOException;
-import java.net.http.HttpResponse;
 import java.util.List;
 
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -22,7 +20,16 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 
-
+/**
+ * Controller for the main flashcard deck management interface.
+ * Handles displaying, creating, editing, and deleting flashcard decks.
+ * Provides navigation to deck editing and learning interfaces.
+ * Integrates with REST API for persistent data storage.
+ * 
+ * @author chrsom
+ * @author marennod
+ * @author marieroe
+ */
 public class FlashcardMainController {
   @FXML private Button deck_1;
   @FXML private Button deck_2;
@@ -55,8 +62,6 @@ public class FlashcardMainController {
   @FXML private Text noDecks;
 
   private FlashcardDeckManager deckManager = new FlashcardDeckManager();
-  
-  private FlashcardPersistent storage = new FlashcardPersistent(); //delete
   
   private String currentUsername = "defaultUserName";
   
@@ -141,55 +146,22 @@ public class FlashcardMainController {
   }
 
   /**
-   * Loads user data from REST API or local storage.
-   * First attempts to retrieve the user's flashcard deck collection from the REST API.
-   * If the API call fails or returns an error, falls back to reading from local JSON storage.
-   * If both methods fail, creates a new empty deck manager.
+   * Loads user data from REST API.
+   * Attempts to retrieve the user's flashcard deck collection from the REST API.
+   * If the API call fails, creates a new empty deck manager.
    */
   private void loadUserData() {
-    // Try to load from API first
-    if (loadFromAPI()) {
-      return; // Successfully loaded from API
-    }
-    
-    // Fallback to local storage
-    loadFromLocalStorage();
-  }
+    ApiResponse<List<FlashcardDeckDto>> result = ApiClient.performApiRequest(
+      ApiEndpoints.getUserDecksUrl(currentUsername), 
+      "GET", 
+      null,
+      new TypeReference<List<FlashcardDeckDto>>() {}
+    );
 
-  /**
-   * Attempts to load deck data from the REST API.
-   * 
-   * @return true if successfully loaded from API, false otherwise
-   */
-  private boolean loadFromAPI() {
-    try {
-      HttpResponse<String> response = APIClient.performRequest(
-        "http://localhost:8080/api/users/" + currentUsername + "/decks", 
-        "GET", 
-        null
-      );
-
-      if (response != null && response.statusCode() == 200) {
-        List<FlashcardDeckDto> deckDTOs = APIClient.parseResponse(response.body(), new TypeReference<List<FlashcardDeckDto>>() {});
-        deckManager = convertFromDTOs(deckDTOs);
-        return true; // Successfully loaded and parsed
-      }
-    } catch (Exception e) {
-      System.err.println("API call failed: " + e.getMessage());
-    }
-    
-    return false; // Failed to load from API
-  }
-
-  /**
-   * Loads deck data from local storage as fallback.
-   * Creates empty deck manager if local storage also fails.
-   */
-  private void loadFromLocalStorage() {
-    try {
-      deckManager = storage.readDeck(currentUsername);
-    } catch (Exception e) {
-      System.err.println("Local storage fallback failed: " + e.getMessage());
+    if (result.isSuccess() && result.getData() != null) {
+      deckManager = convertFromDTOs(result.getData());
+    } else {
+      ApiClient.showAlert("Load Error", result.getMessage());
       deckManager = new FlashcardDeckManager();
     }
   }
@@ -218,19 +190,20 @@ public class FlashcardMainController {
   }
 
   /**
-   * Saves user data to JSON file.
-   * Persists the current deck manager state to the storage system.
-   * Prints stack trace if an IOException occurs during saving.
+   * Saves user data to the REST API.
+   * Persists the current deck manager state to the server.
+   * Shows an alert if saving fails.
    */
   private void saveUserData() {
-    HttpResponse<String> response = APIClient.performRequest(
-      "http://localhost:8080/api/users/" + currentUsername + "/decks", 
+    ApiResponse<String> result = ApiClient.performApiRequest(
+      ApiEndpoints.getUserDecksUrl(currentUsername), 
       "PUT", 
-      deckManager  // APIClient converts to JSON
+      deckManager,  // APIClient converts to JSON
+      new TypeReference<String>() {}  // Simple string response
     );
 
-    if (response == null || response.statusCode() != 200) {
-      APIClient.showAlert("Error", "Could not save data");
+    if (!result.isSuccess()) {
+      ApiClient.showAlert("Save Error", result.getMessage());
     }
   }
 
