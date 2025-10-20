@@ -1,7 +1,7 @@
 package app;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonUnwrapped;
 
 /**
  * Combined data structure that holds both user credentials and flashcard data.
@@ -10,32 +10,20 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  * @author @sofietw
  * @author @ailinat
  */
+
 public class UserData {
-    private String username;
-    private String password;
+    @JsonUnwrapped private User user; 
+
     private FlashcardDeckManager deckManager;
 
     /**
-     * Default constructor for Jackson
-     * Creates an empty UserData with default values.
-     * Initializes with empty username, password, and new deck manager.
-     */
-    public UserData() {
-        this.deckManager = new FlashcardDeckManager();
-    }
-
-    /**
-     * Constructor with all fields.
-     * @param username the username of the user
-     * @param password the password of the user
+     * Constructor with User object and deck manager.
+     * Used for programmatic creation (not JSON deserialization).
+     * @param user the user object connected to the deck manager
      * @param deckManager the flashcard deck manager for the user
      */
-    @JsonCreator
-    public UserData(@JsonProperty("username") String username, 
-                    @JsonProperty("password") String password,
-                    @JsonProperty("deckManager") FlashcardDeckManager deckManager) {
-        this.username = username;
-        this.password = password;
+    public UserData(User user, FlashcardDeckManager deckManager) {
+        this.user = user;
         if (deckManager == null) {
             this.deckManager = new FlashcardDeckManager();
         } else {
@@ -49,40 +37,17 @@ public class UserData {
 
     /**
      * Constructor without deckManager, initializes with empty deck manager.
-     * @param username the username of the user
-     * @param password the password of the user
+     * @param user the user object connected to the deck manager
      */
-    public UserData(String username, String password) {
-        this(username, password, new FlashcardDeckManager());
+    public UserData(User user) {
+        this(user, new FlashcardDeckManager());
     }
 
-    /**
-     * Gets the username.   
-     * @return the username
+    /** gets the user.
+     * @return the user
      */
-    public String getUsername() {
-        return username;
-    }
-
-    /** Sets the username.
-     * @param username the username to set
-     */
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    /** Gets the password.
-     * @return the password
-     */
-    public String getPassword() {
-        return password;
-    }
-
-    /** Sets the password.
-     * @param password the password to set
-     */
-    public void setPassword(String password) {
-        this.password = password;
+    public User getUser() {
+        return user;
     }
 
     /**
@@ -90,6 +55,8 @@ public class UserData {
      * Creates a defensive copy to avoid exposing internal representation.
      * @return a copy of the FlashcardDeckManager
      */
+
+    @JsonProperty("deckManager")
     public FlashcardDeckManager getDeckManager() {
         FlashcardDeckManager copy = new FlashcardDeckManager();
         for (FlashcardDeck deck : deckManager.getDecks()) {
@@ -112,13 +79,5 @@ public class UserData {
                 this.deckManager.addDeck(deck);
             }
         }
-    }
-
-    /**
-     * Creates a User object from this UserData
-     * @return a User object with username and password
-     */
-    public User toUser() {
-        return new User(username, password);
     }
 }
