@@ -92,16 +92,25 @@ public class FlashcardController {
   /**
    * Sets the deck manager and current deck to work with.
    * This ensures that changes are saved to the complete deck collection.
+   * Creates defensive copies to prevent external modification.
    * 
    * @param deckManager the complete deck manager
    * @param selectedDeck the specific deck to work with
    */
   public void setDeckManager(FlashcardDeckManager deckManager, FlashcardDeck selectedDeck) {
-    this.deckManager = deckManager;
+    // Create defensive copy of deck manager to prevent external modification
+    this.deckManager = new FlashcardDeckManager();
+    for (FlashcardDeck deck : deckManager.getDecks()) {
+      this.deckManager.addDeck(deck);
+    }
     
-    // Store the original deck reference (directly from deckManager, no copy needed)
-    this.originalDeck = selectedDeck;
-    this.deck = new ArrayList<>(selectedDeck.getDeck()); // Copy flashcards for learning
+    // Create defensive copy of the selected deck
+    this.originalDeck = new FlashcardDeck(selectedDeck.getDeckName());
+    for (app.Flashcard card : selectedDeck.getDeck()) {
+      this.originalDeck.addFlashcard(new app.Flashcard(card.getQuestion(), card.getAnswer()));
+    }
+    
+    this.deck = new ArrayList<>(this.originalDeck.getDeck()); // Copy flashcards for learning
     currentCardI = 0;
     updateUi();
     updateProgress();

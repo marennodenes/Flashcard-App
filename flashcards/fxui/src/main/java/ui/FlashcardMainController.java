@@ -284,11 +284,20 @@ public class FlashcardMainController {
   /**
    * Sets the deck manager (used when returning from FlashcardDeckController).
    * This ensures that changes made in the deck view are preserved.
+   * Creates a defensive copy to prevent external modification.
    * 
    * @param deckManager the updated deck manager
    */
   public void setDeckManager(FlashcardDeckManager deckManager) {
-    this.deckManager = deckManager;
+    // Create defensive copy of deck manager to prevent external modification
+    this.deckManager = new FlashcardDeckManager();
+    for (FlashcardDeck deck : deckManager.getDecks()) {
+      FlashcardDeck deckCopy = new FlashcardDeck(deck.getDeckName());
+      for (app.Flashcard card : deck.getDeck()) {
+        deckCopy.addFlashcard(new app.Flashcard(card.getQuestion(), card.getAnswer()));
+      }
+      this.deckManager.addDeck(deckCopy);
+    }
     updateUi();
   }
 }
