@@ -12,9 +12,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import server.service.UserService;
-import dto.UserDataDto;
-import dto.LoginRequestDto;
+import dto.mappers.UserMapper;
 import dto.LoginResponseDto;
+import dto.LoginRequestDto;
+import dto.UserDataDto;
+import app.UserData;
+import app.User;
 
 /**
  * UserController handles user-related HTTP requests such as registration, login, logout,
@@ -48,10 +51,15 @@ public class UserController {
    * @return
    */
   @PostMapping ("/register")
-  public ResponseEntity <UserDataDto> registerUser(@RequestBody UserDataDto user) {
+  public ResponseEntity <UserDataDto> createUser(@RequestBody UserDataDto userDto) {
     try {
-      UserDataDto userDto = userService.createUser(user);
-      return new ResponseEntity<>(userDto, HttpStatus.CREATED);
+      UserData userData = userDto.fromDto(userDto);
+      
+      
+
+      User user = userService.createUser(username, password);
+      UserDataDto userDataDto = new UserDataDto(user);
+      return new ResponseEntity<>(userDataDto, HttpStatus.CREATED);
     } catch (Exception e) {
       return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
     }
@@ -113,7 +121,7 @@ public class UserController {
   @GetMapping ("/profile") 
   public ResponseEntity <UserDataDto> getCurrentUser() {
     try {
-      UserDataDto userDto = userService.getUser();
+      UserData userDto = userService.getUser();
       return new ResponseEntity<>(userDto, HttpStatus.OK);
     } catch (Exception e) {
       return new ResponseEntity<>(HttpStatus.NOT_FOUND);
