@@ -21,7 +21,7 @@ public class UserService {
     return null;
   }
 
-  public User createUser(String username, String password){
+  public User createUser(String username, String password){ //returnere userdata objekter?
     return null;
   }
 

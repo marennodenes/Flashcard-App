@@ -11,7 +11,7 @@ module flashcards.server {
     
     // Internal dependencies
     requires transitive flashcards.storage;
-    requires transitive flashcards.dto;
+    requires transitive flashcards.shared;
     requires transitive flashcards.core;
 
     requires spring.context;
