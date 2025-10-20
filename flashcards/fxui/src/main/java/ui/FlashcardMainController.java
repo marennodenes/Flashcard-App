@@ -274,7 +274,7 @@ public class FlashcardMainController {
       Button clickedButton = (Button) event.getSource();
       FlashcardDeck selectedDeck = (FlashcardDeck) clickedButton.getUserData();
 
-      FXMLLoader loader = new FXMLLoader(getClass().getResource("FlashcardListUI.fxml"));
+      FXMLLoader loader = new FXMLLoader(getClass().getResource("FlashcardDeck.fxml"));
       Parent root = loader.load();
 
       FlashcardDeckController controller = loader.getController();
@@ -304,7 +304,7 @@ public class FlashcardMainController {
       saveUserData();
       
       // Load login screen
-      FXMLLoader loader = new FXMLLoader(getClass().getResource("FlashcardLoginUI.fxml"));
+      FXMLLoader loader = new FXMLLoader(getClass().getResource("FlashcardLogin.fxml"));
       Parent root = loader.load();
       
       // Switch to login scene

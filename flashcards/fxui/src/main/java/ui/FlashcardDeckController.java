@@ -259,7 +259,7 @@ public class FlashcardDeckController {
    */
   @FXML
   public void whenBackButtonIsClicked() throws IOException {
-    FXMLLoader loader = new FXMLLoader(getClass().getResource("FlashcardMainUI.fxml"));
+    FXMLLoader loader = new FXMLLoader(getClass().getResource("FlashcardMain.fxml"));
     Parent root = loader.load();
     
     // Send current username back to main controller
@@ -281,7 +281,7 @@ public class FlashcardDeckController {
    */
   @FXML
   public void whenStartLearningButtonIsClicked() throws IOException {
-    FXMLLoader loader = new FXMLLoader(getClass().getResource("FlashcardPageUI.fxml"));
+    FXMLLoader loader = new FXMLLoader(getClass().getResource("FlashcardLearning.fxml"));
     Parent root = loader.load();
 
     FlashcardController controller = loader.getController();
@@ -307,7 +307,7 @@ public class FlashcardDeckController {
       saveUserData();
       
       // Load login screen
-      FXMLLoader loader = new FXMLLoader(getClass().getResource("FlashcardLoginUI.fxml"));
+      FXMLLoader loader = new FXMLLoader(getClass().getResource("FlashcardLogin.fxml"));
       Parent root = loader.load();
       
       // Switch to login scene

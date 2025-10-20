@@ -81,7 +81,7 @@ public class FlashcardMainControllerTest extends ApplicationTest {
     public void start(Stage stage) throws Exception {
         try {
             // Load FXML
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("FlashcardMainUI.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("FlashcardMain.fxml"));
             Parent root = loader.load();
             controller = loader.getController();
             

@@ -84,7 +84,7 @@ public class FlashcardControllerTest extends ApplicationTest {
         testDeck.addFlashcard(new Flashcard("What is JavaFX?", "A GUI framework"));
         
         // Load FXML and controller
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("FlashcardPageUI.fxml"));
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("FlashcardLearning.fxml"));
         Parent root = loader.load();
         controller = loader.getController();
         

@@ -131,7 +131,7 @@ public class FlashcardLoginController {
    * @throws IOException if the FXML file cannot be loaded
    */
   private void navigateToSignUpPage() throws IOException {
-    FXMLLoader loader = new FXMLLoader(getClass().getResource("FlashcardSignUpUI.fxml"));
+    FXMLLoader loader = new FXMLLoader(getClass().getResource("FlashcardSignUp.fxml"));
     Parent root = loader.load();
 
     Stage stage = (Stage) signUpButton.getScene().getWindow();
@@ -147,7 +147,7 @@ public class FlashcardLoginController {
    * @throws IOException if the FXML file cannot be loaded
    */
   private void navigateToMainApp(String username) throws IOException {
-    FXMLLoader loader = new FXMLLoader(getClass().getResource("FlashcardMainUI.fxml"));
+    FXMLLoader loader = new FXMLLoader(getClass().getResource("FlashcardMain.fxml"));
     Parent root = loader.load();
 
     // Get the controller and set the username

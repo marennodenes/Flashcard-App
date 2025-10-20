@@ -130,7 +130,7 @@ public class FlashcardController {
    */
   @FXML
   private void whenBackButtonIsClicked() throws IOException {
-    FXMLLoader loader = new FXMLLoader(getClass().getResource("FlashcardListUI.fxml"));
+    FXMLLoader loader = new FXMLLoader(getClass().getResource("FlashcardDeck.fxml"));
     Parent root = loader.load();
 
     FlashcardDeckController controller = loader.getController();
@@ -232,7 +232,7 @@ public class FlashcardController {
   public void whenLogOut(ActionEvent event){
     try {
       // Load login screen
-      FXMLLoader loader = new FXMLLoader(getClass().getResource("FlashcardLoginUI.fxml"));
+      FXMLLoader loader = new FXMLLoader(getClass().getResource("FlashcardLogin.fxml"));
       Parent root = loader.load();
       
       // Switch to login scene
