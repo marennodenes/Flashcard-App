@@ -16,6 +16,8 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import app.FlashcardDeckManager;
 import dto.FlashcardDeckDto;
 import dto.FlashcardDto;
+import shared.ApiResponse;
+import shared.ApiEndpoints;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
