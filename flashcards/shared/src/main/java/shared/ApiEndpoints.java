@@ -1,4 +1,4 @@
-package ui;
+package shared;
 
 /**
  * Constants class containing API-related string literals and endpoint URLs.
