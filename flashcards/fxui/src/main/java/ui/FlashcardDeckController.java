@@ -2,10 +2,10 @@ package ui;
 
 import java.io.IOException;
 
-import com.fasterxml.jackson.core.type.TypeReference;
 import app.Flashcard;
 import app.FlashcardDeck;
 import app.FlashcardDeckManager;
+import com.fasterxml.jackson.core.type.TypeReference;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -13,31 +13,22 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
-import shared.ApiResponse;
-import shared.ApiEndpoints;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
+import shared.ApiResponse;
+import shared.ApiEndpoints;
 
 /**
- * Controller class for managing flashcard deck operations in the JavaFX UI.
+ * Controller for managing individual flashcard deck operations.
+ * Handles adding, deleting, and viewing flashcards within a specific deck.
+ * Provides navigation to the learning interface and back to the main deck list.
+ * Uses REST API for data persistence instead of local storage.
  * 
- * <p>This controller handles the main deck management interface where users can:
- * <ul>
- *   <li>View and manage flashcards within a specific deck</li>
- *   <li>Create new flashcards with questions and answers</li>
- *   <li>Delete existing flashcards from the deck</li>
- *   <li>Navigate to the learning interface to study flashcards</li>
- *   <li>Save and load deck data using REST API</li>
- * </ul>
- * 
- * <p>The controller integrates with remote API endpoints for persistent data management.
- * If API calls fail, users are notified and the app continues with empty state.
- * 
- * @author chrsom
  * @author marennod
  * @author marieroe
+ * @author chrsom
  */
 public class FlashcardDeckController {
   @FXML private TextField questionField;
@@ -51,48 +42,83 @@ public class FlashcardDeckController {
   private String currentUsername = "defaultUserName";
   private String currentDeckName = "defaultDeckName";
 
-  private FlashcardDeck currentActiveDeck;
+  /**
+   * Initializes the controller after FXML loading.
+   * Sets up ListView selection listeners and updates the initial UI state.
+   */
+  @FXML 
+  public void initialize() {
+    // Enable delete button only when a card is selected
+    listView.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+      deleteCardButton.setDisable(newValue == null);
+    });
+    
+    updateUi();
+  }
 
   /**
-   * Sets the current deck to work with.
-   * Creates a defensive copy of the deck to avoid external modifications.
-   * 
-   * @param originalDeck the deck to set as current
+   * Updates the flashcard list display.
+   * Shows all flashcards from the current deck in the ListView.
    */
+  public void updateUi() {
+    username.setText(currentUsername);
+    
+    // Check if we have a deck manager and current deck
+    if (deckManager == null) {
+      // No data loaded yet, show empty state
+      listView.setItems(FXCollections.observableArrayList());
+      startLearning.setDisable(true);
+      deleteCardButton.setDisable(true);
+      clearInputFields();
+      return;
+    }
+    
+    FlashcardDeck currentDeck = getCurrentDeck();
+    if (currentDeck != null) {
+      ObservableList<Flashcard> ob = FXCollections.observableArrayList(currentDeck.getDeck());
+      listView.setItems(ob);
+      startLearning.setDisable(currentDeck.getDeck().isEmpty());
+    } else {
+      listView.setItems(FXCollections.observableArrayList());
+      startLearning.setDisable(true);
+    }
+
+    deleteCardButton.setDisable(listView.getSelectionModel().getSelectedItem() == null);
+    clearInputFields();
+  }
+
   /**
-   * Sets the deck to be edited and synchronizes it with the deck manager.
-   * Creates a copy of the original deck, loads user data, and ensures the deck
-   * is properly integrated into the deck manager before saving.
+   * Sets the deck manager and current deck to work with.
+   * This ensures that changes are saved to the complete deck collection.
+   * Creates defensive copies to prevent external modification.
    * 
-   * @param originalDeck the deck to set as the current active deck
+   * @param deckManager the complete deck manager
+   * @param selectedDeck the specific deck to work with
    */
-  public void setDeck(FlashcardDeck originalDeck) {
-    if (originalDeck == null) return;
-
-    // Create a copy of the original deck to avoid modifying the original
-    this.currentActiveDeck = new FlashcardDeck(originalDeck.getDeckName());
-    for (Flashcard card : originalDeck.getDeck()) {
-        this.currentActiveDeck.addFlashcard(new Flashcard(card.getQuestion(), card.getAnswer()));
+  public void setDeckManager(FlashcardDeckManager deckManager, FlashcardDeck selectedDeck) {
+    // Create defensive copy of deck manager to prevent external modification
+    this.deckManager = new FlashcardDeckManager();
+    for (FlashcardDeck deck : deckManager.getDecks()) {
+      FlashcardDeck deckCopy = new FlashcardDeck(deck.getDeckName());
+      for (Flashcard card : deck.getDeck()) {
+        deckCopy.addFlashcard(new Flashcard(card.getQuestion(), card.getAnswer()));
+      }
+      this.deckManager.addDeck(deckCopy);
     }
-    this.currentDeckName = originalDeck.getDeckName();
-
-    loadUserData();
-
-    // Find and replace the deck in the manager, or add it if not found
-    boolean foundDeck = false;
-    for (int i = 0; i < deckManager.getDecks().size(); i++) {
-        FlashcardDeck deck = deckManager.getDecks().get(i);
-        if (deck.getDeckName().equals(originalDeck.getDeckName())) {
-            deckManager.getDecks().set(i, this.currentActiveDeck);
-            foundDeck = true;
-            break;
-        }
+    
+    this.currentDeckName = selectedDeck.getDeckName();
+    
+    // Ensure the deck exists in the manager (defensive programming)
+    FlashcardDeck existingDeck = getCurrentDeck();
+    if (existingDeck == null) {
+      // If deck not found, add it to the manager
+      FlashcardDeck newDeck = new FlashcardDeck(selectedDeck.getDeckName());
+      for (Flashcard card : selectedDeck.getDeck()) {
+        newDeck.addFlashcard(new Flashcard(card.getQuestion(), card.getAnswer()));
+      }
+      this.deckManager.addDeck(newDeck);
     }
-    if (!foundDeck) {
-        deckManager.addDeck(this.currentActiveDeck);
-    }
-
-    saveUserData();
+    
     updateUi();
   }
 
@@ -104,58 +130,6 @@ public class FlashcardDeckController {
   public void setCurrentUsername(String username) {
     if (username != null && !username.trim().isEmpty()) {
       this.currentUsername = username.trim();
-    }
-  }
-
-  /**
-   * Sets up the UI when loaded.
-   */
-  @FXML 
-  public void initialize() {
-    loadUserData();
-
-    listView.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
-      deleteCardButton.setDisable(newValue == null);
-    });
-
-    updateUi();
-  }
-
-      /**
-   * Loads user data from REST API.
-   * Attempts to retrieve the user's flashcard deck collection from the REST API.
-   * If the API call fails, shows error to user and creates empty deck manager.
-   */
-  private void loadUserData() {
-    ApiResponse<FlashcardDeckManager> result = ApiClient.performApiRequest(
-      ApiEndpoints.getUserDecksUrl(currentUsername),
-      "GET",
-      null,
-      new TypeReference<FlashcardDeckManager>() {}
-    );
-
-    if (result.isSuccess() && result.getData() != null) {
-      deckManager = result.getData();
-    } else {
-      ApiClient.showAlert("Load Error", result.getMessage());
-      deckManager = new FlashcardDeckManager();
-    }
-  }
-
-  /**
-   * Saves user data to remote API.
-   * If the API call fails, shows error to user.
-   */
-  private void saveUserData() {
-    ApiResponse<String> result = ApiClient.performApiRequest(
-      ApiEndpoints.getUserDecksUrl(currentUsername),
-      "PUT",
-      deckManager,
-      new TypeReference<String>() {}
-    );
-
-    if (!result.isSuccess()) {
-      ApiClient.showAlert("Save Error", result.getMessage());
     }
   }
 
@@ -175,25 +149,22 @@ public class FlashcardDeckController {
   }
 
   /**
-   * Updates the flashcard list display.
-   * Shows all flashcards from the current deck in the ListView.
+   * Saves user data to remote API.
+   * If the API call fails, shows error to user.
    */
-  public void updateUi() {
-    username.setText(currentUsername);
-    FlashcardDeck currentDeck = getCurrentDeck();
-    if (currentDeck != null) {
-      ObservableList<Flashcard> ob = FXCollections.observableArrayList(currentDeck.getDeck());
-      listView.setItems(ob);
-      startLearning.setDisable(currentDeck.getDeck().isEmpty());
-    } else {
-      listView.setItems(FXCollections.observableArrayList());
-      startLearning.setDisable(true);
+  private void saveUserData() {
+    ApiResponse<String> result = ApiClient.performApiRequest(
+      ApiEndpoints.getUserDecksUrl(currentUsername),
+      "PUT",
+      deckManager,
+      new TypeReference<String>() {}
+    );
+
+    if (!result.isSuccess()) {
+      ApiClient.showAlert("Save Error", result.getMessage());
     }
-
-    deleteCardButton.setDisable(listView.getSelectionModel().getSelectedItem() == null);
-
-    clearInputFields();
   }
+
 
   /**
    * Adds a new flashcard when button is clicked.
@@ -256,6 +227,7 @@ public class FlashcardDeckController {
   /**
    * Handles the back button click event.
    * Navigates back to the main flashcard UI.
+   * Saves current data and sends the updated deck manager back to main controller.
    * 
    * @throws IOException if the FXML file cannot be loaded
    */
@@ -264,9 +236,10 @@ public class FlashcardDeckController {
     FXMLLoader loader = new FXMLLoader(getClass().getResource("FlashcardMain.fxml"));
     Parent root = loader.load();
     
-    // Send current username back to main controller
+    // Send current username and updated deck manager back to main controller
     FlashcardMainController mainController = loader.getController();
     mainController.setCurrentUsername(currentUsername);
+    mainController.setDeckManager(deckManager);
     
     Stage stage = (Stage) questionField.getScene().getWindow();
     stage.setScene(new Scene(root));
@@ -276,10 +249,9 @@ public class FlashcardDeckController {
   /**
    * Handles the event when the "Start Learning" button is clicked.
    * Navigates from the current scene to the flashcard learning page by loading
-   * the FlashcardPageUI.fxml file and switching the scene.
+   * the FlashcardLearning.fxml file and switching the scene.
    * 
    * @throws IOException if the FXML file cannot be loaded or found
-   * @author Claude (AI Assistant) - Javadoc documentation
    */
   @FXML
   public void whenStartLearningButtonIsClicked() throws IOException {
@@ -290,7 +262,7 @@ public class FlashcardDeckController {
     FlashcardDeck currentDeck = getCurrentDeck();
     if(currentDeck != null){
       controller.setCurrentUsername(currentUsername);  // Send current username
-      controller.setDeck(currentDeck);
+      controller.setDeckManager(deckManager, currentDeck);  // Send complete deck manager and current deck
     }
 
     Stage stage = (Stage) startLearning.getScene().getWindow();
@@ -300,7 +272,8 @@ public class FlashcardDeckController {
 
   /**
    * Handles log out button click event.
-   * Navigates back to the login screen.
+   * Saves current user data before logging out, navigates back to the login screen,
+   * and applies appropriate CSS styling.
    */
   @FXML 
   public void whenLogOut() {

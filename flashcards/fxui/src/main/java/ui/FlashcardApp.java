@@ -27,8 +27,8 @@ public class FlashcardApp extends Application{
   }
 
   /**
-   * Sets up and displays the primary stage with the login scene.
-   * Configures the window title, loads the login UI, and applies styling.
+   * Starts the JavaFX application and sets up the primary stage.
+   * Loads the login UI as the initial scene and applies appropriate styling.
    * 
    * @param primaryStage the primary stage for this application
    * @throws IOException if the FXML file cannot be loaded
