@@ -1,49 +1,140 @@
 package server.service;
 
+import java.io.IOException;
+
 import org.springframework.stereotype.Service;
 
+import app.LoginValidator;
 import app.User;
+import itp.storage.FlashcardPersistent;
+import shared.ApiConstants;
+
 /**
- * Service class for managing user operations in the flashcard application.
- * This service provides functionality for user authentication, user management,
- * and user-related business logic.
+ * Service class for managing user operations including retrieval,
+ * creation, existence check, login, and password validation.
+ * 
+ * This service acts as an intermediary between the API layer and the
+ * persistence layer, handling business logic for user-related operations.
+ * 
+ * The service provides functionality to:
+ *   Retrieve user information by username
+ *   Create new users with validation
+ * 
+ * Check if a user exists
+ *   Log in users by validating credentials
+ * 
+ * Validate user passwords
+ * 
+ * All operations utilize FlashcardPersistent for data storage.
  * 
  * @author chrsom
  * @author isamw
+ * @see FlashcardPersistent
+ * @see ApiConstants
  */
 @Service
 public class UserService {
+
+  private final FlashcardPersistent persistent;
   
   public UserService() {
+    this.persistent = new FlashcardPersistent();
   }
 
-  public User getUser(String unsername) {
-    return null;
+  /**
+   * Retrieves user information for the specified username.
+   * 
+   * @param username
+   * @return the User object associated with the given username
+   * 
+   * @throws IllegalArgumentException if the user does not exist
+   */
+  public User getUser(String username) {
+    if (!persistent.userExists(username) || username.isEmpty()) {
+      throw new IllegalArgumentException(ApiConstants.USER_NOT_FOUND);
+    }
+
+    return persistent.readUserData(username);
   }
 
-  public User createUser(String username, String password){ //returnere userdata objekter?
-    return null;
+  /**
+   * Creates a new user with the specified username and password.
+   * 
+   * 
+   * @param username
+   * @param password
+   * @return the newly created User object
+   * @throws IOException if an error occurs while writing user data
+   * @throws IllegalArgumentException if the username or password is empty
+   * @throws IllegalArgumentException if the user already exists
+   * @throws IllegalArgumentException if the password is invalid
+   */
+  public User createUser(String username, String password) throws IOException{ 
+    LoginValidator validator = new LoginValidator(persistent);
+
+    if (username.isEmpty() || password.isEmpty()) {
+      throw new IllegalArgumentException(ApiConstants.INVALID_REQUEST);
+    }
+
+    if (!validator.isUsernameUnique(username)) {
+      throw new IllegalArgumentException(ApiConstants.USER_ALREADY_EXISTS);
+    }
+
+    User newUser = new User(username, password);
+
+    if (!validatePassword(username, password)) {
+      throw new IllegalArgumentException(ApiConstants.PASSWORD_INVALID);
+    }
+
+    persistent.writeUserData(newUser);
+    return newUser;
   }
 
-  public User updateUser(String username, User user) {
-    return null;
-  }
-
-  public void deleteUser(String username) {
-  }
-
+  /**
+   * Checks if a user exists with the given username.
+   * @param username
+   * @return boolean
+   * @throws IllegalArgumentException if the username is empty
+   */
   public boolean userExists(String username) {
-    return false;
+    if (username.isEmpty()) {
+      throw new IllegalArgumentException(ApiConstants.INVALID_REQUEST);
+    }
+    return persistent.userExists(username);
   }
 
-  public boolean loginuser(String username, String password) {
-    return false;
+  /**
+   * Used to log in a user with the specified username and password.
+   * Checks for empty fields and user existence before validating the password.
+   * 
+   * @param username
+   * @param password
+   * @return
+   */
+  public boolean logInUser(String username, String password) {
+    if (username.isEmpty() || password.isEmpty()) {
+      return false;
+    } else if (!userExists(username)) {
+      return false;
+    }
+
+    return validatePassword(username, password);
   }
 
-  public void logoutUser(String username) {
-  }
-
+  /**
+   * Validates the password for the given username.
+   * 
+   * @param username
+   * @param password
+   * @return
+   */
   public boolean validatePassword(String username, String password) {
-    return false;
+    LoginValidator validator = new LoginValidator(persistent);
+
+    if (username.isEmpty() || password.isEmpty()) {
+      return false;
+    }
+
+    return validator.authenticateUser(username, password);
   }
 }
