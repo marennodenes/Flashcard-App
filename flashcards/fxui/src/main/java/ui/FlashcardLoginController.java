@@ -4,6 +4,8 @@ import java.io.IOException;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 
+import dto.LoginRequestDto;
+import dto.LoginResponseDto;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -12,10 +14,8 @@ import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
-import dto.LoginRequestDto;
-import shared.ApiResponse;
 import shared.ApiEndpoints;
-import dto.LoginResponseDto;
+import shared.ApiResponse;
 /**
  * Controller for the Flashcard Login UI. Handles user login.
  * 
