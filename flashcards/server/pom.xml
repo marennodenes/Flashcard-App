@@ -27,10 +27,10 @@
             <version>${project.version}</version>
         </dependency>
 
-        <!-- DTOs -->
+        <!-- Shared DTOs and utilities -->
         <dependency>
             <groupId>it1901</groupId>
-            <artifactId>dto</artifactId>
+            <artifactId>shared</artifactId>
             <version>${project.version}</version>
         </dependency>
 

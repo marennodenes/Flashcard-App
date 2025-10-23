@@ -19,6 +19,7 @@ import dto.LoginResponseDto;
 import dto.UserDataDto;
 import dto.mappers.UserMapper;
 import server.service.UserService;
+import shared.ApiResponse;
 
 /**
  * UserController handles user-related HTTP requests such as registration, login, logout,
