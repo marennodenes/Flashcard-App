@@ -22,8 +22,8 @@ public class ApiEndpoints {
   // URL Paths
   public static final String BASE = "/api";
   public static final String USERS = BASE + "/users";
-  public static final String LOGIN = BASE + "/auth/login";
-  public static final String REGISTER = BASE + "/users/register";  // Used for user registration
+  public static final String LOGIN = BASE + "/v1/users/login";
+  public static final String REGISTER = BASE + "/v1/users/register";
   
   // Flashcard endpoints
   public static final String FLASHCARDS = BASE + "/v1/flashcards";

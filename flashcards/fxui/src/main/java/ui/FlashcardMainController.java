@@ -162,7 +162,7 @@ public class FlashcardMainController {
       ApiEndpoints.getUserDecksUrl(currentUsername), 
       "GET", 
       null,
-      new TypeReference<List<FlashcardDeckDto>>() {}
+      new TypeReference<ApiResponse<List<FlashcardDeckDto>>>() {}
     );
 
     if (result.isSuccess() && result.getData() != null) {
@@ -206,7 +206,7 @@ public class FlashcardMainController {
       ApiEndpoints.getUserDecksUrl(currentUsername), 
       "PUT", 
       deckManager,  // APIClient converts to JSON
-      new TypeReference<String>() {}  // Simple string response
+      new TypeReference<ApiResponse<String>>() {}
     );
 
     if (!result.isSuccess()) {

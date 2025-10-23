@@ -2,8 +2,6 @@ package dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import jakarta.validation.constraints.NotBlank;
-
 /**
  * A Data Transfer Object (DTO) representing a login request.
  * This class is used to transfer login credentials between different layers of the application.
@@ -12,22 +10,22 @@ import jakarta.validation.constraints.NotBlank;
  * @author isamw
  */
 public class LoginRequestDto {
+
+    public LoginRequestDto() {}
     
     /**
      * The username of the user attempting to log in.
      * This field cannot be null or blank.
      */
-    @NotBlank
     @JsonProperty("username")
-    private final String username;
+    private String username;
     
     /**
      * The password of the user attempting to log in.
      * This field cannot be null or blank.
      */
-    @NotBlank
     @JsonProperty("password")
-    private final String password;
+    private String password;
     
     /**
      * Constructs a new LoginRequestDto with the specified username and password.
@@ -56,5 +54,23 @@ public class LoginRequestDto {
      */
     public String getPassword() {
         return password;
+    }
+
+    /**
+     * Sets the username of the user.
+     *
+     * @param username the new username of the user; must not be null or blank
+     */
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    /**
+     * Sets the password of the user.
+     *
+     * @param password the new password of the user; must not be null or blank
+     */
+    public void setPassword(String password) {
+        this.password = password;
     }
 }

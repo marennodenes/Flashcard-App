@@ -3,11 +3,13 @@ package server.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import app.User;
+import dto.LoginRequestDto;
 import dto.LoginResponseDto;
 import dto.UserDataDto;
 import dto.mappers.UserMapper;
@@ -60,9 +62,9 @@ public class UserController {
    * @return
    */
   @PostMapping (ApiEndpoints.USER_REGISTER)
-  public ApiResponse <UserDataDto> createUser(@RequestParam String username, @RequestParam String password) {
+  public ApiResponse <UserDataDto> createUser(@RequestBody LoginRequestDto request) {
     try {
-      User user = userService.createUser(username, password);
+      User user = userService.createUser(request.getUsername(), request.getPassword());
       UserDataDto dto = mapper.toDto(user);
       return new ApiResponse<>(true, "User created successfully", dto);
     } catch (Exception e) {
@@ -77,13 +79,13 @@ public class UserController {
    * @return
    */
   @PostMapping (ApiEndpoints.USER_LOGIN)
-  public ApiResponse <LoginResponseDto> logInUser(@RequestParam String username, @RequestParam String password) { 
+  public ApiResponse <LoginResponseDto> logInUser(@RequestBody LoginRequestDto request) { 
     try {
-      Boolean login = userService.logInUser(username, password);
-      User user = userService.getUser(username);
+      Boolean login = userService.logInUser(request.getUsername(), request.getPassword());
+      User user = userService.getUser(request.getUsername());
       UserDataDto userDto = mapper.toDto(user);
       
-      LoginResponseDto responseDto = new LoginResponseDto(login, "Login successful: " + username, userDto);
+      LoginResponseDto responseDto = new LoginResponseDto(login, "Login successful: " + request.getUsername(), userDto);
       return new ApiResponse<>(true,  "Login successful", responseDto);
     } catch (Exception e) {
       return new ApiResponse<>(false, "Error logging in user: " + e.getMessage(), null);

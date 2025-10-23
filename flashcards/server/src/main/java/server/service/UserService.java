@@ -80,12 +80,11 @@ public class UserService {
       throw new IllegalArgumentException(ApiConstants.USER_ALREADY_EXISTS);
     }
 
-    User newUser = new User(username, password);
-
-    if (!validatePassword(username, password)) {
+    if (!isValidPassword(password)) {
       throw new IllegalArgumentException(ApiConstants.PASSWORD_INVALID);
     }
 
+    User newUser = new User(username, password);
     persistent.writeUserData(newUser);
     return newUser;
   }
@@ -129,12 +128,25 @@ public class UserService {
    * @return
    */
   public boolean validatePassword(String username, String password) {
-    LoginValidator validator = new LoginValidator(persistent);
-
     if (username.isEmpty() || password.isEmpty()) {
       return false;
     }
+    return isValidPassword(password);
+  }
 
-    return validator.authenticateUser(username, password);
+  /**
+   * Checks if the given password meets the security requirements.
+   * 
+   * @param password
+   * @return true if the password is valid, false otherwise
+   */
+  public boolean isValidPassword(String password) {
+    if (password == null) return false;
+    if (password.length() < 8) return false;
+    if (!password.matches(".*[A-Z].*")) return false; // minst én stor bokstav
+    if (!password.matches(".*[a-z].*")) return false; // minst én liten bokstav
+    if (!password.matches(".*\\d.*")) return false;   // minst ett tall
+    if (!password.matches(".*[^a-zA-Z0-9].*")) return false; // minst ett spesialtegn
+    return true;
   }
 }

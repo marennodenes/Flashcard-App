@@ -154,7 +154,7 @@ public final class ApiClient {
     }
 
     /**
-     * Performs an API request and returns a structured ApiResponse.
+     * Performs an API request and returns the parsed response object.
      * This method wraps the raw HTTP response in an ApiResponse object for better error handling.
      *
      * @param <T> The type of data expected in the response
@@ -162,42 +162,26 @@ public final class ApiClient {
      * @param method The HTTP method to use
      * @param data The data to send with the request
      * @param responseType TypeReference for the expected response data type
-     * @return ApiResponse containing success status, message, and data
+     * @return The parsed response object of type T
      */
-    public static <T> ApiResponse<T> performApiRequest(final String url, final String method, 
-                                                      final Object data, final TypeReference<T> responseType) {
+    public static <T> T performApiRequest(final String url, final String method, 
+                                         final Object data, final TypeReference<T> responseType) {
         try {
-            // Convert data to JSON if provided
             String json = null;
             if (data != null) {
                 json = convertObjectToJson(data);
             }
-            
-            // Send the HTTP request
             HttpResponse<String> response = sendRequest(url, method, json);
-            
-            // Check if the response status indicates success (2xx)
             if (response.statusCode() >= 200 && response.statusCode() < 300) {
-                T responseData = null;
-                // Parse response body if we have data and a type reference
                 if (responseType != null && response.body() != null && !response.body().trim().isEmpty()) {
-                    responseData = parseResponse(response.body(), responseType);
+                    return parseResponse(response.body(), responseType);
                 }
-                return new ApiResponse<>(true, "Request successful", responseData);
+                return null;
             } else {
-                // Server returned an error status code
-                return new ApiResponse<>(false, "Server error: " + response.statusCode(), null);
+                throw new IOException("Server error: " + response.statusCode());
             }
-            
-        } catch (JsonProcessingException e) {
-            return new ApiResponse<>(false, "Failed to parse server response: " + e.getMessage(), null);
-        } catch (IOException e) {
-            return new ApiResponse<>(false, "Network error: " + e.getMessage(), null);
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt(); // Re-interrupt the thread to preserve its interrupted status
-            return new ApiResponse<>(false, "Request interrupted: " + e.getMessage(), null);
         } catch (Exception e) {
-            return new ApiResponse<>(false, "Request failed: " + e.getMessage(), null);
+            throw new RuntimeException("Request failed: " + e.getMessage(), e);
         }
     }
 

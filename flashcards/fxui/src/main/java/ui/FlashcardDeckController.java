@@ -157,7 +157,7 @@ public class FlashcardDeckController {
       ApiEndpoints.getUserDecksUrl(currentUsername),
       "PUT",
       deckManager,
-      new TypeReference<String>() {}
+      new TypeReference<ApiResponse<String>>() {}
     );
 
     if (!result.isSuccess()) {

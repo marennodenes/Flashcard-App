@@ -5,6 +5,7 @@ import java.io.IOException;
 import com.fasterxml.jackson.core.type.TypeReference;
 
 import dto.LoginRequestDto;
+import dto.UserDataDto;
 import shared.ApiResponse;
 import shared.ApiEndpoints;
 import javafx.fxml.FXML;
@@ -105,11 +106,11 @@ public class FlashcardSignUpController {
    * @param password the password for the user
    */
   private void createUser(String username, String password) {
-    ApiResponse<String> result = ApiClient.performApiRequest(
+    ApiResponse<UserDataDto> result = ApiClient.performApiRequest(
       ApiEndpoints.REGISTER_URL, 
       "POST", 
       new LoginRequestDto(username, password),
-      new TypeReference<String>() {}
+      new TypeReference<ApiResponse<UserDataDto>>() {}
     );
 
     if (result.isSuccess()) {
@@ -126,6 +127,7 @@ public class FlashcardSignUpController {
         showError("Username already exists,\ntry with another username");
       } else {
         ApiClient.showAlert("Registration Error", result.getMessage());
+        System.out.println("Registration failed: " + result.getMessage());
       }
     }
   }

@@ -52,6 +52,7 @@ public class FlashcardLoginController {
    */
   public void updateUi() {
     if (showAlert) {
+      System.out.println("ERROR: " + error);
       alertMessage.setText(error);
       alertMessage.setVisible(true);
       showAlert = false;
@@ -82,7 +83,7 @@ public class FlashcardLoginController {
         ApiEndpoints.LOGIN_URL, 
         "POST",
         new LoginRequestDto(username, password),
-        new TypeReference<LoginResponseDto>() {}
+        new TypeReference<ApiResponse<LoginResponseDto>>() {}
       );
 
       if (result.isSuccess() && result.getData() != null) {
