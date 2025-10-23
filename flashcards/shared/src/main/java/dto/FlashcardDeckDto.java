@@ -1,9 +1,11 @@
 package dto;
 
 import java.util.List;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Min;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
+
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
 
 /**
  * A Data Transfer Object (DTO) representing a deck of flashcards.

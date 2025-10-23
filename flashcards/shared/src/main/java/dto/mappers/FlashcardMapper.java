@@ -1,8 +1,7 @@
 package dto.mappers;
 
-
-import dto.FlashcardDto;
 import app.Flashcard;
+import dto.FlashcardDto;
 
 /**
  * Mapper class for converting between Flashcard and FlashcardDto.

@@ -1,7 +1,7 @@
 package dto.mappers;
 
-import dto.UserDataDto;
 import app.User;
+import dto.UserDataDto;
 
 /**
  * Mapper class for converting between User and UserDataDto.

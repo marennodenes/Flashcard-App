@@ -1,8 +1,12 @@
 package dto.mappers;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
+import app.Flashcard;
 import app.FlashcardDeck;
 import dto.FlashcardDeckDto;
-
+import dto.FlashcardDto;
 
 /**
  * Mapper class for converting between FlashcardDeck and FlashcardDeckDto.
@@ -28,7 +32,7 @@ public class FlashcardDeckMapper {
         .toDto(flashcard))
         .collect(Collectors.toList());
 
-    return new FlashcardDeckDto(deck.getName(), flashcardDtos);
+    return new FlashcardDeckDto(deck.getDeckName(), flashcardDtos);
   }
 
   /**
@@ -41,13 +45,13 @@ public class FlashcardDeckMapper {
       throw new IllegalArgumentException("FlashcardDeckDto cannot be null");
     }
 
-    List<FlashcardDto> flashcardDtos = dto.getFlashcards();
+    List<FlashcardDto> flashcardDtos = dto.getDeck();
     List<Flashcard> flashcards = flashcardDtos.stream()
         .map(flashcardDto -> new FlashcardMapper()
         .fromDto(flashcardDto))
         .collect(Collectors.toList());
 
-    FlashcardDeck deck = new FlashcardDeck(dto.getName());
+    FlashcardDeck deck = new FlashcardDeck(dto.getDeckName());
     deck.setDeck(flashcards);
     return deck;
   }

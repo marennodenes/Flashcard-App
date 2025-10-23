@@ -11,13 +11,14 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import server.service.UserService;
-import dto.mappers.UserMapper;
-import dto.LoginResponseDto;
-import dto.LoginRequestDto;
-import dto.UserDataDto;
-import app.UserData;
+
 import app.User;
+import app.UserData;
+import dto.LoginRequestDto;
+import dto.LoginResponseDto;
+import dto.UserDataDto;
+import dto.mappers.UserMapper;
+import server.service.UserService;
 
 /**
  * UserController handles user-related HTTP requests such as registration, login, logout,
