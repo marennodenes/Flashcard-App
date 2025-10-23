@@ -61,6 +61,8 @@ public class FlashcardMainController {
 
   @FXML private Text alertMessage;
 
+  @FXML private Text ex;
+
   @FXML private Text noDecks;
 
   private FlashcardDeckManager deckManager = new FlashcardDeckManager();
@@ -105,9 +107,11 @@ public class FlashcardMainController {
     if (showAlert) {
       alertMessage.setText(error);
       alertMessage.setVisible(true);
+      ex.setVisible(true);
       showAlert = false;
     } else {
       alertMessage.setVisible(false);
+      ex.setVisible(false);
     }
 
     noDecks.setVisible(decks.isEmpty());

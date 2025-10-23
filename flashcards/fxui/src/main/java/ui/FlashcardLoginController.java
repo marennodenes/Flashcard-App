@@ -27,6 +27,8 @@ public class FlashcardLoginController {
   @FXML
   private Text alertMessage;
   @FXML
+  private Text ex;
+  @FXML
   private Button loginButton;
   @FXML
   private TextField usernameField;
@@ -54,9 +56,11 @@ public class FlashcardLoginController {
     if (showAlert) {
       alertMessage.setText(error);
       alertMessage.setVisible(true);
+      ex.setVisible(true);
       showAlert = false;
     } else {
       alertMessage.setVisible(false);
+      ex.setVisible(false);
     }
 
   }
