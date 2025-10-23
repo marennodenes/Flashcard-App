@@ -31,12 +31,12 @@ import shared.ApiResponse;
 public class DeckController {
 
   @Autowired
-  private DeckService deckService;
+  private DeckService deckService; // Handles business logic for deck operations
   private FlashcardDeckMapper mapper;
 
   public DeckController(final DeckService deckService) {
     this.deckService = deckService;
-    this.mapper = new FlashcardDeckMapper();
+    if (this.mapper == null) this.mapper = new FlashcardDeckMapper();
   }
 
   /**

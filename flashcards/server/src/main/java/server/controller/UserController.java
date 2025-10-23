@@ -1,25 +1,19 @@
 package server.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import app.User;
-import app.UserData;
-import dto.LoginRequestDto;
 import dto.LoginResponseDto;
 import dto.UserDataDto;
 import dto.mappers.UserMapper;
 import server.service.UserService;
 import shared.ApiResponse;
+import shared.ApiEndpoints;
 
 /**
  * UserController handles user-related HTTP requests such as registration, login, logout,
@@ -31,11 +25,12 @@ import shared.ApiResponse;
  * @author @sofietw
  */
 @RestController
-@RequestMapping  ("/api/v1/users")
+@RequestMapping (ApiEndpoints.USERS_V1)
 public class UserController {
   
   @Autowired
-  private UserService userService;
+  private UserService userService; // Handles business logic for user operations
+  private UserMapper mapper;
 
 
   /**
@@ -44,18 +39,18 @@ public class UserController {
    */
   public UserController (final UserService userService) {
     this.userService = userService;
+    if (this.mapper == null) this.mapper = new UserMapper();
   }
 
   @GetMapping 
   public ApiResponse<UserDataDto> getUser (@RequestParam String username) {
     try {
       User user = userService.getUser(username);
-      UserDataDto userDataDto = new UserMapper().toDto(user);
-      return new ApiResponse<>(userDataDto);
+      UserDataDto dto = mapper.toDto(user);
+      return new ApiResponse<>(true, "User retrieved successfully", dto);
     } catch (Exception e) {
-      return new ApiResponse<>(HttpStatus.INTERNAL_SERVER_ERROR);
+      return new ApiResponse<>(false, "Error retrieving user: " + e.getMessage(), null);
     }
-    
   }
 
   /**
@@ -64,18 +59,14 @@ public class UserController {
    * @param request
    * @return
    */
-  @PostMapping ("/register")
-  public ApiResponse <UserDataDto> createUser(@RequestBody UserDataDto userDto) {
+  @PostMapping (ApiEndpoints.USER_REGISTER)
+  public ApiResponse <UserDataDto> createUser(@RequestParam String username, @RequestParam String password) {
     try {
-      UserData userData = userDto.fromDto(userDto);
-      
-      
-
-      User user = userService.createUser(userData.getUsername(), userData.getPassword());
-      UserDataDto userDataDto = new UserDataDto(user);
-      return new ApiResponse<>(userDataDto);
+      User user = userService.createUser(username, password);
+      UserDataDto dto = mapper.toDto(user);
+      return new ApiResponse<>(true, "User created successfully", dto);
     } catch (Exception e) {
-      return new ApiResponse<>(HttpStatus.INTERNAL_SERVER_ERROR);
+      return new ApiResponse<>(false, "Error creating user: " + e.getMessage(), null);
     }
   }
 
@@ -85,29 +76,17 @@ public class UserController {
    * @param loginRequest
    * @return
    */
-  @PostMapping ("/login")
-  public ResponseEntity <LoginResponseDto> loginUser(@RequestBody LoginRequestDto loginRequest) { 
+  @PostMapping (ApiEndpoints.USER_LOGIN)
+  public ApiResponse <LoginResponseDto> logInUser(@RequestParam String username, @RequestParam String password) { 
     try {
-      LoginResponseDto response = userService.loginUser(loginRequest);
-      return new ResponseEntity<>(response, HttpStatus.OK);
+      Boolean login = userService.logInUser(username, password);
+      User user = userService.getUser(username);
+      UserDataDto userDto = mapper.toDto(user);
+      
+      LoginResponseDto responseDto = new LoginResponseDto(login, "Login successful: " + username, userDto);
+      return new ApiResponse<>(true,  "Login successful", responseDto);
     } catch (Exception e) {
-      return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
-    }
-  }
-
-  /**
-   * Log out a user.
-   * Uses the userService to log out a user
-   * @param username
-   * @return
-   */
-  @PostMapping ("/logout")
-  public ResponseEntity <Void> logOutUser(@RequestParam String username) {
-    try {
-      userService.logOutUser(username);
-      return new ResponseEntity<>(HttpStatus.OK);
-    } catch (Exception e) {
-      return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+      return new ApiResponse<>(false, "Error logging in user: " + e.getMessage(), null);
     }
   }
 
@@ -117,59 +96,29 @@ public class UserController {
    * @param request
    * @return
    */
-  @PostMapping ("/validate-password")
-  public ResponseEntity <Boolean> validatePassword(@RequestBody LoginRequestDto request) {
+  @PostMapping (ApiEndpoints.USER_VALIDATE_PASSWORD)
+  public ApiResponse <Boolean> validatePassword(@RequestParam String username, @RequestParam String password) {
     try {
-      boolean isValid = userService.validatePassword(request);
-      return new ResponseEntity<>(isValid, HttpStatus.OK);
+      Boolean isValid = userService.validatePassword(username, password);
+      return new ApiResponse<>(true, "Password validation successful", isValid);
     } catch (Exception e) {
-      return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+      return new ApiResponse<>(false, "Error validating password: " + e.getMessage(), null);
     }
   }
 
-  /**
-   * Get current user details.
-   * Uses the userService to get the current user's details
-   * @return
-   */
-  @GetMapping ("/profile") 
-  public ResponseEntity <UserDataDto> getCurrentUser() {
-    try {
-      UserData userDto = userService.getUser();
-      return new ResponseEntity<>(userDto, HttpStatus.OK);
-    } catch (Exception e) {
-      return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-    }
-  }
-
-  /**
-   * Update user details.
-   * Uses the userService to update a user's details
-   * @param userDataDto
-   * @return
-   */
-  @PutMapping ("/profile")
-  public ResponseEntity <UserDataDto> updateUser(@RequestBody UserDataDto userDataDto) {
-    try {
-      UserDataDto updatedUser = userService.updateUser(userDataDto);
-      return new ResponseEntity<>(updatedUser, HttpStatus.OK);
-    } catch (Exception e) {
-      return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-    }
-  }
 
   /**
    * Delete a user.
    * Uses the userService to delete a user
    * @return
    */
-  @DeleteMapping ("/profile")
-  public ResponseEntity <Void> deleteUser() {
+  @GetMapping
+  public ApiResponse <Boolean> findUser(@RequestParam String username) {
     try {
-      userService.deleteUser();
-      return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+      Boolean exists = userService.userExists(username);
+      return new ApiResponse<>(true, "User existence check successful", exists);
     } catch (Exception e) {
-      return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+      return new ApiResponse<>(false, "Error checking user existence: " + e.getMessage(), null);
     }
   }
 }

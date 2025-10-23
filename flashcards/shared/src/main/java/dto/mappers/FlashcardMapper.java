@@ -1,5 +1,7 @@
 package dto.mappers;
 
+import java.util.List;
+
 import app.Flashcard;
 import dto.FlashcardDto;
 
@@ -34,6 +36,22 @@ public class FlashcardMapper {
     }
 
     return new Flashcard(flashcardDto.getNumber(), flashcardDto.getQuestion(), flashcardDto.getAnswer());
+  }
+
+  public List<FlashcardDto> toDtoList(List<Flashcard> flashcards) {
+    List<FlashcardDto> dtoList = new java.util.ArrayList<>();
+    for (Flashcard flashcard : flashcards) {
+      dtoList.add(toDto(flashcard));
+    }
+    return dtoList;
+  }
+
+  public List<Flashcard> fromDtoList(List<FlashcardDto> flashcardDtos) {
+    List<Flashcard> flashcardList = new java.util.ArrayList<>();
+    for (FlashcardDto dto : flashcardDtos) {
+      flashcardList.add(fromDto(dto));
+    }
+    return flashcardList;
   }
 
 }

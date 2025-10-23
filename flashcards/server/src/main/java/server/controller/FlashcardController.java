@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import app.Flashcard;
 import dto.FlashcardDto;
+import dto.mappers.FlashcardMapper;
 import server.service.FlashcardService;
 import shared.ApiEndpoints;
 import shared.ApiResponse;
@@ -32,6 +33,7 @@ public class FlashcardController {
 
   @Autowired
   private FlashcardService flashcardService; // Handles business logic for flashcard operations
+  private FlashcardMapper mapper;
 
   /**
    * Constructor for FlashcardController.
@@ -40,6 +42,7 @@ public class FlashcardController {
    */
   public FlashcardController(final FlashcardService flashcardService) {
     this.flashcardService = flashcardService;
+    if (this.mapper == null) this.mapper = new FlashcardMapper();
   }
 
   /**
@@ -67,7 +70,7 @@ public class FlashcardController {
       int position = allFlashcards.size(); // New card is at the end (1-indexed)
       
       // Return the created flashcard as DTO
-      FlashcardDto flashcardDto = new FlashcardDto(question, answer, position);
+      FlashcardDto flashcardDto = mapper.toDto(flashcardService.getFlashcard(username, deckname, position));
       return new ApiResponse<>(true, "Flashcard created successfully", flashcardDto);
     } catch (Exception e) {
       // Return server error if creation fails
@@ -118,7 +121,7 @@ public class FlashcardController {
       Flashcard flashcard = flashcardService.getFlashcard(username, deckname, number);
       
       // Convert to DTO for response
-      FlashcardDto flashcardDto = new FlashcardDto(flashcard.getQuestion(), flashcard.getAnswer(), number);
+      FlashcardDto flashcardDto = mapper.toDto(flashcard);
       return new ApiResponse<>(true, "Flashcard retrieved successfully", flashcardDto);
     } catch (Exception e) {
       // Return server error if flashcard not found or other error
@@ -141,14 +144,7 @@ public class FlashcardController {
     try {
       // Get all flashcards from the specified deck
       List<Flashcard> flashcards = flashcardService.getAllFlashcards(username, deckname);
-      
-      // Convert each flashcard to DTO with correct position number
-      List<FlashcardDto> flashcardDtos = new java.util.ArrayList<>();
-      for (int i = 0; i < flashcards.size(); i++) {
-        Flashcard flashcard = flashcards.get(i);
-        // Position is 1-indexed (i + 1)
-        flashcardDtos.add(new FlashcardDto(flashcard.getQuestion(), flashcard.getAnswer(), i + 1));
-      }
+      List<FlashcardDto> flashcardDtos = mapper.toDtoList(flashcards);
       return new ApiResponse<>(true, "Flashcards retrieved successfully", flashcardDtos);
     } catch (Exception e) {
       // Return error if deck not found or other error
