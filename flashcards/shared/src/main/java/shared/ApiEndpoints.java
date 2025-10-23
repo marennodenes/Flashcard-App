@@ -46,6 +46,7 @@ public class ApiEndpoints {
   public static final String USER_LOGOUT = "/logout";
   public static final String USER_VALIDATE_PASSWORD = "/validate-password";
   public static final String USER_PROFILE = "/profile";
+  public static final String USER_FIND = "/find";
   
   // Complete API URLs - Built from existing constants
   public static final String LOGIN_URL = SERVER_BASE_URL + LOGIN;

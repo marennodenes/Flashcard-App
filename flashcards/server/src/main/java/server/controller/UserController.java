@@ -112,7 +112,7 @@ public class UserController {
    * Uses the userService to delete a user
    * @return
    */
-  @GetMapping
+  @GetMapping(ApiEndpoints.USER_FIND)
   public ApiResponse <Boolean> findUser(@RequestParam String username) {
     try {
       Boolean exists = userService.userExists(username);
