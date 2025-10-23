@@ -9,6 +9,7 @@ import app.Flashcard;
 import app.FlashcardDeck;
 import app.FlashcardDeckManager;
 import itp.storage.FlashcardPersistent;
+import shared.ApiConstants;
 
 /**
  * Service class for managing flashcard operations including retrieval,

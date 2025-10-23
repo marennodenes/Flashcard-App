@@ -70,7 +70,7 @@
 //     public void start(Stage stage) throws Exception {
 //         try {
 //             // Load FXML
-//             FXMLLoader loader = new FXMLLoader(getClass().getResource("FlashcardLoginUI.fxml"));
+//             FXMLLoader loader = new FXMLLoader(getClass().getResource("FlashcardLogin.fxml"));
 //             Parent root = loader.load();
 //             controller = loader.getController();
             
