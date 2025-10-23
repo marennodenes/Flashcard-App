@@ -83,10 +83,13 @@ public class DeckService {
      * @throws IOException if an error occurs while writing to persistent storage
      * @throws IllegalArgumentException if the user does not exist
      */
-    public void createDeck(String username, FlashcardDeck deck) throws IOException {
+    public FlashcardDeck createDeck(String username, String deckName) throws IOException {
+        FlashcardDeck deck = new FlashcardDeck(deckName);
 
         getAllDecks(username).addDeck(deck);
         flashcardPersistent.writeDeck(username, getAllDecks(username));
+        
+        return deck;
     }
 
     /**

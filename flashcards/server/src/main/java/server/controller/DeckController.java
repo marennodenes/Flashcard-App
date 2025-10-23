@@ -1,42 +1,107 @@
 package server.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.RequestParam;
-import org.springframework.beans.factory.annotation.RestController;
-import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 
+import app.FlashcardDeck;
+import app.FlashcardDeckManager;
+import dto.FlashcardDeckManagerDto;
+import dto.mappers.FlashcardDeckMapper;
+import dto.FlashcardDeckDto;
 import server.service.DeckService;
 import shared.ApiEndpoints;
 import shared.ApiResponse;
-import shared.dto.DeckDto;
 
 
 
 /**
  * Controller for managing decks of flashcards.
- * Handles HTTP requests related to deck operations such as creation, retrieval, updating, and deletion.
+ * Handles HTTP requests related to flashcard deck operations.
  * Interacts with DeckService to perform business logic and data manipulation.
  * @see server.service.DeckService
- * @author @ailinat
- * @author @sofietw
+ * @author ailinat
+ * @author sofietw
  */
- @RestController
+@RestController
+@RequestMapping(ApiEndpoints.DECKS)
 public class DeckController {
 
   @Autowired
   private DeckService deckService;
+  private FlashcardDeckMapper mapper;
 
   public DeckController(final DeckService deckService) {
     this.deckService = deckService;
+    this.mapper = new FlashcardDeckMapper();
   }
 
-  @PutMapping ("/create") //TODO: update to static paths from
-  public ApiResponse <DeckDto> createDeck(@RequestParam String name, @RequestParam String description) {
+  /**
+   * Gets all decks for a user.
+   * @param username
+   * @return an ApiResponse containing FlashcardDeckManagerDto if success or an error message
+   */
+  @RequestMapping
+  public ApiResponse<FlashcardDeckManagerDto> getAllDecks(@RequestParam String username) {
     try {
-      DeckDto createdDeck = deckService.createDeck(name, description);
-      return new ApiResponse<>(createdDeck);
+      FlashcardDeckManager deckManager = deckService.getAllDecks(username);
+      FlashcardDeckManagerDto dto = new FlashcardDeckManagerDto(mapper.toDtoList(deckManager.getDecks()));
+      return new ApiResponse<>(true, "Decks retrieved successfully", dto);
     } catch (Exception e) {
-      return new ApiResponse<>(HttpStatus.INTERNAL_SERVER_ERROR);
+      return new ApiResponse<>(false, "Error retrieving decks: " + e.getMessage(), null);
+    }
+  }
+
+  /**
+   * Gets a specific deck by name for a user.
+   * @param username
+   * @param deckName
+   * @return an ApiResponse containing FlashcardDeckDto if success or an error message
+   */
+  @RequestMapping ("/{deckName}")
+  public ApiResponse<FlashcardDeckDto> getDeckByName(@RequestParam String username, @RequestParam String deckName) {
+    try {
+      FlashcardDeck deck = deckService.getDeck(username, deckName);
+      FlashcardDeckDto dto = mapper.toDto(deck);
+      return new ApiResponse<>(true, "Deck retrieved successfully", dto);
+    } catch (Exception e) {
+      return new ApiResponse<>(false, "Error retrieving deck: " + e.getMessage(), null);
+    }
+  }
+
+  /**
+   * Creates a new deck for a user.
+   * @param username
+   * @param deckName
+   * @return an ApiResponse containing FlashcardDeckDto if success or an error message
+   */
+  @PostMapping ("/{deckName}")
+  public ApiResponse<FlashcardDeckDto> createDeck(@RequestParam String username, @RequestParam String deckName) {
+    try {
+      FlashcardDeck deck = deckService.createDeck(username, deckName);
+      FlashcardDeckDto dto = mapper.toDto(deck);
+      return new ApiResponse<>(true, "Deck created successfully", dto);
+    } catch (Exception e) {
+      return new ApiResponse<>(false, "Error creating deck: " + e.getMessage(), null);
+    }
+  }
+
+  /**
+   * Deletes a deck for a user.
+   * @param username
+   * @param deckName
+   * @return An ApiResponse indicating success or failure
+   */
+  @DeleteMapping ("/{deckName}")
+  public ApiResponse<Void> deleteDeck(@RequestParam String username, @RequestParam String deckName) {
+    try {
+      deckService.deleteDeck(username, deckName);
+      return new ApiResponse<>(true, "Deck deleted successfully", null);
+    } catch (Exception e) {
+      return new ApiResponse<>(false, "Error deleting deck: " + e.getMessage(), null);
     }
   }
 }

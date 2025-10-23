@@ -15,6 +15,7 @@ module flashcards.server {
     requires transitive flashcards.core;
 
     requires spring.context;
+    requires spring.web;
 
     // Export packages
     exports server;
