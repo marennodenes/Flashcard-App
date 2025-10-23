@@ -1,6 +1,15 @@
 package server.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.RequestParam;
+import org.springframework.beans.factory.annotation.RestController;
+import org.springframework.web.bind.annotation.PutMapping;
+import server.service.DeckService;
+import shared.dto.DeckDto;
+import shared.ApiResponse;
+import shared.ApiEndpoints;
+
+
 
 /**
  * Controller for managing decks of flashcards.
@@ -10,6 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
  * @author @ailinat
  * @author @sofietw
  */
+ @RestController
 public class DeckController {
 
   @Autowired
@@ -19,13 +29,13 @@ public class DeckController {
     this.deckService = deckService;
   }
 
-  @PutMapping ("/create")
-  public ResponseEntity <DeckDto> createDeck(@RequestParam String name, @RequestParam String description) {
+  @PutMapping ("/create") //TODO: update to static paths from
+  public ApiResponse <DeckDto> createDeck(@RequestParam String name, @RequestParam String description) {
     try {
       DeckDto createdDeck = deckService.createDeck(name, description);
-      return new ResponseEntity<>(createdDeck, HttpStatus.CREATED);
+      return new ApiResponse<>(createdDeck);
     } catch (Exception e) {
-      return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+      return new ApiResponse<>(HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
 }

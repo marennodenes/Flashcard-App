@@ -44,6 +44,18 @@ public class UserController {
     this.userService = userService;
   }
 
+  @GetMapping 
+  public ApiResponse<UserDataDto> getUser (@RequestParam String username) {
+    try {
+      User user = userService.getUser(username);
+      UserDataDto userDataDto = new UserMapper().toDto(user);
+      return new ApiResponse<>(userDataDto);
+    } catch (Exception e) {
+      return new ApiResponse<>(HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+    
+  }
+
   /**
    * Register a new user.
    * Uses the userService to create a new user
@@ -51,17 +63,17 @@ public class UserController {
    * @return
    */
   @PostMapping ("/register")
-  public ResponseEntity <UserDataDto> createUser(@RequestBody UserDataDto userDto) {
+  public ApiResponse <UserDataDto> createUser(@RequestBody UserDataDto userDto) {
     try {
       UserData userData = userDto.fromDto(userDto);
       
       
 
-      User user = userService.createUser(username, password);
+      User user = userService.createUser(userData.getUsername(), userData.getPassword());
       UserDataDto userDataDto = new UserDataDto(user);
-      return new ResponseEntity<>(userDataDto, HttpStatus.CREATED);
+      return new ApiResponse<>(userDataDto);
     } catch (Exception e) {
-      return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+      return new ApiResponse<>(HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
 
