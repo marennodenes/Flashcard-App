@@ -1,6 +1,7 @@
 package server.controller;
 
 import java.util.List;
+import java.util.Objects;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -32,8 +33,8 @@ import shared.ApiResponse;
 public class FlashcardController {
 
   @Autowired
-  private FlashcardService flashcardService; // Handles business logic for flashcard operations
-  private FlashcardMapper mapper;
+  private final FlashcardService flashcardService; // Handles business logic for flashcard operations
+  private final FlashcardMapper mapper;
 
   /**
    * Constructor for FlashcardController.
@@ -41,8 +42,8 @@ public class FlashcardController {
    * @param flashcardService the flashcard service to use for business logic
    */
   public FlashcardController(final FlashcardService flashcardService) {
-    this.flashcardService = flashcardService;
-    if (this.mapper == null) this.mapper = new FlashcardMapper();
+    this.flashcardService = Objects.requireNonNull(flashcardService, "FlashcardService cannot be null");
+    this.mapper = new FlashcardMapper();
   }
 
   /**

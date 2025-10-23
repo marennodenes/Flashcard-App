@@ -1,6 +1,7 @@
 package server.service;
 
 import java.io.IOException;
+import java.util.Objects;
 
 import org.springframework.stereotype.Service;
 
@@ -39,7 +40,7 @@ public class DeckService {
     }
 
     public DeckService(FlashcardPersistent flashcardPersistent) {
-        this.flashcardPersistent = flashcardPersistent;
+        this.flashcardPersistent = Objects.requireNonNull(flashcardPersistent, "FlashcardPersistent cannot be null");
     }
 
     /**

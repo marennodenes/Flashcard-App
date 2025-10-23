@@ -1,5 +1,7 @@
 package server.controller;
 
+import java.util.Objects;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -31,12 +33,12 @@ import shared.ApiResponse;
 public class DeckController {
 
   @Autowired
-  private DeckService deckService; // Handles business logic for deck operations
-  private FlashcardDeckMapper mapper;
+  private final DeckService deckService; // Handles business logic for deck operations
+  private final FlashcardDeckMapper mapper;
 
   public DeckController(final DeckService deckService) {
-    this.deckService = deckService;
-    if (this.mapper == null) this.mapper = new FlashcardDeckMapper();
+    this.deckService = Objects.requireNonNull(deckService, "DeckService cannot be null");
+    this.mapper = new FlashcardDeckMapper();
   }
 
   /**
