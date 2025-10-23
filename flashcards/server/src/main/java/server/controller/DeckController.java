@@ -7,6 +7,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import app.FlashcardDeck;
@@ -48,11 +50,14 @@ public class DeckController {
    */
   @RequestMapping
   public ApiResponse<FlashcardDeckManagerDto> getAllDecks(@RequestParam String username) {
+    System.out.println("DEBUG: getAllDecks called for username: '" + username + "'");
     try {
       FlashcardDeckManager deckManager = deckService.getAllDecks(username);
+      System.out.println("DEBUG: deckManager loaded for username: '" + username + "', decks count: " + deckManager.getDecks().size());
       FlashcardDeckManagerDto dto = new FlashcardDeckManagerDto(mapper.toDtoList(deckManager.getDecks()));
       return new ApiResponse<>(true, "Decks retrieved successfully", dto);
     } catch (Exception e) {
+      System.out.println("DEBUG: Error retrieving decks for username: '" + username + "' - " + e.getMessage());
       return new ApiResponse<>(false, "Error retrieving decks: " + e.getMessage(), null);
     }
   }
@@ -106,4 +111,16 @@ public class DeckController {
       return new ApiResponse<>(false, "Error deleting deck: " + e.getMessage(), null);
     }
   }
+
+  @PutMapping
+    public ApiResponse<Void> updateAllDecks(
+        @RequestParam String username,
+        @RequestBody FlashcardDeckManagerDto deckManagerDto) {
+      try {
+        deckService.updateAllDecks(username, deckManagerDto);
+        return new ApiResponse<>(true, "Decks updated successfully", null);
+      } catch (Exception e) {
+        return new ApiResponse<>(false, "Error updating decks: " + e.getMessage(), null);
+      }
+    }
 }

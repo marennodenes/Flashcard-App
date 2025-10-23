@@ -181,9 +181,8 @@ public class FlashcardPersistent implements UserPersistence {
             
             try {
                 // Try reading as UserData
-                User user = objectMapper.readValue(file, User.class);
+                UserData userData = objectMapper.readValue(file, UserData.class);
 
-                UserData userData = new UserData(user);
                 System.out.println("DEBUG: Successfully read as UserData for: " + username);
                 return userData;
             } catch (IOException e) {

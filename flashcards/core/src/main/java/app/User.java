@@ -12,6 +12,11 @@ public class User {
     @JsonProperty("password") private String password;
 
     /**
+     * Default constructor for JSON deserialization.
+     */
+    public User() {}
+
+    /**
      * Private constructor to create a User with encoded password.
      * @param username
      * @param password

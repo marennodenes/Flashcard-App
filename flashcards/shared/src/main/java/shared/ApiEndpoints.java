@@ -58,6 +58,9 @@ public class ApiEndpoints {
    * @return complete URL for user deck operations
    */
   public static String getUserDecksUrl(String username) {
-    return SERVER_BASE_URL + USERS + "/" + username + "/decks";
+    String fullUrl = SERVER_BASE_URL + DECKS + "?username=" + username;
+    // Debug print for verification
+    System.out.println("DEBUG: ApiEndpoints.getUserDecksUrl returns: " + fullUrl);
+    return fullUrl;
   }
 }

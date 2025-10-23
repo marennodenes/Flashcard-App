@@ -12,7 +12,6 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 import javafx.scene.control.Alert;
 import javafx.stage.Modality;
-import shared.ApiResponse;
 
 /**
  * Utility class for handling HTTP requests and JSON serialization/deserialization.

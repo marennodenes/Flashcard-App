@@ -16,6 +16,8 @@ public class UserData {
 
     private FlashcardDeckManager deckManager;
 
+    public UserData() {}
+
     /**
      * Constructor with User object and deck manager.
      * Used for programmatic creation (not JSON deserialization).

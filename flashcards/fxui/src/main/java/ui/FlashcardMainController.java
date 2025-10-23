@@ -16,6 +16,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import app.FlashcardDeckManager;
 import dto.FlashcardDeckDto;
 import dto.FlashcardDto;
+import dto.FlashcardDeckManagerDto;
 import shared.ApiResponse;
 import shared.ApiEndpoints;
 import javafx.event.ActionEvent;
@@ -158,17 +159,22 @@ public class FlashcardMainController {
    * If the API call fails, creates a new empty deck manager.
    */
   private void loadUserData() {
-    ApiResponse<List<FlashcardDeckDto>> result = ApiClient.performApiRequest(
-      ApiEndpoints.getUserDecksUrl(currentUsername), 
-      "GET", 
-      null,
-      new TypeReference<ApiResponse<List<FlashcardDeckDto>>>() {}
-    );
+    try {
+      ApiResponse<FlashcardDeckManagerDto> result = ApiClient.performApiRequest(
+        ApiEndpoints.getUserDecksUrl(currentUsername),
+        "GET",
+        null,
+        new TypeReference<ApiResponse<FlashcardDeckManagerDto>>() {}
+      );
 
-    if (result.isSuccess() && result.getData() != null) {
-      deckManager = convertFromDTOs(result.getData());
-    } else {
-      ApiClient.showAlert("Load Error", result.getMessage());
+      if (result.isSuccess() && result.getData() != null) {
+        deckManager = convertFromDTOs(result.getData().getDecks());
+      } else {
+        ApiClient.showAlert("Load Error", result.getMessage());
+        deckManager = new FlashcardDeckManager();
+      }
+    } catch (Exception e) {
+      ApiClient.showAlert("Load Error", "Could not load user data: " + e.getMessage());
       deckManager = new FlashcardDeckManager();
     }
   }
@@ -202,11 +208,11 @@ public class FlashcardMainController {
    * Shows an alert if saving fails.
    */
   private void saveUserData() {
-    ApiResponse<String> result = ApiClient.performApiRequest(
+    ApiResponse<FlashcardDeckManagerDto> result = ApiClient.performApiRequest(
       ApiEndpoints.getUserDecksUrl(currentUsername), 
       "PUT", 
       deckManager,  // APIClient converts to JSON
-      new TypeReference<ApiResponse<String>>() {}
+      new TypeReference<ApiResponse<FlashcardDeckManagerDto>>() {}
     );
 
     if (!result.isSuccess()) {
@@ -221,6 +227,7 @@ public class FlashcardMainController {
    * @param username the username to set as current user
    */
   public void setCurrentUsername(String username) {
+    System.out.println("DEBUG: FlashcardMainController.setCurrentUsername called with: '" + username + "'");
     if (username != null && !username.trim().isEmpty()) {
       this.currentUsername = username.trim();
       loadUserData();
@@ -287,6 +294,8 @@ public class FlashcardMainController {
       FlashcardDeckController controller = loader.getController();
       controller.setCurrentUsername(currentUsername);  // Send current username
       controller.setDeckManager(deckManager, selectedDeck);  // Send complete deck manager and selected deck
+      // Debug print for verification
+      System.out.println("DEBUG: Navigating to deck view with username: '" + currentUsername + "' and deck: '" + selectedDeck.getDeckName() + "'");
 
       Stage stage = (Stage) clickedButton.getScene().getWindow();
       stage.setScene(new Scene(root));

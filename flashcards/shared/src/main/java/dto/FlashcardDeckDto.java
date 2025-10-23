@@ -33,6 +33,8 @@ public class FlashcardDeckDto {
   @JsonProperty("flashcards")
   private final List<FlashcardDto> deck;
 
+  
+
   /**
    * Constructs a new FlashcardDeckDto with the specified deck name and list of flashcards.
    *
@@ -42,6 +44,15 @@ public class FlashcardDeckDto {
   public FlashcardDeckDto(String deckName, List<FlashcardDto> deck) {
     this.deckName = deckName;
     this.deck = List.copyOf(deck);
+  }
+
+  /**
+   * Constructs a new, empty FlashcardDeckDto.
+   * This constructor is public and takes no arguments, and is used by Jackson for deserialization.
+   */
+  public FlashcardDeckDto() {
+    this.deckName = "";
+    this.deck = List.of();
   }
 
   /**

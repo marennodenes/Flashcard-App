@@ -150,16 +150,34 @@ public class FlashcardLoginController {
    * @throws IOException if the FXML file cannot be loaded
    */
   private void navigateToMainApp(String username) throws IOException {
-    FXMLLoader loader = new FXMLLoader(getClass().getResource("FlashcardMain.fxml"));
-    Parent root = loader.load();
+    System.out.println("DEBUG: Navigating to main app for user: " + username);
+    FXMLLoader loader = new FXMLLoader(getClass().getResource("/ui/FlashcardMain.fxml"));
+    try {
+        System.out.println("DEBUG: Before loader.load()");
+        Parent root = loader.load();
+        System.out.println("DEBUG: After loader.load()");
 
-    // Get the controller and set the username
-    FlashcardMainController mainController = loader.getController();
-    mainController.setCurrentUsername(username);
+        System.out.println("DEBUG: Before getController()");
+        FlashcardMainController mainController = loader.getController();
+        System.out.println("DEBUG: After getController()");
 
-    // Switch to the main scene
-    Stage stage = (Stage) loginButton.getScene().getWindow();
-    stage.setScene(new Scene(root));
-    stage.show();
+        System.out.println("DEBUG: Before setCurrentUsername()");
+        mainController.setCurrentUsername(username);
+        // Debug print for deck URL
+        System.out.println("DEBUG: Decks URL: " + shared.ApiEndpoints.getUserDecksUrl(username));
+        System.out.println("DEBUG: After setCurrentUsername()");
+
+        System.out.println("DEBUG: Switching to main app scene");
+        // Switch to the main scene
+        Stage stage = (Stage) loginButton.getScene().getWindow();
+        System.out.println("DEBUG: Stage obtained, switching scene");
+        stage.setScene(new Scene(root));
+        System.out.println("DEBUG: Scene set, showing stage");
+        stage.show();
+    } catch (Exception e) {
+        System.err.println("ERROR: Failed to load main application");
+        e.printStackTrace();
+        throw e;
+    }
   }
 }
