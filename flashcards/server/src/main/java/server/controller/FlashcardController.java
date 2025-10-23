@@ -3,8 +3,6 @@ package server.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -16,6 +14,7 @@ import app.Flashcard;
 import dto.FlashcardDto;
 import server.service.FlashcardService;
 import shared.ApiEndpoints;
+import shared.ApiResponse;
 
 /**
  * Controller for managing flashcards.
@@ -50,11 +49,11 @@ public class FlashcardController {
    * @param deckname the name of the deck to add the flashcard to
    * @param question the question text for the flashcard
    * @param answer the answer text for the flashcard
-   * @return ResponseEntity containing the created FlashcardDto and HTTP status CREATED on success,
-   *         or HTTP status INTERNAL_SERVER_ERROR on failure
+   * @return ApiResponse containing the created FlashcardDto on success,
+   *         or error message on failure
    */
   @PostMapping (ApiEndpoints.FLASHCARD_CREATE)
-  public ResponseEntity <FlashcardDto> createFlashcard(
+  public ApiResponse <FlashcardDto> createFlashcard(
       @RequestParam String username,
       @RequestParam String deckname,
       @RequestParam String question, 
@@ -69,10 +68,10 @@ public class FlashcardController {
       
       // Return the created flashcard as DTO
       FlashcardDto flashcardDto = new FlashcardDto(question, answer, position);
-      return new ResponseEntity<>(flashcardDto, HttpStatus.CREATED);
+      return new ApiResponse<>(true, "Flashcard created successfully", flashcardDto);
     } catch (Exception e) {
       // Return server error if creation fails
-      return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+      return new ApiResponse<>(false, "Failed to create flashcard: " + e.getMessage(), null);
     }
   }
 
@@ -82,21 +81,21 @@ public class FlashcardController {
    * @param username the username of the user who owns the deck
    * @param deckname the name of the deck containing the flashcard
    * @param number the position/index of the flashcard to delete
-   * @return ResponseEntity with HTTP status NO_CONTENT on successful deletion,
-   *         or HTTP status INTERNAL_SERVER_ERROR on failure
+   * @return ApiResponse with success message on successful deletion,
+   *         or error message on failure
    */
   @DeleteMapping (ApiEndpoints.FLASHCARD_DELETE)
-  public ResponseEntity <Void> deleteFlashcard(
+  public ApiResponse <Void> deleteFlashcard(
       @RequestParam String username,
       @RequestParam String deckname,
       @RequestParam int number) {
     try {
       // Remove flashcard at specified position
       flashcardService.deleteFlashcard(username, deckname, number);
-      return new ResponseEntity<>(HttpStatus.NO_CONTENT); // 204 - successful deletion
+      return new ApiResponse<>(true, "Flashcard deleted successfully", null);
     } catch (Exception e) {
       // Return server error if deletion fails
-      return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+      return new ApiResponse<>(false, "Failed to delete flashcard: " + e.getMessage(), null);
     }
   }
 
@@ -106,11 +105,11 @@ public class FlashcardController {
    * @param username the username of the user who owns the deck
    * @param deckname the name of the deck containing the flashcard
    * @param number the position/index of the flashcard to retrieve
-   * @return ResponseEntity containing the FlashcardDto and HTTP status OK on success,
-   *         or HTTP status INTERNAL_SERVER_ERROR on failure
+   * @return ApiResponse containing the FlashcardDto on success,
+   *         or error message on failure
    */
   @GetMapping (ApiEndpoints.FLASHCARD_GET)
-  public ResponseEntity <FlashcardDto> getFlashcard(
+  public ApiResponse <FlashcardDto> getFlashcard(
       @RequestParam String username,
       @RequestParam String deckname,
       @RequestParam int number) {
@@ -120,10 +119,10 @@ public class FlashcardController {
       
       // Convert to DTO for response
       FlashcardDto flashcardDto = new FlashcardDto(flashcard.getQuestion(), flashcard.getAnswer(), number);
-      return new ResponseEntity<>(flashcardDto, HttpStatus.OK);
+      return new ApiResponse<>(true, "Flashcard retrieved successfully", flashcardDto);
     } catch (Exception e) {
       // Return server error if flashcard not found or other error
-      return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+      return new ApiResponse<>(false, "Failed to retrieve flashcard: " + e.getMessage(), null);
     }
   }
 
@@ -132,11 +131,11 @@ public class FlashcardController {
    * 
    * @param username the username of the user who owns the deck
    * @param deckname the name of the deck to retrieve flashcards from
-   * @return ResponseEntity containing a list of all FlashcardDto objects and HTTP status OK on success,
-   *         or HTTP status INTERNAL_SERVER_ERROR on failure
+   * @return ApiResponse containing a list of all FlashcardDto objects on success,
+   *         or error message on failure
    */
   @GetMapping (ApiEndpoints.FLASHCARD_GET_ALL)
-  public ResponseEntity <List<FlashcardDto>> getAllFlashcards(
+  public ApiResponse <List<FlashcardDto>> getAllFlashcards(
       @RequestParam String username,
       @RequestParam String deckname) {
     try {
@@ -150,10 +149,10 @@ public class FlashcardController {
         // Position is 1-indexed (i + 1)
         flashcardDtos.add(new FlashcardDto(flashcard.getQuestion(), flashcard.getAnswer(), i + 1));
       }
-      return new ResponseEntity<>(flashcardDtos, HttpStatus.OK);
+      return new ApiResponse<>(true, "Flashcards retrieved successfully", flashcardDtos);
     } catch (Exception e) {
-      // Return server error if deck not found or other error
-      return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+      // Return error if deck not found or other error
+      return new ApiResponse<>(false, "Failed to retrieve flashcards: " + e.getMessage(), null);
     }
   }
 
