@@ -2,10 +2,11 @@ package ui;
 
 import java.io.IOException;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+
 import app.Flashcard;
 import app.FlashcardDeck;
 import app.FlashcardDeckManager;
-import com.fasterxml.jackson.core.type.TypeReference;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -17,8 +18,8 @@ import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
-import shared.ApiResponse;
 import shared.ApiEndpoints;
+import shared.ApiResponse;
 
 /**
  * Controller for managing individual flashcard deck operations.

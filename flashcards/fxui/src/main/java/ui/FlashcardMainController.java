@@ -1,26 +1,26 @@
 package ui;
 
-import javafx.scene.text.Text;
-import javafx.stage.Stage;
-import javafx.scene.control.TextField;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import app.FlashcardDeck;
-import app.Flashcard;
 import java.io.IOException;
 import java.util.List;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 
+import app.Flashcard;
+import app.FlashcardDeck;
 import app.FlashcardDeckManager;
 import dto.FlashcardDeckDto;
 import dto.FlashcardDto;
-import shared.ApiResponse;
-import shared.ApiEndpoints;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.scene.control.Button;
+import javafx.scene.control.TextField;
+import javafx.scene.text.Text;
+import javafx.stage.Stage;
+import shared.ApiEndpoints;
+import shared.ApiResponse;
 
 /**
  * Controller for the main flashcard deck management interface.
