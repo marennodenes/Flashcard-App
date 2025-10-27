@@ -153,8 +153,8 @@ public class FlashcardAppTest extends ApplicationTest {
     public void testResourceExistence() {
         // Test for FXML resource existence
         try {
-            assertNotNull(FlashcardApp.class.getResource("FlashcardLoginUI.fxml"),
-                         "FlashcardLoginUI.fxml should exist in resources");
+            assertNotNull(FlashcardApp.class.getResource("FlashcardLogin.fxml"),
+                         "FlashcardLogin.fxml should exist in resources");
         } catch (Exception e) {
             // Resource might not exist in test environment, log but don't fail
             System.out.println("Warning: FlashcardLoginUI.fxml not found in test classpath");

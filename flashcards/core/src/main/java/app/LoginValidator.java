@@ -9,8 +9,8 @@ import java.util.Objects;
  * Handles user creation, authentication, and uniqueness checks.
  * Also manages password security and migration from plain text to hashed passwords.
  * @author parts of class is generated with the help of claude.ai
- * @author @sofietw
- * @author @ailinat
+ * @author sofietw
+ * @author ailinat
  */
 public class LoginValidator {
 
@@ -33,13 +33,13 @@ public class LoginValidator {
     */
     public boolean createUser(String username, String password) {
         if (!PERSISTENCE.userExists(username)) {
-            User newUser = new User(username, password); 
+            User newUser = new User(username, password);
             try {
                 PERSISTENCE.writeUserData(newUser);
                 System.out.println("User created successfully: " + username);
                 return true;
             } catch (IOException e) {
-              System.err.println("Failed to create user: " + username);
+                System.err.println("Failed to create user: " + username);
                 e.printStackTrace();
                 return false;
             }
@@ -75,39 +75,18 @@ public class LoginValidator {
      * @param password the password of the user
      * @return true if authentication is successful, false otherwise
      */
-    public boolean authenticateUser(String username, String password) {
+    public boolean authenticateUser(String username, String password) throws IllegalStateException {
         User user = findUserByUsername(username);
         if (user != null) {
             // Check if password is hashed (contains colon) or plain text (legacy)
             if (user.getPassword().contains(":")) {
                 // New format: hashed password
                 boolean matches = PasswordEncoder.matches(password, user.getPassword());
-                if (matches) {
-                    System.out.println("User authenticated successfully: " + username);
-                } else {
-                    System.out.println("Authentication failed - wrong password: " + username);
-                }
                 return matches;
             } else {
-                // Legacy format: plain text password
-                boolean matches = user.getPassword().equals(password);
-                if (matches) {
-                    System.out.println("User authenticated with legacy password: " + username);
-                    // Upgrades to hashed password
-                    try {
-                        User updatedUser = new User(username, password);
-                        PERSISTENCE.writeUserData(updatedUser);
-                        System.out.println("Password encode for: " + username);
-                    } catch (IOException e) {
-                        System.err.println("Failed to encode password for: " + username);
-                    }
-                } else {
-                    System.out.println("Authentication failed - wrong legacy password: " + username);
-                }
-                return matches;
+                throw new IllegalStateException("Legacy plain text passwords are no longer supported.");
             }
         }
-        System.out.println("Authentication failed - user not found: " + username);
         return false;
     }
 

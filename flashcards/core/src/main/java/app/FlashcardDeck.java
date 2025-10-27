@@ -41,23 +41,23 @@ public class FlashcardDeck {
    * Gets all flashcards as an observable list.
    * 
    * 
-   * @return observable list of flashcards
+   * @return list of flashcards
    */
   public List<Flashcard> getDeck() { //Changed from ObservableList to list
-      return new ArrayList<>(deck);
+    return new ArrayList<>(deck);
   }
 
   public void setDeck(List<Flashcard> deck){
     this.deck = new ArrayList<>(deck);
   }
 
-    public String getDeckName() {
-        return deckName;
-    }
+  public String getDeckName() {
+    return deckName;
+  }
 
-    public void setDeckName(String deckName) {
-        this.deckName = deckName;
-    }
+  public void setDeckName(String deckName) {
+    this.deckName = deckName;
+  }
 
   /**
    * Adds a new flashcard.

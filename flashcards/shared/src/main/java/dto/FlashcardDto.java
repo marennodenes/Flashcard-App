@@ -1,6 +1,7 @@
 package dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 
@@ -42,7 +43,9 @@ public class FlashcardDto {
    * Default constructor for FlashcardDto.
    * Required for frameworks that use reflection, such as Jackson.
    */
-  public FlashcardDto() {}
+  public FlashcardDto() {
+    // No-arg constructor for Jackson
+  }
 
   /**
    * Constructs a new FlashcardDto with the specified question, answer, and number.

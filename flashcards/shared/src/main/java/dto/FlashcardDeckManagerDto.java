@@ -1,10 +1,11 @@
 package dto;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import jakarta.validation.constraints.Max;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * A Data Transfer Object (DTO) representing a manager for multiple flashcard decks.

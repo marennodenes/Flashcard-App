@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import app.Flashcard;
+import app.FlashcardDeck;
+import app.FlashcardDeckManager;
 import javafx.animation.RotateTransition;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -17,17 +19,16 @@ import javafx.scene.text.Text;
 import javafx.scene.transform.Rotate;
 import javafx.stage.Stage;
 import javafx.util.Duration;
-import app.FlashcardDeck;
-
 /**
  * Controller for the flashcard learning interface.
  * Handles navigation between cards, flipping animations, and progress tracking.
+ * @author marieroe
  */
 public class FlashcardController {
 
   @FXML private Button backButton;
-  @FXML private Button nextCard;
-  @FXML private Button previousCard;
+  @FXML private Button nextButton;
+  @FXML private Button previousButton;
   @FXML private Button card;
   @FXML private ProgressBar progressBar;
   @FXML private Text usernameField;
@@ -37,7 +38,9 @@ public class FlashcardController {
   private List<Flashcard> deck = new ArrayList<>();
 
   private int currentCardI;
-  private String currentUsername = "defaultUserName";
+  private String currentUsername;
+  
+  private FlashcardDeckManager deckManager;
 
   private String questionStyle = """
             -fx-background-color: #89b9bf; /* spørsmål default */
@@ -60,40 +63,10 @@ public class FlashcardController {
   private FlashcardDeck originalDeck;
 
   /**
-   * Sets the deck to be used for learning.
-   * Creates a defensive copy to avoid external modifications and initializes the UI.
-   * 
-   * @param deck the flashcard deck to set for learning
-   */
-  public void setDeck(FlashcardDeck deck) {
-    // bug fix for spotbugs
-    this.originalDeck = new FlashcardDeck(deck.getDeckName());
-    for (Flashcard card : deck.getDeck()) {
-        this.originalDeck.addFlashcard(new Flashcard(card.getQuestion(), card.getAnswer()));
-    }
-    
-    this.deck = new ArrayList<>(deck.getDeck()); // Copy flashcards from the deck
-    currentCardI = 0;
-    updateUi();
-
-    updateProgress();
-  }
-
-  /**
-   * Sets the current username for display in the UI.
-   * 
-   * @param username the username to set
-   */
-  public void setCurrentUsername(String username) {
-    if (username != null && !username.trim().isEmpty()) {
-      this.currentUsername = username.trim();
-    }
-  }
-
-  /**
    * Initializes the controller after FXML loading.
    * Sets up the initial card index and updates the UI if deck is not empty.
    */
+  @FXML
   public void initialize(){
     currentCardI = 0;
     if (!deck.isEmpty()) {
@@ -101,12 +74,10 @@ public class FlashcardController {
     }
   }
 
-
   /**
    * Updates the UI by setting the card text to display the current flashcard's question.
+   * Resets the card to show the question side and updates deck name and username displays.
    * Only updates if the card button exists, the deck is not empty, and the current card index is valid.
-   * 
-   * Github Copilot Claude Sonnet 4
    */
   public void updateUi() {
     isShowingAnswer = false;
@@ -119,26 +90,67 @@ public class FlashcardController {
     }
   }
 
+
+  /**
+   * Sets the deck manager and current deck to work with.
+   * This ensures that changes are saved to the complete deck collection.
+   * Creates defensive copies to prevent external modification.
+   * 
+   * @param deckManager the complete deck manager
+   * @param selectedDeck the specific deck to work with
+   */
+  public void setDeckManager(FlashcardDeckManager deckManager, FlashcardDeck selectedDeck) {
+    // Create defensive copy of deck manager to prevent external modification
+    this.deckManager = new FlashcardDeckManager();
+    for (FlashcardDeck deck : deckManager.getDecks()) {
+      this.deckManager.addDeck(deck);
+    }
+    
+    // Create defensive copy of the selected deck
+    this.originalDeck = new FlashcardDeck(selectedDeck.getDeckName());
+    for (app.Flashcard card : selectedDeck.getDeck()) {
+      this.originalDeck.addFlashcard(new app.Flashcard(card.getQuestion(), card.getAnswer()));
+    }
+    
+    this.deck = new ArrayList<>(this.originalDeck.getDeck()); // Copy flashcards for learning
+    currentCardI = 0;
+    updateUi();
+    updateProgress();
+  }
+
+  /**
+   * Sets the current username for display in the UI.
+   * 
+   * @param username the username to set
+   */
+  public void setCurrentUsername(String username) {
+    if (username != null && !username.trim().isEmpty()) {
+      this.currentUsername = username.trim();
+    }
+  }  
+
   /**
    * Handles the event when the "Back" button is clicked.
-   * Navigates from the current scene to the flashcard list page by loading
-   * the FlashcardListUI.fxml file and switching the scene.
+   * Navigates from the current scene to the flashcard deck list page by loading
+   * the FlashcardDeck.fxml file and switching the scene.
+   * Passes the current username and deck manager to maintain data consistency.
    * 
    * @throws IOException if the FXML file cannot be loaded or found
-   * @author Claude (AI Assistant) - Javadoc documentation
    */
   @FXML
   private void whenBackButtonIsClicked() throws IOException {
-    FXMLLoader loader = new FXMLLoader(getClass().getResource("FlashcardListUI.fxml"));
+    FXMLLoader loader = new FXMLLoader(getClass().getResource("FlashcardDeck.fxml"));
     Parent root = loader.load();
 
     FlashcardDeckController controller = loader.getController();
-    if(originalDeck!= null){
-      controller.setCurrentUsername(currentUsername);  // Send current username
-      controller.setDeck(originalDeck);
+    controller.setCurrentUsername(currentUsername);  // Send current username
+    
+    if (deckManager != null && originalDeck != null) {
+      // Send the complete deck manager and current deck
+      controller.setDeckManager(deckManager, originalDeck);
     }
 
-    Stage stage = (Stage) nextCard.getScene().getWindow();
+    Stage stage = (Stage) backButton.getScene().getWindow();
     stage.setScene(new Scene(root));
     stage.show();
   }
@@ -153,7 +165,7 @@ public class FlashcardController {
   private void whenNextCardButtonClicked() {
     
    if (!deck.isEmpty()) {
-      currentCardI = (currentCardI + 1) % deck.size(); // making it a loop
+      currentCardI = (currentCardI + 1) % deck.size(); // Loop to first card when reaching end
       updateUi();
     }
 
@@ -169,7 +181,7 @@ public class FlashcardController {
   private void whenPreviousCardButtonClicked() {
     
     if (!deck.isEmpty()) {
-      currentCardI = (currentCardI - 1 + deck.size()) % deck.size(); // making it a loop
+      currentCardI = (currentCardI - 1 + deck.size()) % deck.size(); // Loop to last card when going before first
       updateUi();
     }
 
@@ -203,7 +215,7 @@ public class FlashcardController {
     rotateIn.setToAngle(360);
 
     rotateOut.setOnFinished(e -> {
-        // Toggle between question and answer
+        // Toggle between question and answer display
         if (!isShowingAnswer) {
             card.setText(deck.get(currentCardI).getAnswer());
             card.setWrapText(true);
@@ -215,7 +227,7 @@ public class FlashcardController {
             card.setStyle(questionStyle);
         }
         isShowingAnswer = !isShowingAnswer;
-        rotateIn.play();
+        rotateIn.play(); // Start the rotate-in animation
     });
 
     rotateOut.play();
@@ -231,7 +243,7 @@ public class FlashcardController {
   public void whenLogOut(ActionEvent event){
     try {
       // Load login screen
-      FXMLLoader loader = new FXMLLoader(getClass().getResource("FlashcardLoginUI.fxml"));
+      FXMLLoader loader = new FXMLLoader(getClass().getResource("FlashcardLogin.fxml"));
       Parent root = loader.load();
       
       // Switch to login scene
@@ -255,5 +267,7 @@ public class FlashcardController {
     cardNumber.setText(Integer.toString(currentCardI + 1));
 
   }
+
+  
   
 }

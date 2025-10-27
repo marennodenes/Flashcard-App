@@ -2,8 +2,12 @@ package ui;
 
 import java.io.IOException;
 
-import app.LoginValidator;
-import itp.storage.FlashcardPersistent;
+import com.fasterxml.jackson.core.type.TypeReference;
+
+import dto.LoginRequestDto;
+import dto.UserDataDto;
+import shared.ApiResponse;
+import shared.ApiEndpoints;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -16,27 +20,26 @@ import javafx.stage.Stage;
 /**
  * Controller for the flashcard sign-up page.
  * Handles user registration with validation and navigation to the main application.
- * @author @sofietw
- * @author @ailinat
+ * @author sofietw
+ * @author ailinat
  */
 public class FlashcardSignUpController {
   @FXML private Text alertMessage;
+  @FXML private Text ex;
   @FXML private TextField usernameField;
   @FXML private TextField passwordField;
   @FXML private TextField confirmPasswordField;
   @FXML private Button signInButton;
+  @FXML private Button backButton;
 
   private boolean showAlert = false;
   private String error = "";
-  private LoginValidator loginValidator;
   
   /**
    * Initializes the controller after FXML loading.
-   * Sets up the LoginValidator with persistence implementation and updates the UI.
+   * Updates the UI to initial state.
    */
   public void initialize() {
-    // Initialize LoginValidator with persistence implementation
-    loginValidator = new LoginValidator(new FlashcardPersistent());
     updateUi();
   }
 
@@ -48,17 +51,17 @@ public class FlashcardSignUpController {
     if (showAlert) {
       alertMessage.setText(error);
       alertMessage.setVisible(true);
+      ex.setVisible(true);
       showAlert = false;
     } else {
       alertMessage.setVisible(false);
+      ex.setVisible(false);
     }
   }
 
   /**
    * Handles the sign-in button click event.
-   * Validates user input, checks for username uniqueness, verifies password confirmation,
-   * creates a new user account, and navigates to the main application on success.
-   * Shows appropriate error messages for validation failures.
+   * Validates user input and initiates the user registration process.
    */
   @FXML
   public void whenSignInButtonClicked() {
@@ -66,40 +69,103 @@ public class FlashcardSignUpController {
     String password = passwordField.getText().trim();
     String confirmedPassword = confirmPasswordField.getText().trim();
 
-    // if username or password field is empty
-    if (username.isEmpty() || password.isEmpty() || confirmedPassword.isEmpty()) {
-      error = "Username and password fields\ncannot be empty";
-      showAlert = true;
-      updateUi();
+    // Validate input fields
+    if (!validateInput(username, password, confirmedPassword)) {
       return;
     }
 
-    // if user exists, give alert to user
-    else if (!loginValidator.isUsernameUnique(username)) {
-      System.out.println("Username already exists " + username);
-      error = "Username already exists,\ntry with another username";
-      showAlert = true;
-      updateUi(); 
+    // Attempt to create user
+    createUser(username, password);
+  }
+
+  /**
+   * Handles the action when the back button is clicked.
+   * This method loads the FlashcardLogin.fxml file and sets it as the current scene.
+   * It retrieves the current stage from the back button's scene and updates the scene 
+   * to display the login interface.
+   *
+   * @throws IOException if the FXML file cannot be loaded.
+   */
+  @FXML
+  public void whenBackButtonIsClicked() {
+    try {
+      FXMLLoader loader = new FXMLLoader(getClass().getResource("/ui/FlashcardLogin.fxml"));
+      Parent root = loader.load();
+      Stage stage = (Stage) backButton.getScene().getWindow();
+      stage.setScene(new Scene(root));
+      stage.show();
+    } catch (IOException e) {
+      showError("Unable to load the login screen.");
+    }
+  }
+
+  /**
+   * Validates user input fields.
+   * 
+   * @param username the entered username
+   * @param password the entered password
+   * @param confirmedPassword the confirmed password
+   * @return true if all validation passes, false otherwise
+   */
+  private boolean validateInput(String username, String password, String confirmedPassword) {
+    // Check for empty fields
+    if (username.isEmpty() || password.isEmpty() || confirmedPassword.isEmpty()) {
+      showError("Username and password fields\ncannot be empty");
+      return false;
     }
 
-    else if (!loginValidator.equalPasswords(password, confirmedPassword)) {
+    // Check if passwords match
+    if (!password.equals(confirmedPassword)) {
       System.out.println("Passwords must be equal");
-      error = "Passwords must be equal";
-      showAlert = true;
-      updateUi(); 
+      showError("Passwords must be equal");
+      return false;
     }
 
-    // username is unique and passwords match, user is created and navigated to main app 
-    else {
-      if (loginValidator.createUser(username, password)) System.out.println("User created: " + username);
+    return true;
+  }
+
+  /**
+   * Attempts to create a new user via REST API.
+   * 
+   * @param username the username to create
+   * @param password the password for the user
+   */
+  private void createUser(String username, String password) {
+    ApiResponse<UserDataDto> result = ApiClient.performApiRequest(
+      ApiEndpoints.REGISTER_URL, 
+      "POST", 
+      new LoginRequestDto(username, password),
+      new TypeReference<ApiResponse<UserDataDto>>() {}
+    );
+
+    if (result.isSuccess()) {
+      // User created successfully via API
+      System.out.println("User created via API: " + username);
       try {
         navigateToMainApp(username);
       } catch (IOException e) {
-        error = "Failed to load main application";
-        showAlert = true;
-        updateUi();
+        ApiClient.showAlert("Error", "Failed to load main application");
+      }
+    } else {
+      // Handle different types of errors
+      if (result.getMessage().contains("409") || result.getMessage().toLowerCase().contains("already exists")) {
+        showError("Username already exists,\ntry with another username");
+      } else {
+        ApiClient.showAlert("Registration Error", result.getMessage());
+        System.out.println("Registration failed: " + result.getMessage());
       }
     }
+  }
+
+  /**
+   * Shows an error message to the user.
+   * 
+   * @param message the error message to display
+   */
+  private void showError(String message) {
+    error = message;
+    showAlert = true;
+    updateUi();
   }
 
   /**
@@ -110,7 +176,7 @@ public class FlashcardSignUpController {
    * @throws IOException if the FXML file cannot be loaded
    */
   private void navigateToMainApp(String username) throws IOException {
-    FXMLLoader loader = new FXMLLoader(getClass().getResource("FlashcardMainUI.fxml"));
+    FXMLLoader loader = new FXMLLoader(getClass().getResource("/ui/FlashcardMain.fxml"));
     Parent root = loader.load();
     
     // Get the controller and set the username

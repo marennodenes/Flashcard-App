@@ -57,4 +57,12 @@ public class FlashcardDeckManager {
     decks.remove(deck);
   }
 
+  /**
+   * Sets the list of decks in the manager, replacing any existing decks.
+   * @param decks the new list of decks
+   */
+  public void setDecks(List<FlashcardDeck> decks) {
+    this.decks = new ArrayList<>(decks);
+  }
+
 }

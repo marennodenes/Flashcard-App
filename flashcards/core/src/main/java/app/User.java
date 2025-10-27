@@ -1,21 +1,31 @@
 package app;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 /**
  * Represents a user with a username and password.
- * @author @ailinat
+ * @author ailinat
  */
 public class User {
-    private String username;
-    private String password;
+    @JsonProperty("username")private String username;
+
+    @JsonProperty("password") private String password;
 
     /**
-     * Constructor for User object with the specified username and password.
-     * @param username the username of the user
-     * @param password the password of the user
-    */
+     * Default constructor for JSON deserialization.
+     */
+    public User() {}
+
+    /**
+     * Private constructor to create a User with encoded password.
+     * @param username
+     * @param password
+     */
     public User(String username, String password) {
         this.username = username;
         this.password = password;
+
+        encodePassword();
     }
 
     /**
@@ -32,5 +42,9 @@ public class User {
      */
     public String getPassword() {
         return password;
+    }
+
+    private void encodePassword() {
+        this.password = PasswordEncoder.encode(this.password);
     }
 }
