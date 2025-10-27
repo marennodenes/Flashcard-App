@@ -16,8 +16,6 @@ import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
-import shared.ApiEndpoints;
-import shared.ApiResponse;
 
 /**
  * Controller for the flashcard sign-up page.

@@ -6,8 +6,6 @@ import com.fasterxml.jackson.core.type.TypeReference;
 
 import dto.LoginRequestDto;
 import dto.LoginResponseDto;
-import dto.LoginRequestDto;
-import dto.LoginResponseDto;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;

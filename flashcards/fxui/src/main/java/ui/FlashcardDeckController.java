@@ -7,7 +7,6 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import app.Flashcard;
 import app.FlashcardDeck;
 import app.FlashcardDeckManager;
-import com.fasterxml.jackson.core.type.TypeReference;
 import dto.FlashcardDeckManagerDto;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
