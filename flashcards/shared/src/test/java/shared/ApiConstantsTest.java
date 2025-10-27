@@ -9,6 +9,8 @@ import static org.junit.jupiter.api.Assertions.*;
  * This test class verifies that all constant values in {@code ApiConstants}
  * match their expected string values. It covers user, flashcard, deck, and general
  * message constants to ensure API responses and error messages remain consistent.
+ * @author marennod
+ * @author ailinat
  */
 public class ApiConstantsTest {
 

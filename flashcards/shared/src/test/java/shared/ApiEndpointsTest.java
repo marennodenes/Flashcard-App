@@ -9,6 +9,8 @@ import static org.junit.jupiter.api.Assertions.*;
  * This test class verifies that all endpoint constants and URL-building methods
  * in {@code ApiEndpoints} return the expected values. It covers server config,
  * base paths, endpoint URLs, and the getUserDecksUrl method.
+ * @author marennod
+ * @author ailinat
  */
 public class ApiEndpointsTest {
 

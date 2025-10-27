@@ -9,6 +9,8 @@ import static org.junit.jupiter.api.Assertions.*;
  * <p>
  * This test class verifies the behavior of the generic ApiResponse wrapper,
  * including success status, message, and data payload handling.
+ * @author marennod
+ * @author ailinat
  */
 public class ApiResponseTest {
 
