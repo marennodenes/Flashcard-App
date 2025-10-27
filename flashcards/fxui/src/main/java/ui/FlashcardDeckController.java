@@ -2,10 +2,11 @@ package ui;
 
 import java.io.IOException;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+
 import app.Flashcard;
 import app.FlashcardDeck;
 import app.FlashcardDeckManager;
-import itp.storage.FlashcardPersistent;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -17,11 +18,18 @@ import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
+import shared.ApiEndpoints;
+import shared.ApiResponse;
 
 /**
  * Controller for managing individual flashcard deck operations.
  * Handles adding, deleting, and viewing flashcards within a specific deck.
  * Provides navigation to the learning interface and back to the main deck list.
+ * Uses REST API for data persistence instead of local storage.
+ * 
+ * @author marennod
+ * @author marieroe
+ * @author chrsom
  */
 public class FlashcardDeckController {
   @FXML private TextField questionField;
@@ -32,19 +40,15 @@ public class FlashcardDeckController {
   @FXML private Button deleteCardButton;
 
   private FlashcardDeckManager deckManager;
-  private FlashcardPersistent storage;
   private String currentUsername = "defaultUserName";
   private String currentDeckName = "defaultDeckName";
 
   /**
    * Initializes the controller after FXML loading.
-   * Sets up the storage implementation, configures ListView selection listeners,
-   * and updates the initial UI state.
+   * Sets up ListView selection listeners and updates the initial UI state.
    */
   @FXML 
   public void initialize() {
-    storage = new FlashcardPersistent();
-    
     // Enable delete button only when a card is selected
     listView.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
       deleteCardButton.setDisable(newValue == null);
@@ -81,7 +85,6 @@ public class FlashcardDeckController {
     }
 
     deleteCardButton.setDisable(listView.getSelectionModel().getSelectedItem() == null);
-
     clearInputFields();
   }
 
@@ -131,7 +134,6 @@ public class FlashcardDeckController {
     }
   }
 
-
   /**
    * Gets the current active deck.
    * Searches through all decks to find the one matching the current deck name.
@@ -148,15 +150,19 @@ public class FlashcardDeckController {
   }
 
   /**
-   * Saves user data to JSON file.
-   * Persists the current deck manager state to the storage system.
-   * Prints stack trace if an IOException occurs during saving.
+   * Saves user data to remote API.
+   * If the API call fails, shows error to user.
    */
   private void saveUserData() {
-    try {
-      storage.writeDeck(currentUsername, deckManager);
-    } catch (IOException e) {
-      e.printStackTrace();
+    ApiResponse<String> result = ApiClient.performApiRequest(
+      ApiEndpoints.getUserDecksUrl(currentUsername),
+      "PUT",
+      deckManager,
+      new TypeReference<String>() {}
+    );
+
+    if (!result.isSuccess()) {
+      ApiClient.showAlert("Save Error", result.getMessage());
     }
   }
 
@@ -166,10 +172,12 @@ public class FlashcardDeckController {
    * Creates a flashcard from the question and answer fields,
    * adds it to the current deck, saves to file, and updates the UI.
    */
+  @FXML
   public void whenCreateButtonIsClicked() {
     String q = questionField.getText().trim();
     String a = answerField.getText().trim();
 
+    // Only create card if both fields have content
     if (!q.isEmpty() && !a.isEmpty()) {
       FlashcardDeck currentDeck = getCurrentDeck();
       if (currentDeck != null) {
@@ -188,14 +196,16 @@ public class FlashcardDeckController {
   }
 
   /**
-   * Handles the delete card button click event.
-   * Removes the selected flashcard from the current deck, saves the updated data,
-   * and refreshes the UI display.
+   * Deletes the selected flashcard when delete button is clicked.
+   * Removes the selected flashcard from the current deck, saves the data,
+   * and updates the UI to reflect the changes.
    */
+  @FXML
   public void whenDeleteCardButtonIsClicked() {
     int selectedIndex = listView.getSelectionModel().getSelectedIndex();
     FlashcardDeck currentDeck = getCurrentDeck();
 
+    // Check if a card is selected and deck exists
     if (selectedIndex >= 0 && currentDeck != null) {
         boolean removed = currentDeck.removeFlashcardByIndex(selectedIndex);
         
@@ -224,10 +234,7 @@ public class FlashcardDeckController {
    */
   @FXML
   public void whenBackButtonIsClicked() throws IOException {
-    // Save current data before navigating back
-    saveUserData();
-    
-    FXMLLoader loader = new FXMLLoader(getClass().getResource("FlashcardMainUI.fxml"));
+    FXMLLoader loader = new FXMLLoader(getClass().getResource("FlashcardMain.fxml"));
     Parent root = loader.load();
     
     // Send current username and updated deck manager back to main controller
@@ -243,14 +250,13 @@ public class FlashcardDeckController {
   /**
    * Handles the event when the "Start Learning" button is clicked.
    * Navigates from the current scene to the flashcard learning page by loading
-   * the FlashcardPageUI.fxml file and switching the scene.
+   * the FlashcardLearning.fxml file and switching the scene.
    * 
    * @throws IOException if the FXML file cannot be loaded or found
-   * @author Claude (AI Assistant) - Javadoc documentation
    */
   @FXML
   public void whenStartLearningButtonIsClicked() throws IOException {
-    FXMLLoader loader = new FXMLLoader(getClass().getResource("FlashcardPageUI.fxml"));
+    FXMLLoader loader = new FXMLLoader(getClass().getResource("FlashcardLearning.fxml"));
     Parent root = loader.load();
 
     FlashcardController controller = loader.getController();
@@ -277,7 +283,7 @@ public class FlashcardDeckController {
       saveUserData();
       
       // Load login screen
-      FXMLLoader loader = new FXMLLoader(getClass().getResource("FlashcardLoginUI.fxml"));
+      FXMLLoader loader = new FXMLLoader(getClass().getResource("FlashcardLogin.fxml"));
       Parent root = loader.load();
       
       // Switch to login scene

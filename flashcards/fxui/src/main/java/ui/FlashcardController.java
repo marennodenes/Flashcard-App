@@ -22,6 +22,7 @@ import javafx.util.Duration;
 /**
  * Controller for the flashcard learning interface.
  * Handles navigation between cards, flipping animations, and progress tracking.
+ * @author marieroe
  */
 public class FlashcardController {
 
@@ -65,6 +66,7 @@ public class FlashcardController {
    * Initializes the controller after FXML loading.
    * Sets up the initial card index and updates the UI if deck is not empty.
    */
+  @FXML
   public void initialize(){
     currentCardI = 0;
     if (!deck.isEmpty()) {
@@ -137,7 +139,7 @@ public class FlashcardController {
    */
   @FXML
   private void whenBackButtonIsClicked() throws IOException {
-    FXMLLoader loader = new FXMLLoader(getClass().getResource("FlashcardListUI.fxml"));
+    FXMLLoader loader = new FXMLLoader(getClass().getResource("FlashcardDeck.fxml"));
     Parent root = loader.load();
 
     FlashcardDeckController controller = loader.getController();
@@ -241,7 +243,7 @@ public class FlashcardController {
   public void whenLogOut(ActionEvent event){
     try {
       // Load login screen
-      FXMLLoader loader = new FXMLLoader(getClass().getResource("FlashcardLoginUI.fxml"));
+      FXMLLoader loader = new FXMLLoader(getClass().getResource("FlashcardLogin.fxml"));
       Parent root = loader.load();
       
       // Switch to login scene
@@ -265,5 +267,7 @@ public class FlashcardController {
     cardNumber.setText(Integer.toString(currentCardI + 1));
 
   }
+
+  
   
 }

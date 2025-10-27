@@ -10,7 +10,7 @@
         <module>core</module>
         <module>storage</module>
         <module>fxui</module>
-        <module>dto</module>
+        <module>shared</module>
         
     </modules>
 
@@ -94,10 +94,25 @@
             <scope>test</scope>
         </dependency>
         
-        <!-- Jackson for JSON -->
+        <!-- Jackson for JSON - All components must have same version -->
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-core</artifactId>
+            <version>${jackson.version}</version>
+        </dependency>
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
+            <version>${jackson.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-annotations</artifactId>
+            <version>${jackson.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.datatype</groupId>
+            <artifactId>jackson-datatype-jsr310</artifactId>
             <version>${jackson.version}</version>
         </dependency>
 

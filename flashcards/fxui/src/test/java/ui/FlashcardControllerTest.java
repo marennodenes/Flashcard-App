@@ -83,10 +83,10 @@
 //         testDeck.addFlashcard(new Flashcard("What is JUnit?", "A testing framework"));
 //         testDeck.addFlashcard(new Flashcard("What is JavaFX?", "A GUI framework"));
         
-//         // Load FXML and controller
-//         FXMLLoader loader = new FXMLLoader(getClass().getResource("FlashcardPageUI.fxml"));
-//         Parent root = loader.load();
-//         controller = loader.getController();
+        // Load FXML and controller
+        // FXMLLoader loader = new FXMLLoader(getClass().getResource("FlashcardLearning.fxml"));
+        // Parent root = loader.load();
+        // controller = loader.getController();
         
 //         // Set up scene and stage
 //         Scene scene = new Scene(root);

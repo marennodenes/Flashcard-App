@@ -1,25 +1,36 @@
 package ui;
 
-import javafx.scene.text.Text;
-import javafx.stage.Stage;
-import javafx.scene.control.TextField;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import app.FlashcardDeck;
-import itp.storage.FlashcardPersistent;
-
 import java.io.IOException;
 import java.util.List;
+
+import com.fasterxml.jackson.core.type.TypeReference;
+
+import app.Flashcard;
+import app.FlashcardDeck;
 import app.FlashcardDeckManager;
+import dto.FlashcardDeckDto;
+import dto.FlashcardDto;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.scene.control.Button;
+import javafx.scene.control.TextField;
+import javafx.scene.text.Text;
+import javafx.stage.Stage;
+import shared.ApiEndpoints;
+import shared.ApiResponse;
 
 /**
  * Controller for the main flashcard deck management interface.
- * Handles displaying, creating, and deleting flashcard decks for the logged-in user.
- * Provides navigation to individual deck views and handles user logout functionality.
+ * Handles displaying, creating, editing, and deleting flashcard decks.
+ * Provides navigation to deck editing and learning interfaces.
+ * Integrates with REST API for persistent data storage.
+ * 
+ * @author chrsom
+ * @author marennod
+ * @author marieroe
  */
 public class FlashcardMainController {
   @FXML private Button deck_1;
@@ -50,11 +61,11 @@ public class FlashcardMainController {
 
   @FXML private Text alertMessage;
 
+  @FXML private Text ex;
+
   @FXML private Text noDecks;
 
   private FlashcardDeckManager deckManager = new FlashcardDeckManager();
-  
-  private FlashcardPersistent storage = new FlashcardPersistent();
   
   private String currentUsername = "defaultUserName";
   
@@ -96,9 +107,11 @@ public class FlashcardMainController {
     if (showAlert) {
       alertMessage.setText(error);
       alertMessage.setVisible(true);
+      ex.setVisible(true);
       showAlert = false;
     } else {
       alertMessage.setVisible(false);
+      ex.setVisible(false);
     }
 
     noDecks.setVisible(decks.isEmpty());
@@ -144,29 +157,64 @@ public class FlashcardMainController {
 
 
   /**
-   * Loads user data from JSON file or creates new deck manager if loading fails.
-   * Attempts to read the user's flashcard deck collection from persistent storage.
-   * If reading fails or file doesn't exist, initializes a new empty deck manager.
+   * Loads user data from REST API.
+   * Attempts to retrieve the user's flashcard deck collection from the REST API.
+   * If the API call fails, creates a new empty deck manager.
    */
   private void loadUserData() {
-    try {
-      deckManager = storage.readDeck(currentUsername);
-    } catch (Exception e) {
-      // If file doesn't exist or error reading, create new deck manager
+    ApiResponse<List<FlashcardDeckDto>> result = ApiClient.performApiRequest(
+      ApiEndpoints.getUserDecksUrl(currentUsername), 
+      "GET", 
+      null,
+      new TypeReference<List<FlashcardDeckDto>>() {}
+    );
+
+    if (result.isSuccess() && result.getData() != null) {
+      deckManager = convertFromDTOs(result.getData());
+    } else {
+      ApiClient.showAlert("Load Error", result.getMessage());
       deckManager = new FlashcardDeckManager();
     }
   }
 
   /**
-   * Saves user data to JSON file.
-   * Persists the current deck manager state to the storage system.
-   * Prints stack trace if an IOException occurs during saving.
+   * Converts list of FlashcardDeckDto objects to FlashcardDeckManager.
+   * 
+   * @param deckDTOs list of DTOs to convert
+   * @return FlashcardDeckManager with converted decks
+   */
+  private FlashcardDeckManager convertFromDTOs(List<FlashcardDeckDto> deckDTOs) {
+    FlashcardDeckManager manager = new FlashcardDeckManager();
+    for (FlashcardDeckDto dto : deckDTOs) {
+      FlashcardDeck deck = new FlashcardDeck();
+      deck.setDeckName(dto.getDeckName());
+      
+      // Convert flashcards from DTOs
+      for (FlashcardDto cardDto : dto.getDeck()) {
+        Flashcard flashcard = new Flashcard(cardDto.getQuestion(), cardDto.getAnswer());
+        deck.addFlashcard(flashcard);
+      }
+      
+      manager.addDeck(deck);
+    }
+    return manager;
+  }
+
+  /**
+   * Saves user data to the REST API.
+   * Persists the current deck manager state to the server.
+   * Shows an alert if saving fails.
    */
   private void saveUserData() {
-    try {
-      storage.writeDeck(currentUsername, deckManager);
-    } catch (Exception e) {
-      e.printStackTrace();
+    ApiResponse<String> result = ApiClient.performApiRequest(
+      ApiEndpoints.getUserDecksUrl(currentUsername), 
+      "PUT", 
+      deckManager,  // APIClient converts to JSON
+      new TypeReference<String>() {}  // Simple string response
+    );
+
+    if (!result.isSuccess()) {
+      ApiClient.showAlert("Save Error", result.getMessage());
     }
   }
 
@@ -237,7 +285,7 @@ public class FlashcardMainController {
       Button clickedButton = (Button) event.getSource();
       FlashcardDeck selectedDeck = (FlashcardDeck) clickedButton.getUserData();
 
-      FXMLLoader loader = new FXMLLoader(getClass().getResource("FlashcardListUI.fxml"));
+      FXMLLoader loader = new FXMLLoader(getClass().getResource("FlashcardDeck.fxml"));
       Parent root = loader.load();
 
       FlashcardDeckController controller = loader.getController();
@@ -267,7 +315,7 @@ public class FlashcardMainController {
       saveUserData();
       
       // Load login screen
-      FXMLLoader loader = new FXMLLoader(getClass().getResource("FlashcardLoginUI.fxml"));
+      FXMLLoader loader = new FXMLLoader(getClass().getResource("FlashcardLogin.fxml"));
       Parent root = loader.load();
       
       // Switch to login scene

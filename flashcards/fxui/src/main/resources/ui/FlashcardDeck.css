@@ -1,0 +1,60 @@
+#anchorPane {
+    -fx-background-color: #bee7ed;
+}
+.button {
+    -fx-background-color: #5c7b80;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-font-size: 12;
+    -fx-font-family: "Arial";
+}
+
+#listView {
+    -fx-border-color: #5c7b80;
+    -fx-border-width: 2;
+    -fx-border-radius: 3;
+}
+
+.list-view .list-cell {
+    -fx-text-fill: #5c7b80;
+    -fx-font-family: "Arial";
+}
+
+.text-field {
+    -fx-background-color: white;
+    -fx-border-color: #5c7b80;
+    -fx-border-width: 2;
+    -fx-background-radius: 3;
+    -fx-border-radius: 3;
+    -fx-font-family: "Arial";
+}
+
+.textForTitles {
+    -fx-fill: #5c7b80;
+    -fx-font-weight: bold;
+    -fx-font-family: "Arial";
+}
+
+.nameTag {
+    -fx-fill: #5c7b80;
+    -fx-font-size: 12;
+    -fx-font-weight: bold;
+    -fx-font-family: "Arial";
+
+}
+
+.nameField {
+    -fx-fill: #5c7b80;
+    -fx-font-size: 9.5;
+    -fx-font-family: "Arial";
+}
+
+#startLearning {
+    -fx-font-size: 15;
+    -fx-font-family: "Arial";
+}
+
+#back {
+    -fx-font-size: 15;
+    -fx-font-family: "Arial";
+}
