@@ -14,8 +14,8 @@ import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
-import shared.ApiEndpoints;
 import shared.ApiResponse;
+import shared.ApiEndpoints;
 /**
  * Controller for the Flashcard Login UI. Handles user login.
  * 
@@ -54,6 +54,7 @@ public class FlashcardLoginController {
    */
   public void updateUi() {
     if (showAlert) {
+      System.out.println("ERROR: " + error);
       alertMessage.setText(error);
       alertMessage.setVisible(true);
       ex.setVisible(true);
@@ -86,7 +87,7 @@ public class FlashcardLoginController {
         ApiEndpoints.LOGIN_URL, 
         "POST",
         new LoginRequestDto(username, password),
-        new TypeReference<LoginResponseDto>() {}
+        new TypeReference<ApiResponse<LoginResponseDto>>() {}
       );
 
       if (result.isSuccess() && result.getData() != null) {
@@ -137,7 +138,7 @@ public class FlashcardLoginController {
    * @throws IOException if the FXML file cannot be loaded
    */
   private void navigateToSignUpPage() throws IOException {
-    FXMLLoader loader = new FXMLLoader(getClass().getResource("FlashcardSignUp.fxml"));
+    FXMLLoader loader = new FXMLLoader(getClass().getResource("/ui/FlashcardSignUp.fxml"));
     Parent root = loader.load();
 
     Stage stage = (Stage) signUpButton.getScene().getWindow();
@@ -153,16 +154,18 @@ public class FlashcardLoginController {
    * @throws IOException if the FXML file cannot be loaded
    */
   private void navigateToMainApp(String username) throws IOException {
-    FXMLLoader loader = new FXMLLoader(getClass().getResource("FlashcardMain.fxml"));
-    Parent root = loader.load();
-
-    // Get the controller and set the username
-    FlashcardMainController mainController = loader.getController();
-    mainController.setCurrentUsername(username);
-
-    // Switch to the main scene
-    Stage stage = (Stage) loginButton.getScene().getWindow();
-    stage.setScene(new Scene(root));
-    stage.show();
+    FXMLLoader loader = new FXMLLoader(getClass().getResource("/ui/FlashcardMain.fxml"));
+    try {
+        Parent root = loader.load();
+        FlashcardMainController mainController = loader.getController();
+        mainController.setCurrentUsername(username);
+        Stage stage = (Stage) loginButton.getScene().getWindow();
+        stage.setScene(new Scene(root));
+        stage.show();
+    } catch (Exception e) {
+        System.err.println("ERROR: Failed to load main application");
+        e.printStackTrace();
+        throw e;
+    }
   }
 }

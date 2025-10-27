@@ -7,6 +7,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import app.Flashcard;
 import app.FlashcardDeck;
 import app.FlashcardDeckManager;
+import dto.FlashcardDeckManagerDto;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -40,8 +41,8 @@ public class FlashcardDeckController {
   @FXML private Button deleteCardButton;
 
   private FlashcardDeckManager deckManager;
-  private String currentUsername = "defaultUserName";
-  private String currentDeckName = "defaultDeckName";
+  private String currentUsername;
+  private String currentDeckName;
 
   /**
    * Initializes the controller after FXML loading.
@@ -154,11 +155,11 @@ public class FlashcardDeckController {
    * If the API call fails, shows error to user.
    */
   private void saveUserData() {
-    ApiResponse<String> result = ApiClient.performApiRequest(
+    ApiResponse<FlashcardDeckManagerDto> result = ApiClient.performApiRequest(
       ApiEndpoints.getUserDecksUrl(currentUsername),
       "PUT",
       deckManager,
-      new TypeReference<String>() {}
+      new TypeReference<ApiResponse<FlashcardDeckManagerDto>>() {}
     );
 
     if (!result.isSuccess()) {
@@ -261,9 +262,10 @@ public class FlashcardDeckController {
 
     FlashcardController controller = loader.getController();
     FlashcardDeck currentDeck = getCurrentDeck();
+
     if(currentDeck != null){
-      controller.setCurrentUsername(currentUsername);  // Send current username
-      controller.setDeckManager(deckManager, currentDeck);  // Send complete deck manager and current deck
+      controller.setCurrentUsername(currentUsername);  // Pass the logged-in username
+      controller.setDeckManager(deckManager, currentDeck);  // Pass the deck manager and selected deck
     }
 
     Stage stage = (Stage) startLearning.getScene().getWindow();

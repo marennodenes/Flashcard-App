@@ -10,6 +10,9 @@ import app.FlashcardDeck;
 import app.FlashcardDeckManager;
 import dto.FlashcardDeckDto;
 import dto.FlashcardDto;
+import dto.FlashcardDeckManagerDto;
+import shared.ApiResponse;
+import shared.ApiEndpoints;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -19,8 +22,6 @@ import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
-import shared.ApiEndpoints;
-import shared.ApiResponse;
 
 /**
  * Controller for the main flashcard deck management interface.
@@ -67,7 +68,7 @@ public class FlashcardMainController {
 
   private FlashcardDeckManager deckManager = new FlashcardDeckManager();
   
-  private String currentUsername = "defaultUserName";
+  private String currentUsername;
   
   private boolean showAlert = false;
   
@@ -90,7 +91,7 @@ public class FlashcardMainController {
                                      deleteDeck_5, deleteDeck_6, deleteDeck_7, deleteDeck_8 };
 
     hideAllDeckButtons();
-    loadUserData();
+    // Don't load user data here - wait for setCurrentUsername to be called
     updateUi();
   }
 
@@ -162,17 +163,22 @@ public class FlashcardMainController {
    * If the API call fails, creates a new empty deck manager.
    */
   private void loadUserData() {
-    ApiResponse<List<FlashcardDeckDto>> result = ApiClient.performApiRequest(
-      ApiEndpoints.getUserDecksUrl(currentUsername), 
-      "GET", 
-      null,
-      new TypeReference<List<FlashcardDeckDto>>() {}
-    );
+    try {
+      ApiResponse<FlashcardDeckManagerDto> result = ApiClient.performApiRequest(
+        ApiEndpoints.getUserDecksUrl(currentUsername),
+        "GET",
+        null,
+        new TypeReference<ApiResponse<FlashcardDeckManagerDto>>() {}
+      );
 
-    if (result.isSuccess() && result.getData() != null) {
-      deckManager = convertFromDTOs(result.getData());
-    } else {
-      ApiClient.showAlert("Load Error", result.getMessage());
+      if (result.isSuccess() && result.getData() != null) {
+        deckManager = convertFromDTOs(result.getData().getDecks());
+      } else {
+        ApiClient.showAlert("Load Error", result.getMessage());
+        deckManager = new FlashcardDeckManager();
+      }
+    } catch (Exception e) {
+      ApiClient.showAlert("Load Error", "Could not load user data: " + e.getMessage());
       deckManager = new FlashcardDeckManager();
     }
   }
@@ -206,11 +212,11 @@ public class FlashcardMainController {
    * Shows an alert if saving fails.
    */
   private void saveUserData() {
-    ApiResponse<String> result = ApiClient.performApiRequest(
+    ApiResponse<FlashcardDeckManagerDto> result = ApiClient.performApiRequest(
       ApiEndpoints.getUserDecksUrl(currentUsername), 
       "PUT", 
       deckManager,  // APIClient converts to JSON
-      new TypeReference<String>() {}  // Simple string response
+      new TypeReference<ApiResponse<FlashcardDeckManagerDto>>() {}
     );
 
     if (!result.isSuccess()) {

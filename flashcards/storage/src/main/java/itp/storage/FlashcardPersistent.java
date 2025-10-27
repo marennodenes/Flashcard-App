@@ -13,8 +13,9 @@ import app.FlashcardDeckManager;
  * Handles saving and loading user data (credentials + flashcards) to/from JSON files.
  * Fixed to prevent user credentials from being overwritten by flashcard data.
  * @author parts of these methods are generated with help from claude.ai
- * @author @sofietw
- * @author @ailinat
+ * @author sofietw
+ * @author ailinat
+ * @author marennod
  * 
  */
 public class FlashcardPersistent implements UserPersistence {
@@ -39,23 +40,19 @@ public class FlashcardPersistent implements UserPersistence {
      * @throws IOException if file writing fails
      */
     public void writeDeck(String username, FlashcardDeckManager deckManager) throws IOException {
-        System.out.println("DEBUG: writeDeck called for user: " + username);
         
         //Read existing user data first
         UserData userData = readUserDataInternal(username);
         
         if (userData == null) {
-            System.out.println("DEBUG: No user data found, please create a new user");
             throw new IOException("User does not exist: " + username);
         }
         
-        System.out.println("DEBUG: Updating deck for user: " + username);
         // Update only the deck manager, keep credentials
         userData.setDeckManager(deckManager);
         
         // Write back the complete user data
         writeUserDataInternal(userData);
-        System.out.println("DEBUG: Successfully wrote deck for user: " + username);
     }
 
     /**
@@ -67,15 +64,12 @@ public class FlashcardPersistent implements UserPersistence {
      * @throws IOException if file reading fails
      */
     public FlashcardDeckManager readDeck(String username) throws IOException {
-        System.out.println("DEBUG: readDeck called for user: " + username);
         
         UserData userData = readUserDataInternal(username);
         
         if (userData != null) {
-            System.out.println("DEBUG: Found user data, returning deck manager for: " + username);
             return userData.getDeckManager();
         } else {
-            System.out.println("DEBUG: No user data found, returning empty deck manager for: " + username);
             return new FlashcardDeckManager();
         }
     }
@@ -90,7 +84,6 @@ public class FlashcardPersistent implements UserPersistence {
     public boolean dataExists(String username) {
         File file = getUserFile(username);
         boolean exists = file.exists();
-        System.out.println("DEBUG: dataExists for " + username + ": " + exists);
         return exists;
     }
 
@@ -102,19 +95,12 @@ public class FlashcardPersistent implements UserPersistence {
      * @return User object if found, null otherwise
      */
     @Override
-    public User readUserData(String username) {
-        System.out.println("DEBUG: readUserData called for: " + username);
-        
+    public User readUserData(String username) {        
         UserData userData = readUserDataInternal(username);
         User result = null;
 
         if(userData != null) result = userData.getUser();
-        
-        if(result != null) System.out.println("DEBUG: readUserData result for " + username + ": " + "found");
-        
-        else System.out.println("DEBUG: readUserData result for " + username + ": " + "not found");
 
-        
         return result;
     }
 
@@ -127,22 +113,16 @@ public class FlashcardPersistent implements UserPersistence {
      * @throws IOException if file writing fails
      */
     @Override
-    public void writeUserData(User user) throws IOException {
-        System.out.println("DEBUG: writeUserData called for: " + user.getUsername());
-        
+    public void writeUserData(User user) throws IOException {        
         UserData existingData = readUserDataInternal(user.getUsername());
 
         if (existingData != null) {
-            System.out.println("DEBUG: User already exists: " + user.getUsername());
             throw new IOException("User already exists: " + user.getUsername());
         } else {
-            System.out.println("DEBUG: New user, creating fresh user data for: " + user.getUsername());
             // New user, create fresh user data
             UserData userData = new UserData(user);
             writeUserDataInternal(userData);
         }
-        
-        System.out.println("DEBUG: Successfully wrote user data for: " + user.getUsername());
     }
 
     /**
@@ -154,14 +134,11 @@ public class FlashcardPersistent implements UserPersistence {
      */
     @Override
     public boolean userExists(String username) {
-        System.out.println("DEBUG: userExists called for: " + username);
-        
         UserData userData = readUserDataInternal(username);
 
         boolean exists = false;
         if(userData != null && userData.getUser().getUsername() != null && userData.getUser().getPassword() != null) exists=true;
         
-        System.out.println("DEBUG: userExists result for " + username + ": " + exists);
         return exists;
     }
 
@@ -171,26 +148,17 @@ public class FlashcardPersistent implements UserPersistence {
      * @param username the username to read data for
      * @return UserData object if found and valid, null otherwise
      */
-    private UserData readUserDataInternal(String username) {
-        System.out.println("DEBUG: readUserDataInternal called for: " + username);
-        
+    private UserData readUserDataInternal(String username) {        
         File file = getUserFile(username);
 
-        if (file.exists()) {
-            System.out.println("DEBUG: File exists for: " + username);
-            
+        if (file.exists()) {            
             try {
                 // Try reading as UserData
-                User user = objectMapper.readValue(file, User.class);
-
-                UserData userData = new UserData(user);
-                System.out.println("DEBUG: Successfully read as UserData for: " + username);
+                UserData userData = objectMapper.readValue(file, UserData.class);
                 return userData;
             } catch (IOException e) {
-                System.out.println("DEBUG: Failed to read UserData for: " + username);
+                e.printStackTrace();
             }
-        } else {
-            System.out.println("DEBUG: No file exists for: " + username);
         }
         
         return null;
@@ -203,9 +171,7 @@ public class FlashcardPersistent implements UserPersistence {
      * @param userData the UserData object to write
      * @throws IOException if directory creation or file writing fails
      */
-    private void writeUserDataInternal(UserData userData) throws IOException {
-        System.out.println("DEBUG: writeUserDataInternal called for: " + userData.getUser().getUsername());
-        
+    private void writeUserDataInternal(UserData userData) throws IOException {        
         File dataDir = new File(System.getProperty("user.dir") + "/../storage/data/users");
         if (!dataDir.exists()) {
             boolean created = dataDir.mkdirs();
@@ -216,8 +182,6 @@ public class FlashcardPersistent implements UserPersistence {
         
         File file = getUserFile(userData.getUser().getUsername());
         objectMapper.writerWithDefaultPrettyPrinter().writeValue(file, userData);
-        
-        System.out.println("DEBUG: Successfully wrote UserData to file: " + file.getAbsolutePath());
     }
 
     /**
@@ -228,8 +192,6 @@ public class FlashcardPersistent implements UserPersistence {
      * @return File object pointing to the user's data file
      */
     private File getUserFile(String username) {
-        String path = System.getProperty("user.dir") + "/../storage/data/users/" + username + ".json";
-        System.out.println("DEBUG: getUserFile for " + username + ": " + path);
-        return new File(path);
+        String path = System.getProperty("user.dir") + "/../storage/data/users/" + username + ".json";        return new File(path);
     }
 }

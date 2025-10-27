@@ -32,7 +32,7 @@
       <Text layoutX="55.0" layoutY="189.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="nameTag" text="Password: " />
       <Text fx:id="alertMessage" layoutX="218.0" layoutY="71.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="alerts" text="Alert" />
       <PasswordField fx:id="passwordField" layoutX="130.0" layoutY="169.0" prefHeight="31.0" prefWidth="165.0" />
-      <Button fx:id="signUpButton" layoutX="308.0" layoutY="164.0" mnemonicParsing="false" onAction="#whenSignUpButtonClicked" prefHeight="42.0" prefWidth="90.0" text="Sign up" />
+      <Button fx:id="signInButton" layoutX="308.0" layoutY="164.0" mnemonicParsing="false" onAction="#whenSignInButtonClicked" prefHeight="42.0" prefWidth="90.0" text="Sign up" />
       <Text layoutX="130.0" layoutY="115.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="textForTitles" text="Create new user:" wrappingWidth="143.9228515625" />
       <PasswordField fx:id="confirmPasswordField" layoutX="130.0" layoutY="213.0" prefHeight="31.0" prefWidth="165.0" />
       <Text layoutX="56.0" layoutY="241.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="nameTag" text="password: " />

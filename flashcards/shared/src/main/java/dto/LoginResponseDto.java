@@ -17,7 +17,7 @@ public class LoginResponseDto {
      * Indicates whether the login was successful.
      */
     @JsonProperty("success")
-    private final boolean success;
+    private boolean success;
     
     /**
      * A message providing additional information about the login result.

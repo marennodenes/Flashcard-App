@@ -5,6 +5,9 @@ import java.io.IOException;
 import com.fasterxml.jackson.core.type.TypeReference;
 
 import dto.LoginRequestDto;
+import dto.UserDataDto;
+import shared.ApiResponse;
+import shared.ApiEndpoints;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -13,8 +16,6 @@ import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
-import shared.ApiEndpoints;
-import shared.ApiResponse;
 
 /**
  * Controller for the flashcard sign-up page.
@@ -88,7 +89,7 @@ public class FlashcardSignUpController {
   @FXML
   public void whenBackButtonIsClicked() {
     try {
-      FXMLLoader loader = new FXMLLoader(getClass().getResource("/path/to/FlashcardLogin.fxml"));
+      FXMLLoader loader = new FXMLLoader(getClass().getResource("/ui/FlashcardLogin.fxml"));
       Parent root = loader.load();
       Stage stage = (Stage) backButton.getScene().getWindow();
       stage.setScene(new Scene(root));
@@ -130,11 +131,11 @@ public class FlashcardSignUpController {
    * @param password the password for the user
    */
   private void createUser(String username, String password) {
-    ApiResponse<String> result = ApiClient.performApiRequest(
+    ApiResponse<UserDataDto> result = ApiClient.performApiRequest(
       ApiEndpoints.REGISTER_URL, 
       "POST", 
       new LoginRequestDto(username, password),
-      new TypeReference<String>() {}
+      new TypeReference<ApiResponse<UserDataDto>>() {}
     );
 
     if (result.isSuccess()) {
@@ -151,6 +152,7 @@ public class FlashcardSignUpController {
         showError("Username already exists,\ntry with another username");
       } else {
         ApiClient.showAlert("Registration Error", result.getMessage());
+        System.out.println("Registration failed: " + result.getMessage());
       }
     }
   }
@@ -174,7 +176,7 @@ public class FlashcardSignUpController {
    * @throws IOException if the FXML file cannot be loaded
    */
   private void navigateToMainApp(String username) throws IOException {
-    FXMLLoader loader = new FXMLLoader(getClass().getResource("FlashcardMain.fxml"));
+    FXMLLoader loader = new FXMLLoader(getClass().getResource("/ui/FlashcardMain.fxml"));
     Parent root = loader.load();
     
     // Get the controller and set the username
