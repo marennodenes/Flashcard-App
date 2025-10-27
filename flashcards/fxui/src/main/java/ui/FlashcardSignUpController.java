@@ -89,7 +89,7 @@ public class FlashcardSignUpController {
   @FXML
   public void whenBackButtonIsClicked() {
     try {
-      FXMLLoader loader = new FXMLLoader(getClass().getResource("/path/to/FlashcardLogin.fxml"));
+      FXMLLoader loader = new FXMLLoader(getClass().getResource("/ui/FlashcardLogin.fxml"));
       Parent root = loader.load();
       Stage stage = (Stage) backButton.getScene().getWindow();
       stage.setScene(new Scene(root));

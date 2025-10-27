@@ -27,8 +27,8 @@ import javafx.util.Duration;
 public class FlashcardController {
 
   @FXML private Button backButton;
-  @FXML private Button nextCard;
-  @FXML private Button previousCard;
+  @FXML private Button nextButton;
+  @FXML private Button previousButton;
   @FXML private Button card;
   @FXML private ProgressBar progressBar;
   @FXML private Text usernameField;
@@ -132,7 +132,7 @@ public class FlashcardController {
   /**
    * Handles the event when the "Back" button is clicked.
    * Navigates from the current scene to the flashcard deck list page by loading
-   * the FlashcardListUI.fxml file and switching the scene.
+   * the FlashcardDeck.fxml file and switching the scene.
    * Passes the current username and deck manager to maintain data consistency.
    * 
    * @throws IOException if the FXML file cannot be loaded or found
@@ -150,7 +150,7 @@ public class FlashcardController {
       controller.setDeckManager(deckManager, originalDeck);
     }
 
-    Stage stage = (Stage) nextCard.getScene().getWindow();
+    Stage stage = (Stage) backButton.getScene().getWindow();
     stage.setScene(new Scene(root));
     stage.show();
   }
