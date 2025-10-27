@@ -38,7 +38,7 @@ public class FlashcardController {
   private List<Flashcard> deck = new ArrayList<>();
 
   private int currentCardI;
-  private String currentUsername = "defaultUserName";
+  private String currentUsername;
   
   private FlashcardDeckManager deckManager;
 

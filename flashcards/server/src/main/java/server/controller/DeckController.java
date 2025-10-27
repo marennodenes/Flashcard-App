@@ -50,14 +50,11 @@ public class DeckController {
    */
   @RequestMapping
   public ApiResponse<FlashcardDeckManagerDto> getAllDecks(@RequestParam String username) {
-    System.out.println("DEBUG: getAllDecks called for username: '" + username + "'");
     try {
       FlashcardDeckManager deckManager = deckService.getAllDecks(username);
-      System.out.println("DEBUG: deckManager loaded for username: '" + username + "', decks count: " + deckManager.getDecks().size());
       FlashcardDeckManagerDto dto = new FlashcardDeckManagerDto(mapper.toDtoList(deckManager.getDecks()));
       return new ApiResponse<>(true, "Decks retrieved successfully", dto);
     } catch (Exception e) {
-      System.out.println("DEBUG: Error retrieving decks for username: '" + username + "' - " + e.getMessage());
       return new ApiResponse<>(false, "Error retrieving decks: " + e.getMessage(), null);
     }
   }

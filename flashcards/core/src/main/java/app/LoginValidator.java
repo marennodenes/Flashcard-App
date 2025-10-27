@@ -82,17 +82,11 @@ public class LoginValidator {
             if (user.getPassword().contains(":")) {
                 // New format: hashed password
                 boolean matches = PasswordEncoder.matches(password, user.getPassword());
-                if (matches) {
-                    System.out.println("DEBUG: User authenticated successfully: " + username);
-                } else {
-                    System.out.println("DEBUG:Authentication failed - wrong password: " + username);
-                }
                 return matches;
             } else {
                 throw new IllegalStateException("Legacy plain text passwords are no longer supported.");
             }
         }
-        System.out.println("DEBUG: Authentication failed - user not found: " + username);
         return false;
     }
 

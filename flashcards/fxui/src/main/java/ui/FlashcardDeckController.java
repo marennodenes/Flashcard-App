@@ -41,8 +41,8 @@ public class FlashcardDeckController {
   @FXML private Button deleteCardButton;
 
   private FlashcardDeckManager deckManager;
-  private String currentUsername = "defaultUserName";
-  private String currentDeckName = "defaultDeckName";
+  private String currentUsername;
+  private String currentDeckName;
 
   /**
    * Initializes the controller after FXML loading.
@@ -262,7 +262,7 @@ public class FlashcardDeckController {
 
     FlashcardController controller = loader.getController();
     FlashcardDeck currentDeck = getCurrentDeck();
-    System.out.println("DEBUG: Navigating to learning page with username: '" + currentUsername + "', deck: '" + (currentDeck != null ? currentDeck.getDeckName() : "null") + "'");
+
     if(currentDeck != null){
       controller.setCurrentUsername(currentUsername);  // Pass the logged-in username
       controller.setDeckManager(deckManager, currentDeck);  // Pass the deck manager and selected deck

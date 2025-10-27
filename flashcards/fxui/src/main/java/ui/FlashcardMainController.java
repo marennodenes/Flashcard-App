@@ -68,7 +68,7 @@ public class FlashcardMainController {
 
   private FlashcardDeckManager deckManager = new FlashcardDeckManager();
   
-  private String currentUsername = "defaultUserName";
+  private String currentUsername;
   
   private boolean showAlert = false;
   
@@ -91,7 +91,7 @@ public class FlashcardMainController {
                                      deleteDeck_5, deleteDeck_6, deleteDeck_7, deleteDeck_8 };
 
     hideAllDeckButtons();
-    loadUserData();
+    // Don't load user data here - wait for setCurrentUsername to be called
     updateUi();
   }
 
@@ -231,7 +231,6 @@ public class FlashcardMainController {
    * @param username the username to set as current user
    */
   public void setCurrentUsername(String username) {
-    System.out.println("DEBUG: FlashcardMainController.setCurrentUsername called with: '" + username + "'");
     if (username != null && !username.trim().isEmpty()) {
       this.currentUsername = username.trim();
       loadUserData();
@@ -298,8 +297,6 @@ public class FlashcardMainController {
       FlashcardDeckController controller = loader.getController();
       controller.setCurrentUsername(currentUsername);  // Send current username
       controller.setDeckManager(deckManager, selectedDeck);  // Send complete deck manager and selected deck
-      // Debug print for verification
-      System.out.println("DEBUG: Navigating to deck view with username: '" + currentUsername + "' and deck: '" + selectedDeck.getDeckName() + "'");
 
       Stage stage = (Stage) clickedButton.getScene().getWindow();
       stage.setScene(new Scene(root));
