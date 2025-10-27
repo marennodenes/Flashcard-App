@@ -6,6 +6,8 @@ import com.fasterxml.jackson.core.type.TypeReference;
 
 import dto.LoginRequestDto;
 import dto.LoginResponseDto;
+import dto.LoginRequestDto;
+import dto.LoginResponseDto;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -26,6 +28,8 @@ import shared.ApiEndpoints;
 public class FlashcardLoginController {
   @FXML
   private Text alertMessage;
+  @FXML
+  private Text ex;
   @FXML
   private Button loginButton;
   @FXML
@@ -55,9 +59,11 @@ public class FlashcardLoginController {
       System.out.println("ERROR: " + error);
       alertMessage.setText(error);
       alertMessage.setVisible(true);
+      ex.setVisible(true);
       showAlert = false;
     } else {
       alertMessage.setVisible(false);
+      ex.setVisible(false);
     }
 
   }

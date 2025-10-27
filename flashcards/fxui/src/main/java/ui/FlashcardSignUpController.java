@@ -16,6 +16,8 @@ import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
+import shared.ApiEndpoints;
+import shared.ApiResponse;
 
 /**
  * Controller for the flashcard sign-up page.
@@ -25,10 +27,12 @@ import javafx.stage.Stage;
  */
 public class FlashcardSignUpController {
   @FXML private Text alertMessage;
+  @FXML private Text ex;
   @FXML private TextField usernameField;
   @FXML private TextField passwordField;
   @FXML private TextField confirmPasswordField;
   @FXML private Button signInButton;
+  @FXML private Button backButton;
 
   private boolean showAlert = false;
   private String error = "";
@@ -49,9 +53,11 @@ public class FlashcardSignUpController {
     if (showAlert) {
       alertMessage.setText(error);
       alertMessage.setVisible(true);
+      ex.setVisible(true);
       showAlert = false;
     } else {
       alertMessage.setVisible(false);
+      ex.setVisible(false);
     }
   }
 
@@ -72,6 +78,27 @@ public class FlashcardSignUpController {
 
     // Attempt to create user
     createUser(username, password);
+  }
+
+  /**
+   * Handles the action when the back button is clicked.
+   * This method loads the FlashcardLogin.fxml file and sets it as the current scene.
+   * It retrieves the current stage from the back button's scene and updates the scene 
+   * to display the login interface.
+   *
+   * @throws IOException if the FXML file cannot be loaded.
+   */
+  @FXML
+  public void whenBackButtonIsClicked() {
+    try {
+      FXMLLoader loader = new FXMLLoader(getClass().getResource("/path/to/FlashcardLogin.fxml"));
+      Parent root = loader.load();
+      Stage stage = (Stage) backButton.getScene().getWindow();
+      stage.setScene(new Scene(root));
+      stage.show();
+    } catch (IOException e) {
+      showError("Unable to load the login screen.");
+    }
   }
 
   /**

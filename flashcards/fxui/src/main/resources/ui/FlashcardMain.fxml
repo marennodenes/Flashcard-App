@@ -25,7 +25,7 @@
             <Font size="23.0" />
          </font>
       </Text>
-      <Button fx:id="newDeckButton" layoutX="324.0" layoutY="51.0" mnemonicParsing="false" onAction="#whenNewDeckButtonIsClicked" prefHeight="27.0" prefWidth="73.0" styleClass="create" text="New deck" />
+      <Button fx:id="newDeckButton" layoutX="324.0" layoutY="51.0" mnemonicParsing="false" onAction="#whenNewDeckButtonIsClicked" prefHeight="27.0" prefWidth="79.0" styleClass="create" text="New deck" />
       <Text layoutX="16.0" layoutY="109.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="textForTitles" text="Your card decks:" wrappingWidth="164.0">
          <font>
             <Font size="16.0" />
@@ -105,9 +105,10 @@
          </font>
       </Button>
       <Text layoutX="185.0" layoutY="27.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="nameTag" text="username: " />
-      <Text fx:id="usernameField" layoutX="241.0" layoutY="27.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="nameField" text="..." wrappingWidth="80.59115600585938" />
-      <Button fx:id="logOutButton" layoutX="324.0" layoutY="10.0" mnemonicParsing="false" onAction="#whenLogOut" prefHeight="27.0" prefWidth="73.0" styleClass="create" text="Log out" />
+      <Text fx:id="usernameField" layoutX="247.0" layoutY="27.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="nameField" text="..." wrappingWidth="70.63699340820312" />
+      <Button fx:id="logOutButton" layoutX="324.0" layoutY="10.0" mnemonicParsing="false" onAction="#whenLogOut" prefHeight="27.0" prefWidth="79.0" styleClass="create" text="Log out" />
       <Text fx:id="alertMessage" layoutX="203.0" layoutY="105.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="alerts" text="Alert" />
       <Text fx:id="noDecks" layoutX="150.0" layoutY="177.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="alerts" text="You have no decks" />
+      <Text fx:id="ex" layoutX="191.0" layoutY="107.0" strokeType="OUTSIDE" strokeWidth="0.0" text="!" />
     </children>
 </AnchorPane>

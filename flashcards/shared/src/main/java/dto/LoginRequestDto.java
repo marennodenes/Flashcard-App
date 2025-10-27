@@ -1,6 +1,7 @@
 package dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonCreator;
 
 /**
  * A Data Transfer Object (DTO) representing a login request.
@@ -33,7 +34,8 @@ public class LoginRequestDto {
      * @param username the username of the user; must not be null or blank
      * @param password the password of the user; must not be null or blank
      */
-    public LoginRequestDto(String username, String password) {
+    @JsonCreator
+    public LoginRequestDto(@JsonProperty("username") String username, @JsonProperty("password") String password) {
         this.username = username;
         this.password = password;
     }

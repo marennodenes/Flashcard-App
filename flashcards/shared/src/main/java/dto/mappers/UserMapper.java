@@ -7,6 +7,7 @@ import app.FlashcardDeckManager;
 import app.User;
 import app.UserData;
 import dto.FlashcardDeckManagerDto;
+import dto.LoginRequestDto;
 import dto.UserDataDto;
 
 /**
@@ -74,6 +75,12 @@ public class UserMapper {
         }
       }
     }
-    return new UserData(new app.User(username, password), deckManager);
+    return new UserData(new User(username, password), deckManager);
+  }
+
+  public User fromLoginRequestDto(LoginRequestDto dto) {
+    String username = dto.getUsername() != null ? dto.getUsername() : "";
+    String password = dto.getPassword() != null ? dto.getPassword() : "";
+    return new User(username, password);
   }
 }
