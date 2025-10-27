@@ -7,8 +7,8 @@ import dto.FlashcardDto;
 
 /**
  * Mapper class for converting between Flashcard and FlashcardDto.
- * @author @ailinat
- * @author @sofietw
+ * @author ailinat
+ * @author sofietw
  */
 public class FlashcardMapper {
 

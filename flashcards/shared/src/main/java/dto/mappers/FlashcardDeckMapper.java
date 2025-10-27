@@ -11,8 +11,8 @@ import dto.FlashcardDto;
 /**
  * Mapper class for converting between FlashcardDeck and FlashcardDeckDto.
  * Uses FlashcardMapper for mapping individual Flashcards.
- * @author @ailinat
- * @author @sofietw
+ * @author ailinat
+ * @author sofietw
  */
 public class FlashcardDeckMapper {
   

@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
  * Represents a user with a username and password.
- * @author @ailinat
+ * @author ailinat
  */
 public class User {
     @JsonProperty("username")private String username;

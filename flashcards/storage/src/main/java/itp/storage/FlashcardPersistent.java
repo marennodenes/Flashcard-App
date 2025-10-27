@@ -13,8 +13,9 @@ import app.FlashcardDeckManager;
  * Handles saving and loading user data (credentials + flashcards) to/from JSON files.
  * Fixed to prevent user credentials from being overwritten by flashcard data.
  * @author parts of these methods are generated with help from claude.ai
- * @author @sofietw
- * @author @ailinat
+ * @author sofietw
+ * @author ailinat
+ * @author marennod
  * 
  */
 public class FlashcardPersistent implements UserPersistence {
@@ -182,7 +183,6 @@ public class FlashcardPersistent implements UserPersistence {
             try {
                 // Try reading as UserData
                 UserData userData = objectMapper.readValue(file, UserData.class);
-
                 System.out.println("DEBUG: Successfully read as UserData for: " + username);
                 return userData;
             } catch (IOException e) {

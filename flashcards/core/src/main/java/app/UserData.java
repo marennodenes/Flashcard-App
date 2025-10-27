@@ -7,8 +7,8 @@ import com.fasterxml.jackson.annotation.JsonUnwrapped;
  * Combined data structure that holds both user credentials and flashcard data.
  * This prevents user credentials from being overwritten when flashcards are saved.
  * @author parts of this class is generated with the help of claude.ai
- * @author @sofietw
- * @author @ailinat
+ * @author sofietw
+ * @author ailinat
  */
 
 public class UserData {
