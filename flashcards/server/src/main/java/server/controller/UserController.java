@@ -82,11 +82,22 @@ public class UserController {
   public ApiResponse <LoginResponseDto> logInUser(@RequestBody LoginRequestDto request) { 
     try {
       Boolean login = userService.logInUser(request.getUsername(), request.getPassword());
-      User user = userService.getUser(request.getUsername());
-      UserDataDto userDto = mapper.toDto(user);
       
-      LoginResponseDto responseDto = new LoginResponseDto(login, "Login successful: " + request.getUsername(), userDto);
-      return new ApiResponse<>(true,  "Login successful", responseDto);
+      if (login) {
+        // Login successful - get user data and return success response
+        User user = userService.getUser(request.getUsername());
+        UserDataDto userDto = mapper.toDto(user);
+        
+        LoginResponseDto responseDto = new LoginResponseDto(login, "Login successful: " + request.getUsername(), userDto);
+        return new ApiResponse<>(true, "Login successful", responseDto);
+      } else {
+        // Login failed - check if user exists to provide specific error message
+        boolean userExists = userService.userExists(request.getUsername());
+        String errorMessage = userExists ? "Invalid password" : "User not found";
+        
+        LoginResponseDto responseDto = new LoginResponseDto(login, errorMessage, null);
+        return new ApiResponse<>(true, "Login response", responseDto);
+      }
     } catch (Exception e) {
       return new ApiResponse<>(false, "Error logging in user: " + e.getMessage(), null);
     }
