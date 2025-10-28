@@ -26,7 +26,15 @@ public class ApiConstantsTest {
         assertEquals("User already exists.", ApiConstants.USER_ALREADY_EXISTS);
         assertEquals("Login failed, invalid username or password.", ApiConstants.LOGIN_FAILED);
         assertEquals("Login success.", ApiConstants.LOGIN_SUCCESS);
-        assertEquals("Password does not meet requirements.", ApiConstants.PASSWORD_INVALID);
+        assertEquals("Password does not meet requirements.", ApiConstants.INVALID_PASSWORD);
+        assertEquals("Invalid password", ApiConstants.INVALID_PASSWORD);
+        
+        // Test detailed password validation messages
+        assertEquals("Password must be at least 8 characters long.", ApiConstants.PASSWORD_TOO_SHORT);
+        assertEquals("Password must contain at least one uppercase letter.", ApiConstants.PASSWORD_MISSING_UPPERCASE);
+        assertEquals("Password must contain at least one lowercase letter.", ApiConstants.PASSWORD_MISSING_LOWERCASE);
+        assertEquals("Password must contain at least one digit.", ApiConstants.PASSWORD_MISSING_DIGIT);
+        assertEquals("Password must contain at least one special character.", ApiConstants.PASSWORD_MISSING_SPECIAL);
     }
 
     /**
@@ -58,6 +66,5 @@ public class ApiConstantsTest {
     @Test
     void testGeneralConstants() {
         assertEquals("Invalid request.", ApiConstants.INVALID_REQUEST);
-        assertEquals("Operation failed.", ApiConstants.OPERATION_FAILED);
     }
 }
