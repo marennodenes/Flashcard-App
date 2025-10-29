@@ -8,7 +8,7 @@ import org.junit.jupiter.api.Test;
  * Test class for Flashcard functionality.
  * Tests flashcard operations including question/answer management and validation.
  * 
- * @author Generated with Claude Sonnet 4 via GitHub Copilot
+ * @author isamw
  */
 public class FlashcardTest {
 
@@ -36,13 +36,15 @@ public class FlashcardTest {
    * - Initial question value is correctly retrieved
    * - Question can be successfully updated
    * - Updated question value is properly stored and retrieved
-   * 
-   * @author Generated with Claude Sonnet 4 via GitHub Copilot
    */
   @Test
   void testQuestion(){
     assertEquals("Question", flashcard.getQuestion());
     flashcard.setQuestion("Hei");
+    assertEquals("Hei", flashcard.getQuestion());
+    flashcard.setQuestion(null);
+    assertEquals("Hei", flashcard.getQuestion());
+    flashcard.setQuestion("     ");
     assertEquals("Hei", flashcard.getQuestion());
   }
 
@@ -54,7 +56,6 @@ public class FlashcardTest {
    * - Setting whitespace-only string does not change the answer (validation)
    * - Setting null value is allowed and properly stored
    * 
-   * @author Generated with Claude Sonnet 4 via GitHub Copilot
    */
   @Test
   void testAnswer(){
@@ -74,7 +75,6 @@ public class FlashcardTest {
    * - Constructor with number parameter correctly initializes the number
    * - Number property maintains its value correctly
    * 
-   * @author Generated with Claude Sonnet 4 via GitHub Copilot
    */
   @Test
   void testGetNumber(){
@@ -90,7 +90,6 @@ public class FlashcardTest {
    * - Question and answer values are correctly included in the output
    * - String formatting is consistent and properly structured
    * 
-   * @author Generated with Claude Sonnet 4 via GitHub Copilot
    */
   @Test
   void testToString(){
