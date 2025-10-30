@@ -12,7 +12,7 @@ Meeting times:
 
 ## Task Distribution
 
-During the meetings, issues are assigned to team members. For this release, we decided to work in pairs, with each pair responsible for a specific part of the system:
+During the meetings, issues are assigned to team members. For this release, we worked in pairs, with each pair responsible for a specific part of the system:
 
 - FXUI and documentation
 
