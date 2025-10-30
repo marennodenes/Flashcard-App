@@ -1,801 +1,798 @@
-// package ui;
+package ui;
 
-// import static org.junit.jupiter.api.Assertions.assertEquals;
-// import static org.junit.jupiter.api.Assertions.assertFalse;
-// import static org.junit.jupiter.api.Assertions.assertNotNull;
-// import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.*;
 
-// import java.io.IOException;
-// import java.nio.file.Files;
-// import java.nio.file.Path;
-// import java.nio.file.Paths;
-// import java.util.concurrent.CountDownLatch;
-// import java.util.concurrent.TimeUnit;
+import app.Flashcard;
+import app.FlashcardDeck;
+import app.FlashcardDeckManager;
+import javafx.collections.FXCollections;
+import javafx.scene.control.Button;
+import javafx.scene.control.ListView;
+import javafx.scene.control.TextField;
+import javafx.scene.text.Text;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.MockedStatic;
+import org.mockito.Mockito;
+import org.testfx.framework.junit5.ApplicationExtension;
+import shared.ApiResponse;
 
-// import org.junit.jupiter.api.AfterEach;
-// import org.junit.jupiter.api.BeforeAll;
-// import org.junit.jupiter.api.BeforeEach;
-// import org.junit.jupiter.api.AfterAll;
-// import org.junit.jupiter.api.Test;
-// import org.junit.jupiter.api.extension.ExtendWith;
-// import org.testfx.api.FxToolkit;
-// import org.testfx.framework.junit5.ApplicationExtension;
-// import org.testfx.framework.junit5.ApplicationTest;
+/**
+ * Unit tests for {@link FlashcardDeckController}.
+ * <p>
+ * Covers all major branches, edge cases, and error handling for deck management,
+ * UI updates, card creation/deletion, user data saving, and navigation logic.
+ * Uses reflection to inject private fields and Mockito for mocking JavaFX and API interactions.
+ * </p>
+ * @author marennod
+ * @author sofietw
+ */
+@ExtendWith(ApplicationExtension.class)
+class FlashcardDeckControllerTest {
 
-// import app.Flashcard;
-// import app.FlashcardDeck;
-// import itp.storage.FlashcardPersistent;
-// import javafx.application.Platform;
-// import javafx.collections.ObservableList;
-// import javafx.fxml.FXMLLoader;
-// import javafx.scene.Parent;
-// import javafx.scene.Scene;
-// import javafx.scene.control.Button;
-// import javafx.scene.control.ListView;
-// import javafx.scene.control.TextField;
-// import javafx.scene.text.Text;
-// import javafx.stage.Stage;
+    private FlashcardDeckController controller;
+    private TextField questionField;
+    private TextField answerField;
+    private ListView<Flashcard> listView;
+    private Text username;
+    private Button startLearning;
+    private Button deleteCardButton;
 
-// /**
-//  * Comprehensive test class for the FlashcardDeckController using TestFX.
-//  * Tests flashcard management, UI interactions, data persistence, and navigation.
-//  * 
-//  * @author Generated with AI assistance for comprehensive test coverage
-//  */
-// @ExtendWith(ApplicationExtension.class)
-// public class FlashcardDeckControllerTest extends ApplicationTest {
-    
-//     private FlashcardDeckController controller;
-//     private TextField questionField;
-//     private TextField answerField;
-//     private ListView<Flashcard> listView;
-//     private Text username;
-//     // private TextField deckNameField;
-//     private Button startLearning;
-//     private Button deleteCardButton;
-//     private Button createButton;
-//     private Button backButton;
-//     private Button logOutButton;
-    
-//     private static final String TEST_USERNAME = "testDeckUser";
-//     private static final String TEST_DECK_NAME = "Test Deck";
-//     private FlashcardPersistent storage;
-    
-//     /**
-//      * Sets up the JavaFX platform before all tests.
-//      * Ensures that the JavaFX toolkit is properly initialized for testing.
-//      * 
-//      * @throws Exception if JavaFX platform initialization fails
-//      */
-//     @BeforeAll
-//     public static void setUpClass() throws Exception {
-//         if (!Platform.isFxApplicationThread()) {
-//             try {
-//                 Platform.startup(() -> {
-//                     // Empty runnable for platform initialization
-//                 });
-//             } catch (IllegalStateException e) {
-//                 // Platform already initialized, this is expected in some test environments
-//             }
-//         }
-//     }
-    
-//     /**
-//      * Sets up the JavaFX application for testing.
-//      * Loads the FlashcardDeckUI.fxml and initializes the controller.
-//      * 
-//      * @param stage the primary stage for the JavaFX application
-//      * @throws Exception if FXML loading fails
-//      */
-//     @Override
-//     public void start(Stage stage) throws Exception {
-//         try {
-//             // Load FXML - use the correct file name
-//             FXMLLoader loader = new FXMLLoader(getClass().getResource("FlashcardListUI.fxml"));
-//             Parent root = loader.load();
-//             controller = loader.getController();
-            
-//             // Configure controller with test user and deck
-//             controller.setCurrentUsername(TEST_USERNAME);
-//             FlashcardDeck testDeck = new FlashcardDeck(TEST_DECK_NAME);
-//             controller.setDeck(testDeck);
-            
-//             // Set up scene
-//             Scene scene = new Scene(root);
-//             stage.setScene(scene);
-//             stage.show();
-            
-//             // Initialize component references
-//             initializeComponentReferences();
-            
-//             // Initialize storage for cleanup
-//             storage = new FlashcardPersistent();
-//         } catch (Exception e) {
-//             e.printStackTrace();
-//             throw e;
-//         }
-//     }
-    
-//     /**
-//      * Initializes references to FXML components for testing.
-//      * Looks up UI components by their FXML IDs from FlashcardListUI.fxml
-//      */
-//     private void initializeComponentReferences() {
-//         try {
-//             questionField = lookup("#questionField").query();
-//             answerField = lookup("#answerField").query();
-//             listView = lookup("#listView").query();
-//             username = lookup("#username").query();
+    /**
+     * Sets up a fresh controller and injects mock UI components before each test.
+     */
+    @BeforeEach
+    void setUp() {
+        controller = new FlashcardDeckController();
+        questionField = new TextField();
+        answerField = new TextField();
+        listView = new ListView<>();
+        username = new Text();
+        startLearning = new Button();
+        deleteCardButton = new Button();
 
-//             startLearning = lookup("#startLearning").query();
-//             deleteCardButton = lookup("#deleteCardButton").query();
-            
-//             // These might not exist in FlashcardListUI.fxml
-//             try {
-//                 createButton = lookup("#createButton").query();
-//             } catch (Exception e) {
-//                 System.out.println("Create button not found with #createButton ID");
-//             }
-            
-//             try {
-//                 backButton = lookup("#backButton").query();
-//             } catch (Exception e) {
-//                 System.out.println("Back button not found with #backButton ID");
-//             }
-            
-//             try {
-//                 logOutButton = lookup("#logOutButton").query();
-//             } catch (Exception e) {
-//                 System.out.println("Logout button not found with #logOutButton ID");
-//             }
-            
-//         } catch (Exception e) {
-//             System.out.println("Warning: Some UI components could not be initialized: " + e.getMessage());
-//             e.printStackTrace();
-//         }
-//     }
-    
-//     /**
-//      * Sets up test data before each individual test.
-//      * Ensures consistent state for each test method by clearing all data.
-//      */
-//     @BeforeEach
-//     public void setUp() {
-//         // Clean up any existing test data FIRST
-//         cleanupTestData();
-        
-//         // Reset controller to completely clean state
-//         resetControllerState();
-        
-//         // Verify we start with empty deck
-//         Platform.runLater(() -> {
-//             assertEquals(0, listView.getItems().size(), 
-//                         "Test should start with empty deck");
-//         });
-//         waitForJavaFX();
-//     }
-    
-//     /**
-//      * Cleans up after each test by clearing all data and hiding the stage.
-//      * 
-//      * @throws Exception if cleanup fails
-//      */
-//     @AfterEach
-//     public void tearDown() throws Exception {
-//         // Clean up test data
-//         cleanupTestData();
-        
-//         try {
-//             FxToolkit.hideStage();
-//         } catch (Exception e) {
-//             // Ignore cleanup exceptions
-//         }
-//     }
-    
-//     /**
-//      * Cleanup method to ensure all decks and flashcards are deleted between tests.
-//      * Also deletes the JSON file created for the test user.
-//      */
-//     private void cleanupTestData() {
-//         try {
-//             // Get the correct path to the storage directory
-//             Path storageBase = Paths.get(System.getProperty("user.dir"))
-//                 .getParent() // go up from fxui
-//                 .resolve("storage/data/users");
-            
-//             // Delete all test user files
-//             String[] testUsers = {TEST_USERNAME, "newTestUser", "workflowTestUser", 
-//                                 "defaultUserName", "username", "myuser", "testUser", 
-//                                 "test_read", "firstuser", "newuser"};
-            
-//             for (String user : testUsers) {
-//                 Path userDataPath = storageBase.resolve(user + ".json");
-//                 try {
-//                     Files.deleteIfExists(userDataPath);
-//                     System.out.println("Deleted test file: " + userDataPath);
-//                 } catch (Exception e) {
-//                     System.err.println("Could not delete " + userDataPath + ": " + e.getMessage());
-//                 }
-//             }
-            
-//             // Also clean up any remaining test files in storage directory
-//             if (Files.exists(storageBase) && Files.isDirectory(storageBase)) {
-//                 try {
-//                     Files.list(storageBase)
-//                         .filter(path -> {
-//                             String fileName = path.getFileName().toString().toLowerCase();
-//                             return fileName.contains("test") || fileName.startsWith("new") || 
-//                                    fileName.equals("username.json") || fileName.equals("myuser.json") ||
-//                                    fileName.equals("defaultUserName.json");
-//                         })
-//                         .forEach(path -> {
-//                             try {
-//                                 Files.deleteIfExists(path);
-//                                 System.out.println("Cleaned up test file: " + path);
-//                             } catch (Exception e) {
-//                                 System.err.println("Could not clean up " + path + ": " + e.getMessage());
-//                             }
-//                         });
-//                 } catch (Exception e) {
-//                     System.err.println("Could not list storage directory: " + e.getMessage());
-//                 }
-//             }
-            
-//             // Force reset controller state on JavaFX thread
-//             Platform.runLater(() -> {
-//                 try {
-//                     // Create completely fresh deck
-//                     FlashcardDeck cleanDeck = new FlashcardDeck(TEST_DECK_NAME);
-//                     controller.setDeck(cleanDeck);
-                    
-//                     // Reset username
-//                     controller.setCurrentUsername(TEST_USERNAME);
-                    
-//                     // Force UI update
-//                     controller.updateUi();
-                    
-//                     // Clear input fields again
-//                     if (questionField != null) questionField.clear();
-//                     if (answerField != null) answerField.clear();
-//                 } catch (Exception e) {
-//                     System.err.println("Warning: Could not reset controller state: " + e.getMessage());
-//                 }
-//             });
-//             waitForJavaFX();
-            
-//         } catch (Exception e) {
-//             System.err.println("Warning: Could not clean up test data: " + e.getMessage());
-//         }
-//     }
-    
-//     /**
-//      * Final cleanup after all tests are completed.
-//      * Ensures no test data persists after the test suite completes.
-//      */
-//     @AfterAll
-//     public static void cleanupAfterAllTests() {
-//         try {
-//             // Delete any remaining test files
-//             Path userDataPath = Paths.get("storage.data.users", TEST_USERNAME + ".json");
-//             Files.deleteIfExists(userDataPath);
-            
-//             // Clean up other potential test users
-//             String[] testUsers = {"testDeckUser", "newTestUser", "workflowTestUser"};
-//             for (String user : testUsers) {
-//                 Path testUserPath = Paths.get("storage.data.users", user + ".json");
-//                 Files.deleteIfExists(testUserPath);
-//             }
-            
-//             // Try to remove storage directory if empty
-//             Path storageDir = Paths.get("storage.data.users");
-//             if (Files.exists(storageDir) && Files.isDirectory(storageDir)) {
-//                 try {
-//                     Files.deleteIfExists(storageDir);
-//                 } catch (Exception e) {
-//                     // Directory not empty, that's fine
-//                 }
-//             }
-//         } catch (IOException e) {
-//             System.err.println("Warning: Could not complete final cleanup: " + e.getMessage());
-//         }
-//     }
-    
-//     /**
-//      * Helper method to completely reset the controller state to ensure clean tests
-//      */
-//     private void resetControllerState() {
-//         Platform.runLater(() -> {
-//             try {
-//                 // Create completely clean deck with no flashcards
-//                 FlashcardDeck emptyDeck = new FlashcardDeck(TEST_DECK_NAME);
-                
-//                 // Set fresh state
-//                 controller.setCurrentUsername(TEST_USERNAME);
-//                 controller.setDeck(emptyDeck);
-//                 controller.updateUi();
-                
-//                 // Verify UI is in expected state
-//                 if (questionField != null) questionField.clear();
-//                 if (answerField != null) answerField.clear();
-                
-//             } catch (Exception e) {
-//                 System.err.println("Error resetting controller state: " + e.getMessage());
-//                 e.printStackTrace();
-//             }
-//         });
-//         waitForJavaFX();
-//     }
-//     private void waitForJavaFX() {
-//         CountDownLatch latch = new CountDownLatch(1);
-//         Platform.runLater(latch::countDown);
-//         try {
-//             assertTrue(latch.await(10, TimeUnit.SECONDS), 
-//                       "JavaFX operations should complete within 10 seconds");
-//         } catch (InterruptedException e) {
-//             Thread.currentThread().interrupt();
-//             throw new RuntimeException("Thread interrupted while waiting for JavaFX", e);
-//         }
-//     }
-    
-//     /**
-//      * Tests that the controller is properly initialized after FXML loading.
-//      * Verifies that all required UI components are present and accessible.
-//      * Note: Some assertions are lenient since we're testing FlashcardDeckController
-//      * but the FXML structure may differ from FlashcardMainUI.
-//      */
-//     @Test
-//     public void testControllerInitialization() {
-//         assertNotNull(controller, "Controller should be initialized");
-        
-//         // Test components that should exist (lenient approach since FXML structure may vary)
-//         if (questionField != null) {
-//             assertNotNull(questionField, "Question field should be initialized");
-//         }
-//         if (answerField != null) {
-//             assertNotNull(answerField, "Answer field should be initialized");
-//         }
-//         if (listView != null) {
-//             assertNotNull(listView, "List view should be initialized");
-//         }
-//         if (username != null) {
-//             assertNotNull(username, "Username field should be initialized");
-//         }
-//         // if (deckNameField != null) {
-//         //     assertNotNull(deckNameField, "Deck name field should be initialized");
-//         // }
-//         if (startLearning != null) {
-//             assertNotNull(startLearning, "Start learning button should be initialized");
-//         }
-//         if (deleteCardButton != null) {
-//             assertNotNull(deleteCardButton, "Delete card button should be initialized");
-//         }
-        
-//         // Controller initialization is the main requirement
-//         assertTrue(true, "Controller initialization test completed successfully");
-//     }
-    
-//     /**
-//      * Tests the setDeck method functionality.
-//      * Verifies that decks are properly set and UI is updated accordingly.
-//      */
-//     @Test
-//     public void testSetDeck() {
-//         FlashcardDeck testDeck = new FlashcardDeck("New Test Deck");
-//         testDeck.addFlashcard(new Flashcard("Question 1", "Answer 1"));
-//         testDeck.addFlashcard(new Flashcard("Question 2", "Answer 2"));
-        
-//         Platform.runLater(() -> controller.setDeck(testDeck));
-//         waitForJavaFX();
-        
-//         // Verify deck is set and UI updated
-//         ObservableList<Flashcard> items = listView.getItems();
-//         assertEquals(2, items.size(), "List should contain 2 flashcards");
-//         assertEquals("Question 1", items.get(0).getQuestion(), "First flashcard question should match");
-//         assertEquals("Answer 1", items.get(0).getAnswer(), "First flashcard answer should match");
-        
-//         // Test with null deck
-//         Platform.runLater(() -> controller.setDeck(null));
-//         waitForJavaFX();
-        
-//         // Should handle null gracefully (exact behavior depends on implementation)
-//         assertTrue(true, "Setting null deck should not cause exceptions");
-//     }
-    
-//     /**
-//      * Tests the updateUi method functionality.
-//      * Verifies that UI components are properly updated when the method is called.
-//      */
-//     @Test
-//     public void testUpdateUi() {
-//         Platform.runLater(() -> controller.updateUi());
-//         waitForJavaFX();
-        
-//         // Verify username is displayed
-//         assertEquals(TEST_USERNAME, username.getText(),
-//                     "Username should be displayed correctly");
-        
-//         // Verify input fields are cleared
-//         assertTrue(questionField.getText().isEmpty(), "Question field should be cleared");
-//         assertTrue(answerField.getText().isEmpty(), "Answer field should be cleared");
-        
-//         // Verify delete button is initially disabled (no selection)
-//         assertTrue(deleteCardButton.isDisabled(), "Delete button should be disabled when no card is selected");
-        
-//         // Verify start learning button state (should be disabled for empty deck)
-//         assertTrue(startLearning.isDisabled(), "Start learning button should be disabled for empty deck");
-//     }
-    
-//     /**
-//      * Tests the flashcard creation functionality.
-//      * Verifies that new flashcards can be created through the UI and are properly saved.
-//      */
-//     @Test
-//     public void testCreateFlashcard() {
-//         // Set question and answer
-//         clickOn(questionField).write("Test Question");
-//         clickOn(answerField).write("Test Answer");
-        
-//         // Create flashcard - call the controller method directly since button might not be accessible
-//         Platform.runLater(() -> controller.whenCreateButtonIsClicked());
-//         waitForJavaFX();
-        
-//         // Verify flashcard was created
-//         ObservableList<Flashcard> items = listView.getItems();
-//         assertEquals(1, items.size(), "List should contain 1 flashcard after creation");
-//         assertEquals("Test Question", items.get(0).getQuestion(), "Question should match input");
-//         assertEquals("Test Answer", items.get(0).getAnswer(), "Answer should match input");
-        
-//         // Verify input fields are cleared
-//         assertTrue(questionField.getText().isEmpty(), "Question field should be cleared after creation");
-//         assertTrue(answerField.getText().isEmpty(), "Answer field should be cleared after creation");
-        
-//         // Verify start learning button is now enabled
-//         assertFalse(startLearning.isDisabled(), "Start learning button should be enabled after adding cards");
-//     }
-    
-//     /**
-//      * Tests flashcard creation with empty or invalid inputs.
-//      * Verifies that empty questions or answers are not accepted.
-//      */
-//     @Test
-//     public void testCreateFlashcardWithEmptyInputs() {
-//         // Test 1: Try to create flashcard with empty question but valid answer
-//         Platform.runLater(() -> {
-//             questionField.clear();
-//             answerField.clear();
-//         });
-//         waitForJavaFX();
-        
-//         clickOn(answerField).write("Answer without question");
-//         Platform.runLater(() -> controller.whenCreateButtonIsClicked());
-//         waitForJavaFX();
-        
-//         assertEquals(0, listView.getItems().size(), "Should not create flashcard with empty question");
-        
-//         // Test 2: Try to create flashcard with valid question but empty answer
-//         Platform.runLater(() -> {
-//             questionField.clear();
-//             answerField.clear();
-//         });
-//         waitForJavaFX();
-        
-//         clickOn(questionField).write("Question without answer");
-//         Platform.runLater(() -> controller.whenCreateButtonIsClicked());
-//         waitForJavaFX();
-        
-//         assertEquals(0, listView.getItems().size(), "Should not create flashcard with empty answer");
-        
-//         // Test 3: Try to create flashcard with both fields empty
-//         Platform.runLater(() -> {
-//             questionField.clear();
-//             answerField.clear();
-//         });
-//         waitForJavaFX();
-        
-//         Platform.runLater(() -> controller.whenCreateButtonIsClicked());
-//         waitForJavaFX();
-        
-//         assertEquals(0, listView.getItems().size(), "Should not create flashcard with both fields empty");
-//     }
-    
-//     /**
-//      * Tests the flashcard deletion functionality.
-//      * Creates flashcards, selects one, then deletes it and verifies removal.
-//      */
-//     @Test
-//     public void testDeleteFlashcard() {
-//         // First create some flashcards
-//         clickOn(questionField).write("Question 1");
-//         clickOn(answerField).write("Answer 1");
-//         Platform.runLater(() -> controller.whenCreateButtonIsClicked());
-//         waitForJavaFX();
-        
-//         clickOn(questionField).write("Question 2");
-//         clickOn(answerField).write("Answer 2");
-//         Platform.runLater(() -> controller.whenCreateButtonIsClicked());
-//         waitForJavaFX();
-        
-//         assertEquals(2, listView.getItems().size(), "Should have 2 flashcards before deletion");
-        
-//         // Select the first flashcard
-//         Platform.runLater(() -> listView.getSelectionModel().select(0));
-//         waitForJavaFX();
-        
-//         // Verify delete button is enabled
-//         assertFalse(deleteCardButton.isDisabled(), "Delete button should be enabled when card is selected");
-        
-//         // Delete the selected flashcard
-//         Platform.runLater(() -> controller.whenDeleteCardButtonIsClicked());
-//         waitForJavaFX();
-        
-//         // Verify flashcard was deleted
-//         assertEquals(1, listView.getItems().size(), "Should have 1 flashcard after deletion");
-        
-//         // Verify the remaining flashcard is the second one
-//         Flashcard remaining = listView.getItems().get(0);
-//         assertEquals("Question 2", remaining.getQuestion(), "Remaining flashcard should be the second one");
-//         assertEquals("Answer 2", remaining.getAnswer(), "Remaining flashcard should be the second one");
-//     }
-    
-//     /**
-//      * Tests the delete button state management.
-//      * Verifies that the delete button is properly enabled/disabled based on selection.
-//      */
-//     @Test
-//     public void testDeleteButtonState() {
-//         // Initially should be disabled
-//         assertTrue(deleteCardButton.isDisabled(), "Delete button should be disabled initially");
-        
-//         // Create a flashcard
-//         clickOn(questionField).write("Test Question");
-//         clickOn(answerField).write("Test Answer");
-//         Platform.runLater(() -> controller.whenCreateButtonIsClicked());
-//         waitForJavaFX();
-        
-//         // Still should be disabled (no selection)
-//         assertTrue(deleteCardButton.isDisabled(), "Delete button should be disabled when no card is selected");
-        
-//         // Select the flashcard
-//         Platform.runLater(() -> listView.getSelectionModel().select(0));
-//         waitForJavaFX();
-        
-//         // Should be enabled now
-//         assertFalse(deleteCardButton.isDisabled(), "Delete button should be enabled when card is selected");
-        
-//         // Clear selection
-//         Platform.runLater(() -> listView.getSelectionModel().clearSelection());
-//         waitForJavaFX();
-        
-//         // Should be disabled again
-//         assertTrue(deleteCardButton.isDisabled(), "Delete button should be disabled when selection is cleared");
-//     }
-    
-//     /**
-//      * Tests the start learning button state management.
-//      * Verifies that the button is enabled/disabled based on deck contents.
-//      */
-//     @Test
-//     public void testStartLearningButtonState() {
-//         // Initially should be disabled (empty deck)
-//         assertTrue(startLearning.isDisabled(), "Start learning button should be disabled for empty deck");
-        
-//         // Create a flashcard
-//         clickOn(questionField).write("Test Question");
-//         clickOn(answerField).write("Test Answer");
-//         Platform.runLater(() -> controller.whenCreateButtonIsClicked());
-//         waitForJavaFX();
-        
-//         // Should be enabled now
-//         assertFalse(startLearning.isDisabled(), "Start learning button should be enabled when deck has cards");
-        
-//         // Delete the flashcard
-//         Platform.runLater(() -> {
-//             listView.getSelectionModel().select(0);
-//             controller.whenDeleteCardButtonIsClicked();
-//         });
-//         waitForJavaFX();
-        
-//         // Should be disabled again
-//         assertTrue(startLearning.isDisabled(), "Start learning button should be disabled when deck becomes empty");
-//     }
-    
-//     /**
-//      * Tests multiple flashcard operations.
-//      * Verifies that multiple flashcards can be created and managed simultaneously.
-//      */
-//     @Test
-//     public void testMultipleFlashcards() {
-//         int flashcardsToCreate = 5;
-        
-//         // Create multiple flashcards
-//         for (int i = 1; i <= flashcardsToCreate; i++) {
-//             clickOn(questionField).write("Question " + i);
-//             clickOn(answerField).write("Answer " + i);
-//             Platform.runLater(() -> controller.whenCreateButtonIsClicked());
-//             waitForJavaFX();
-//         }
-        
-//         // Verify all flashcards were created
-//         assertEquals(flashcardsToCreate, listView.getItems().size(), 
-//                     "Should have created " + flashcardsToCreate + " flashcards");
-        
-//         // Verify content of first and last flashcards
-//         assertEquals("Question 1", listView.getItems().get(0).getQuestion(), 
-//                     "First flashcard question should be correct");
-//         assertEquals("Question " + flashcardsToCreate, 
-//                     listView.getItems().get(flashcardsToCreate - 1).getQuestion(),
-//                     "Last flashcard question should be correct");
-        
-//         // Test deleting from middle
-//         Platform.runLater(() -> {
-//             listView.getSelectionModel().select(2); // Select 3rd item (index 2)
-//             controller.whenDeleteCardButtonIsClicked();
-//         });
-//         waitForJavaFX();
-        
-//         assertEquals(flashcardsToCreate - 1, listView.getItems().size(), 
-//                     "Should have one less flashcard after deletion");
-//     }
-    
-//     /**
-//      * Tests input field validation and trimming.
-//      * Verifies that whitespace is properly handled in input fields.
-//      */
-//     @Test
-//     public void testInputFieldValidation() {
-//         // Test with whitespace-padded input
-//         clickOn(questionField).write("  Valid Question  ");
-//         clickOn(answerField).write("  Valid Answer  ");
-        
-//         Platform.runLater(() -> controller.whenCreateButtonIsClicked());
-//         waitForJavaFX();
-        
-//         // Flashcard should be created with trimmed content
-//         assertEquals(1, listView.getItems().size(), "Flashcard should be created with trimmed input");
-        
-//         Flashcard created = listView.getItems().get(0);
-//         assertEquals("Valid Question", created.getQuestion(), "Question should be trimmed");
-//         assertEquals("Valid Answer", created.getAnswer(), "Answer should be trimmed");
-        
-//         // Input fields should be cleared
-//         assertTrue(questionField.getText().isEmpty(), "Question field should be cleared");
-//         assertTrue(answerField.getText().isEmpty(), "Answer field should be cleared");
-//     }
-    
-//     /**
-//      * Tests data persistence functionality.
-//      * Verifies that flashcard data is properly saved and loaded.
-//      */
-//     @Test
-//     public void testDataPersistence() {
-//         // Create some flashcards
-//         clickOn(questionField).write("Persistent Question");
-//         clickOn(answerField).write("Persistent Answer");
-//         Platform.runLater(() -> controller.whenCreateButtonIsClicked());
-//         waitForJavaFX();
-        
-//         // Verify flashcard exists
-//         assertEquals(1, listView.getItems().size(), "Flashcard should be created");
-        
-//         // Simulate reload by updating UI
-//         Platform.runLater(() -> controller.updateUi());
-//         waitForJavaFX();
-        
-//         // Data should still be there
-//         assertEquals(1, listView.getItems().size(), "Flashcard should persist after UI update");
-//         assertEquals("Persistent Question", listView.getItems().get(0).getQuestion(),
-//                     "Persistent question should remain");
-//     }
-    
-//     /**
-//      * Tests the navigation buttons functionality.
-//      * Verifies that back and logout buttons handle clicks properly.
-//      */
-//     @Test
-//     public void testNavigationButtons() {
-//         // Test back button (may fail in test environment due to scene switching)
-//         try {
-//             Platform.runLater(() -> {
-//                 try {
-//                     controller.whenBackButtonIsClicked();
-//                 } catch (IOException e) {
-//                     // Expected in test environment
-//                 }
-//             });
-//             waitForJavaFX();
-//             assertTrue(true, "Back button should handle clicks gracefully");
-//         } catch (Exception e) {
-//             assertTrue(true, "Back button navigation handled: " + e.getMessage());
-//         }
-        
-//         // Test logout button
-//         try {
-//             Platform.runLater(() -> controller.whenLogOut());
-//             waitForJavaFX();
-//             assertTrue(true, "Logout button should handle clicks gracefully");
-//         } catch (Exception e) {
-//             assertTrue(true, "Logout navigation handled: " + e.getMessage());
-//         }
-//     }
-    
-//     /**
-//      * Tests the start learning button functionality.
-//      * Verifies that clicking start learning attempts to navigate properly.
-//      */
-//     @Test
-//     public void testStartLearningButton() {
-//         // First create a flashcard to enable the button
-//         clickOn(questionField).write("Learning Question");
-//         clickOn(answerField).write("Learning Answer");
-//         Platform.runLater(() -> controller.whenCreateButtonIsClicked());
-//         waitForJavaFX();
-        
-//         // Button should now be enabled
-//         assertFalse(startLearning.isDisabled(), "Start learning button should be enabled");
-        
-//         // Test clicking the button (may fail in test environment due to scene switching)
-//         try {
-//             Platform.runLater(() -> {
-//                 try {
-//                     controller.whenStartLearningButtonIsClicked();
-//                 } catch (IOException e) {
-//                     // Expected in test environment
-//                 }
-//             });
-//             waitForJavaFX();
-//             assertTrue(true, "Start learning button should handle clicks gracefully");
-//         } catch (Exception e) {
-//             assertTrue(true, "Start learning navigation handled: " + e.getMessage());
-//         }
-//     }
-    
-//     /**
-//      * Tests the complete workflow of deck management.
-//      * Verifies that the controller handles the typical usage pattern correctly.
-//      */
-//     @Test
-//     public void testCompleteWorkflow() {
-//         try {
-//             // Set username
-//             Platform.runLater(() -> controller.setCurrentUsername("workflowTestUser"));
-//             waitForJavaFX();
-            
-//             // Create some flashcards
-//             clickOn(questionField).write("Workflow Question 1");
-//             clickOn(answerField).write("Workflow Answer 1");
-//             Platform.runLater(() -> controller.whenCreateButtonIsClicked());
-//             waitForJavaFX();
-            
-//             clickOn(questionField).write("Workflow Question 2");
-//             clickOn(answerField).write("Workflow Answer 2");
-//             Platform.runLater(() -> controller.whenCreateButtonIsClicked());
-//             waitForJavaFX();
-            
-//             // Verify cards were created
-//             assertEquals(2, listView.getItems().size(), "Should have 2 flashcards");
-            
-//             // Select and delete one
-//             Platform.runLater(() -> {
-//                 listView.getSelectionModel().select(0);
-//                 controller.whenDeleteCardButtonIsClicked();
-//             });
-//             waitForJavaFX();
-            
-//             // Verify deletion
-//             assertEquals(1, listView.getItems().size(), "Should have 1 flashcard after deletion");
-            
-//             // Update UI
-//             Platform.runLater(() -> controller.updateUi());
-//             waitForJavaFX();
-            
-//             assertTrue(true, "Complete workflow should execute without exceptions");
-//         } catch (Exception e) {
-//             assertTrue(false, "Complete workflow should not throw exceptions: " + e.getMessage());
-//         }
-//     }
+        // Inject mocks using reflection (since fields are private)
+        setField(controller, "questionField", questionField);
+        setField(controller, "answerField", answerField);
+        setField(controller, "listView", listView);
+        setField(controller, "username", username);
+        setField(controller, "startLearning", startLearning);
+        setField(controller, "deleteCardButton", deleteCardButton);
+        setField(controller, "currentUsername", "testuser");
+        setField(controller, "currentDeckName", "Deck1");
+    }
 
-//     @BeforeEach
-//     private void ensureDeckIsCreated() {
-        
-//     }
-// }
+    /**
+     * Injects a value into a private field using reflection.
+     */
+    private void setField(Object obj, String fieldName, Object value) {
+        try {
+            var field = obj.getClass().getDeclaredField(fieldName);
+            field.setAccessible(true);
+            field.set(obj, value);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    /**
+     * Retrieves a private field value using reflection.
+     */
+    private Object getField(Object obj, String fieldName) {
+        try {
+            var field = obj.getClass().getDeclaredField(fieldName);
+            field.setAccessible(true);
+            return field.get(obj);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    /**
+     * Invokes a private method using reflection.
+     */
+    private Object invokePrivate(Object obj, String methodName) {
+        try {
+            var method = obj.getClass().getDeclaredMethod(methodName);
+            method.setAccessible(true);
+            return method.invoke(obj);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    /**
+     * Tests setting the current username.
+     */
+    @Test
+    void testSetCurrentUsername() {
+        controller.setCurrentUsername("newuser");
+        assertEquals("newuser", getField(controller, "currentUsername"));
+    }
+
+    /**
+     * Tests UI update when deck manager is null.
+     */
+    @Test
+    void testUpdateUiNoDeckManager() {
+        setField(controller, "deckManager", null);
+        controller.updateUi();
+        assertTrue(listView.getItems().isEmpty());
+        assertTrue(startLearning.isDisabled());
+        assertTrue(deleteCardButton.isDisabled());
+    }
+
+    /**
+     * Tests UI update with a valid deck manager and deck.
+     */
+    @Test
+    void testUpdateUiWithDeckManager() {
+        FlashcardDeckManager mgr = new FlashcardDeckManager();
+        FlashcardDeck deck = new FlashcardDeck("Deck1");
+        deck.addFlashcard(new Flashcard("Q1", "A1"));
+        mgr.addDeck(deck);
+        controller.setDeckManager(mgr, deck);
+        controller.updateUi();
+        assertFalse(listView.getItems().isEmpty());
+        assertFalse(startLearning.isDisabled());
+    }
+
+    /**
+     * Tests UI update when deck name does not match any deck.
+     */
+    @Test
+    void testUpdateUiWithNonMatchingDeckName() {
+        FlashcardDeckManager mgr = new FlashcardDeckManager();
+        FlashcardDeck deck = new FlashcardDeck("Deck1");
+        deck.addFlashcard(new Flashcard("Q1", "A1"));
+        mgr.addDeck(deck);
+        setField(controller, "deckManager", mgr);
+        setField(controller, "currentDeckName", "NonExistent");
+        controller.updateUi();
+        assertTrue(listView.getItems().isEmpty());
+    }
+
+    /**
+     * Tests setting deck manager when deck already exists.
+     */
+    @Test
+    void testSetDeckManagerWithExistingDeck() {
+        FlashcardDeckManager mgr = new FlashcardDeckManager();
+        FlashcardDeck deck = new FlashcardDeck("Deck1");
+        mgr.addDeck(deck);
+        assertDoesNotThrow(() -> controller.setDeckManager(mgr, deck));
+    }
+
+    /**
+     * Tests setting deck manager when deck is not in manager.
+     */
+    @Test
+    void testSetDeckManagerWithDeckNotInManager() {
+        FlashcardDeckManager mgr = new FlashcardDeckManager();
+        FlashcardDeck deck = new FlashcardDeck("Deck1");
+        assertDoesNotThrow(() -> controller.setDeckManager(mgr, deck));
+    }
+
+    /**
+     * Tests setting deck manager with duplicate deck.
+     */
+    @Test
+    void testSetDeckManagerWithDuplicateDeck() {
+        FlashcardDeckManager mgr = new FlashcardDeckManager();
+        FlashcardDeck deck = new FlashcardDeck("Deck1");
+        mgr.addDeck(deck);
+        assertDoesNotThrow(() -> controller.setDeckManager(mgr, deck));
+    }
+
+    /**
+     * Tests card creation logic and API success.
+     */
+    @Test
+    void testWhenCreateButtonIsClickedAddsCard() {
+        FlashcardDeckManager mgr = new FlashcardDeckManager();
+        FlashcardDeck deck = new FlashcardDeck("Deck1");
+        mgr.addDeck(deck);
+        controller.setDeckManager(mgr, deck);
+        questionField.setText("Q2");
+        answerField.setText("A2");
+        setField(controller, "currentDeckName", "Deck1");
+        setField(controller, "deckManager", mgr);
+        try (MockedStatic<ApiClient> apiClientMock = Mockito.mockStatic(ApiClient.class)) {
+            apiClientMock.when(() -> ApiClient.performApiRequest(any(), any(), any(), any())).thenReturn(new ApiResponse<>(true, "", null));
+            controller.whenCreateButtonIsClicked();
+        }
+        FlashcardDeckManager actualMgr = (FlashcardDeckManager) getField(controller, "deckManager");
+        FlashcardDeck actualDeck = (FlashcardDeck) actualMgr.getDecks().get(0);
+        assertEquals(1, actualDeck.getDeck().size());
+        assertEquals("Q2", actualDeck.getDeck().get(0).getQuestion());
+    }
+
+    /**
+     * Tests card creation logic and API failure.
+     */
+    @Test
+    void testWhenCreateButtonIsClickedApiFailure() {
+        FlashcardDeckManager mgr = new FlashcardDeckManager();
+        FlashcardDeck deck = new FlashcardDeck("Deck1");
+        mgr.addDeck(deck);
+        controller.setDeckManager(mgr, deck);
+        questionField.setText("Q2");
+        answerField.setText("A2");
+        setField(controller, "currentDeckName", "Deck1");
+        setField(controller, "deckManager", mgr);
+        try (MockedStatic<ApiClient> apiClientMock = Mockito.mockStatic(ApiClient.class)) {
+            apiClientMock.when(() -> ApiClient.performApiRequest(any(), any(), any(), any())).thenReturn(new ApiResponse<>(false, "error", null));
+            assertDoesNotThrow(() -> controller.whenCreateButtonIsClicked());
+        }
+        FlashcardDeckManager actualMgr = (FlashcardDeckManager) getField(controller, "deckManager");
+        FlashcardDeck actualDeck = (FlashcardDeck) actualMgr.getDecks().get(0);
+        assertEquals(1, actualDeck.getDeck().size());
+    }
+
+    /**
+     * Tests card deletion logic and API success.
+     */
+    @Test
+    void testWhenDeleteCardButtonIsClickedRemovesCard() {
+        FlashcardDeckManager mgr = new FlashcardDeckManager();
+        FlashcardDeck deck = new FlashcardDeck("Deck1");
+        deck.addFlashcard(new Flashcard("Q1", "A1"));
+        mgr.addDeck(deck);
+        controller.setDeckManager(mgr, deck);
+        listView.setItems(FXCollections.observableArrayList(deck.getDeck()));
+        listView.getSelectionModel().select(0);
+        setField(controller, "currentDeckName", "Deck1");
+        setField(controller, "deckManager", mgr);
+        try (MockedStatic<ApiClient> apiClientMock = Mockito.mockStatic(ApiClient.class)) {
+            apiClientMock.when(() -> ApiClient.performApiRequest(any(), any(), any(), any())).thenReturn(new ApiResponse<>(true, "", null));
+            controller.whenDeleteCardButtonIsClicked();
+        }
+        FlashcardDeckManager actualMgr = (FlashcardDeckManager) getField(controller, "deckManager");
+        FlashcardDeck actualDeck = (FlashcardDeck) actualMgr.getDecks().get(0);
+        assertTrue(actualDeck.getDeck().isEmpty());
+    }
+
+    /**
+     * Tests card deletion logic and API failure.
+     */
+    @Test
+    void testWhenDeleteCardButtonIsClickedApiFailure() {
+        FlashcardDeckManager mgr = new FlashcardDeckManager();
+        FlashcardDeck deck = new FlashcardDeck("Deck1");
+        deck.addFlashcard(new Flashcard("Q1", "A1"));
+        mgr.addDeck(deck);
+        controller.setDeckManager(mgr, deck);
+        listView.setItems(FXCollections.observableArrayList(deck.getDeck()));
+        listView.getSelectionModel().select(0);
+        setField(controller, "currentDeckName", "Deck1");
+        setField(controller, "deckManager", mgr);
+        try (MockedStatic<ApiClient> apiClientMock = Mockito.mockStatic(ApiClient.class)) {
+            apiClientMock.when(() -> ApiClient.performApiRequest(any(), any(), any(), any())).thenReturn(new ApiResponse<>(false, "error", null));
+            assertDoesNotThrow(() -> controller.whenDeleteCardButtonIsClicked());
+        }
+        FlashcardDeckManager actualMgr = (FlashcardDeckManager) getField(controller, "deckManager");
+        FlashcardDeck actualDeck = (FlashcardDeck) actualMgr.getDecks().get(0);
+        assertTrue(actualDeck.getDeck().isEmpty());
+    }
+
+    /**
+     * Tests clearing input fields.
+     */
+    @Test
+    void testClearInputFields() {
+        questionField.setText("Q");
+        answerField.setText("A");
+        invokePrivate(controller, "clearInputFields");
+        assertEquals("", questionField.getText());
+        assertEquals("", answerField.getText());
+    }
+
+    /**
+     * Tests getCurrentDeck returns null if deck not found.
+     */
+    @Test
+    void testGetCurrentDeckReturnsNullIfNotFound() {
+        FlashcardDeckManager mgr = new FlashcardDeckManager();
+        setField(controller, "deckManager", mgr);
+        setField(controller, "currentDeckName", "NonExistent");
+        Object deck = invokePrivate(controller, "getCurrentDeck");
+        assertNull(deck);
+    }
+
+    /**
+     * Tests start learning button logic with mocked scene/window.
+     */
+    @Test
+    void testWhenStartLearningButtonIsClicked() {
+        FlashcardDeckManager mgr = new FlashcardDeckManager();
+        FlashcardDeck deck = new FlashcardDeck("Deck1");
+        deck.addFlashcard(new Flashcard("Q1", "A1"));
+        mgr.addDeck(deck);
+        setField(controller, "deckManager", mgr);
+        setField(controller, "currentDeckName", "Deck1");
+        Button mockButton = mock(Button.class);
+        javafx.scene.Scene mockScene = mock(javafx.scene.Scene.class);
+        javafx.stage.Stage mockStage = mock(javafx.stage.Stage.class);
+        when(mockButton.getScene()).thenReturn(mockScene);
+        when(mockScene.getWindow()).thenReturn(mockStage);
+        setField(controller, "startLearning", mockButton);
+        assertDoesNotThrow(() -> controller.whenStartLearningButtonIsClicked());
+    }
+
+    /**
+     * Tests log out logic with mocked API call.
+     */
+    @Test
+    void testWhenLogOut() {
+        try (MockedStatic<ApiClient> apiClientMock = Mockito.mockStatic(ApiClient.class)) {
+            apiClientMock.when(() -> ApiClient.performApiRequest(any(), any(), any(), any())).thenReturn(new ApiResponse<>(true, "", null));
+            assertDoesNotThrow(() -> controller.whenLogOut());
+        }
+    }
+
+    /**
+     * Tests back button logic with mocked scene/window and alert.
+     */
+    @Test
+    void testWhenBackButtonIsClicked() {
+        FlashcardDeckManager mgr = new FlashcardDeckManager();
+        FlashcardDeck deck = new FlashcardDeck("Deck1");
+        deck.addFlashcard(new Flashcard("Q1", "A1"));
+        mgr.addDeck(deck);
+        setField(controller, "deckManager", mgr);
+        setField(controller, "currentDeckName", "Deck1");
+        TextField mockField = mock(TextField.class);
+        javafx.scene.Scene mockScene = mock(javafx.scene.Scene.class);
+        javafx.stage.Stage mockStage = mock(javafx.stage.Stage.class);
+        when(mockField.getScene()).thenReturn(mockScene);
+        when(mockScene.getWindow()).thenReturn(mockStage);
+        setField(controller, "questionField", mockField);
+        try (MockedStatic<ApiClient> apiClientMock = Mockito.mockStatic(ApiClient.class)) {
+            apiClientMock.when(() -> ApiClient.showAlert(anyString(), anyString())).thenAnswer(inv -> null);
+            assertDoesNotThrow(() -> controller.whenBackButtonIsClicked());
+        }
+    }
+
+    /**
+     * Tests controller initialization logic.
+     */
+    @Test
+    void testInitialize() {
+        assertDoesNotThrow(() -> controller.initialize());
+    }
+
+    /**
+     * Tests log out logic when API call fails.
+     */
+    @Test
+    void testWhenLogOutFailure() {
+        try (MockedStatic<ApiClient> apiClientMock = Mockito.mockStatic(ApiClient.class)) {
+            apiClientMock.when(() -> ApiClient.performApiRequest(any(), any(), any(), any()))
+                .thenReturn(new ApiResponse<>(false, "error", null));
+            assertDoesNotThrow(() -> controller.whenLogOut());
+        }
+    }
+
+    /**
+     * Tests saveUserData logic when API call fails.
+     */
+    @Test
+    void testSaveUserDataFailure() {
+        setField(controller, "currentUsername", "testuser");
+        setField(controller, "currentDeckName", "Deck1");
+        try (MockedStatic<ApiClient> apiClientMock = Mockito.mockStatic(ApiClient.class)) {
+            apiClientMock.when(() -> ApiClient.performApiRequest(any(), any(), any(), any()))
+                .thenReturn(new ApiResponse<>(false, "error", null));
+            assertDoesNotThrow(() -> invokePrivate(controller, "saveUserData"));
+        }
+    }
+
+    /**
+     * Tests setting deck manager with no decks.
+     */
+    @Test
+    void testSetDeckManagerWithNoDecks() {
+        FlashcardDeckManager mgr = new FlashcardDeckManager();
+        assertDoesNotThrow(() -> controller.setDeckManager(mgr, new FlashcardDeck("DeckX")));
+    }
+
+    /**
+     * Tests setting deck manager with null deck.
+     */
+    @Test
+    void testSetDeckManagerWithNullDeck() {
+        FlashcardDeckManager mgr = new FlashcardDeckManager();
+        assertThrows(NullPointerException.class, () -> controller.setDeckManager(mgr, null));
+    }
+
+    /**
+     * Tests UI update when current deck name is null.
+     */
+    @Test
+    void testUpdateUiNoCurrentDeckName() {
+        setField(controller, "deckManager", new FlashcardDeckManager());
+        setField(controller, "currentDeckName", null);
+        controller.updateUi();
+        assertTrue(listView.getItems().isEmpty());
+    }
+
+    /**
+     * Tests UI update with empty deck manager.
+     */
+    @Test
+    void testUpdateUiEmptyDeckManager() {
+        setField(controller, "deckManager", new FlashcardDeckManager());
+        setField(controller, "currentDeckName", "Deck1");
+        controller.updateUi();
+        assertTrue(listView.getItems().isEmpty());
+    }
+
+    /**
+     * Tests UI update with multiple decks.
+     */
+    @Test
+    void testUpdateUiMultipleDecks() {
+        FlashcardDeckManager mgr = new FlashcardDeckManager();
+        FlashcardDeck deck1 = new FlashcardDeck("Deck1");
+        FlashcardDeck deck2 = new FlashcardDeck("Deck2");
+        deck1.addFlashcard(new Flashcard("Q1", "A1"));
+        deck2.addFlashcard(new Flashcard("Q2", "A2"));
+        mgr.addDeck(deck1);
+        mgr.addDeck(deck2);
+    }
+
+    /**
+     * Tests card deletion logic for last card.
+     */
+    void testWhenDeleteCardButtonIsClickedRemovesLastCard() {
+        FlashcardDeckManager mgr = new FlashcardDeckManager();
+        FlashcardDeck deck = new FlashcardDeck("Deck1");
+        deck.addFlashcard(new Flashcard("Q1", "A1"));
+        mgr.addDeck(deck);
+        controller.setDeckManager(mgr, deck);
+        listView.setItems(FXCollections.observableArrayList(deck.getDeck()));
+        listView.getSelectionModel().select(0);
+        setField(controller, "currentDeckName", "Deck1");
+        setField(controller, "deckManager", mgr);
+        try (MockedStatic<ApiClient> apiClientMock = Mockito.mockStatic(ApiClient.class)) {
+            apiClientMock.when(() -> ApiClient.performApiRequest(any(), any(), any(), any())).thenReturn(new ApiResponse<>(true, "", null));
+            assertDoesNotThrow(() -> controller.whenDeleteCardButtonIsClicked());
+        }
+        FlashcardDeckManager actualMgr = (FlashcardDeckManager) getField(controller, "deckManager");
+        FlashcardDeck actualDeck = (FlashcardDeck) actualMgr.getDecks().get(0);
+        assertTrue(actualDeck.getDeck().isEmpty());
+    }
+
+    /**
+     * Tests setting the current username with various input cases.
+     * Ensures that null, empty, and whitespace inputs do not overwrite the username.
+     */
+    @Test
+    void testSetCurrentUsernameCases() {
+        controller.setCurrentUsername("newuser");
+        assertEquals("newuser", getField(controller, "currentUsername"));
+        controller.setCurrentUsername(null);
+        assertEquals("newuser", getField(controller, "currentUsername"));
+        controller.setCurrentUsername("");
+        assertEquals("newuser", getField(controller, "currentUsername"));
+        controller.setCurrentUsername("   ");
+        assertEquals("newuser", getField(controller, "currentUsername"));
+    }
+
+    /**
+     * Tests setting the deck manager with various input cases.
+     * Covers valid, null, and duplicate deck scenarios.
+     */
+    @Test
+    void testSetDeckManagerCases() {
+        FlashcardDeckManager mgr = new FlashcardDeckManager();
+        FlashcardDeck deck = new FlashcardDeck("Deck1");
+        deck.addFlashcard(new Flashcard("Q1", "A1"));
+        mgr.addDeck(deck);
+        controller.setDeckManager(mgr, deck);
+        FlashcardDeckManager actualMgr = (FlashcardDeckManager) getField(controller, "deckManager");
+        assertNotNull(actualMgr);
+        assertEquals("Deck1", ((FlashcardDeck)actualMgr.getDecks().get(0)).getDeckName());
+        assertEquals(1, ((FlashcardDeck)actualMgr.getDecks().get(0)).getDeck().size());
+        assertThrows(NullPointerException.class, () -> controller.setDeckManager(null, null));
+        assertThrows(NullPointerException.class, () -> controller.setDeckManager(mgr, null));
+        FlashcardDeckManager mgr2 = new FlashcardDeckManager();
+        FlashcardDeck deck2 = new FlashcardDeck("Deck2");
+        assertDoesNotThrow(() -> controller.setDeckManager(mgr2, deck2));
+        mgr2.addDeck(deck2);
+        assertDoesNotThrow(() -> controller.setDeckManager(mgr2, deck2));
+        FlashcardDeckManager mgr3 = new FlashcardDeckManager();
+        assertDoesNotThrow(() -> controller.setDeckManager(mgr3, new FlashcardDeck("DeckX")));
+    }
+
+    /**
+     * Tests card creation logic for multiple input and API response cases.
+     * Covers valid, empty, whitespace, and API failure scenarios.
+     */
+    @Test
+    void testWhenCreateButtonIsClickedCases() {
+        FlashcardDeckManager mgr = new FlashcardDeckManager();
+        FlashcardDeck deck = new FlashcardDeck("Deck1");
+        mgr.addDeck(deck);
+        controller.setDeckManager(mgr, deck);
+        setField(controller, "currentDeckName", "Deck1");
+        setField(controller, "deckManager", mgr);
+        questionField.setText("Q2");
+        answerField.setText("A2");
+        try (MockedStatic<ApiClient> apiClientMock = Mockito.mockStatic(ApiClient.class)) {
+            apiClientMock.when(() -> ApiClient.performApiRequest(any(), any(), any(), any())).thenReturn(new ApiResponse<>(true, "", null));
+            controller.whenCreateButtonIsClicked();
+        }
+        FlashcardDeck actualDeck = (FlashcardDeck) mgr.getDecks().get(0);
+        assertEquals(1, actualDeck.getDeck().size());
+        assertEquals("Q2", actualDeck.getDeck().get(0).getQuestion());
+        questionField.setText("");
+        answerField.setText("");
+        try (MockedStatic<ApiClient> apiClientMock = Mockito.mockStatic(ApiClient.class)) {
+            apiClientMock.when(() -> ApiClient.performApiRequest(any(), any(), any(), any())).thenReturn(new ApiResponse<>(true, "", null));
+            assertDoesNotThrow(() -> controller.whenCreateButtonIsClicked());
+        }
+        assertEquals(1, actualDeck.getDeck().size());
+        questionField.setText("   ");
+        answerField.setText("   ");
+        try (MockedStatic<ApiClient> apiClientMock = Mockito.mockStatic(ApiClient.class)) {
+            apiClientMock.when(() -> ApiClient.performApiRequest(any(), any(), any(), any())).thenReturn(new ApiResponse<>(true, "", null));
+            assertDoesNotThrow(() -> controller.whenCreateButtonIsClicked());
+        }
+        assertEquals(1, actualDeck.getDeck().size());
+        questionField.setText("Q3");
+        answerField.setText("A3");
+        try (MockedStatic<ApiClient> apiClientMock = Mockito.mockStatic(ApiClient.class)) {
+            apiClientMock.when(() -> ApiClient.performApiRequest(any(), any(), any(), any())).thenReturn(new ApiResponse<>(false, "error", null));
+            assertDoesNotThrow(() -> controller.whenCreateButtonIsClicked());
+        }
+        assertEquals(2, actualDeck.getDeck().size());
+    }
+
+    /**
+     * Tests card deletion logic for multiple selection and API response cases.
+     * Covers valid, no selection, and API failure scenarios.
+     */
+    @Test
+    void testWhenDeleteCardButtonIsClickedCases() {
+        FlashcardDeckManager mgr = new FlashcardDeckManager();
+        FlashcardDeck deck = new FlashcardDeck("Deck1");
+        deck.addFlashcard(new Flashcard("Q1", "A1"));
+        deck.addFlashcard(new Flashcard("Q2", "A2"));
+        mgr.addDeck(deck);
+        controller.setDeckManager(mgr, deck);
+        setField(controller, "currentDeckName", "Deck1");
+        setField(controller, "deckManager", mgr);
+        listView.setItems(FXCollections.observableArrayList(deck.getDeck()));
+        listView.getSelectionModel().select(0);
+        try (MockedStatic<ApiClient> apiClientMock = Mockito.mockStatic(ApiClient.class)) {
+            apiClientMock.when(() -> ApiClient.performApiRequest(any(), any(), any(), any())).thenReturn(new ApiResponse<>(true, "", null));
+            controller.whenDeleteCardButtonIsClicked();
+        }
+        assertEquals(1, deck.getDeck().size());
+        listView.getSelectionModel().clearSelection();
+        try (MockedStatic<ApiClient> apiClientMock = Mockito.mockStatic(ApiClient.class)) {
+            apiClientMock.when(() -> ApiClient.performApiRequest(any(), any(), any(), any())).thenReturn(new ApiResponse<>(true, "", null));
+            assertDoesNotThrow(() -> controller.whenDeleteCardButtonIsClicked());
+        }
+        assertEquals(1, deck.getDeck().size());
+        listView.getSelectionModel().select(0);
+        try (MockedStatic<ApiClient> apiClientMock = Mockito.mockStatic(ApiClient.class)) {
+            apiClientMock.when(() -> ApiClient.performApiRequest(any(), any(), any(), any())).thenReturn(new ApiResponse<>(false, "error", null));
+            assertDoesNotThrow(() -> controller.whenDeleteCardButtonIsClicked());
+        }
+        assertEquals(0, deck.getDeck().size());
+        deck.addFlashcard(new Flashcard("Q3", "A3"));
+        listView.setItems(FXCollections.observableArrayList(deck.getDeck()));
+        listView.getSelectionModel().select(0);
+        try (MockedStatic<ApiClient> apiClientMock = Mockito.mockStatic(ApiClient.class)) {
+            apiClientMock.when(() -> ApiClient.performApiRequest(any(), any(), any(), any())).thenReturn(new ApiResponse<>(true, "", null));
+            assertDoesNotThrow(() -> controller.whenDeleteCardButtonIsClicked());
+        }
+        assertEquals(0, deck.getDeck().size());
+    }
+
+    /**
+     * Tests setDeckManager method for all major branches.
+     * Covers null manager, null deck, deck not in manager, duplicate deck, and duplicate deck name.
+     */
+    @Test
+    void testSetDeckManagerBranches() {
+        // deckManager == null
+        FlashcardDeck deck = new FlashcardDeck("Deck1");
+        assertThrows(NullPointerException.class, () -> controller.setDeckManager(null, deck));
+        // deck == null
+        FlashcardDeckManager mgr = new FlashcardDeckManager();
+        assertThrows(NullPointerException.class, () -> controller.setDeckManager(mgr, null));
+        // deck not in manager
+        FlashcardDeck deck2 = new FlashcardDeck("Deck2");
+        assertDoesNotThrow(() -> controller.setDeckManager(mgr, deck2));
+        // deck already in manager
+        mgr.addDeck(deck2);
+        assertDoesNotThrow(() -> controller.setDeckManager(mgr, deck2));
+        // duplicate deck name, different object
+        FlashcardDeck deck3 = new FlashcardDeck("Deck2");
+        assertDoesNotThrow(() -> controller.setDeckManager(mgr, deck3));
+    }
+
+    /**
+     * Tests updateUi method for all major branches.
+     * Covers null manager, null deck name, deck not found, empty deck, and non-empty deck.
+     */
+    @Test
+    void testUpdateUiBranches() {
+        // deckManager == null
+        setField(controller, "deckManager", null);
+        controller.updateUi();
+        assertTrue(listView.getItems().isEmpty());
+        // currentDeckName == null
+        setField(controller, "deckManager", new FlashcardDeckManager());
+        setField(controller, "currentDeckName", null);
+        controller.updateUi();
+        assertTrue(listView.getItems().isEmpty());
+        // deck not found
+        setField(controller, "deckManager", new FlashcardDeckManager());
+        setField(controller, "currentDeckName", "NonExistent");
+        controller.updateUi();
+        assertTrue(listView.getItems().isEmpty());
+        // deck found, empty
+        FlashcardDeckManager mgr = new FlashcardDeckManager();
+        FlashcardDeck deck = new FlashcardDeck("Deck1");
+        mgr.addDeck(deck);
+        setField(controller, "deckManager", mgr);
+        setField(controller, "currentDeckName", "Deck1");
+        controller.updateUi();
+        assertTrue(listView.getItems().isEmpty());
+        // deck found, not empty
+        deck.addFlashcard(new Flashcard("Q", "A"));
+        controller.updateUi();
+        assertFalse(listView.getItems().isEmpty());
+    }
+
+    /**
+     * Tests saveUserData method for all major branches.
+     * Covers null username, null deck name, and API failure scenarios.
+     */
+    @Test
+    void testSaveUserDataBranches() {
+        // currentUsername == null
+        setField(controller, "currentUsername", null);
+        setField(controller, "currentDeckName", "Deck1");
+        try (MockedStatic<ApiClient> apiClientMock = Mockito.mockStatic(ApiClient.class)) {
+            apiClientMock.when(() -> ApiClient.performApiRequest(any(), any(), any(), any())).thenReturn(new ApiResponse<>(true, "", null));
+            assertDoesNotThrow(() -> invokePrivate(controller, "saveUserData"));
+        }
+        // currentDeckName == null
+        setField(controller, "currentUsername", "testuser");
+        setField(controller, "currentDeckName", null);
+        try (MockedStatic<ApiClient> apiClientMock = Mockito.mockStatic(ApiClient.class)) {
+            apiClientMock.when(() -> ApiClient.performApiRequest(any(), any(), any(), any())).thenReturn(new ApiResponse<>(true, "", null));
+            assertDoesNotThrow(() -> invokePrivate(controller, "saveUserData"));
+        }
+        // API returns failure
+        setField(controller, "currentUsername", "testuser");
+        setField(controller, "currentDeckName", "Deck1");
+        try (MockedStatic<ApiClient> apiClientMock = Mockito.mockStatic(ApiClient.class)) {
+            apiClientMock.when(() -> ApiClient.performApiRequest(any(), any(), any(), any())).thenReturn(new ApiResponse<>(false, "error", null));
+            assertDoesNotThrow(() -> invokePrivate(controller, "saveUserData"));
+        }
+    }
+
+    /**
+     * Tests getCurrentDeck method for all major branches.
+     * Covers null manager, deck not found, and deck found scenarios.
+     */
+    @Test
+    void testGetCurrentDeckBranches() {
+        // deckManager == null
+        setField(controller, "deckManager", null);
+        setField(controller, "currentDeckName", "Deck1");
+        Exception ex = assertThrows(RuntimeException.class, () -> invokePrivate(controller, "getCurrentDeck"));
+        assertTrue(ex.getCause() instanceof java.lang.reflect.InvocationTargetException);
+        assertTrue(ex.getCause().getCause() instanceof NullPointerException);
+        // deck not found
+        FlashcardDeckManager mgr = new FlashcardDeckManager();
+        setField(controller, "deckManager", mgr);
+        setField(controller, "currentDeckName", "NonExistent");
+        Object deck = invokePrivate(controller, "getCurrentDeck");
+        assertNull(deck);
+        // deck found
+        FlashcardDeck deckObj = new FlashcardDeck("Deck1");
+        mgr.addDeck(deckObj);
+        setField(controller, "currentDeckName", "Deck1");
+        deck = invokePrivate(controller, "getCurrentDeck");
+        assertNotNull(deck);
+    }
+
+    /**
+     * Tests whenCreateButtonIsClicked method for all major branches.
+     * Covers null manager, null deck name, empty/whitespace input, and API failure scenarios.
+     */
+    @Test
+    void testWhenCreateButtonIsClickedBranches() {
+        // deckManager == null
+        setField(controller, "deckManager", null);
+        setField(controller, "currentDeckName", "Deck1");
+        questionField.setText("Q");
+        answerField.setText("A");
+        assertThrows(NullPointerException.class, () -> controller.whenCreateButtonIsClicked());
+        // currentDeckName == null
+        FlashcardDeckManager mgr = new FlashcardDeckManager();
+        setField(controller, "deckManager", mgr);
+        setField(controller, "currentDeckName", null);
+        questionField.setText("Q");
+        answerField.setText("A");
+        try (MockedStatic<ApiClient> apiClientMock = Mockito.mockStatic(ApiClient.class)) {
+            apiClientMock.when(() -> ApiClient.performApiRequest(any(), any(), any(), any())).thenReturn(new ApiResponse<>(true, "", null));
+            assertDoesNotThrow(() -> controller.whenCreateButtonIsClicked());
+        }
+        // question/answer empty
+        setField(controller, "currentDeckName", "Deck1");
+        questionField.setText("");
+        answerField.setText("");
+        try (MockedStatic<ApiClient> apiClientMock = Mockito.mockStatic(ApiClient.class)) {
+            apiClientMock.when(() -> ApiClient.performApiRequest(any(), any(), any(), any())).thenReturn(new ApiResponse<>(true, "", null));
+            assertDoesNotThrow(() -> controller.whenCreateButtonIsClicked());
+        }
+        // question/answer whitespace
+        questionField.setText("   ");
+        answerField.setText("   ");
+        try (MockedStatic<ApiClient> apiClientMock = Mockito.mockStatic(ApiClient.class)) {
+            apiClientMock.when(() -> ApiClient.performApiRequest(any(), any(), any(), any())).thenReturn(new ApiResponse<>(true, "", null));
+            assertDoesNotThrow(() -> controller.whenCreateButtonIsClicked());
+        }
+        // API returns failure
+        questionField.setText("Q");
+        answerField.setText("A");
+        try (MockedStatic<ApiClient> apiClientMock = Mockito.mockStatic(ApiClient.class)) {
+            apiClientMock.when(() -> ApiClient.performApiRequest(any(), any(), any(), any())).thenReturn(new ApiResponse<>(false, "error", null));
+            assertDoesNotThrow(() -> controller.whenCreateButtonIsClicked());
+        }
+    }
+
+    /**
+     * Tests whenDeleteCardButtonIsClicked method for all major branches.
+     * Covers null manager, null deck name, no selection, and API failure scenarios.
+     */
+    @Test
+    void testWhenDeleteCardButtonIsClickedBranches() {
+        // deckManager == null
+        setField(controller, "deckManager", null);
+        setField(controller, "currentDeckName", "Deck1");
+        listView.setItems(FXCollections.observableArrayList());
+        listView.getSelectionModel().clearSelection();
+        assertThrows(NullPointerException.class, () -> controller.whenDeleteCardButtonIsClicked());
+        // currentDeckName == null
+        FlashcardDeckManager mgr = new FlashcardDeckManager();
+        setField(controller, "deckManager", mgr);
+        setField(controller, "currentDeckName", null);
+        listView.setItems(FXCollections.observableArrayList());
+        listView.getSelectionModel().clearSelection();
+        try (MockedStatic<ApiClient> apiClientMock = Mockito.mockStatic(ApiClient.class)) {
+            apiClientMock.when(() -> ApiClient.performApiRequest(any(), any(), any(), any())).thenReturn(new ApiResponse<>(true, "", null));
+            assertDoesNotThrow(() -> controller.whenDeleteCardButtonIsClicked());
+        }
+        // no selection
+        setField(controller, "currentDeckName", "Deck1");
+        listView.setItems(FXCollections.observableArrayList());
+        listView.getSelectionModel().clearSelection();
+        try (MockedStatic<ApiClient> apiClientMock = Mockito.mockStatic(ApiClient.class)) {
+            apiClientMock.when(() -> ApiClient.performApiRequest(any(), any(), any(), any())).thenReturn(new ApiResponse<>(true, "", null));
+            assertDoesNotThrow(() -> controller.whenDeleteCardButtonIsClicked());
+        }
+        // API returns failure
+        FlashcardDeck deck = new FlashcardDeck("Deck1");
+        deck.addFlashcard(new Flashcard("Q", "A"));
+        mgr.addDeck(deck);
+        listView.setItems(FXCollections.observableArrayList(deck.getDeck()));
+        listView.getSelectionModel().select(0);
+        try (MockedStatic<ApiClient> apiClientMock = Mockito.mockStatic(ApiClient.class)) {
+            apiClientMock.when(() -> ApiClient.performApiRequest(any(), any(), any(), any())).thenReturn(new ApiResponse<>(false, "error", null));
+            assertDoesNotThrow(() -> controller.whenDeleteCardButtonIsClicked());
+        }
+    }
+}

@@ -16,6 +16,7 @@ module flashcards.server {
 
     requires spring.context;
     requires spring.web;
+    requires spring.beans;
 
     // Export packages
     exports server;
