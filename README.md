@@ -11,10 +11,73 @@ This repository contains a JavaFX application for creating and studying flashcar
 
 To quickly test the application:
 
-1. `cd flashcards`
-2. `mvn clean install`
-3. `cd fxui`
-4. `mvn javafx:run`
+1. Open the project folder
+
+    ```bash
+    cd flashcards
+    ```
+
+2. Install necessary dependencies while skipping tests
+
+    ```bash
+    mvn clean install -DskipTests
+    ```
+
+3. Open a new terminal
+
+    **macOS**
+
+    ```bash
+    open -na Terminal
+    ```
+
+    **Windows (Command Prompt)**
+
+    ```bash
+   start cmd
+    ```
+
+    **Windows (PowerShell)**
+
+    ```bash
+    start powershell
+    ```
+
+    **Linux (GNOME Terminal)**
+
+    ```bash
+    gnome-terminal &
+    ```
+
+    **Linux (KDE Konsole)**
+
+    ```bash
+    konsole &
+    ```
+
+4. Open the `server` module in the new terminal
+
+    ```bash
+    cd server
+    ```
+
+5. Run the backend
+
+    ```bash
+    mvn spring-boot:run
+    ```
+
+6. While the backend is running, open the `fxui` module in the old terminal
+
+    ```bash
+    cd fxui
+    ```
+
+7. Run the app
+
+    ```bash
+    mvn javafx:run
+    ```
 
 Alternatively, use the VS Code task "Run JavaFX App" which is configured in the workspace.
 
@@ -24,15 +87,89 @@ This project uses Maven for building and running.
 
 To build all modules and run tests:
 
-1. Navigate to the flashcards folder: `cd flashcards`
-2. Build all modules: `mvn clean install`
+1. Navigate to the flashcards folder:
+
+    ```bash
+    cd flashcards
+    ```
+
+2. Build all modules:
+
+    ```bash
+    mvn clean install
+    ```
 
 ## Running the application
 
 ### Method 1: Maven
 
-1. Navigate to the UI module: `cd flashcards/fxui`
-2. Run the application: `mvn javafx:run`
+1. Open the project folder
+
+    ```bash
+    cd flashcards
+    ```
+
+2. Install necessary dependencies
+
+    ```bash
+    mvn clean install
+    ```
+
+3. Open a new terminal
+
+    **macOS**
+
+    ```bash
+    open -na Terminal
+    ```
+
+    **Windows (Command Prompt)**
+
+    ```bash
+   start cmd
+    ```
+
+    **Windows (PowerShell)**
+
+    ```bash
+    start powershell
+    ```
+
+    **Linux (GNOME Terminal)**
+
+    ```bash
+    gnome-terminal &
+    ```
+
+    **Linux (KDE Konsole)**
+
+    ```bash
+    konsole &
+    ```
+
+4. Open the `server` module in the new terminal
+
+    ```bash
+    cd server
+    ```
+
+5. Run the backend
+
+    ```bash
+    mvn spring-boot:run
+    ```
+
+6. While the backend is running, navigate to the the `fxui` module in the old terminal
+
+    ```bash
+    cd fxui
+    ```
+
+7. Run the app
+
+    ```bash
+    mvn javafx:run
+    ```
 
 ### Method 2: VS Code
 
@@ -45,24 +182,33 @@ This structure helps separate concerns and makes the project easy to navigate.
 [flashcards](/flashcards/)
 
 - [core](/flashcards/core/) - Business logic and domain models
-- [fxui](/flashcards/fxui/) - JavaFX user interface and controllers  
+- [fxui](/flashcards/fxui/) - JavaFX user interface and controllers
+- [server](/flashcards/server/) - Spring Boot REST API backend service
+- [shared](/flashcards/shared/) - Data Transfer Objects (DTOs), mappers, and shared API interfaces
 - [storage](/flashcards/storage/) - JSON persistence and file handling
 - [config](/flashcards/config/) - Code quality configuration files (Checkstyle, SpotBugs)
 - [.vscode](/.vscode/) - VS Code workspace settings and tasks
-- [images](/images/) - Application screenshots and documentation images
 
 ## App design
 
-```html
-<img src="images/FlashcardLogin_release2.png" alt="Login interface" width="400">
-<img src="images/FlashcardMain_release2.png" alt="Main dashboard" width="400">
-<img src="images/FlashcardList_release2.png" alt="Deck management" width="400">
-<img src="images/FlashcardPage_release2.png" alt="Learning interface" width="400">
-```
+**Login page:** initial window when opening the app, and opens when you click "Log out" on other pages
+![Login interface](images/app/release_3/FlashcardLogin_release3.png)
+
+**Sign up page:** opens when you click "Sign up" on the Login page
+![Signup interface](images/app/release_3/FlashcardSignUp_release3.png)
+
+**Main dashboard:** opens after clicking "Log in" or "Sign in", or when clicking "back" on the deck management page
+![Main dashboard](images/app/release_3/FlashcardMain_release3.png)
+
+**Deck management:** opens when clicking a deck on the main dashboard, or when clicking "back" on the learning page
+![Deck management](images/app/release_3/FlashcardList_release3.png)
+
+**Learning page:** opens when clicking "Start learning" om the deck management page
+![Learning interface](images/app/release_3/FlashcardPage_release3.png)
 
 ## Dependencies
 
-- Java version 17+
+- Java version 21
 - JavaFX version 21
 - Maven version 3.9+
 - JUnit 5 (Jupiter) for testing
@@ -75,21 +221,37 @@ This structure helps separate concerns and makes the project easy to navigate.
 
 After running `mvn test`, you can generate test coverage reports via JaCoCo:
 
-1. Navigate to a specific module: `cd core` (or fxui/storage)
-2. Run `mvn jacoco:report`
-3. Open the HTML report in `target/site/jacoco/index.html`
+1. Navigate to a specific module (core, fxui, server, shared, storage)
+
+    ```bash
+    cd XXX
+    ```
+
+2. Generate the JaCoCo report by running:
+
+   ```bash
+   mvn jacoco:report
+   ```
+
+3. Open the HTML report to show JaCoCo coverage, from the module you ran tests for:
+
+    ```bash
+    open target/site/jacoco/index.html
+    ```
 
 **Current test coverage:**
 
-- **core**: Instruction Coverage: 91% | Branch Coverage: 76%
-- **fxui**: Instruction Coverage: 90% | Branch Coverage: 81%  
-- **storage**: Instruction Coverage: 100% | Branch Coverage: 100%
+- **core**: Instruction Coverage: 88% | Branch Coverage: 92%
+- **fxui**: Instruction Coverage: XX% | Branch Coverage: XX%
+- **shared**: Instruction Coverage: 98% | Branch Coverage: 87%
+- **server**: Instruction Coverage: XX% | Branch Coverage: XX%
+- **storage**: Instruction Coverage: 98% | Branch Coverage: 87%
 
-```html
-<img src="images/jaCoCo/coreJaCoCo.png" alt="Core module JaCoCo coverage" width="600">
-<img src="images/jaCoCo/fxuiJaCoCo.png" alt="FXUI module JaCoCo coverage" width="600">
-<img src="images/jaCoCo/storageJaCoCo.png" alt="Storage module JaCoCo coverage" width="600">
-```
+![core JaCoCo coverage](images/jaCoCo/release_3/coreJaCoCo_release3.png)
+![fxui JaCoCo coverage](images/jaCoCo/release_3/fxuiJaCoCo_release3.png)
+![shared JaCoCo coverage](images/jaCoCo/release_3/sharedJaCoCo_release3.png)
+![server JaCoCo coverage](images/jaCoCo/release_3/serverJaCoCo_release3.png)
+![storage JaCoCo coverage](images/jaCoCo/release_3/storageJaCoCo_release3.png)
 
 Current coverage targets focus on core business logic and critical user workflows.
 
@@ -110,11 +272,12 @@ For detailed project documentation, navigate to [docs](/docs/):
 
 - [Release 1](/docs/release_1/) - Initial implementation and basic functionality
 - [Release 2](/docs/release_2/) - Enhanced features, user authentication, and quality improvements
+- [Release 3](/docs/release_3/) - Enhances features, implemetation of API in server and shared module and improved user authentication
 
 ## Use of AI
 
-As part of this project, we made use of AI-based tools to improve development efficiency and code quality. For detailed information about our AI usage, see [AI Tools documentation](/docs/release_2/ai_tools.md).
+As part of this project, we made use of AI-based tools to improve development efficiency and code quality. For detailed information about our AI usage, see [AI Tools documentation](/docs/release_3/ai_tools.md).
 
 ## Getting started
 
-See the "Building and running the project" section above for quick setup instructions. For development, ensure you have Java 17+ and Maven installed.
+See the ["Building the project"](#building-the-project) and ["Running the application"](#running-the-application) sections above for setup instructions. If you want a quick run through, see the ["Quickstart"](#quickstart) section. For development, ensure you have Java 21 and Maven installed.
