@@ -14,6 +14,7 @@ import dto.LoginResponseDto;
 import dto.UserDataDto;
 import dto.mappers.UserMapper;
 import server.service.UserService;
+import shared.ApiConstants;
 import shared.ApiResponse;
 import shared.ApiEndpoints;
 
@@ -57,18 +58,18 @@ public class UserController {
 
   /**
    * Register a new user.
-   * Uses the userService to create a new user
+   * Uses the userService to create a new user with detailed validation
    * @param request
    * @return
    */
   @PostMapping (ApiEndpoints.USER_REGISTER)
   public ApiResponse <UserDataDto> createUser(@RequestBody LoginRequestDto request) {
     try {
-      User user = userService.createUser(request.getUsername(), request.getPassword());
+      User user = userService.createUserWithValidation(request.getUsername(), request.getPassword());
       UserDataDto dto = mapper.toDto(user);
-      return new ApiResponse<>(true, "User created successfully", dto);
-    } catch (Exception e) {
-      return new ApiResponse<>(false, "Error creating user: " + e.getMessage(), null);
+      return new ApiResponse<>(true, ApiConstants.USER_CREATED, dto);
+    } catch (IllegalArgumentException e) {
+      return new ApiResponse<>(false, e.getMessage(), null);
     }
   }
 
@@ -82,11 +83,22 @@ public class UserController {
   public ApiResponse <LoginResponseDto> logInUser(@RequestBody LoginRequestDto request) { 
     try {
       Boolean login = userService.logInUser(request.getUsername(), request.getPassword());
-      User user = userService.getUser(request.getUsername());
-      UserDataDto userDto = mapper.toDto(user);
       
-      LoginResponseDto responseDto = new LoginResponseDto(login, "Login successful: " + request.getUsername(), userDto);
-      return new ApiResponse<>(true,  "Login successful", responseDto);
+      if (login) {
+        // Login successful - get user data and return success response
+        User user = userService.getUser(request.getUsername());
+        UserDataDto userDto = mapper.toDto(user);
+        
+        LoginResponseDto responseDto = new LoginResponseDto(login, ApiConstants.LOGIN_SUCCESS + ": " + request.getUsername(), userDto);
+        return new ApiResponse<>(true, ApiConstants.LOGIN_SUCCESS, responseDto);
+      } else {
+        // Login failed - check if user exists to provide specific error message
+        boolean userExists = userService.userExists(request.getUsername());
+        String errorMessage = userExists ? ApiConstants.INVALID_PASSWORD : ApiConstants.USER_NOT_FOUND;
+        
+        LoginResponseDto responseDto = new LoginResponseDto(login, errorMessage, null);
+        return new ApiResponse<>(true, "Login response", responseDto);
+      }
     } catch (Exception e) {
       return new ApiResponse<>(false, "Error logging in user: " + e.getMessage(), null);
     }
