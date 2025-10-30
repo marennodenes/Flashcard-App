@@ -38,7 +38,8 @@ import shared.ApiEndpoints;
  * Uses @WebMvcTest to test only the web layer and @MockBean to mock
  * the UserService dependency for isolated controller testing.
  *
- * @author chrsom and isamw
+ * @author chrsom 
+ * @author isamw
  * @see UserController
  * @see UserService
  */

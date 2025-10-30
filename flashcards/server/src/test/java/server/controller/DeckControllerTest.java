@@ -49,7 +49,8 @@ import shared.ApiEndpoints;
  * Uses @WebMvcTest to test only the web layer and @MockBean to mock
  * the DeckService dependency for isolated controller testing.
  *
- * @author chrsom and isamw
+ * @author chrsom 
+ * @author isamw
  * @see DeckController
  * @see DeckService
  */
@@ -289,7 +290,7 @@ public class DeckControllerTest {
    */
   @Test
   void testUpdateAllDecks_Success() throws Exception {
-    doNothing().when(deckService).updateAllDecks(anyString(), any(FlashcardDeckManagerDto.class));
+    doNothing().when(deckService).updateAllDecks(anyString(), any(FlashcardDeckManager.class));
 
     mockMvc.perform(put(ApiEndpoints.DECKS)
         .param("username", "testUser")
@@ -310,7 +311,7 @@ public class DeckControllerTest {
   @Test
   void testUpdateAllDecks_UserNotFound() throws Exception {
     doThrow(new IllegalArgumentException("User not found"))
-        .when(deckService).updateAllDecks(anyString(), any(FlashcardDeckManagerDto.class));
+        .when(deckService).updateAllDecks(anyString(), any(FlashcardDeckManager.class));
 
     mockMvc.perform(put(ApiEndpoints.DECKS)
         .param("username", "nonExistent")
@@ -331,7 +332,7 @@ public class DeckControllerTest {
   @Test
   void testUpdateAllDecks_InvalidData() throws Exception {
     doThrow(new IllegalArgumentException("Invalid deck data"))
-        .when(deckService).updateAllDecks(anyString(), any(FlashcardDeckManagerDto.class));
+        .when(deckService).updateAllDecks(anyString(), any(FlashcardDeckManager.class));
 
     mockMvc.perform(put(ApiEndpoints.DECKS)
         .param("username", "testUser")

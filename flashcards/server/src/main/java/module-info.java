@@ -7,7 +7,6 @@ module flashcards.server {
     // Jackson for JSON processing (these are proper modules)
     requires com.fasterxml.jackson.databind;
     requires com.fasterxml.jackson.core;
-    requires com.fasterxml.jackson.annotation;
     
     // Internal dependencies
     requires transitive flashcards.storage;
@@ -16,6 +15,8 @@ module flashcards.server {
 
     requires spring.context;
     requires spring.web;
+    requires spring.beans;
+    requires spring.core;
 
     // Export packages
     exports server;

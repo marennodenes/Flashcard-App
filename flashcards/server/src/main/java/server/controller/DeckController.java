@@ -3,19 +3,19 @@ package server.controller;
 import java.util.Objects;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 import app.FlashcardDeck;
 import app.FlashcardDeckManager;
+import dto.FlashcardDeckDto;
 import dto.FlashcardDeckManagerDto;
 import dto.mappers.FlashcardDeckMapper;
-import dto.FlashcardDeckDto;
 import server.service.DeckService;
 import shared.ApiEndpoints;
 import shared.ApiResponse;
@@ -112,9 +112,9 @@ public class DeckController {
   @PutMapping
     public ApiResponse<Void> updateAllDecks(
         @RequestParam String username,
-        @RequestBody FlashcardDeckManagerDto deckManagerDto) {
+        @RequestBody FlashcardDeckManager deckManager) {
       try {
-        deckService.updateAllDecks(username, deckManagerDto);
+        deckService.updateAllDecks(username, deckManager);
         return new ApiResponse<>(true, "Decks updated successfully", null);
       } catch (Exception e) {
         return new ApiResponse<>(false, "Error updating decks: " + e.getMessage(), null);
