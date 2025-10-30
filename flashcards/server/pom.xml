@@ -35,11 +35,11 @@
         </dependency>
 
         <!-- Add DTO dependency for mappers -->
-        <dependency>
+        <!-- <dependency>
             <groupId>it1901</groupId>
             <artifactId>dto</artifactId>
             <version>${project.version}</version>
-        </dependency>
+        </dependency> -->
 
         <!-- Spring Boot Web -->
         <dependency>

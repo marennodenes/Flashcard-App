@@ -167,19 +167,14 @@ public class FlashcardPersistent implements UserPersistence {
     /**
      * Internal method to write complete user data to file.
      * Creates the user data directory if it doesn't exist and writes UserData as JSON.
-     * 
+     *
      * @param userData the UserData object to write
-     * @throws IOException if directory creation or file writing fails
+     * @throws IOException if file writing fails
      */
-    private void writeUserDataInternal(UserData userData) throws IOException {        
+    private void writeUserDataInternal(UserData userData) throws IOException {
         File dataDir = new File(System.getProperty("user.dir") + "/../storage/data/users");
-        if (!dataDir.exists()) {
-            boolean created = dataDir.mkdirs();
-            if (!created) {
-                throw new IOException("Failed to create data directory: " + dataDir.getAbsolutePath());
-            }
-        }
-        
+        dataDir.mkdirs(); // Creates directory if it doesn't exist, does nothing if it already exists
+
         File file = getUserFile(userData.getUser().getUsername());
         objectMapper.writerWithDefaultPrettyPrinter().writeValue(file, userData);
     }
