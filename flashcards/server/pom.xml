@@ -34,13 +34,6 @@
             <version>${project.version}</version>
         </dependency>
 
-        <!-- Add DTO dependency for mappers -->
-        <!-- <dependency>
-            <groupId>it1901</groupId>
-            <artifactId>dto</artifactId>
-            <version>${project.version}</version>
-        </dependency> -->
-
         <!-- Spring Boot Web -->
         <dependency>
             <groupId>org.springframework.boot</groupId>

@@ -15,6 +15,7 @@ import app.Flashcard;
 import dto.FlashcardDto;
 import dto.mappers.FlashcardMapper;
 import server.service.FlashcardService;
+import shared.ApiConstants;
 import shared.ApiEndpoints;
 import shared.ApiResponse;
 
@@ -72,7 +73,7 @@ public class FlashcardController {
       
       // Return the created flashcard as DTO
       FlashcardDto flashcardDto = mapper.toDto(flashcardService.getFlashcard(username, deckname, position));
-      return new ApiResponse<>(true, "Flashcard created successfully", flashcardDto);
+      return new ApiResponse<>(true, ApiConstants.FLASHCARD_CREATED, flashcardDto);
     } catch (Exception e) {
       // Return server error if creation fails
       return new ApiResponse<>(false, "Failed to create flashcard: " + e.getMessage(), null);
@@ -96,7 +97,7 @@ public class FlashcardController {
     try {
       // Remove flashcard at specified position
       flashcardService.deleteFlashcard(username, deckname, number);
-      return new ApiResponse<>(true, "Flashcard deleted successfully", null);
+      return new ApiResponse<>(true, ApiConstants.FLASHCARD_DELETED, null);
     } catch (Exception e) {
       // Return server error if deletion fails
       return new ApiResponse<>(false, "Failed to delete flashcard: " + e.getMessage(), null);
