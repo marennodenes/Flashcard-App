@@ -26,20 +26,20 @@ import javafx.util.Duration;
  */
 public class FlashcardController {
 
-  @FXML private Button backButton;
-  @FXML private Button nextButton;
-  @FXML private Button previousButton;
-  @FXML private Button card;
-  @FXML private ProgressBar progressBar;
-  @FXML private Text usernameField;
-  @FXML private Text decknameField;
-  @FXML private Text cardNumber;
+    // Remove 'private' from these fields to make them package-private for test access
+    @FXML Button backButton;
+    @FXML Button nextCard;
+    @FXML Button previousCard;
+    @FXML Button card;
+    @FXML ProgressBar progressBar;
+    @FXML Text usernameField;
+    @FXML Text decknameField;
+    @FXML Text cardNumber;
 
-  private List<Flashcard> deck = new ArrayList<>();
-
-  private int currentCardI;
+  // Remove 'private' for test access
+  List<Flashcard> deck = new ArrayList<>();
+  int currentCardI;
   private String currentUsername;
-  
   private FlashcardDeckManager deckManager;
 
   private String questionStyle = """
@@ -80,16 +80,63 @@ public class FlashcardController {
    * Only updates if the card button exists, the deck is not empty, and the current card index is valid.
    */
   public void updateUi() {
-    isShowingAnswer = false;
-    decknameField.setText(originalDeck.getDeckName());
-    usernameField.setText(currentUsername);
-    if (card != null && !deck.isEmpty() && currentCardI >= 0 && currentCardI < deck.size()) {
-      card.setText(deck.get(currentCardI).getQuestion());
-      card.setWrapText(true);
-      card.setStyle(questionStyle);
+        if (decknameField != null) {
+            String deckName = "";
+            if (originalDeck != null && originalDeck.getDeckName() != null) {
+                deckName = originalDeck.getDeckName();
+            }
+            decknameField.setText(deckName == null ? "" : deckName);
+        }
+        if (usernameField != null) {
+            usernameField.setText(currentUsername == null || currentUsername.isEmpty() ? "" : currentUsername);
+        }
+        Flashcard current = getCurrentCard();
+        if (card != null) {
+            if (current == null) {
+                card.setText("");
+                card.setStyle(questionStyle.trim()); // Always set style for empty card
+            } else {
+                String text = isShowingAnswer ? current.getAnswer() : current.getQuestion();
+                card.setText(text == null ? "" : text);
+                card.setStyle(questionStyle.trim()); // Always set style for question
+            }
+        }
+        updateProgress();
     }
-  }
 
+    public void updateProgress() {
+        int deckSize = deck == null ? 0 : deck.size();
+        int cardNum = (deckSize == 0 || currentCardI < 0) ? 0 : currentCardI + 1;
+        if (cardNumber != null) {
+            cardNumber.setText(String.valueOf(cardNum));
+        }
+        if (progressBar != null) {
+            double progress = (deckSize == 0) ? 0.0 : ((double) cardNum / deckSize);
+            progressBar.setProgress(progress);
+        }
+    }
+
+    Flashcard getCurrentCard() {
+        if (deck == null || deck.isEmpty() || currentCardI < 0 || currentCardI >= deck.size()) {
+            return null;
+        }
+        Flashcard cardObj = deck.get(currentCardI);
+        return cardObj == null ? null : cardObj;
+    }
+
+    private void goToNextCard() {
+        if (deck == null || deck.isEmpty()) return;
+        currentCardI = (currentCardI + 1) % deck.size();
+        updateUi();
+        updateProgress();
+    }
+
+    private void goToPreviousCard() {
+        if (deck == null || deck.isEmpty()) return;
+        currentCardI = (currentCardI - 1 + deck.size()) % deck.size();
+        updateUi();
+        updateProgress();
+    }
 
   /**
    * Sets the deck manager and current deck to work with.
@@ -100,20 +147,72 @@ public class FlashcardController {
    * @param selectedDeck the specific deck to work with
    */
   public void setDeckManager(FlashcardDeckManager deckManager, FlashcardDeck selectedDeck) {
+    if (deckManager == null || selectedDeck == null) {
+        this.deckManager = null;
+        this.originalDeck = null;
+        this.deck = new ArrayList<>();
+        currentCardI = 0;
+        updateUi();
+        updateProgress();
+        return;
+    }
     // Create defensive copy of deck manager to prevent external modification
     this.deckManager = new FlashcardDeckManager();
     for (FlashcardDeck deck : deckManager.getDecks()) {
       this.deckManager.addDeck(deck);
     }
-    
     // Create defensive copy of the selected deck
     this.originalDeck = new FlashcardDeck(selectedDeck.getDeckName());
     for (app.Flashcard card : selectedDeck.getDeck()) {
-      this.originalDeck.addFlashcard(new app.Flashcard(card.getQuestion(), card.getAnswer()));
+      if (card != null) {
+        this.originalDeck.addFlashcard(new app.Flashcard(card.getQuestion(), card.getAnswer()));
+      } else {
+        this.originalDeck.addFlashcard(null);
+      }
     }
-    
     this.deck = new ArrayList<>(this.originalDeck.getDeck()); // Copy flashcards for learning
+    // Assign numbers to non-null flashcards only
+    for (int i = 0; i < this.deck.size(); i++) {
+      Flashcard flashcard = this.deck.get(i);
+      if (flashcard != null) {
+        flashcard.setNumber(i + 1);
+      }
+    }
     currentCardI = 0;
+    updateUi();
+    updateProgress();
+  }
+
+  /**
+   * Sets the deck for the controller and updates UI/progress.
+   * Defensive copy is not strictly necessary for test coverage, so this is simple.
+   * @param deck the deck to set (can be null)
+   */
+  public void setDeck(FlashcardDeck deck) {
+    if (deck == null) {
+        this.originalDeck = null;
+        this.deck = new ArrayList<>();
+        currentCardI = 0;
+    } else {
+        // Defensive copy
+        this.originalDeck = new FlashcardDeck(deck.getDeckName());
+        for (Flashcard card : deck.getDeck()) {
+            if (card != null) {
+                this.originalDeck.addFlashcard(new Flashcard(card.getQuestion(), card.getAnswer()));
+            } else {
+                this.originalDeck.addFlashcard(null);
+            }
+        }
+        this.deck = new ArrayList<>(this.originalDeck.getDeck());
+        // Assign numbers to non-null flashcards only
+        for (int i = 0; i < this.deck.size(); i++) {
+            Flashcard flashcard = this.deck.get(i);
+            if (flashcard != null) {
+                flashcard.setNumber(i + 1);
+            }
+        }
+        currentCardI = 0;
+    }
     updateUi();
     updateProgress();
   }
@@ -124,21 +223,26 @@ public class FlashcardController {
    * @param username the username to set
    */
   public void setCurrentUsername(String username) {
-    if (username != null && !username.trim().isEmpty()) {
-      this.currentUsername = username.trim();
-    }
-  }  
+        if (username == null || username.trim().isEmpty()) {
+            this.currentUsername = "";
+        } else {
+            this.currentUsername = username.trim();
+        }
+        if (usernameField != null) {
+            usernameField.setText(this.currentUsername);
+        }
+    }  
 
   /**
    * Handles the event when the "Back" button is clicked.
    * Navigates from the current scene to the flashcard deck list page by loading
-   * the FlashcardDeck.fxml file and switching the scene.
+   * the FlashcardListUI.fxml file and switching the scene.
    * Passes the current username and deck manager to maintain data consistency.
    * 
    * @throws IOException if the FXML file cannot be loaded or found
    */
   @FXML
-  private void whenBackButtonIsClicked() throws IOException {
+  public void whenBackButtonIsClicked() throws IOException {
     FXMLLoader loader = new FXMLLoader(getClass().getResource("FlashcardDeck.fxml"));
     Parent root = loader.load();
 
@@ -150,9 +254,26 @@ public class FlashcardController {
       controller.setDeckManager(deckManager, originalDeck);
     }
 
-    Stage stage = (Stage) backButton.getScene().getWindow();
-    stage.setScene(new Scene(root));
-    stage.show();
+    // Null check for nextCard to prevent crash
+    if (nextCard != null && nextCard.getScene() != null) {
+      Stage stage = (Stage) nextCard.getScene().getWindow();
+      stage.setScene(new Scene(root));
+      stage.show();
+    } else {
+      // Fallback: try to get stage from any available button
+      if (backButton != null && backButton.getScene() != null) {
+        Stage stage = (Stage) backButton.getScene().getWindow();
+        stage.setScene(new Scene(root));
+        stage.show();
+      } else if (card != null && card.getScene() != null) {
+        Stage stage = (Stage) card.getScene().getWindow();
+        stage.setScene(new Scene(root));
+        stage.show();
+      } else {
+        // Could not get stage, do nothing or log error
+        System.err.println("Error: No valid button to get stage for scene switch.");
+      }
+    }
   }
 
 
@@ -163,14 +284,7 @@ public class FlashcardController {
    */
   @FXML
   private void whenNextCardButtonClicked() {
-    
-   if (!deck.isEmpty()) {
-      currentCardI = (currentCardI + 1) % deck.size(); // Loop to first card when reaching end
-      updateUi();
-    }
-
-    updateProgress();
-
+        goToNextCard();
   }
 
   /** 
@@ -179,13 +293,7 @@ public class FlashcardController {
    */
   @FXML
   private void whenPreviousCardButtonClicked() {
-    
-    if (!deck.isEmpty()) {
-      currentCardI = (currentCardI - 1 + deck.size()) % deck.size(); // Loop to last card when going before first
-      updateUi();
-    }
-
-    updateProgress();
+        goToPreviousCard();
   }
 
   /**
@@ -203,34 +311,36 @@ public class FlashcardController {
    * Performs the card flip animation and toggles between question and answer.
    * Uses JavaFX rotation transitions to create a smooth flip effect.
    */
-  private void flipCard() {
-    RotateTransition rotateOut = new RotateTransition(Duration.millis(150), card);
-    rotateOut.setAxis(Rotate.X_AXIS);
-    rotateOut.setFromAngle(0);
-    rotateOut.setToAngle(90);
+  void flipCard() {
+        if (card == null) return;
+        RotateTransition rotateOut = new RotateTransition(Duration.millis(150), card);
+        rotateOut.setAxis(Rotate.X_AXIS);
+        rotateOut.setFromAngle(0);
+        rotateOut.setToAngle(90);
 
-    RotateTransition rotateIn = new RotateTransition(Duration.millis(150), card);
-    rotateIn.setAxis(Rotate.X_AXIS);
-    rotateIn.setFromAngle(270);
-    rotateIn.setToAngle(360);
+        RotateTransition rotateIn = new RotateTransition(Duration.millis(150), card);
+        rotateIn.setAxis(Rotate.X_AXIS);
+        rotateIn.setFromAngle(270);
+        rotateIn.setToAngle(360);
 
-    rotateOut.setOnFinished(e -> {
-        // Toggle between question and answer display
-        if (!isShowingAnswer) {
-            card.setText(deck.get(currentCardI).getAnswer());
-            card.setWrapText(true);
-            
-            card.setStyle(answerStyle);
-        } else {
-            card.setText(deck.get(currentCardI).getQuestion());
-            card.setWrapText(true);
-            card.setStyle(questionStyle);
-        }
-        isShowingAnswer = !isShowingAnswer;
-        rotateIn.play(); // Start the rotate-in animation
-    });
+        rotateOut.setOnFinished(e -> {
+            Flashcard current = getCurrentCard();
+            if (!isShowingAnswer) {
+                String answer = (current != null && current.getAnswer() != null) ? current.getAnswer() : "";
+                card.setText(answer);
+                card.setWrapText(true);
+                card.setStyle(answerStyle.trim());
+            } else {
+                String question = (current != null && current.getQuestion() != null) ? current.getQuestion() : "";
+                card.setText(question);
+                card.setWrapText(true);
+                card.setStyle(questionStyle.trim());
+            }
+            isShowingAnswer = !isShowingAnswer;
+            rotateIn.play();
+        });
 
-    rotateOut.play();
+        rotateOut.play();
   }
 
   /**
@@ -257,16 +367,16 @@ public class FlashcardController {
     }
   }
 
-  /**
-   * Updates the progress bar and card number display.
-   * Shows current position in the deck and progress as a percentage.
-   */
-  @FXML
-  private void updateProgress() {
-    progressBar.setProgress((currentCardI +1)/ (double) deck.size());
-    cardNumber.setText(Integer.toString(currentCardI + 1));
+  // /**
+  //  * Updates the progress bar and card number display.
+  //  * Shows current position in the deck and progress as a percentage.
+  //  */
+  // @FXML 
+  // public void updateProgress() {
+  //   progressBar.setProgress((currentCardI +1)/ (double) deck.size());
+  //   cardNumber.setText(Integer.toString(currentCardI + 1));
 
-  }
+  // }
 
   
   
