@@ -9,7 +9,7 @@ import org.junit.jupiter.api.Test;
  * Test class for FlashcardDeckManager functionality.
  * Tests deck management operations including adding and removing decks.
  * 
- * @author Generated with Claude Sonnet 4 via GitHub Copilot
+ * @author isamw
  */
 public class FlashcardDeckManagerTest {
 
@@ -20,8 +20,6 @@ public class FlashcardDeckManagerTest {
   /**
    * Sets up test fixtures before all tests.
    * Initializes a FlashcardDeckManager, FlashcardDeck, and sample Flashcard.
-   * 
-   * @author Generated with Claude Sonnet 4 via GitHub Copilot
    */
   @BeforeAll
   static void setUp(){
@@ -40,8 +38,6 @@ public class FlashcardDeckManagerTest {
    * - Adding a deck with blank/whitespace name throws IllegalArgumentException
    * - Adding a null-named deck throws IllegalArgumentException
    * - Multiple valid decks can be added successfully
-   * 
-   * @author Generated with Claude Sonnet 4 via GitHub Copilot
    */
   @Test
   void testAddDeck(){
@@ -95,8 +91,6 @@ public class FlashcardDeckManagerTest {
    * Verifies that:
    * - Removing an existing deck decreases the deck count by 1
    * - Manager correctly updates its internal collection after removal
-   * 
-   * @author Generated with Claude Sonnet 4 via GitHub Copilot
    */
   @Test
   void testRemoveDeck(){
