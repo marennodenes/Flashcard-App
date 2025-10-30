@@ -31,6 +31,8 @@ import javafx.stage.Stage;
  * Comprehensive test class for FlashcardController.
  * This class tests the flashcard learning interface functionality including navigation between * cards, flipping animations, progress tracking, and UI updates.
  * 
+ * @author marennod
+ * @author sofietw
  * @author Generated with AI assistance for comprehensive test coverage
  */
 public class FlashcardControllerTest extends ApplicationTest {

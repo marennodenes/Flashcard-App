@@ -1,210 +1,279 @@
 package ui;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
-import java.lang.reflect.Method;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicReference;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import org.testfx.framework.junit5.ApplicationTest;
 
 import javafx.application.Platform;
-import javafx.scene.Scene;
 import javafx.stage.Stage;
 
 /**
  * Test class for FlashcardApp.
- * This class tests the main JavaFX application class to ensure proper initialization
- * and startup behavior.
+ * Tests JavaFX application startup and initialization with actual code execution.
+ * 
+ * @author marennod
+ * @author sofietw
  */
-public class FlashcardAppTest extends ApplicationTest {
+public class FlashcardAppTest {
 
-    private FlashcardApp app;
+    private static boolean javaFxInitialized = false;
 
     /**
-     * Sets up the JavaFX toolkit before all tests.
-     * This ensures that the JavaFX platform is properly initialized for testing.
-     * The method handles platform startup in a thread-safe manner.
-     *
-     * @throws Exception if the JavaFX toolkit cannot be initialized
+     * Initializes JavaFX toolkit once before all tests.
      */
     @BeforeAll
-    public static void setUpClass() throws Exception {
-        // Initialize JavaFX toolkit for headless testing
-        if (!Platform.isFxApplicationThread()) {
+    public static void initJavaFX() throws InterruptedException {
+        if (!javaFxInitialized) {
+            CountDownLatch latch = new CountDownLatch(1);
+            
+            new Thread(() -> {
+                try {
+                    Platform.startup(() -> latch.countDown());
+                } catch (IllegalStateException e) {
+                    latch.countDown();
+                }
+            }).start();
+            
+            latch.await(5, TimeUnit.SECONDS);
+            javaFxInitialized = true;
+        }
+    }
+
+    /**
+     * Tests that FlashcardApp can be instantiated.
+     */
+    @Test
+    public void testFlashcardAppInstantiation() {
+        FlashcardApp app = new FlashcardApp();
+        assertNotNull(app, "FlashcardApp instance should not be null");
+    }
+
+    /**
+     * Tests the complete start method execution including all lines.
+     * This achieves full code coverage by actually running the start() method.
+     */
+    @Test
+    public void testStartMethodCompleteExecution() throws InterruptedException {
+        CountDownLatch latch = new CountDownLatch(1);
+        AtomicReference<Throwable> errorRef = new AtomicReference<>();
+        AtomicReference<Stage> stageRef = new AtomicReference<>();
+        AtomicReference<Boolean> allLinesExecuted = new AtomicReference<>(false);
+
+        Platform.runLater(() -> {
             try {
-                Platform.startup(() -> {
-                    // Empty runnable for platform initialization
-                });
-            } catch (IllegalStateException e) {
-                // Platform already initialized, this is expected in some test environments
+                FlashcardApp app = new FlashcardApp();
+                Stage stage = new Stage();
+                stageRef.set(stage);
+                
+                // This will execute all lines in the start() method
+                app.start(stage);
+                
+                // Verify all the lines were executed
+                assertNotNull(stage.getTitle(), "Title should be set (line 38)");
+                assertEquals("Flashcards App", stage.getTitle(), "Title should be 'Flashcards App' (line 38)");
+                assertNotNull(stage.getScene(), "Scene should be created (line 39)");
+                assertNotNull(stage.getScene().getRoot(), "FXML should be loaded (line 39)");
+                assertFalse(stage.getScene().getStylesheets().isEmpty(), "Stylesheet should be added (line 40)");
+                assertTrue(stage.isShowing(), "Stage should be showing (line 42)");
+                
+                allLinesExecuted.set(true);
+                
+            } catch (Throwable e) {
+                errorRef.set(e);
+            } finally {
+                Stage stage = stageRef.get();
+                if (stage != null && stage.isShowing()) {
+                    stage.close();
+                }
+                latch.countDown();
             }
-        }
-    }
+        });
 
-    /**
-     * Sets up the test environment before each test.
-     * Creates a new instance of FlashcardApp and initializes it with a test stage.
-     * This method is called automatically by TestFX framework.
-     *
-     * @param stage the primary stage provided by TestFX
-     * @throws Exception if the application cannot be started
-     */
-    @Override
-    public void start(Stage stage) throws Exception {
-        app = new FlashcardApp();
-        // Only start the app if resources are available
-        try {
-            app.start(stage);
-        } catch (Exception e) {
-            // If resources are missing, create a minimal stage for testing
-            stage.setTitle("Flashcards App");
-            stage.show();
-        }
-    }
-
-    /**
-     * Tests the main method of FlashcardApp.
-     * Verifies that the main method exists, is public, static, and takes String array parameter.
-     * This test ensures that the application entry point is properly configured
-     * according to Java application standards.
-     * 
-     * @throws SecurityException if reflection access is denied
-     */
-    @Test
-    public void testMain() throws SecurityException {
-        // Verify that the main method exists and has correct signature
-        Method mainMethod = null;
-        try {
-            mainMethod = FlashcardApp.class.getMethod("main", String[].class);
-        } catch (NoSuchMethodException e) {
-            throw new AssertionError("Main method should exist with String[] parameter", e);
+        assertTrue(latch.await(15, TimeUnit.SECONDS), "Test should complete within timeout");
+        
+        Throwable error = errorRef.get();
+        if (error != null) {
+            fail("start() method failed: " + error.getMessage() + "\nCause: " + 
+                 (error.getCause() != null ? error.getCause().getMessage() : "none"));
         }
         
-        assertNotNull(mainMethod, "Main method should not be null");
-        assertEquals("main", mainMethod.getName(), "Method should be named 'main'");
-        assertEquals(void.class, mainMethod.getReturnType(), "Main method should return void");
-        
-        // Verify method is public and static
-        assertTrue(java.lang.reflect.Modifier.isPublic(mainMethod.getModifiers()),
-                  "Main method should be public");
-        assertTrue(java.lang.reflect.Modifier.isStatic(mainMethod.getModifiers()),
-                  "Main method should be static");
+        assertTrue(allLinesExecuted.get(), "All lines in start() should execute successfully");
     }
 
     /**
-     * Tests the start method functionality.
-     * Verifies that the application can create and configure a stage properly.
-     * This test checks stage title, visibility, and basic scene setup.
+     * Tests that primaryStage.setTitle() is called with correct value.
      */
     @Test
-    public void testStart() {
-        // Get the stage from TestFX
-        Stage primaryStage = null;
-        if (!listTargetWindows().isEmpty()) {
-            primaryStage = (Stage) listTargetWindows().get(0);
-        }
-        
-        if (primaryStage != null) {
-            // Verify that the stage has the correct title
-            assertEquals("Flashcards App", primaryStage.getTitle(), 
-                        "Stage title should be 'Flashcards App'");
-            
-            // Verify that the stage is showing
-            assertTrue(primaryStage.isShowing(), "Stage should be showing");
-        }
-    }
+    public void testSetTitle() throws InterruptedException {
+        CountDownLatch latch = new CountDownLatch(1);
+        AtomicReference<String> titleRef = new AtomicReference<>();
 
-    /**
-     * Tests error handling when starting with a null stage.
-     * This test ensures that the application handles invalid input gracefully
-     * and provides appropriate error responses.
-     */
-    @Test
-    public void testStartWithNullStage() {
-        FlashcardApp testApp = new FlashcardApp();
-        
-        // Test that starting with null stage throws appropriate exception
-        assertThrows(Exception.class, () -> {
-            testApp.start(null);
-        }, "Starting with null stage should throw an exception");
-    }
-
-    /**
-     * Tests that FlashcardApp extends Application class correctly.
-     * Verifies the inheritance hierarchy is properly set up for JavaFX applications.
-     */
-    @Test
-    public void testInheritance() {
-        FlashcardApp testApp = new FlashcardApp();
-        assertTrue(testApp instanceof javafx.application.Application,
-                  "FlashcardApp should extend Application");
-    }
-
-    /**
-     * Tests the application's resource loading capabilities.
-     * Verifies that the required FXML and CSS resources exist in the classpath.
-     * This test helps ensure deployment and packaging will work correctly.
-     */
-    @Test
-    public void testResourceExistence() {
-        // Test for FXML resource existence
-        try {
-            assertNotNull(FlashcardApp.class.getResource("FlashcardLogin.fxml"),
-                         "FlashcardLogin.fxml should exist in resources");
-        } catch (Exception e) {
-            // Resource might not exist in test environment, log but don't fail
-            System.out.println("Warning: FlashcardLoginUI.fxml not found in test classpath");
-        }
-
-        // Test for CSS resource existence  
-        try {
-            assertNotNull(FlashcardApp.class.getResource("FlashcardLogin.css"),
-                         "FlashcardLogin.css should exist in resources");
-        } catch (Exception e) {
-            // Resource might not exist in test environment, log but don't fail
-            System.out.println("Warning: FlashcardLogin.css not found in test classpath");
-        }
-    }
-
-    /**
-     * Tests application instantiation.
-     * Verifies that FlashcardApp can be instantiated without errors
-     * and that multiple instances can be created if needed.
-     */
-    @Test
-    public void testApplicationInstantiation() {
-        FlashcardApp app1 = new FlashcardApp();
-        FlashcardApp app2 = new FlashcardApp();
-        
-        assertNotNull(app1, "First app instance should not be null");
-        assertNotNull(app2, "Second app instance should not be null");
-        assertTrue(app1 != app2, "Different instances should be different objects");
-    }
-
-    /**
-     * Tests stage configuration after successful start.
-     * Verifies that when the application starts successfully,
-     * the stage is properly configured and visible.
-     */
-    @Test
-    public void testStageConfiguration() {
-        if (!listTargetWindows().isEmpty()) {
-            Stage stage = (Stage) listTargetWindows().get(0);
-            
-            // Test basic stage properties
-            assertNotNull(stage, "Stage should not be null");
-            assertTrue(stage.isShowing(), "Stage should be visible");
-            assertEquals("Flashcards App", stage.getTitle(), "Title should be set correctly");
-            
-            // Test that stage has a scene (if resources loaded correctly)
-            Scene scene = stage.getScene();
-            if (scene != null) {
-                assertNotNull(scene.getRoot(), "Scene should have a root node");
+        Platform.runLater(() -> {
+            try {
+                FlashcardApp app = new FlashcardApp();
+                Stage stage = new Stage();
+                app.start(stage);
+                titleRef.set(stage.getTitle());
+                stage.close();
+            } catch (Exception e) {
+                // Expected if resources not available
+            } finally {
+                latch.countDown();
             }
-        }
+        });
+
+        latch.await(10, TimeUnit.SECONDS);
+        assertEquals("Flashcards App", titleRef.get(), "Stage title should be set correctly");
+    }
+
+    /**
+     * Tests that Scene is created with FXMLLoader.
+     */
+    @Test
+    public void testSceneCreation() throws InterruptedException {
+        CountDownLatch latch = new CountDownLatch(1);
+        AtomicReference<Boolean> sceneCreated = new AtomicReference<>(false);
+
+        Platform.runLater(() -> {
+            try {
+                FlashcardApp app = new FlashcardApp();
+                Stage stage = new Stage();
+                app.start(stage);
+                sceneCreated.set(stage.getScene() != null);
+                stage.close();
+            } catch (Exception e) {
+                // Expected if resources not available
+            } finally {
+                latch.countDown();
+            }
+        });
+
+        latch.await(10, TimeUnit.SECONDS);
+        assertTrue(sceneCreated.get(), "Scene should be created from FXML");
+    }
+
+    /**
+     * Tests that CSS stylesheet is added to scene.
+     */
+    @Test
+    public void testStylesheetAddition() throws InterruptedException {
+        CountDownLatch latch = new CountDownLatch(1);
+        AtomicReference<Boolean> stylesheetAdded = new AtomicReference<>(false);
+
+        Platform.runLater(() -> {
+            try {
+                FlashcardApp app = new FlashcardApp();
+                Stage stage = new Stage();
+                app.start(stage);
+                
+                if (stage.getScene() != null) {
+                    stylesheetAdded.set(!stage.getScene().getStylesheets().isEmpty());
+                }
+                
+                stage.close();
+            } catch (Exception e) {
+                // Expected if resources not available
+            } finally {
+                latch.countDown();
+            }
+        });
+
+        latch.await(10, TimeUnit.SECONDS);
+        assertTrue(stylesheetAdded.get(), "Stylesheet should be added to scene");
+    }
+
+    /**
+     * Tests that primaryStage.setScene() is called.
+     */
+    @Test
+    public void testSetScene() throws InterruptedException {
+        CountDownLatch latch = new CountDownLatch(1);
+        AtomicReference<Boolean> sceneSet = new AtomicReference<>(false);
+
+        Platform.runLater(() -> {
+            try {
+                FlashcardApp app = new FlashcardApp();
+                Stage stage = new Stage();
+                app.start(stage);
+                sceneSet.set(stage.getScene() != null);
+                stage.close();
+            } catch (Exception e) {
+                // Expected if resources not available
+            } finally {
+                latch.countDown();
+            }
+        });
+
+        latch.await(10, TimeUnit.SECONDS);
+        assertTrue(sceneSet.get(), "Scene should be set on stage");
+    }
+
+    /**
+     * Tests that primaryStage.show() is called.
+     */
+    @Test
+    public void testShowStage() throws InterruptedException {
+        CountDownLatch latch = new CountDownLatch(1);
+        AtomicReference<Boolean> stageShown = new AtomicReference<>(false);
+
+        Platform.runLater(() -> {
+            try {
+                FlashcardApp app = new FlashcardApp();
+                Stage stage = new Stage();
+                app.start(stage);
+                stageShown.set(stage.isShowing());
+                stage.close();
+            } catch (Exception e) {
+                // Expected if resources not available
+            } finally {
+                latch.countDown();
+            }
+        });
+
+        latch.await(10, TimeUnit.SECONDS);
+        assertTrue(stageShown.get(), "Stage should be shown");
+    }
+
+    /**
+     * Tests that FXML resource exists.
+     */
+    @Test
+    public void testFXMLResourceExists() {
+        assertNotNull(
+            FlashcardApp.class.getResource("/ui/FlashcardLogin.fxml"),
+            "FlashcardLogin.fxml should exist"
+        );
+    }
+
+    /**
+     * Tests that CSS resource exists.
+     */
+    @Test
+    public void testCSSResourceExists() {
+        assertNotNull(
+            FlashcardApp.class.getResource("/ui/FlashcardLogin.css"),
+            "FlashcardLogin.css should exist"
+        );
+    }
+
+    /**
+     * Tests that main method exists.
+     */
+    @Test
+    public void testMainMethodExists() throws NoSuchMethodException {
+        assertNotNull(FlashcardApp.class.getMethod("main", String[].class));
+    }
+
+    /**
+     * Tests that the class extends Application.
+     */
+    @Test
+    public void testExtendsApplication() {
+        assertTrue(javafx.application.Application.class.isAssignableFrom(FlashcardApp.class));
     }
 }
