@@ -17,6 +17,7 @@ import dto.FlashcardDeckDto;
 import dto.FlashcardDeckManagerDto;
 import dto.mappers.FlashcardDeckMapper;
 import server.service.DeckService;
+import shared.ApiConstants;
 import shared.ApiEndpoints;
 import shared.ApiResponse;
 
@@ -87,7 +88,7 @@ public class DeckController {
     try {
       FlashcardDeck deck = deckService.createDeck(username, deckName);
       FlashcardDeckDto dto = mapper.toDto(deck);
-      return new ApiResponse<>(true, "Deck created successfully", dto);
+      return new ApiResponse<>(true, ApiConstants.DECK_CREATED, dto);
     } catch (Exception e) {
       return new ApiResponse<>(false, "Error creating deck: " + e.getMessage(), null);
     }
@@ -103,7 +104,7 @@ public class DeckController {
   public ApiResponse<Void> deleteDeck(@RequestParam String username, @RequestParam String deckName) {
     try {
       deckService.deleteDeck(username, deckName);
-      return new ApiResponse<>(true, "Deck deleted successfully", null);
+      return new ApiResponse<>(true, ApiConstants.DECK_DELETED, null);
     } catch (Exception e) {
       return new ApiResponse<>(false, "Error deleting deck: " + e.getMessage(), null);
     }
