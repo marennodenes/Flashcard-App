@@ -92,7 +92,7 @@ public class FlashcardControllerTest {
         .param("answer", "A programming language"))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.success").value(true))
-        .andExpect(jsonPath("$.message").value("Flashcard created successfully"))
+        .andExpect(jsonPath("$.message").value("Flashcard created successfully."))
         .andExpect(jsonPath("$.data.question").value("What is Java?"))
         .andExpect(jsonPath("$.data.answer").value("A programming language"));
   }
@@ -328,7 +328,7 @@ public class FlashcardControllerTest {
         .param("number", "1"))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.success").value(true))
-        .andExpect(jsonPath("$.message").value("Flashcard deleted successfully"));
+        .andExpect(jsonPath("$.message").value("Flashcard deleted successfully."));
   }
 
   /**

@@ -178,7 +178,7 @@ public class DeckControllerTest {
         .param("deckName", "NewDeck"))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.success").value(true))
-        .andExpect(jsonPath("$.message").value("Deck created successfully"))
+        .andExpect(jsonPath("$.message").value("Deck created successfully."))
         .andExpect(jsonPath("$.data.deckName").value("NewDeck"));
   }
 
@@ -238,7 +238,7 @@ public class DeckControllerTest {
         .param("deckName", "TestDeck"))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.success").value(true))
-        .andExpect(jsonPath("$.message").value("Deck deleted successfully"));
+        .andExpect(jsonPath("$.message").value("Deck deleted successfully."));
   }
 
   /**
@@ -288,6 +288,7 @@ public class DeckControllerTest {
    *
    * @throws Exception if the MockMvc request fails
    */
+  @SuppressWarnings("null")
   @Test
   void testUpdateAllDecks_Success() throws Exception {
     doNothing().when(deckService).updateAllDecks(anyString(), any(FlashcardDeckManager.class));
@@ -308,6 +309,7 @@ public class DeckControllerTest {
    *
    * @throws Exception if the MockMvc request fails
    */
+  @SuppressWarnings("null")
   @Test
   void testUpdateAllDecks_UserNotFound() throws Exception {
     doThrow(new IllegalArgumentException("User not found"))
@@ -329,6 +331,7 @@ public class DeckControllerTest {
    *
    * @throws Exception if the MockMvc request fails
    */
+  @SuppressWarnings("null")
   @Test
   void testUpdateAllDecks_InvalidData() throws Exception {
     doThrow(new IllegalArgumentException("Invalid deck data"))

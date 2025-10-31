@@ -152,7 +152,7 @@ class UserServiceTest {
     
         var ex3 = assertThrows(IllegalArgumentException.class,
                 () -> userService.createUser(username3, password3));
-        assertEquals(ApiConstants.PASSWORD_INVALID, ex3.getMessage());
+        assertEquals(ApiConstants.INVALID_PASSWORD, ex3.getMessage());
     }
 
 
@@ -254,6 +254,97 @@ class UserServiceTest {
         assertFalse(userService.isValidPassword("Password!"));    // no digit
         assertFalse(userService.isValidPassword("Password1"));    // no special char
         assertTrue(userService.isValidPassword("Password1!"));    // valid
+    }
+
+    /**
+     * Tests the validatePasswordDetailed method of UserService.
+     * 
+     * Verifies that:
+     * - The method returns correct error messages for invalid passwords
+     * - The method returns null for valid passwords
+     * - All password validation rules are properly tested
+     * 
+     */
+    @Test
+    void testValidatePasswordDetailed() {
+        // null password
+        assertEquals(ApiConstants.INVALID_PASSWORD, userService.validatePasswordDetailed(null));
+        
+        // too short
+        assertEquals(ApiConstants.PASSWORD_TOO_SHORT, userService.validatePasswordDetailed("aA1!"));
+        
+        // no uppercase
+        assertEquals(ApiConstants.PASSWORD_MISSING_UPPERCASE, userService.validatePasswordDetailed("password1!"));
+        
+        // no lowercase
+        assertEquals(ApiConstants.PASSWORD_MISSING_LOWERCASE, userService.validatePasswordDetailed("PASSWORD1!"));
+        
+        // no digit
+        assertEquals(ApiConstants.PASSWORD_MISSING_DIGIT, userService.validatePasswordDetailed("Password!"));
+        
+        // no special character
+        assertEquals(ApiConstants.PASSWORD_MISSING_SPECIAL, userService.validatePasswordDetailed("Password1"));
+        
+        // valid password
+        assertNull(userService.validatePasswordDetailed("Password1!"));
+    }
+
+    /**
+     * Tests the createUserWithValidation method of UserService.
+     * 
+     * Verifies that:
+     * - A new user can be created successfully with valid credentials
+     * - Proper exceptions are thrown for various validation failures
+     * - IOException from persistence layer is properly handled
+     * 
+     */
+    @Test
+    void testCreateUserWithValidation() throws IOException {
+        String username = "newUser";
+        String password = "Valid1@Pass";
+
+        // Success case
+        when(persistent.userExists(username)).thenReturn(false);
+        
+        User result = userService.createUserWithValidation(username, password);
+        
+        assertNotNull(result);
+        assertEquals(username, result.getUsername());
+        verify(persistent).writeUserData(any(User.class));
+
+        // Empty username or password
+        var ex1 = assertThrows(IllegalArgumentException.class,
+                () -> userService.createUserWithValidation("", password));
+        assertEquals(ApiConstants.INVALID_REQUEST, ex1.getMessage());
+        
+        var ex2 = assertThrows(IllegalArgumentException.class,
+                () -> userService.createUserWithValidation(username, ""));
+        assertEquals(ApiConstants.INVALID_REQUEST, ex2.getMessage());
+
+        // User already exists
+        when(persistent.userExists("existingUser")).thenReturn(true);
+        var ex3 = assertThrows(IllegalArgumentException.class,
+                () -> userService.createUserWithValidation("existingUser", password));
+        assertEquals(ApiConstants.USER_ALREADY_EXISTS, ex3.getMessage());
+
+        // Invalid password - too short
+        when(persistent.userExists("testUser")).thenReturn(false);
+        var ex4 = assertThrows(IllegalArgumentException.class,
+                () -> userService.createUserWithValidation("testUser", "aB1!"));
+        assertEquals(ApiConstants.PASSWORD_TOO_SHORT, ex4.getMessage());
+
+        // Invalid password - missing uppercase
+        var ex5 = assertThrows(IllegalArgumentException.class,
+                () -> userService.createUserWithValidation("testUser2", "password1!"));
+        assertEquals(ApiConstants.PASSWORD_MISSING_UPPERCASE, ex5.getMessage());
+
+        // IOException handling
+        when(persistent.userExists("ioErrorUser")).thenReturn(false);
+        doThrow(new IOException("Disk full")).when(persistent).writeUserData(any(User.class));
+        
+        var ex6 = assertThrows(IllegalArgumentException.class,
+                () -> userService.createUserWithValidation("ioErrorUser", "Valid1@Pass"));
+        assertTrue(ex6.getMessage().startsWith("Failed to save user data:"));
     }
 }
 
