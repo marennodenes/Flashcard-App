@@ -110,7 +110,7 @@ public class FlashcardSignUpController {
   private boolean validateInput(String username, String password, String confirmedPassword) {
     // Check for empty fields
     if (username.isEmpty() || password.isEmpty() || confirmedPassword.isEmpty()) {
-      showError("Username and password fields\ncannot be empty");
+      showError("Username and password\nfields cannot be empty");
       return false;
     }
 
@@ -147,13 +147,15 @@ public class FlashcardSignUpController {
         ApiClient.showAlert("Error", "Failed to load main application");
       }
     } else {
-      // Handle different types of errors
-      if (result.getMessage().contains("409") || result.getMessage().toLowerCase().contains("already exists")) {
+      // Handle different types of errors with specific text messages
+      String errorMessage = result.getMessage();
+      if (errorMessage.toLowerCase().contains("already exists")) {
         showError("Username already exists,\ntry with another username");
       } else {
-        ApiClient.showAlert("Registration Error", result.getMessage());
-        System.out.println("Registration failed: " + result.getMessage());
+        // Show the error message directly as text
+        showError(errorMessage);
       }
+      System.out.println("Registration failed: " + errorMessage);
     }
   }
 

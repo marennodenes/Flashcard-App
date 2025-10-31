@@ -9,6 +9,7 @@ import app.User;
 import itp.storage.FlashcardPersistent;
 import shared.ApiConstants;
 
+
 /**
  * Service class for managing user operations including retrieval,
  * creation, existence check, login, and password validation.
@@ -58,6 +59,40 @@ public class UserService {
   }
 
   /**
+   * Creates a new user with detailed validation and error handling.
+   * 
+   * @param username the username for the new user
+   * @param password the password for the new user
+   * @return the created User object if successful, null if failed
+   * @throws IllegalArgumentException with detailed error message if validation fails
+   */
+  public User createUserWithValidation(String username, String password) throws IllegalArgumentException {
+    try {
+      LoginValidator validator = new LoginValidator(persistent);
+
+      if (username.isEmpty() || password.isEmpty()) {
+        throw new IllegalArgumentException(ApiConstants.INVALID_REQUEST);
+      }
+
+      if (!validator.isUsernameUnique(username)) {
+        throw new IllegalArgumentException(ApiConstants.USER_ALREADY_EXISTS);
+      }
+
+      String passwordError = validatePasswordDetailed(password);
+      if (passwordError != null) {
+        throw new IllegalArgumentException(passwordError);
+      }
+
+      User newUser = new User(username, password);
+      persistent.writeUserData(newUser);
+      return newUser;
+      
+    } catch (IOException e) {
+      throw new IllegalArgumentException("Failed to save user data: " + e.getMessage());
+    }
+  }
+
+  /**
    * Creates a new user with the specified username and password.
    * 
    * 
@@ -81,7 +116,7 @@ public class UserService {
     }
 
     if (!isValidPassword(password)) {
-      throw new IllegalArgumentException(ApiConstants.PASSWORD_INVALID);
+      throw new IllegalArgumentException(ApiConstants.INVALID_PASSWORD);
     }
 
     User newUser = new User(username, password);
@@ -135,18 +170,47 @@ public class UserService {
   }
 
   /**
+   * Validates a password and returns an error message if invalid.
+   * Returns the first validation error found.
+   * 
+   * @param password the password to validate
+   * @return null if valid, or error message string if invalid
+   */
+  public String validatePasswordDetailed(String password) {
+    if (password == null) {
+      return ApiConstants.INVALID_PASSWORD;
+    }
+    
+    if (password.length() < 8) {
+      return ApiConstants.PASSWORD_TOO_SHORT;
+    }
+    
+    if (!password.matches(".*[A-Z].*")) {
+      return ApiConstants.PASSWORD_MISSING_UPPERCASE;
+    }
+    
+    if (!password.matches(".*[a-z].*")) {
+      return ApiConstants.PASSWORD_MISSING_LOWERCASE;
+    }
+    
+    if (!password.matches(".*\\d.*")) {
+      return ApiConstants.PASSWORD_MISSING_DIGIT;
+    }
+    
+    if (!password.matches(".*[^a-zA-Z0-9].*")) {
+      return ApiConstants.PASSWORD_MISSING_SPECIAL;
+    }
+    
+    return null; // Password is valid
+  }
+
+  /**
    * Checks if the given password meets the security requirements.
    * 
    * @param password
    * @return true if the password is valid, false otherwise
    */
   public boolean isValidPassword(String password) {
-    if (password == null) return false;
-    if (password.length() < 8) return false;
-    if (!password.matches(".*[A-Z].*")) return false; // minst én stor bokstav
-    if (!password.matches(".*[a-z].*")) return false; // minst én liten bokstav
-    if (!password.matches(".*\\d.*")) return false;   // minst ett tall
-    if (!password.matches(".*[^a-zA-Z0-9].*")) return false; // minst ett spesialtegn
-    return true;
+    return validatePasswordDetailed(password) == null;
   }
 }
