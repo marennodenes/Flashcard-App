@@ -67,9 +67,13 @@ public class FlashcardLoginControllerTest {
     public static void initJavaFX() throws InterruptedException {
         // Initialize JavaFX toolkit
         if (!Platform.isFxApplicationThread()) {
-            CountDownLatch latch = new CountDownLatch(1);
-            Platform.startup(() -> latch.countDown());
-            latch.await();
+            try {
+                CountDownLatch latch = new CountDownLatch(1);
+                Platform.startup(() -> latch.countDown());
+                latch.await();
+            } catch (IllegalStateException e) {
+                // Toolkit already initialized
+            }
         }
     }
 
