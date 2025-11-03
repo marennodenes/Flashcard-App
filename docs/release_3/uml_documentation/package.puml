@@ -7,6 +7,10 @@ title flashcards
 
 package "flashcards" {
 
+    package "config" {
+        [itp.config]
+    }
+
     package "core" {
         [itp.core]
     }
@@ -15,18 +19,25 @@ package "flashcards" {
         [itp.fxui]
     }
 
-
-    package "config" {
-        [itp.config]
-    }
-
     package "storage" {
         [itp.storage]
     }
+
+    package "shared" {
+        [itp.shared]
+    }
+
+    package "server" {
+        [itp.server]
+    }
 }
 
-"itp.fxui" --> "itp.core" : "Dependent on"
-"itp.fxui" --> "itp.storage" : "Dependent on"
-"itp.storage" --> "itp.core" : "Dependent on"
+"itp.fxui" --> "itp.storage" : "Depends on"
+"itp.fxui" --> "itp.shared" : "Depends on"
+"itp.storage" --> "itp.core" : "Depends on"
+"itp.server" --> "itp.storage" : "Depends on"
+"itp.server" --> "itp.shared" : "Depends on"
+"itp.server" --> "itp.core" : "Depends on"
+"itp.shared" --> "itp.core" : "Depends on"
 
 @enduml
