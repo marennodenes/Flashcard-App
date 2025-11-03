@@ -1,14 +1,12 @@
 package itp.storage;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
@@ -24,6 +22,10 @@ import app.User;
  * Test class for verifying the persistence functionality of Flashcard decks.
  * This class contains unit tests to ensure that Flashcard decks can be written
  * and managed correctly using the {@link FlashcardPersistent} class.
+ * 
+ * @author chrsom 
+ * @author isamw
+ * @see FlashcardPersistent
  */
 @Tag("storage")
 public class FlashcardPersistentTest {
@@ -51,9 +53,8 @@ public class FlashcardPersistentTest {
 
    /**
    * Tests the functionality of writing a {@link FlashcardDeck} to persistent storage.
-   * 
-   * <p>This test creates two sample decks, adds flashcards to them, and verifies
-   * that the decks can be written to persistent storage without errors.</p>
+   * This test creates two sample decks, adds flashcards to them, and verifies
+   * that the decks can be written to persistent storage without errors.
    * 
    * @throws IOException if an I/O error occurs during the write operation
    */
@@ -92,9 +93,8 @@ public class FlashcardPersistentTest {
 
   /**
    * Tests the functionality of reading a {@link FlashcardDeck} from persistent storage.
-   * 
-   * <p>This test writes a sample deck to persistent storage, reads it back, and verifies
-   * that the contents of the deck match the original.</p>
+   * This test writes a sample deck to persistent storage, reads it back, and verifies
+   * that the contents of the deck match the original.
    * 
    * @throws IOException if an I/O error occurs during the read or write operation
    */
@@ -284,6 +284,7 @@ public class FlashcardPersistentTest {
   /**
    * Tests that writeDeck throws an IOException when trying to write deck data
    * for a user that doesn't exist. Verifies the error handling for missing users.
+   * 
    */
   @Test
   public void testWriteDeckNonExistingUser() {
