@@ -101,21 +101,36 @@ public class FlashcardMainController {
    * and configures button states and visibility.
    */
   public void updateUi(){
-    usernameField.setText(currentUsername);
+    if (usernameField != null) {
+      usernameField.setText(currentUsername);
+    }
+    
 
     List<FlashcardDeck> decks = deckManager.getDecks();
 
     if (showAlert) {
-      alertMessage.setText(error);
+      if(alertMessage != null){
+        alertMessage.setText(error);
       alertMessage.setVisible(true);
-      ex.setVisible(true);
+      }
+      if(ex != null){
+        ex.setVisible(true);
+      }
+      
       showAlert = false;
     } else {
-      alertMessage.setVisible(false);
-      ex.setVisible(false);
+      if (alertMessage != null) {
+        alertMessage.setVisible(false);
+      }
+      if(ex!= null){
+ex.setVisible(false);
+      }
+      
     }
-
-    noDecks.setVisible(decks.isEmpty());
+    if(noDecks != null){
+      noDecks.setVisible(decks.isEmpty());
+    }
+    
 
     hideAllDeckButtons();
 
@@ -123,23 +138,31 @@ public class FlashcardMainController {
     for (int i = 0; i < deckButtons.length; i++) {
       if (i < decks.size()) {
         FlashcardDeck deck = decks.get(i);
-
-        deckButtons[i].setText(deck.getDeckName());
+        if(deckButtons[i] != null){
+deckButtons[i].setText(deck.getDeckName());
         deckButtons[i].setDisable(false);
         deckButtons[i].setVisible(true);
-
-        deleteButtons[i].setVisible(true);
-
         // Store deck reference in button for event handling
         deckButtons[i].setUserData(deck);
-        deleteButtons[i].setUserData(deck);
+        }
+        
+        // Show corresponding delete button
+        if(deleteButtons[i] != null){
+          deleteButtons[i].setVisible(true);
+          // Store deck reference in delete button for event handling
+          deleteButtons[i].setUserData(deck);
+        }
       }
     }
 
-    // Disable new deck button if maximum number of decks reached
-    newDeckButton.setDisable(decks.size() >= 8);
-
-    deckNameInput.clear();
+   // Disable new deck button if maximum number of decks reached
+    if (newDeckButton != null) {
+        newDeckButton.setDisable(decks.size() >= 8);
+    }
+    
+    if (deckNameInput != null) {
+        deckNameInput.clear();
+    }
   }
 
   /**

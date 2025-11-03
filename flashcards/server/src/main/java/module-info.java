@@ -7,6 +7,7 @@ module flashcards.server {
     // Jackson for JSON processing (these are proper modules)
     requires com.fasterxml.jackson.databind;
     requires com.fasterxml.jackson.core;
+    requires com.fasterxml.jackson.annotation;
     
     // Internal dependencies
     requires transitive flashcards.storage;

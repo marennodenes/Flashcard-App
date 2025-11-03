@@ -8,6 +8,8 @@ import dto.LoginRequestDto;
 import dto.UserDataDto;
 import shared.ApiResponse;
 import shared.ApiEndpoints;
+import shared.ApiConstants;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -94,8 +96,8 @@ public class FlashcardSignUpController {
       Stage stage = (Stage) backButton.getScene().getWindow();
       stage.setScene(new Scene(root));
       stage.show();
-    } catch (IOException e) {
-      showError("Unable to load the login screen.");
+    } catch (IOException e) { 
+      showError(ApiConstants.INVALID_REQUEST);
     }
   }
 
@@ -116,10 +118,11 @@ public class FlashcardSignUpController {
 
     // Check if passwords match
     if (!password.equals(confirmedPassword)) {
-      System.out.println("Passwords must be equal");
       showError("Passwords must be equal");
       return false;
     }
+
+    
 
     return true;
   }
@@ -132,7 +135,7 @@ public class FlashcardSignUpController {
    */
   private void createUser(String username, String password) {
     ApiResponse<UserDataDto> result = ApiClient.performApiRequest(
-      ApiEndpoints.REGISTER_URL, 
+      ApiEndpoints.REGISTER_URL,
       "POST", 
       new LoginRequestDto(username, password),
       new TypeReference<ApiResponse<UserDataDto>>() {}
@@ -150,9 +153,9 @@ public class FlashcardSignUpController {
       // Handle different types of errors with specific text messages
       String errorMessage = result.getMessage();
       if (errorMessage.toLowerCase().contains("already exists")) {
-        showError("Username already exists,\ntry with another username");
+        showError("Username already exists, \ntry with another username");
       } else {
-        // Show the error message directly as text
+        //Show the error message directly as text
         showError(errorMessage);
       }
       System.out.println("Registration failed: " + errorMessage);
@@ -165,9 +168,14 @@ public class FlashcardSignUpController {
    * @param message the error message to display
    */
   private void showError(String message) {
+    // Update state and ensure the UI refresh runs on the JavaFX Application Thread.
     error = message;
     showAlert = true;
-    updateUi();
+    if (Platform.isFxApplicationThread()) {
+      updateUi();
+    } else {
+      Platform.runLater(this::updateUi);
+    }
   }
 
   /**
