@@ -9,6 +9,7 @@ import dto.UserDataDto;
 import shared.ApiResponse;
 import shared.ApiEndpoints;
 import shared.ApiConstants;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -35,9 +36,6 @@ public class FlashcardSignUpController {
 
   private boolean showAlert = false;
   private String error = "";
-
-  // Test hook: allow tests to provide a custom FXMLLoader (so navigateToMainApp can be tested without loading real FXML)
-  public static volatile java.util.function.Supplier<javafx.fxml.FXMLLoader> TEST_FXMLLOADER_SUPPLIER = null;
   
   /**
    * Initializes the controller after FXML loading.
@@ -98,7 +96,7 @@ public class FlashcardSignUpController {
       Stage stage = (Stage) backButton.getScene().getWindow();
       stage.setScene(new Scene(root));
       stage.show();
-    } catch (Exception e) {
+    } catch (IOException e) { 
       showError(ApiConstants.INVALID_REQUEST);
     }
   }
@@ -114,25 +112,17 @@ public class FlashcardSignUpController {
   private boolean validateInput(String username, String password, String confirmedPassword) {
     // Check for empty fields
     if (username.isEmpty() || password.isEmpty() || confirmedPassword.isEmpty()) {
-      showError(ApiConstants.INVALID_REQUEST);
+      showError("Username and password\nfields cannot be empty");
       return false;
     }
 
     // Check if passwords match
     if (!password.equals(confirmedPassword)) {
-      System.out.println("Passwords must be equal");
-      showError(ApiConstants.INVALID_PASSWORD);
+      showError("Passwords must be equal");
       return false;
     }
 
-    // Password policy: at least 8 chars, one uppercase, one digit, one special character
-    if (password.length() < 8
-        || !password.matches(".*[A-Z].*")
-        || !password.matches(".*\\d.*")
-        || !password.matches(".*[^a-zA-Z0-9].*")) {
-      showError(ApiConstants.INVALID_PASSWORD);
-      return false;
-    }
+    
 
     return true;
   }
@@ -163,10 +153,10 @@ public class FlashcardSignUpController {
       // Handle different types of errors with specific text messages
       String errorMessage = result.getMessage();
       if (errorMessage.toLowerCase().contains("already exists")) {
-        showError(ApiConstants.USER_ALREADY_EXISTS);
+        showError("Username already exists, \ntry with another username");
       } else {
-        // For general server errors show a modal alert (kept out of inline error)
-        ApiClient.showAlert("Registration Error", errorMessage);
+        //Show the error message directly as text
+        showError(errorMessage);
       }
       System.out.println("Registration failed: " + errorMessage);
     }
@@ -181,10 +171,10 @@ public class FlashcardSignUpController {
     // Update state and ensure the UI refresh runs on the JavaFX Application Thread.
     error = message;
     showAlert = true;
-    if (javafx.application.Platform.isFxApplicationThread()) {
+    if (Platform.isFxApplicationThread()) {
       updateUi();
     } else {
-      javafx.application.Platform.runLater(this::updateUi);
+      Platform.runLater(this::updateUi);
     }
   }
 
@@ -196,12 +186,7 @@ public class FlashcardSignUpController {
    * @throws IOException if the FXML file cannot be loaded
    */
   private void navigateToMainApp(String username) throws IOException {
-    FXMLLoader loader;
-    if (TEST_FXMLLOADER_SUPPLIER != null) {
-      loader = TEST_FXMLLOADER_SUPPLIER.get();
-    } else {
-      loader = new FXMLLoader(getClass().getResource("/ui/FlashcardMain.fxml"));
-    }
+    FXMLLoader loader = new FXMLLoader(getClass().getResource("/ui/FlashcardMain.fxml"));
     Parent root = loader.load();
     
     // Get the controller and set the username
