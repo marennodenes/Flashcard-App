@@ -28,8 +28,8 @@ public class FlashcardController {
 
     // Remove 'private' from these fields to make them package-private for test access
     @FXML Button backButton;
-    @FXML Button nextCard;
-    @FXML Button previousCard;
+    @FXML Button nextButton;  // Changed from nextCard to match FXML
+    @FXML Button previousButton;  // Changed from previousCard to match FXML
     @FXML Button card;
     @FXML ProgressBar progressBar;
     @FXML Text usernameField;
@@ -258,9 +258,9 @@ public class FlashcardController {
       controller.setDeckManager(deckManager, originalDeck);
     }
 
-    // Null check for nextCard to prevent crash
-    if (nextCard != null && nextCard.getScene() != null) {
-      Stage stage = (Stage) nextCard.getScene().getWindow();
+    // Null check for nextButton to prevent crash
+    if (nextButton != null && nextButton.getScene() != null) {
+      Stage stage = (Stage) nextButton.getScene().getWindow();
       stage.setScene(new Scene(root));
       stage.show();
     } else {
@@ -371,16 +371,6 @@ public class FlashcardController {
     }
   }
 
-  // /**
-  //  * Updates the progress bar and card number display.
-  //  * Shows current position in the deck and progress as a percentage.
-  //  */
-  // @FXML 
-  // public void updateProgress() {
-  //   progressBar.setProgress((currentCardI +1)/ (double) deck.size());
-  //   cardNumber.setText(Integer.toString(currentCardI + 1));
-
-  // }
 
   
   

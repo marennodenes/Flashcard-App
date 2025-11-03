@@ -26,13 +26,10 @@ import javafx.scene.control.TextField;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.scene.Scene;
-import javafx.scene.Node;
 import javafx.scene.Parent;
 import dto.LoginRequestDto;
 import dto.LoginResponseDto;
-import dto.UserDataDto;
 import shared.ApiResponse;
-import shared.ApiEndpoints;
 import com.fasterxml.jackson.core.type.TypeReference;
 
 public class FlashcardLoginControllerTest {
@@ -111,8 +108,6 @@ public class FlashcardLoginControllerTest {
         field.set(controller, mockObject);
     }
 
-
-@SuppressWarnings("unchecked")
 @Test
 public void testWhenLoginButtonClicked_emptyUsername() throws Exception {
     when(usernameField.getText()).thenReturn(""); // Empty username
@@ -125,7 +120,6 @@ public void testWhenLoginButtonClicked_emptyUsername() throws Exception {
     verify(ex).setVisible(true);
 }
 
-@SuppressWarnings("unchecked")
 @Test
 public void testWhenLoginButtonClicked_emptyPassword() throws Exception {
     when(usernameField.getText()).thenReturn("username"); // Non-empty username
@@ -203,6 +197,7 @@ public void testWhenLoginButtonClicked_invalidCredentials() throws Exception {
 }
 
 
+@SuppressWarnings("unchecked")
 @Test
 public void testWhenLoginButtonClicked_apiError() throws Exception {
     when(usernameField.getText()).thenReturn("user");
@@ -262,7 +257,6 @@ public void testWhenLoginButtonClicked_navigateToMainAppIOException() throws Exc
 public void testNavigateToMainApp_success() throws Exception {
     // Arrange
     String username = "testuser";
-    FXMLLoader mockLoader = mock(FXMLLoader.class);
     Parent realRoot = new javafx.scene.layout.Pane(); // Use a real JavaFX Parent subclass
     FlashcardMainController mockMainController = mock(FlashcardMainController.class);
     Stage mockStage = mock(Stage.class);
@@ -393,7 +387,6 @@ public void testNavigateToMainApp_failure() throws Exception {
     @Test
 public void testNavigateToSignUpPageSuccess() throws Exception {
     // Arrange
-    FXMLLoader mockLoader = mock(FXMLLoader.class);
     Parent realRoot = new javafx.scene.layout.Pane(); // Use a real JavaFX Parent subclass
     Stage mockStage = mock(Stage.class);
     Scene mockScene = mock(Scene.class);
@@ -502,7 +495,6 @@ public void testNavigateToSignUpPageFailure() throws Exception {
 
     @Test
     public void testFlashcardLoginController() {
-        // TODO: Test constructor
         assertNotNull(controller);
     }
 

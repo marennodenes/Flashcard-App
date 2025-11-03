@@ -48,8 +48,6 @@ import javafx.fxml.FXMLLoader;
 
 import javafx.scene.Parent;
 
-import javafx.scene.Scene;
-
 import javafx.scene.control.Button;
 
 import javafx.scene.control.TextField;
@@ -284,6 +282,7 @@ class FlashcardMainControllerTest {
     // ========== USERNAME TESTS ==========
 
     /** Tests setting a valid username. */
+    @SuppressWarnings("unchecked")
     @Test
     void testSetCurrentUsername_ValidUsername() {
 
@@ -328,6 +327,7 @@ class FlashcardMainControllerTest {
     }
 
     /** Tests that username trims whitespace. */
+    @SuppressWarnings("unchecked")
     @Test
     void testSetCurrentUsername_TrimsWhitespace() {
 
@@ -350,6 +350,7 @@ class FlashcardMainControllerTest {
     // ========== DECK CREATION TESTS ==========
 
     /** Tests creating a deck with valid name. */
+    @SuppressWarnings("unchecked")
     @Test
     void testWhenNewDeckButtonIsClicked_ValidDeckName() throws Exception {
 
@@ -388,6 +389,7 @@ class FlashcardMainControllerTest {
     }
 
     /** Tests that empty deck name shows error. */
+    @SuppressWarnings("unchecked")
     @Test
     void testWhenNewDeckButtonIsClicked_EmptyName_ShowsError() throws Exception {
 
@@ -418,6 +420,7 @@ class FlashcardMainControllerTest {
     }
 
     /** Tests that invalid deck name shows error. */
+    @SuppressWarnings("unchecked")
     @Test
     void testWhenNewDeckButtonIsClicked_InvalidName_ShowsError() throws Exception {
 
@@ -446,6 +449,7 @@ class FlashcardMainControllerTest {
     }
 
     /** Tests that new deck button is disabled when max decks reached. */
+    @SuppressWarnings("unchecked")
     @Test
     void testUpdateUi_MaxDecksReached_DisablesNewDeckButton() throws Exception {
 
@@ -482,6 +486,7 @@ class FlashcardMainControllerTest {
     }
 
     /** Tests that new deck button is enabled when less than max decks. */
+    @SuppressWarnings("unchecked")
     @Test
     void testUpdateUi_LessThanMaxDecks_EnablesNewDeckButton() throws Exception {
 
@@ -514,6 +519,7 @@ class FlashcardMainControllerTest {
     // ========== DECK DISPLAY TESTS ==========
 
     /** Tests that correct number of decks is shown. */
+    @SuppressWarnings("unchecked")
     @Test
     void testUpdateUi_ShowsCorrectNumberOfDecks() throws Exception {
 
@@ -564,6 +570,7 @@ class FlashcardMainControllerTest {
     }
 
     /** Tests that no decks message is hidden when decks exist. */
+    @SuppressWarnings("unchecked")
     @Test
     void testUpdateUi_HasDecks_HidesNoDecksMessage() throws Exception {
 
@@ -594,6 +601,7 @@ class FlashcardMainControllerTest {
     }
 
     /** Tests that deck buttons show correct deck names. */
+    @SuppressWarnings("unchecked")
     @Test
     void testUpdateUi_DeckButtonsShowCorrectNames() throws Exception {
 
@@ -670,6 +678,7 @@ class FlashcardMainControllerTest {
     }
 
     /** Tests that alert is displayed when showAlert is true. */
+    @SuppressWarnings("unchecked")
     @Test
     void testUpdateUi_ShowAlertTrue_DisplaysAlert() throws Exception {
 
@@ -716,6 +725,7 @@ class FlashcardMainControllerTest {
     }
 
     /** Tests that alert is hidden when showAlert is false. */
+    @SuppressWarnings("unchecked")
     @Test
     void testUpdateUi_ShowAlertFalse_HidesAlert() throws Exception {
 
@@ -764,6 +774,7 @@ class FlashcardMainControllerTest {
     // ========== DECK DELETION TESTS ==========
 
     /** Tests that deleting a deck removes it from manager. */
+    @SuppressWarnings("unchecked")
     @Test
     void testWhenDeleteDeckButtonIsClicked_RemovesDeck() throws Exception {
 
@@ -804,6 +815,7 @@ class FlashcardMainControllerTest {
     }
 
     /** Tests that UI is updated after deleting a deck. */
+    @SuppressWarnings("unchecked")
     @Test
     void testWhenDeleteDeckButtonIsClicked_UpdatesUi() throws Exception {
 
@@ -848,6 +860,7 @@ class FlashcardMainControllerTest {
     // ========== NAVIGATION TESTS ==========
 
     /** Tests that clicking a deck loads the deck view. */
+    @SuppressWarnings("unchecked")
     @Test
     void testWhenADeckIsClicked_LoadsDeckView() throws Exception {
 
@@ -886,6 +899,7 @@ class FlashcardMainControllerTest {
     }
 
     /** Tests that clicking a deck executes the method. */
+    @SuppressWarnings("unchecked")
     @Test
     void testWhenADeckIsClicked_ExecutesMethod() throws Exception {
 
@@ -990,6 +1004,7 @@ class FlashcardMainControllerTest {
     }
 
     /** Tests that logout executes the method. */
+    @SuppressWarnings("unchecked")
     @Test
     void testWhenLogOut_ExecutesMethod() throws Exception {
 
@@ -1096,6 +1111,7 @@ class FlashcardMainControllerTest {
     // ========== API INTEGRATION TESTS ==========
 
     /** Tests successful loading of user data from API. */
+    @SuppressWarnings("unchecked")
     @Test
     void testLoadUserData_SuccessfulLoad() throws Exception {
 
@@ -1128,6 +1144,7 @@ class FlashcardMainControllerTest {
     }
 
 /** Tests that API failure creates empty manager. */
+    @SuppressWarnings("unchecked")
     @Test
     void testLoadUserData_ApiFailure_CreatesEmptyManager() throws Exception {
 
@@ -1150,6 +1167,7 @@ class FlashcardMainControllerTest {
     }
 
     /** Tests that exception creates empty manager. */
+    @SuppressWarnings("unchecked")
     @Test
     void testLoadUserData_ExceptionThrown_CreatesEmptyManager() throws Exception {
 
@@ -1170,6 +1188,7 @@ class FlashcardMainControllerTest {
     }
 
     /** Tests that null data creates empty manager. */
+    @SuppressWarnings("unchecked")
     @Test
     void testLoadUserData_SuccessButNullData_CreatesEmptyManager() throws Exception {
 
@@ -1194,6 +1213,7 @@ class FlashcardMainControllerTest {
     }
 
     /** Tests that save failure shows alert. */
+    @SuppressWarnings("unchecked")
     @Test
     void testSaveUserData_SaveFailure_ShowsAlert() throws Exception {
 

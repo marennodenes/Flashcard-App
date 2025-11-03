@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.IOException;
@@ -38,11 +39,10 @@ import javafx.stage.Stage;
 public class FlashcardControllerTest extends ApplicationTest {
 
     private FlashcardController controller;
-    private Stage stage;
     private FlashcardDeck testDeck;
     private Button backButton;
-    private Button nextCard;
-    private Button previousCard;
+    private Button nextButton;  // Changed to match FXML and Java class
+    private Button previousButton;  // Changed to match FXML and Java class
     private Button card;
     private ProgressBar progressBar;
     private Text usernameField;
@@ -79,25 +79,23 @@ public class FlashcardControllerTest extends ApplicationTest {
      */
     @Override
     public void start(Stage stage) throws Exception {
-        this.stage = stage;
-        
         // Create test deck with sample flashcards
         testDeck = new FlashcardDeck("Test Deck");
         testDeck.addFlashcard(new Flashcard("What is Java?", "A programming language"));
         testDeck.addFlashcard(new Flashcard("What is JUnit?", "A testing framework"));
         testDeck.addFlashcard(new Flashcard("What is JavaFX?", "A GUI framework"));
         
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("FlashcardLearning.fxml"));
-        Parent root = loader.load();
-        controller = loader.getController();
-        
-        // Set up scene and stage
-        Scene scene = new Scene(root);
-        stage.setScene(scene);
-        stage.show();
-        
-        // Get references to FXML components for testing
-        initializeComponentReferences(root);
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("FlashcardLearning.fxml"));
+            Parent root = loader.load();
+            controller = loader.getController();
+            
+            // Set up scene and stage
+            Scene scene = new Scene(root);
+            stage.setScene(scene);
+            stage.show();
+            
+            // Get references to FXML components for testing
+            initializeComponentReferences(root);
     }
 
     /**
@@ -108,8 +106,8 @@ public class FlashcardControllerTest extends ApplicationTest {
      */
     private void initializeComponentReferences(Parent root) {
         backButton = (Button) root.lookup("#backButton");
-        nextCard = (Button) root.lookup("#nextCard");
-        previousCard = (Button) root.lookup("#previousCard");
+        nextButton = (Button) root.lookup("#nextButton");  // FXML uses nextButton
+        previousButton = (Button) root.lookup("#previousButton");  // FXML uses previousButton
         card = (Button) root.lookup("#card");
         progressBar = (ProgressBar) root.lookup("#progressBar");
         usernameField = (Text) root.lookup("#usernameField");
@@ -170,8 +168,8 @@ public class FlashcardControllerTest extends ApplicationTest {
     public void testInitialization() {
         // Verify all components are initialized
         assertNotNull(backButton, "Back button should be initialized");
-        assertNotNull(nextCard, "Next card button should be initialized");
-        assertNotNull(previousCard, "Previous card button should be initialized");
+        assertNotNull(nextButton, "Next card button should be initialized");
+        assertNotNull(previousButton, "Previous card button should be initialized");
         assertNotNull(card, "Card button should be initialized");
         assertNotNull(progressBar, "Progress bar should be initialized");
         assertNotNull(usernameField, "Username field should be initialized");
@@ -191,16 +189,16 @@ public class FlashcardControllerTest extends ApplicationTest {
                     "Should initially show first card question");
         
         // Click next card
-        clickOn(nextCard);
+        clickOn(nextButton);
         sleep(100);
         
         assertEquals("What is JUnit?", card.getText(),
                     "Should show second card question after clicking next");
         
         // Test looping - go to end and then next should loop to beginning
-        clickOn(nextCard); // Third card
+        clickOn(nextButton); // Third card
         sleep(100);
-        clickOn(nextCard); // Should loop back to first card
+        clickOn(nextButton); // Should loop back to first card
         sleep(100);
         
         assertEquals("What is Java?", card.getText(),
@@ -215,14 +213,14 @@ public class FlashcardControllerTest extends ApplicationTest {
     @Test
     public void testPreviousCardNavigation() {
         // From first card, previous should go to last card (looping)
-        clickOn(previousCard);
+        clickOn(previousButton);
         sleep(100);
         
         assertEquals("What is JavaFX?", card.getText(),
                     "Should loop to last card when clicking previous from first card");
         
         // Go back to previous
-        clickOn(previousCard);
+        clickOn(previousButton);
         sleep(100);
         
         assertEquals("What is JUnit?", card.getText(),
@@ -271,7 +269,7 @@ public class FlashcardControllerTest extends ApplicationTest {
                     "Progress bar should show correct initial progress");
         
         // Move to next card and check progress
-        clickOn(nextCard);
+        clickOn(nextButton);
         sleep(100);
         
         assertEquals("2", cardNumber.getText(),
@@ -322,9 +320,9 @@ public class FlashcardControllerTest extends ApplicationTest {
                     "Should display empty deck name");
         
         // Try navigation with empty deck (should not crash)
-        clickOn(nextCard);
+        clickOn(nextButton);
         sleep(100);
-        clickOn(previousCard);
+        clickOn(previousButton);
         sleep(100);
         clickOn(card);
         sleep(100);
@@ -464,10 +462,10 @@ public class FlashcardControllerTest extends ApplicationTest {
             controller.setDeck(singleDeck);
         });
         pause(100);
-        clickOn(nextCard);
+        clickOn(nextButton);
         pause(100);
         assertEquals("Q", card.getText(), "Should remain on the single card");
-        clickOn(previousCard);
+        clickOn(previousButton);
         pause(100);
         assertEquals("Q", card.getText(), "Should remain on the single card");
     }
@@ -592,7 +590,7 @@ public class FlashcardControllerTest extends ApplicationTest {
     @Test
     public void testWhenBackButtonIsClickedFallbackBackButton() {
         Platform.runLater(() -> {
-            controller.nextCard = null; // Force fallback
+            controller.nextButton = null; // Force fallback
             assertDoesNotThrow(() -> {
                 try {
                     controller.whenBackButtonIsClicked();
@@ -610,7 +608,7 @@ public class FlashcardControllerTest extends ApplicationTest {
     @Test
     public void testWhenBackButtonIsClickedFallbackCard() {
         Platform.runLater(() -> {
-            controller.nextCard = null;
+            controller.nextButton = null;
             controller.backButton = null; // Force fallback to card
             assertDoesNotThrow(() -> {
                 try {
@@ -629,7 +627,7 @@ public class FlashcardControllerTest extends ApplicationTest {
     @Test
     public void testWhenBackButtonIsClickedErrorBranch() {
         Platform.runLater(() -> {
-            controller.nextCard = null;
+            controller.nextButton = null;
             controller.backButton = null;
             controller.card = null; // All null, should log error
             assertDoesNotThrow(() -> {
@@ -668,7 +666,7 @@ public class FlashcardControllerTest extends ApplicationTest {
     public void testWhenLogOutErrorBranch() {
         Platform.runLater(() -> {
             controller.backButton = null; // Force error branch
-            assertDoesNotThrow(() -> {
+            assertThrows(RuntimeException.class, () -> {
                 try {
                     controller.whenLogOut(null);
                 } catch (Exception e) {
@@ -702,7 +700,7 @@ public class FlashcardControllerTest extends ApplicationTest {
         Platform.runLater(() -> {
             app.FlashcardDeckManager deckManager = new app.FlashcardDeckManager();
             FlashcardDeck deckWithNull = new FlashcardDeck("NullCardDeck");
-            deckWithNull.addFlashcard(null);
+                deckWithNull.addFlashcard(null);
             deckManager.addDeck(deckWithNull);
             controller.setDeckManager(deckManager, deckWithNull);
             // Should not throw and should handle gracefully

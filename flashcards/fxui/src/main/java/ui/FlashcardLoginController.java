@@ -54,7 +54,6 @@ public class FlashcardLoginController {
    */
   public void updateUi() {
     if (showAlert) {
-      System.out.println("ERROR: " + error);
       alertMessage.setText(error);
       alertMessage.setVisible(true);
       ex.setVisible(true);

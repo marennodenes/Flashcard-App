@@ -9,10 +9,13 @@ import app.Flashcard;
 import app.FlashcardDeck;
 import app.FlashcardDeckManager;
 import javafx.collections.FXCollections;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
 import javafx.scene.text.Text;
+import javafx.stage.Stage;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -328,6 +331,14 @@ class FlashcardDeckControllerTest {
      */
     @Test
     void testWhenLogOut() {
+        // Mock the questionField to have a scene and window to avoid UI issues
+        TextField mockField = mock(TextField.class);
+        Scene mockScene = mock(Scene.class);
+        Stage mockStage = mock(Stage.class);
+        when(mockField.getScene()).thenReturn(mockScene);
+        when(mockScene.getWindow()).thenReturn(mockStage);
+        setField(controller, "questionField", mockField);
+        
         try (MockedStatic<ApiClient> apiClientMock = Mockito.mockStatic(ApiClient.class)) {
             apiClientMock.when(() -> ApiClient.performApiRequest(any(), any(), any(), any())).thenReturn(new ApiResponse<>(true, "", null));
             assertDoesNotThrow(() -> controller.whenLogOut());
@@ -370,6 +381,14 @@ class FlashcardDeckControllerTest {
      */
     @Test
     void testWhenLogOutFailure() {
+        // Mock the questionField to have a scene and window to avoid UI issues
+        TextField mockField = mock(TextField.class);
+        Scene mockScene = mock(Scene.class);
+        Stage mockStage = mock(Stage.class);
+        when(mockField.getScene()).thenReturn(mockScene);
+        when(mockScene.getWindow()).thenReturn(mockStage);
+        setField(controller, "questionField", mockField);
+        
         try (MockedStatic<ApiClient> apiClientMock = Mockito.mockStatic(ApiClient.class)) {
             apiClientMock.when(() -> ApiClient.performApiRequest(any(), any(), any(), any()))
                 .thenReturn(new ApiResponse<>(false, "error", null));
