@@ -19,6 +19,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
 import javafx.scene.text.Text;
@@ -51,6 +52,15 @@ public class FlashcardDeckController {
    */
   @FXML 
   public void initialize() {
+    // Set up simple cell factory to use toString() from FlashcardDto
+    listView.setCellFactory(list -> new ListCell<FlashcardDto>() {
+      @Override
+      protected void updateItem(FlashcardDto item, boolean empty) {
+        super.updateItem(item, empty);
+        setText(empty || item == null ? null : item.toString());
+      }
+    });
+    
     // Enable delete button only when a card is selected
     listView.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
       deleteCardButton.setDisable(newValue == null);
@@ -106,7 +116,8 @@ public class FlashcardDeckController {
     try {
       String url = ApiEndpoints.SERVER_BASE_URL + ApiEndpoints.DECKS + "/" 
           + URLEncoder.encode(currentDeck.getDeckName(), StandardCharsets.UTF_8)
-          + "?username=" + URLEncoder.encode(currentUsername, StandardCharsets.UTF_8);
+          + "?username=" + URLEncoder.encode(currentUsername, StandardCharsets.UTF_8)
+          + "&deckName=" + URLEncoder.encode(currentDeck.getDeckName(), StandardCharsets.UTF_8);
       
       ApiResponse<FlashcardDeckDto> result = ApiClient.performApiRequest(
         url,
@@ -115,8 +126,10 @@ public class FlashcardDeckController {
         new TypeReference<ApiResponse<FlashcardDeckDto>>() {}
       );
 
-      if (result.isSuccess() && result.getData() != null) {
+      if (result != null && result.isSuccess() && result.getData() != null) {
         currentDeck = result.getData();
+      } else if (result != null && !result.isSuccess()) {
+        ApiClient.showAlert("Load Error", result.getMessage());
       }
     } catch (Exception e) {
       ApiClient.showAlert("Load Error", "Could not load deck data: " + e.getMessage());
@@ -173,18 +186,21 @@ public class FlashcardDeckController {
           + "&question=" + URLEncoder.encode(q, StandardCharsets.UTF_8)
           + "&answer=" + URLEncoder.encode(a, StandardCharsets.UTF_8);
       
+      // Send empty JSON object as body since ApiClient requires it for POST requests
+      // Server doesn't use the body (uses URL parameters), but ApiClient validation requires it
       ApiResponse<FlashcardDto> result = ApiClient.performApiRequest(
         url,
         "POST",
-        null,
+        "{}", // Empty JSON object string
         new TypeReference<ApiResponse<FlashcardDto>>() {}
       );
 
-      if (result.isSuccess()) {
+      if (result != null && result.isSuccess()) {
         clearInputFields();
         updateUi();
       } else {
-        ApiClient.showAlert("Create Error", result.getMessage());
+        String errorMsg = result != null ? result.getMessage() : "No response from server";
+        ApiClient.showAlert("Create Error", "Failed to create flashcard: " + errorMsg);
       }
     } catch (Exception e) {
       ApiClient.showAlert("Create Error", "Failed to create flashcard: " + e.getMessage());
@@ -216,10 +232,11 @@ public class FlashcardDeckController {
         new TypeReference<ApiResponse<Void>>() {}
       );
 
-      if (result.isSuccess()) {
+      if (result != null && result.isSuccess()) {
         updateUi();
       } else {
-        ApiClient.showAlert("Delete Error", result.getMessage());
+        String errorMsg = result != null ? result.getMessage() : "No response from server";
+        ApiClient.showAlert("Delete Error", "Failed to delete flashcard: " + errorMsg);
       }
     } catch (Exception e) {
       ApiClient.showAlert("Delete Error", "Failed to delete flashcard: " + e.getMessage());

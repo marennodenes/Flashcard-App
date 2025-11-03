@@ -191,10 +191,12 @@ deckButtons[i].setText(deck.getDeckName());
         new TypeReference<ApiResponse<FlashcardDeckManagerDto>>() {}
       );
 
-      if (result.isSuccess() && result.getData() != null) {
+      if (result != null && result.isSuccess() && result.getData() != null) {
         decks = new ArrayList<>(result.getData().getDecks());
       } else {
-        ApiClient.showAlert("Load Error", result.getMessage());
+        if (result != null && !result.isSuccess()) {
+          ApiClient.showAlert("Load Error", result.getMessage());
+        }
         decks = new ArrayList<>();
       }
     } catch (Exception e) {
@@ -236,29 +238,56 @@ deckButtons[i].setText(deck.getDeckName());
         return;
       }
       
+      if (currentUsername == null || currentUsername.isEmpty()) {
+        error = "No user logged in";
+        showAlert = true;
+        ApiClient.showAlert("Create Error", "No user logged in");
+        updateUi();
+        return;
+      }
+      
       String url = ApiEndpoints.SERVER_BASE_URL + ApiEndpoints.DECKS + "/" 
           + URLEncoder.encode(deckName, StandardCharsets.UTF_8)
-          + "?username=" + URLEncoder.encode(currentUsername, StandardCharsets.UTF_8);
+          + "?username=" + URLEncoder.encode(currentUsername, StandardCharsets.UTF_8)
+          + "&deckName=" + URLEncoder.encode(deckName, StandardCharsets.UTF_8);
       
+      // Send empty JSON object as body since ApiClient requires it for POST requests
+      // Server doesn't use the body (uses URL parameters), but ApiClient validation requires it
       ApiResponse<FlashcardDeckDto> result = ApiClient.performApiRequest(
         url,
         "POST",
-        null,
+        "{}", // Empty JSON object string
         new TypeReference<ApiResponse<FlashcardDeckDto>>() {}
       );
 
-      if (result.isSuccess()) {
+      if (result != null && result.isSuccess()) {
+        // Clear input field
+        deckNameInput.clear();
+        // Reload decks from API
         loadUserData();
+        // Update UI to show new deck
         updateUi();
       } else {
-        error = result.getMessage();
+        String errorMsg = result != null ? result.getMessage() : "No response from server";
+        error = errorMsg;
         showAlert = true;
-        ApiClient.showAlert("Create Error", "Failed to create deck: " + error);
+        ApiClient.showAlert("Create Error", "Failed to create deck: " + errorMsg);
         updateUi();
       }
+    } catch (RuntimeException e) {
+      // ApiClient throws RuntimeException for request failures
+      String errorMsg = e.getMessage();
+      if (e.getCause() != null) {
+        errorMsg = e.getCause().getMessage();
+      }
+      error = "Failed to create deck: " + errorMsg;
+      showAlert = true;
+      ApiClient.showAlert("Create Error", error);
+      updateUi();
     } catch (Exception e) {
       error = "Failed to create deck: " + e.getMessage();
       showAlert = true;
+      ApiClient.showAlert("Create Error", error);
       updateUi();
     }
   }
@@ -282,7 +311,8 @@ deckButtons[i].setText(deck.getDeckName());
     try {
       String url = ApiEndpoints.SERVER_BASE_URL + ApiEndpoints.DECKS + "/" 
           + URLEncoder.encode(deck.getDeckName(), StandardCharsets.UTF_8)
-          + "?username=" + URLEncoder.encode(currentUsername, StandardCharsets.UTF_8);
+          + "?username=" + URLEncoder.encode(currentUsername, StandardCharsets.UTF_8)
+          + "&deckName=" + URLEncoder.encode(deck.getDeckName(), StandardCharsets.UTF_8);
       
       ApiResponse<Void> result = ApiClient.performApiRequest(
         url,
@@ -291,11 +321,12 @@ deckButtons[i].setText(deck.getDeckName());
         new TypeReference<ApiResponse<Void>>() {}
       );
 
-      if (result.isSuccess()) {
+      if (result != null && result.isSuccess()) {
         loadUserData();
         updateUi();
       } else {
-        ApiClient.showAlert("Delete Error", result.getMessage());
+        String errorMsg = result != null ? result.getMessage() : "No response from server";
+        ApiClient.showAlert("Delete Error", "Failed to delete deck: " + errorMsg);
       }
     } catch (Exception e) {
       ApiClient.showAlert("Delete Error", "Failed to delete deck: " + e.getMessage());

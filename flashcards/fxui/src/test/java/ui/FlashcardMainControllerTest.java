@@ -361,28 +361,35 @@ class FlashcardMainControllerTest {
 
         try (MockedStatic<ApiClient> apiClient = mockStatic(ApiClient.class)) {
 
-            controller.setCurrentUsername("testuser");
-
-            deckNameInput.setText("My New Deck");
-
             ActionEvent event = new ActionEvent();
 
             // Mock successful POST and GET responses
             FlashcardDeckDto newDeckDto = new FlashcardDeckDto("My New Deck", new ArrayList<>());
             ApiResponse<FlashcardDeckDto> postResponse = new ApiResponse<>(true, "", newDeckDto);
+            
+            // Mock initial GET response (for setCurrentUsername) - returns empty list
+            ApiResponse<FlashcardDeckManagerDto> getResponseInitial = createSuccessResponse(new ArrayList<>());
+            // Mock GET response after POST (for loadUserData in whenNewDeckButtonIsClicked) - returns new deck
             ApiResponse<FlashcardDeckManagerDto> getResponseAfterPost = createSuccessResponse(List.of(newDeckDto));
             
-            apiClient.when(() -> ApiClient.performApiRequest(anyString(), eq("POST"), isNull(), any(TypeReference.class)))
-                    .thenReturn(postResponse);
+            // Set up all mocking BEFORE any calls
             apiClient.when(() -> ApiClient.performApiRequest(anyString(), eq("GET"), isNull(), any(TypeReference.class)))
+                    .thenReturn(getResponseInitial)
                     .thenReturn(getResponseAfterPost);
             
+            apiClient.when(() -> ApiClient.performApiRequest(anyString(), eq("POST"), anyString(), any()))
+                    .thenReturn(postResponse);
+            
+            controller.setCurrentUsername("testuser");
+            
+            // Set deck name AFTER setCurrentUsername to ensure TextField is properly set up
+            deckNameInput.setText("My New Deck");
+            
             controller.whenNewDeckButtonIsClicked(event);
-
+            
             // Verify deck was added (via loadUserData which is called after successful POST)
-
             List<FlashcardDeckDto> decks = (List<FlashcardDeckDto>) getField("decks");
-
+            
             assertEquals(1, decks.size());
 
             assertEquals("My New Deck", decks.get(0).getDeckName());

@@ -49,7 +49,7 @@ public class FlashcardApiClientTest {
      */
     @Test
     void testSendRequestThrowsOnUnsupportedMethod() {
-        assertThrows(IllegalArgumentException.class, () -> ApiClient.sendRequest("http://localhost", "DELETE", null));
+        assertThrows(IllegalArgumentException.class, () -> ApiClient.sendRequest("http://localhost", "PATCH", null));
     }
 
     /**
