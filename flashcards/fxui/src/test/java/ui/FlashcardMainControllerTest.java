@@ -40,6 +40,8 @@ import dto.FlashcardDto;
 
 import dto.FlashcardDeckManagerDto;
 
+import dto.mappers.FlashcardDeckMapper;
+
 import shared.ApiResponse;
 
 import javafx.event.ActionEvent;
@@ -69,7 +71,7 @@ import javafx.stage.Stage;
 class FlashcardMainControllerTest {
 
     private FlashcardMainController controller;
-
+    private FlashcardDeckMapper mapper = new FlashcardDeckMapper();
     private Stage stage;
 
     // FXML components
@@ -356,33 +358,32 @@ class FlashcardMainControllerTest {
 
         try (MockedStatic<ApiClient> apiClient = mockStatic(ApiClient.class)) {
 
-            ApiResponse<FlashcardDeckManagerDto> getResponse = createSuccessResponse(new ArrayList<>());
-
-            ApiResponse<FlashcardDeckManagerDto> putResponse = createSuccessResponse(new ArrayList<>());
-
-            apiClient.when(() -> ApiClient.performApiRequest(anyString(), eq("GET"), isNull(), any(TypeReference.class)))
-
-                    .thenReturn(getResponse);
-
-            apiClient.when(() -> ApiClient.performApiRequest(anyString(), eq("PUT"), any(), any(TypeReference.class)))
-
-                    .thenReturn(putResponse);
-
             controller.setCurrentUsername("testuser");
 
             deckNameInput.setText("My New Deck");
 
             ActionEvent event = new ActionEvent();
 
+            // Mock successful POST and GET responses
+            FlashcardDeckDto newDeckDto = new FlashcardDeckDto("My New Deck", new ArrayList<>());
+            ApiResponse<FlashcardDeckDto> postResponse = new ApiResponse<>(true, "", newDeckDto);
+            ApiResponse<FlashcardDeckManagerDto> getResponseAfterPost = createSuccessResponse(List.of(newDeckDto));
+            
+            apiClient.when(() -> ApiClient.performApiRequest(anyString(), eq("POST"), isNull(), any(TypeReference.class)))
+                    .thenReturn(postResponse);
+            apiClient.when(() -> ApiClient.performApiRequest(anyString(), eq("GET"), isNull(), any(TypeReference.class)))
+                    .thenReturn(getResponseAfterPost);
+            
             controller.whenNewDeckButtonIsClicked(event);
 
-            // Verify deck was added
+            // Verify deck was added (via loadUserData which is called after successful POST)
 
-            FlashcardDeckManager manager = (FlashcardDeckManager) getField("deckManager");
+            @SuppressWarnings("unchecked")
+            List<FlashcardDeckDto> decks = (List<FlashcardDeckDto>) getField("decks");
 
-            assertEquals(1, manager.getDecks().size());
+            assertEquals(1, decks.size());
 
-            assertEquals("My New Deck", manager.getDecks().get(0).getDeckName());
+            assertEquals("My New Deck", decks.get(0).getDeckName());
 
         }
 
@@ -465,7 +466,8 @@ class FlashcardMainControllerTest {
 
             // Add 8 decks
 
-            FlashcardDeckManager manager = (FlashcardDeckManager) getField("deckManager");
+            @SuppressWarnings("unchecked")
+            List<FlashcardDeckDto> decks = (List<FlashcardDeckDto>) getField("decks");
 
             for (int i = 0; i < 8; i++) {
 
@@ -473,7 +475,7 @@ class FlashcardMainControllerTest {
 
                 deck.setDeckName("Deck " + (i + 1));
 
-                manager.addDeck(deck);
+                decks.add(mapper.toDto(deck));
 
             }
 
@@ -500,13 +502,14 @@ class FlashcardMainControllerTest {
 
             controller.setCurrentUsername("testuser");
 
-            FlashcardDeckManager manager = (FlashcardDeckManager) getField("deckManager");
+            @SuppressWarnings("unchecked")
+            List<FlashcardDeckDto> decks = (List<FlashcardDeckDto>) getField("decks");
 
             FlashcardDeck deck = new FlashcardDeck();
 
             deck.setDeckName("Test Deck");
 
-            manager.addDeck(deck);
+            decks.add(mapper.toDto(deck));
 
             controller.updateUi();
 
@@ -533,7 +536,8 @@ class FlashcardMainControllerTest {
 
             controller.setCurrentUsername("testuser");
 
-            FlashcardDeckManager manager = (FlashcardDeckManager) getField("deckManager");
+            @SuppressWarnings("unchecked")
+            List<FlashcardDeckDto> decks = (List<FlashcardDeckDto>) getField("decks");
 
             for (int i = 0; i < 3; i++) {
 
@@ -541,7 +545,7 @@ class FlashcardMainControllerTest {
 
                 deck.setDeckName("Deck " + (i + 1));
 
-                manager.addDeck(deck);
+                decks.add(mapper.toDto(deck));
 
             }
 
@@ -584,13 +588,14 @@ class FlashcardMainControllerTest {
 
             controller.setCurrentUsername("testuser");
 
-            FlashcardDeckManager manager = (FlashcardDeckManager) getField("deckManager");
+            @SuppressWarnings("unchecked")
+            List<FlashcardDeckDto> decks = (List<FlashcardDeckDto>) getField("decks");
 
             FlashcardDeck deck = new FlashcardDeck();
 
             deck.setDeckName("Test Deck");
 
-            manager.addDeck(deck);
+            decks.add(mapper.toDto(deck));
 
             controller.updateUi();
 
@@ -615,7 +620,8 @@ class FlashcardMainControllerTest {
 
             controller.setCurrentUsername("testuser");
 
-            FlashcardDeckManager manager = (FlashcardDeckManager) getField("deckManager");
+            @SuppressWarnings("unchecked")
+            List<FlashcardDeckDto> decks = (List<FlashcardDeckDto>) getField("decks");
 
             FlashcardDeck deck1 = new FlashcardDeck();
 
@@ -625,9 +631,9 @@ class FlashcardMainControllerTest {
 
             deck2.setDeckName("Science");
 
-            manager.addDeck(deck1);
+            decks.add(mapper.toDto(deck1));
 
-            manager.addDeck(deck2);
+            decks.add(mapper.toDto(deck2));
 
             controller.updateUi();
 
@@ -794,21 +800,35 @@ class FlashcardMainControllerTest {
 
             controller.setCurrentUsername("testuser");
 
-            FlashcardDeckManager manager = (FlashcardDeckManager) getField("deckManager");
+            @SuppressWarnings("unchecked")
+            List<FlashcardDeckDto> decks = (List<FlashcardDeckDto>) getField("decks");
 
             FlashcardDeck deck = new FlashcardDeck();
 
             deck.setDeckName("To Delete");
 
-            manager.addDeck(deck);
+            FlashcardDeckDto deckDto = mapper.toDto(deck);
+            decks.add(deckDto);
 
-            deleteDeck1.setUserData(deck);
+            deleteDeck1.setUserData(deckDto);
 
             ActionEvent event = new ActionEvent(deleteDeck1, null);
 
+            // Mock successful DELETE and GET responses
+            ApiResponse<Void> deleteResponse = new ApiResponse<>(true, "", null);
+            ApiResponse<FlashcardDeckManagerDto> getResponseAfterDelete = createSuccessResponse(new ArrayList<>());
+            
+            apiClient.when(() -> ApiClient.performApiRequest(anyString(), eq("DELETE"), isNull(), any(TypeReference.class)))
+                    .thenReturn(deleteResponse);
+            apiClient.when(() -> ApiClient.performApiRequest(anyString(), eq("GET"), isNull(), any(TypeReference.class)))
+                    .thenReturn(getResponseAfterDelete);
+            
             controller.whenDeleteDeckButtonIsClicked(event);
 
-            assertEquals(0, manager.getDecks().size());
+            // After delete, loadUserData is called which reloads decks
+            @SuppressWarnings("unchecked")
+            List<FlashcardDeckDto> decksAfterDelete = (List<FlashcardDeckDto>) getField("decks");
+            assertEquals(0, decksAfterDelete.size());
 
         }
 
@@ -835,22 +855,35 @@ class FlashcardMainControllerTest {
 
             controller.setCurrentUsername("testuser");
 
-            FlashcardDeckManager manager = (FlashcardDeckManager) getField("deckManager");
+            @SuppressWarnings("unchecked")
+            List<FlashcardDeckDto> decks = (List<FlashcardDeckDto>) getField("decks");
 
             FlashcardDeck deck = new FlashcardDeck();
 
             deck.setDeckName("To Delete");
 
-            manager.addDeck(deck);
+            FlashcardDeckDto deckDto = mapper.toDto(deck);
+            decks.add(deckDto);
 
             controller.updateUi();
 
-            deleteDeck1.setUserData(deck);
+            deleteDeck1.setUserData(deckDto);
 
             ActionEvent event = new ActionEvent(deleteDeck1, null);
 
+            // Mock successful DELETE and GET responses
+            ApiResponse<Void> deleteResponse = new ApiResponse<>(true, "", null);
+            ApiResponse<FlashcardDeckManagerDto> getResponseAfterDelete = createSuccessResponse(new ArrayList<>());
+            
+            apiClient.when(() -> ApiClient.performApiRequest(anyString(), eq("DELETE"), isNull(), any(TypeReference.class)))
+                    .thenReturn(deleteResponse);
+            apiClient.when(() -> ApiClient.performApiRequest(anyString(), eq("GET"), isNull(), any(TypeReference.class)))
+                    .thenReturn(getResponseAfterDelete);
+
             controller.whenDeleteDeckButtonIsClicked(event);
 
+            // After delete, loadUserData is called which reloads decks (now empty)
+            // UI should be updated to show noDecks message
             assertTrue(noDecks.isVisible());
 
         }
@@ -878,21 +911,23 @@ class FlashcardMainControllerTest {
 
             controller.setCurrentUsername("testuser");
 
-            FlashcardDeckManager manager = (FlashcardDeckManager) getField("deckManager");
+            @SuppressWarnings("unchecked")
+            List<FlashcardDeckDto> decks = (List<FlashcardDeckDto>) getField("decks");
 
             FlashcardDeck deck = new FlashcardDeck();
 
             deck.setDeckName("Test Deck");
 
-            manager.addDeck(deck);
+            FlashcardDeckDto deckDto = mapper.toDto(deck);
+            decks.add(deckDto);
 
-            deck1.setUserData(deck);
+            deck1.setUserData(deckDto);
 
             // Note: Full testing of scene switching requires more complex mocking
 
             // This verifies the deck is properly stored in button userData
 
-            assertEquals(deck, deck1.getUserData());
+            assertEquals(deckDto, deck1.getUserData());
 
         }
 
@@ -945,7 +980,8 @@ class FlashcardMainControllerTest {
 
             deck.setDeckName("Test Deck");
 
-            deck1.setUserData(deck);
+            FlashcardDeckDto deckDto = mapper.toDto(deck);
+            deck1.setUserData(deckDto);
 
             // Create a simple scene structure for the button on FX thread
 
@@ -1133,11 +1169,12 @@ class FlashcardMainControllerTest {
 
             controller.setCurrentUsername("testuser");
 
-            FlashcardDeckManager manager = (FlashcardDeckManager) getField("deckManager");
+            @SuppressWarnings("unchecked")
+            List<FlashcardDeckDto> decks = (List<FlashcardDeckDto>) getField("decks");
 
-            assertEquals(1, manager.getDecks().size());
+            assertEquals(1, decks.size());
 
-            assertEquals("Test Deck", manager.getDecks().get(0).getDeckName());
+            assertEquals("Test Deck", decks.get(0).getDeckName());
 
         }
 
@@ -1158,9 +1195,10 @@ class FlashcardMainControllerTest {
 
             controller.setCurrentUsername("testuser");
 
-            FlashcardDeckManager manager = (FlashcardDeckManager) getField("deckManager");
+            @SuppressWarnings("unchecked")
+            List<FlashcardDeckDto> decks = (List<FlashcardDeckDto>) getField("decks");
 
-            assertEquals(0, manager.getDecks().size());
+            assertEquals(0, decks.size());
 
         }
 
@@ -1179,9 +1217,10 @@ class FlashcardMainControllerTest {
 
             controller.setCurrentUsername("testuser");
 
-            FlashcardDeckManager manager = (FlashcardDeckManager) getField("deckManager");
+            @SuppressWarnings("unchecked")
+            List<FlashcardDeckDto> decks = (List<FlashcardDeckDto>) getField("decks");
 
-            assertEquals(0, manager.getDecks().size());
+            assertEquals(0, decks.size());
 
         }
 
@@ -1204,9 +1243,10 @@ class FlashcardMainControllerTest {
 
             controller.setCurrentUsername("testuser");
 
-            FlashcardDeckManager manager = (FlashcardDeckManager) getField("deckManager");
+            @SuppressWarnings("unchecked")
+            List<FlashcardDeckDto> decks = (List<FlashcardDeckDto>) getField("decks");
 
-            assertEquals(0, manager.getDecks().size());
+            assertEquals(0, decks.size());
 
         }
 
@@ -1231,9 +1271,11 @@ class FlashcardMainControllerTest {
 
                     .thenReturn(getResponse);
 
-            apiClient.when(() -> ApiClient.performApiRequest(anyString(), eq("PUT"), any(), any(TypeReference.class)))
+            // Mock POST to return failure for save error test
+            ApiResponse<FlashcardDeckDto> postFailureResponse = new ApiResponse<>(false, "Failed to create deck", null);
+            apiClient.when(() -> ApiClient.performApiRequest(anyString(), eq("POST"), isNull(), any(TypeReference.class)))
 
-                    .thenReturn(putResponse);
+                    .thenReturn(postFailureResponse);
 
             controller.setCurrentUsername("testuser");
 
@@ -1241,9 +1283,10 @@ class FlashcardMainControllerTest {
 
             controller.whenNewDeckButtonIsClicked(new ActionEvent());
 
-            // Verify showAlert was called
-
-            apiClient.verify(() -> ApiClient.showAlert(eq("Save Error"), anyString()));
+            // Verify showAlert was called if POST fails
+            // Note: showAlert is called from whenNewDeckButtonIsClicked if POST fails
+            // But since we mock POST to return failure, showAlert should be called
+            apiClient.verify(() -> ApiClient.showAlert(eq("Create Error"), anyString()), atLeastOnce());
 
         }
 
@@ -1265,17 +1308,19 @@ class FlashcardMainControllerTest {
 
         originalManager.addDeck(deck);
 
-        controller.setDeckManager(originalManager);
+        // Set up test data in controller first
+        @SuppressWarnings("unchecked")
+        List<FlashcardDeckDto> decks = (List<FlashcardDeckDto>) getField("decks");
+        decks.add(mapper.toDto(deck));
+        
+        controller.refreshDecks();
 
-        FlashcardDeckManager copiedManager = (FlashcardDeckManager) getField("deckManager");
+        @SuppressWarnings("unchecked")
+        List<FlashcardDeckDto> refreshedDecks = (List<FlashcardDeckDto>) getField("decks");
 
-        // Verify it's a copy
+        assertEquals(1, refreshedDecks.size());
 
-        assertNotSame(originalManager, copiedManager);
-
-        assertEquals(1, copiedManager.getDecks().size());
-
-        assertEquals("Original Deck", copiedManager.getDecks().get(0).getDeckName());
+        assertEquals("Original Deck", refreshedDecks.get(0).getDeckName());
 
     }
 
@@ -1295,17 +1340,23 @@ class FlashcardMainControllerTest {
 
         originalManager.addDeck(deck);
 
-        controller.setDeckManager(originalManager);
+        // Set up test data in controller first
+        @SuppressWarnings("unchecked")
+        List<FlashcardDeckDto> decks = (List<FlashcardDeckDto>) getField("decks");
+        decks.add(mapper.toDto(deck));
+        
+        controller.refreshDecks();
 
-        FlashcardDeckManager copiedManager = (FlashcardDeckManager) getField("deckManager");
+        @SuppressWarnings("unchecked")
+        List<FlashcardDeckDto> refreshedDecks = (List<FlashcardDeckDto>) getField("decks");
 
-        FlashcardDeck copiedDeck = copiedManager.getDecks().get(0);
+        FlashcardDeckDto copiedDeckDto = refreshedDecks.get(0);
 
-        assertEquals(2, copiedDeck.getDeck().size());
+        assertEquals(2, copiedDeckDto.getDeck().size());
 
-        assertEquals("Question 1", copiedDeck.getDeck().get(0).getQuestion());
+        assertEquals("Question 1", copiedDeckDto.getDeck().get(0).getQuestion());
 
-        assertEquals("Answer 2", copiedDeck.getDeck().get(1).getAnswer());
+        assertEquals("Answer 2", copiedDeckDto.getDeck().get(1).getAnswer());
 
     }
 
@@ -1319,9 +1370,11 @@ class FlashcardMainControllerTest {
 
         deck.setDeckName("Updated Deck");
 
-        manager.addDeck(deck);
+        @SuppressWarnings("unchecked")
+        List<FlashcardDeckDto> decks = (List<FlashcardDeckDto>) getField("decks");
+        decks.add(mapper.toDto(deck));
 
-        controller.setDeckManager(manager);
+        controller.refreshDecks();
 
         assertTrue(deck1.isVisible());
 

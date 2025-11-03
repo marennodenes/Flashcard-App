@@ -4,9 +4,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import app.Flashcard;
-import app.FlashcardDeck;
-import app.FlashcardDeckManager;
+import dto.FlashcardDto;
+import dto.FlashcardDeckDto;
 import javafx.animation.RotateTransition;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -37,10 +36,9 @@ public class FlashcardController {
     @FXML Text cardNumber;
 
   // Remove 'private' for test access
-  List<Flashcard> deck = new ArrayList<>();
+  List<FlashcardDto> deck = new ArrayList<>();
   int currentCardI;
   private String currentUsername;
-  private FlashcardDeckManager deckManager;
 
   private String questionStyle = """
             -fx-background-color: #89b9bf; /* spørsmål default */
@@ -60,7 +58,7 @@ public class FlashcardController {
 
   private boolean isShowingAnswer = false;
 
-  private FlashcardDeck originalDeck;
+  private FlashcardDeckDto originalDeck;
 
   /**
    * Initializes the controller after FXML loading.
@@ -90,7 +88,7 @@ public class FlashcardController {
         if (usernameField != null) {
             usernameField.setText(currentUsername == null || currentUsername.isEmpty() ? "" : currentUsername);
         }
-        Flashcard current = getCurrentCard();
+        FlashcardDto current = getCurrentCard();
         if (card != null) {
             if (current == null) {
                 card.setText("");
@@ -118,11 +116,11 @@ public class FlashcardController {
         }
     }
 
-    Flashcard getCurrentCard() {
+    FlashcardDto getCurrentCard() {
         if (deck == null || deck.isEmpty() || currentCardI < 0 || currentCardI >= deck.size()) {
             return null;
         }
-        Flashcard cardObj = deck.get(currentCardI);
+        FlashcardDto cardObj = deck.get(currentCardI);
         return cardObj == null ? null : cardObj;
     }
 
@@ -143,78 +141,19 @@ public class FlashcardController {
     }
 
   /**
-   * Sets the deck manager and current deck to work with.
-   * This ensures that changes are saved to the complete deck collection.
-   * Creates defensive copies to prevent external modification.
-   * 
-   * @param deckManager the complete deck manager
-   * @param selectedDeck the specific deck to work with
-   */
-  public void setDeckManager(FlashcardDeckManager deckManager, FlashcardDeck selectedDeck) {
-    if (deckManager == null || selectedDeck == null) {
-        this.deckManager = null;
-        this.originalDeck = null;
-        this.deck = new ArrayList<>();
-        currentCardI = 0;
-        updateUi();
-        updateProgress();
-        return;
-    }
-    // Create defensive copy of deck manager to prevent external modification
-    this.deckManager = new FlashcardDeckManager();
-    for (FlashcardDeck deck : deckManager.getDecks()) {
-      this.deckManager.addDeck(deck);
-    }
-    // Create defensive copy of the selected deck
-    this.originalDeck = new FlashcardDeck(selectedDeck.getDeckName());
-    for (app.Flashcard card : selectedDeck.getDeck()) {
-      if (card != null) {
-        this.originalDeck.addFlashcard(new app.Flashcard(card.getQuestion(), card.getAnswer()));
-      } else {
-        this.originalDeck.addFlashcard(null);
-      }
-    }
-    this.deck = new ArrayList<>(this.originalDeck.getDeck()); // Copy flashcards for learning
-    // Assign numbers to non-null flashcards only
-    for (int i = 0; i < this.deck.size(); i++) {
-      Flashcard flashcard = this.deck.get(i);
-      if (flashcard != null) {
-        flashcard.setNumber(i + 1);
-      }
-    }
-    currentCardI = 0;
-    updateUi();
-    updateProgress();
-  }
-
-  /**
    * Sets the deck for the controller and updates UI/progress.
-   * Defensive copy is not strictly necessary for test coverage, so this is simple.
-   * @param deck the deck to set (can be null)
+   * @param deck the deck DTO to set (can be null)
    */
-  public void setDeck(FlashcardDeck deck) {
+  public void setDeck(FlashcardDeckDto deck) {
     if (deck == null) {
         this.originalDeck = null;
         this.deck = new ArrayList<>();
         currentCardI = 0;
     } else {
-        // Defensive copy
-        this.originalDeck = new FlashcardDeck(deck.getDeckName());
-        for (Flashcard card : deck.getDeck()) {
-            if (card != null) {
-                this.originalDeck.addFlashcard(new Flashcard(card.getQuestion(), card.getAnswer()));
-            } else {
-                this.originalDeck.addFlashcard(null);
-            }
-        }
-        this.deck = new ArrayList<>(this.originalDeck.getDeck());
-        // Assign numbers to non-null flashcards only
-        for (int i = 0; i < this.deck.size(); i++) {
-            Flashcard flashcard = this.deck.get(i);
-            if (flashcard != null) {
-                flashcard.setNumber(i + 1);
-            }
-        }
+        // Create defensive copy
+        List<FlashcardDto> deckList = new ArrayList<>(deck.getDeck());
+        this.originalDeck = new FlashcardDeckDto(deck.getDeckName(), deckList);
+        this.deck = new ArrayList<>(deckList);
         currentCardI = 0;
     }
     updateUi();
@@ -251,11 +190,10 @@ public class FlashcardController {
     Parent root = loader.load();
 
     FlashcardDeckController controller = loader.getController();
-    controller.setCurrentUsername(currentUsername);  // Send current username
+    controller.setCurrentUsername(currentUsername);
     
-    if (deckManager != null && originalDeck != null) {
-      // Send the complete deck manager and current deck
-      controller.setDeckManager(deckManager, originalDeck);
+    if (originalDeck != null) {
+      controller.setDeck(originalDeck);
     }
 
     // Null check for nextButton to prevent crash
@@ -328,7 +266,7 @@ public class FlashcardController {
         rotateIn.setToAngle(360);
 
         rotateOut.setOnFinished(e -> {
-            Flashcard current = getCurrentCard();
+            FlashcardDto current = getCurrentCard();
             if (!isShowingAnswer) {
                 String answer = (current != null && current.getAnswer() != null) ? current.getAnswer() : "";
                 card.setText(answer);
