@@ -95,10 +95,12 @@ public class FlashcardController {
             if (current == null) {
                 card.setText("");
                 card.setStyle(questionStyle.trim()); // Always set style for empty card
+                isShowingAnswer = false; // Reset to question state
             } else {
                 String text = isShowingAnswer ? current.getAnswer() : current.getQuestion();
                 card.setText(text == null ? "" : text);
-                card.setStyle(questionStyle.trim()); // Always set style for question
+                String style = isShowingAnswer ? answerStyle.trim() : questionStyle.trim();
+                card.setStyle(style);
             }
         }
         updateProgress();
@@ -127,6 +129,7 @@ public class FlashcardController {
     private void goToNextCard() {
         if (deck == null || deck.isEmpty()) return;
         currentCardI = (currentCardI + 1) % deck.size();
+        isShowingAnswer = false; // Reset to question when navigating to new card
         updateUi();
         updateProgress();
     }
@@ -134,6 +137,7 @@ public class FlashcardController {
     private void goToPreviousCard() {
         if (deck == null || deck.isEmpty()) return;
         currentCardI = (currentCardI - 1 + deck.size()) % deck.size();
+        isShowingAnswer = false; // Reset to question when navigating to new card
         updateUi();
         updateProgress();
     }

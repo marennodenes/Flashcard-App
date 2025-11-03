@@ -145,7 +145,13 @@ deckButtons[i].setText(deck.getDeckName());
         // Store deck reference in button for event handling
         deckButtons[i].setUserData(deck);
         }
-      
+        
+        // Show corresponding delete button
+        if(deleteButtons[i] != null){
+          deleteButtons[i].setVisible(true);
+          // Store deck reference in delete button for event handling
+          deleteButtons[i].setUserData(deck);
+        }
       }
     }
 

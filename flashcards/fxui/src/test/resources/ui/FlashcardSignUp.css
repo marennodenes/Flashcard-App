@@ -5,6 +5,7 @@
 .textForTitles {
   -fx-fill: #5c7b80;
   -fx-font-weight: bold;
+  -fx-font-family: "Arial";
 }
 
 .text-field {
@@ -13,6 +14,7 @@
   -fx-border-width: 2;
   -fx-background-radius: 3;
   -fx-border-radius: 3;
+  -fx-font-family: "Arial";
 }
 
 .button {
@@ -20,19 +22,37 @@
   -fx-text-fill: white;
   -fx-font-weight: bold;
   -fx-font-size: 14;
+  -fx-font-family: "Arial";
+}
+
+#signUpButton {
+  -fx-font-size: 18;
 }
 
 .alerts {
   -fx-fill: #5c7b80;
-  -fx-font-size: 13;
+  -fx-font-size: 14px;
+  -fx-font-family: "Arial";
+  -fx-font-weight: bold;
+}
+
+#ex {
+  -fx-stroke: #ffffff;
+  -fx-stroke-width: 2;
+  -fx-fill: #f4a261;
+  -fx-font-size: 22px;
+  -fx-font-family: "Arial";
+  -fx-font-weight: bold;
 }
 
 .nameTag {
   -fx-fill: #5c7b80;
   -fx-font-size: 14;
   -fx-font-weight: bold;
+  -fx-font-family: "Arial";
 }
 
 .password-field {
   -fx-font-size: 7pt;
+  -fx-font-family: "Arial";
 }
