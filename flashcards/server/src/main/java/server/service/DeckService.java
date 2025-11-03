@@ -7,8 +7,6 @@ import org.springframework.stereotype.Service;
 
 import app.FlashcardDeck;
 import app.FlashcardDeckManager;
-import dto.FlashcardDeckManagerDto;
-import dto.mappers.FlashcardDeckMapper;
 import itp.storage.FlashcardPersistent;
 import shared.ApiConstants;
 
@@ -119,13 +117,12 @@ public class DeckService {
      * @throws IOException if an error occurs while writing to persistent storage
      * @throws IllegalArgumentException if the user does not exist
      */
-    public void updateAllDecks(String username, FlashcardDeckManagerDto deckManagerDto) throws IOException {
+    public void updateAllDecks(String username, FlashcardDeckManager deckManager) throws IOException {
         if (!flashcardPersistent.userExists(username)) {
             throw new IllegalArgumentException(ApiConstants.USER_NOT_FOUND);
         }
-        FlashcardDeckMapper mapper = new FlashcardDeckMapper();
         FlashcardDeckManager manager = new FlashcardDeckManager();
-        manager.setDecks(mapper.fromDtoList(deckManagerDto.getDecks()));
+        manager.setDecks(deckManager.getDecks());
         flashcardPersistent.writeDeck(username, manager);
     }
 }
