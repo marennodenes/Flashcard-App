@@ -40,7 +40,7 @@ public class ApiEndpoints {
   public static final String DECK_DELETE = "/delete";
 
   // User endpoints
-  public static final String USERS_V1 = BASE + "/v1/users"; // More consistent with other v1 endpoints
+  public static final String USERS_V1 = BASE + "/v1/users";
   public static final String USER_REGISTER = "/register";
   public static final String USER_LOGIN = "/login";
   public static final String USER_LOGOUT = "/logout";
@@ -54,6 +54,7 @@ public class ApiEndpoints {
   
   /**
    * Gets the complete URL for user deck operations.
+   * 
    * @param username the username
    * @return complete URL for user deck operations
    */

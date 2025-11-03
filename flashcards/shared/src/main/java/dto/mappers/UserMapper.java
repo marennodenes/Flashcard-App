@@ -27,6 +27,7 @@ public class UserMapper {
 
   /**
    * Converts a User to a UserDataDto
+   * 
    * @param user User-object
    * @return UserDataDto with username and password
    */
@@ -39,6 +40,7 @@ public class UserMapper {
 
   /**
    * Converts a UserData object to a UserDataDto object
+   * 
    * @param userData UserData-object
    * @return UserDataDto with username, password and deck manager
    */
@@ -47,7 +49,6 @@ public class UserMapper {
     String password = userData.getUser() != null ? userData.getUser().getPassword() : "";
     List<FlashcardDeckManagerDto> deckManagers = new ArrayList<>();
     
-    // 
     if (userData.getDeckManager() != null) {
       List<FlashcardDeckDto> deckDtos = new ArrayList<>();
 
@@ -65,6 +66,7 @@ public class UserMapper {
 
   /**
    * Converts a UserDataDto to a UserData object, including a deckManager
+   * 
    * @param dto UserDataDto-object
    * @return UserData with User and DeckManager
    */
@@ -90,8 +92,9 @@ public class UserMapper {
 
   /**
    * Converts a LoginRequestDto to a User object
+   * 
    * @param dto LoginRequestDto object with username and password
-   * @return
+   * @return User object after logging in
    */
   public User fromLoginRequestDto(LoginRequestDto dto) {
     String username = dto.getUsername() != null ? dto.getUsername() : "";
