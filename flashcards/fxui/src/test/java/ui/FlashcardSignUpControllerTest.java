@@ -5,8 +5,6 @@ import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 
 import java.io.IOException;
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -182,6 +180,7 @@ class FlashcardSignUpControllerTest {
     assertTrue(alertMessage.getText().contains("must be equal"));
   }
 
+  @SuppressWarnings("unchecked")
   @Test
   void testSignInButton_withValidInput_andSuccessfulRegistration_shouldNavigate() throws Exception {
     try (MockedStatic<ApiClient> apiClientMock = mockStatic(ApiClient.class)) {
@@ -253,6 +252,7 @@ class FlashcardSignUpControllerTest {
     }
   }
 
+  @SuppressWarnings("unchecked")
   @Test
   void testSignInButton_withExistingUsername_shouldShowSpecificError() throws Exception {
     try (MockedStatic<ApiClient> apiClientMock = mockStatic(ApiClient.class)) {
@@ -284,6 +284,7 @@ class FlashcardSignUpControllerTest {
     }
   }
 
+  @SuppressWarnings("unchecked")
   @Test
   void testSignInButton_withApiError_shouldShowErrorMessage() throws Exception {
     try (MockedStatic<ApiClient> apiClientMock = mockStatic(ApiClient.class)) {
@@ -387,6 +388,7 @@ class FlashcardSignUpControllerTest {
     }
   }
 
+  @SuppressWarnings("unchecked")
   @Test
   void testSignInButton_withNavigationIOException_shouldShowAlert() throws Exception {
     try (MockedStatic<ApiClient> apiClientMock = mockStatic(ApiClient.class)) {

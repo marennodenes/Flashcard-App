@@ -5,7 +5,6 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import app.Flashcard;
@@ -149,6 +148,7 @@ class FlashcardDeckControllerTest {
     /**
      * Tests setting the current username.
      */
+    @SuppressWarnings("unchecked")
     @Test
     void testSetCurrentUsername() {
         // Mock API calls to prevent real HTTP requests and timeouts
@@ -177,6 +177,7 @@ class FlashcardDeckControllerTest {
     /**
      * Tests UI update with a valid deck manager and deck.
      */
+    @SuppressWarnings("unchecked")
     @Test
     void testUpdateUiWithDeckManager() {
         // Mock API calls to prevent real HTTP requests and timeouts
@@ -233,7 +234,6 @@ class FlashcardDeckControllerTest {
      */
     @Test
     void testSetDeckManagerWithDeckNotInManager() {
-        FlashcardDeckManager mgr = new FlashcardDeckManager();
         FlashcardDeck deck = new FlashcardDeck("Deck1");
         runOnFxThread(() -> assertDoesNotThrow(() -> controller.setDeck(mapper.toDto(deck))));
     }
@@ -467,7 +467,6 @@ class FlashcardDeckControllerTest {
      */
     @Test
     void testSetDeckManagerWithNoDecks() {
-        FlashcardDeckManager mgr = new FlashcardDeckManager();
         runOnFxThread(() -> assertDoesNotThrow(() -> controller.setDeck(mapper.toDto(new FlashcardDeck("DeckX")))));
     }
 
@@ -476,7 +475,6 @@ class FlashcardDeckControllerTest {
      */
     @Test
     void testSetDeckManagerWithNullDeck() {
-        FlashcardDeckManager mgr = new FlashcardDeckManager();
         runOnFxThread(() -> assertDoesNotThrow(() -> controller.setDeck(null)));
     }
 
@@ -543,6 +541,7 @@ class FlashcardDeckControllerTest {
      * Tests setting the current username with various input cases.
      * Ensures that null, empty, and whitespace inputs do not overwrite the username.
      */
+    @SuppressWarnings("unchecked")
     @Test
     void testSetCurrentUsernameCases() {
         // Mock API calls to prevent real HTTP requests and timeouts
@@ -566,6 +565,7 @@ class FlashcardDeckControllerTest {
      * Tests setting the deck manager with various input cases.
      * Covers valid, null, and duplicate deck scenarios.
      */
+    @SuppressWarnings("unchecked")
     @Test
     void testSetDeckManagerCases() {
         // Mock API calls to prevent real HTTP requests and timeouts
@@ -595,7 +595,6 @@ class FlashcardDeckControllerTest {
             runOnFxThread(() -> assertDoesNotThrow(() -> controller.setDeck(mapper.toDto(deck2))));
             mgr2.addDeck(deck2);
             runOnFxThread(() -> assertDoesNotThrow(() -> controller.setDeck(mapper.toDto(deck2))));
-            FlashcardDeckManager mgr3 = new FlashcardDeckManager();
             runOnFxThread(() -> assertDoesNotThrow(() -> controller.setDeck(mapper.toDto(new FlashcardDeck("DeckX")))));
         }
     }
@@ -717,6 +716,7 @@ class FlashcardDeckControllerTest {
      * Tests updateUi method for all major branches.
      * Covers null manager, null deck name, deck not found, empty deck, and non-empty deck.
      */
+    @SuppressWarnings("unchecked")
     @Test
     void testUpdateUiBranches() {
         // Mock API calls to prevent real HTTP requests and timeouts
@@ -836,7 +836,6 @@ class FlashcardDeckControllerTest {
         // Method returns early if currentDeck is null, no exception thrown
         assertDoesNotThrow(() -> controller.whenCreateButtonIsClicked());
         // currentDeckName == null
-        FlashcardDeckManager mgr = new FlashcardDeckManager();
         setField(controller, "currentDeck", null);
         questionField.setText("Q");
         answerField.setText("A");

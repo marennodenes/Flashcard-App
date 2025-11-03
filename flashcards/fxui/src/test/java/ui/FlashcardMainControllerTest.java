@@ -381,7 +381,6 @@ class FlashcardMainControllerTest {
 
             // Verify deck was added (via loadUserData which is called after successful POST)
 
-            @SuppressWarnings("unchecked")
             List<FlashcardDeckDto> decks = (List<FlashcardDeckDto>) getField("decks");
 
             assertEquals(1, decks.size());
@@ -469,7 +468,6 @@ class FlashcardMainControllerTest {
 
             // Add 8 decks
 
-            @SuppressWarnings("unchecked")
             List<FlashcardDeckDto> decks = (List<FlashcardDeckDto>) getField("decks");
 
             for (int i = 0; i < 8; i++) {
@@ -505,7 +503,6 @@ class FlashcardMainControllerTest {
 
             controller.setCurrentUsername("testuser");
 
-            @SuppressWarnings("unchecked")
             List<FlashcardDeckDto> decks = (List<FlashcardDeckDto>) getField("decks");
 
             FlashcardDeck deck = new FlashcardDeck();
@@ -544,7 +541,6 @@ class FlashcardMainControllerTest {
                     .thenReturn(responseWithDecks);
 
             // Ensure decks list is cleared before loading
-            @SuppressWarnings("unchecked")
             List<FlashcardDeckDto> decks = (List<FlashcardDeckDto>) getField("decks");
             decks.clear();
             
@@ -558,7 +554,6 @@ class FlashcardMainControllerTest {
             controller.setCurrentUsername("testuser");
             
             // Verify decks list was loaded from API
-            @SuppressWarnings("unchecked")
             List<FlashcardDeckDto> loadedDecks = (List<FlashcardDeckDto>) getField("decks");
             assertEquals(3, loadedDecks.size(), "Should have loaded 3 decks from API");
             
@@ -607,7 +602,6 @@ class FlashcardMainControllerTest {
 
             controller.setCurrentUsername("testuser");
 
-            @SuppressWarnings("unchecked")
             List<FlashcardDeckDto> decks = (List<FlashcardDeckDto>) getField("decks");
 
             FlashcardDeck deck = new FlashcardDeck();
@@ -639,7 +633,6 @@ class FlashcardMainControllerTest {
 
             controller.setCurrentUsername("testuser");
 
-            @SuppressWarnings("unchecked")
             List<FlashcardDeckDto> decks = (List<FlashcardDeckDto>) getField("decks");
 
             FlashcardDeck deck1 = new FlashcardDeck();
@@ -819,7 +812,6 @@ class FlashcardMainControllerTest {
 
             controller.setCurrentUsername("testuser");
 
-            @SuppressWarnings("unchecked")
             List<FlashcardDeckDto> decks = (List<FlashcardDeckDto>) getField("decks");
 
             FlashcardDeck deck = new FlashcardDeck();
@@ -845,7 +837,6 @@ class FlashcardMainControllerTest {
             controller.whenDeleteDeckButtonIsClicked(event);
 
             // After delete, loadUserData is called which reloads decks
-            @SuppressWarnings("unchecked")
             List<FlashcardDeckDto> decksAfterDelete = (List<FlashcardDeckDto>) getField("decks");
             assertEquals(0, decksAfterDelete.size());
 
@@ -874,7 +865,6 @@ class FlashcardMainControllerTest {
 
             controller.setCurrentUsername("testuser");
 
-            @SuppressWarnings("unchecked")
             List<FlashcardDeckDto> decks = (List<FlashcardDeckDto>) getField("decks");
 
             FlashcardDeck deck = new FlashcardDeck();
@@ -930,7 +920,6 @@ class FlashcardMainControllerTest {
 
             controller.setCurrentUsername("testuser");
 
-            @SuppressWarnings("unchecked")
             List<FlashcardDeckDto> decks = (List<FlashcardDeckDto>) getField("decks");
 
             FlashcardDeck deck = new FlashcardDeck();
@@ -1188,7 +1177,6 @@ class FlashcardMainControllerTest {
 
             controller.setCurrentUsername("testuser");
 
-            @SuppressWarnings("unchecked")
             List<FlashcardDeckDto> decks = (List<FlashcardDeckDto>) getField("decks");
 
             assertEquals(1, decks.size());
@@ -1214,7 +1202,6 @@ class FlashcardMainControllerTest {
 
             controller.setCurrentUsername("testuser");
 
-            @SuppressWarnings("unchecked")
             List<FlashcardDeckDto> decks = (List<FlashcardDeckDto>) getField("decks");
 
             assertEquals(0, decks.size());
@@ -1236,7 +1223,6 @@ class FlashcardMainControllerTest {
 
             controller.setCurrentUsername("testuser");
 
-            @SuppressWarnings("unchecked")
             List<FlashcardDeckDto> decks = (List<FlashcardDeckDto>) getField("decks");
 
             assertEquals(0, decks.size());
@@ -1262,7 +1248,6 @@ class FlashcardMainControllerTest {
 
             controller.setCurrentUsername("testuser");
 
-            @SuppressWarnings("unchecked")
             List<FlashcardDeckDto> decks = (List<FlashcardDeckDto>) getField("decks");
 
             assertEquals(0, decks.size());
@@ -1281,10 +1266,6 @@ class FlashcardMainControllerTest {
             // Mock successful GET for loading
 
             ApiResponse<FlashcardDeckManagerDto> getResponse = createSuccessResponse(new ArrayList<>());
-
-            // Mock failed PUT for saving
-
-            ApiResponse<FlashcardDeckManagerDto> putResponse = createFailureResponse();
 
             apiClient.when(() -> ApiClient.performApiRequest(anyString(), eq("GET"), isNull(), any(TypeReference.class)))
 
@@ -1380,16 +1361,14 @@ class FlashcardMainControllerTest {
     }
 
 /** Tests that setting deck manager updates UI. */
+    @SuppressWarnings("unchecked")
     @Test
     void testSetDeckManager_UpdatesUi() throws Exception {
-
-        FlashcardDeckManager manager = new FlashcardDeckManager();
 
         FlashcardDeck deck = new FlashcardDeck();
 
         deck.setDeckName("Updated Deck");
 
-        @SuppressWarnings("unchecked")
         List<FlashcardDeckDto> decks = (List<FlashcardDeckDto>) getField("decks");
         FlashcardDeckDto deckDto = mapper.toDto(deck);
         decks.add(deckDto);
