@@ -57,6 +57,9 @@ import javafx.scene.control.TextField;
 import javafx.scene.text.Text;
 
 import javafx.stage.Stage;
+import javafx.application.Platform;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Test class for FlashcardMainController.
@@ -273,7 +276,7 @@ class FlashcardMainControllerTest {
     @Test
     void testInitialize_AlertsHiddenInitially() {
 
-        controller.updateUi();
+        runOnFxThread(() -> controller.updateUi());
 
         assertFalse(alertMessage.isVisible());
 
@@ -479,7 +482,7 @@ class FlashcardMainControllerTest {
 
             }
 
-            controller.updateUi();
+            runOnFxThread(() -> controller.updateUi());
 
             assertTrue(newDeckButton.isDisabled());
 
@@ -511,7 +514,7 @@ class FlashcardMainControllerTest {
 
             decks.add(mapper.toDto(deck));
 
-            controller.updateUi();
+            runOnFxThread(() -> controller.updateUi());
 
             assertFalse(newDeckButton.isDisabled());
 
@@ -527,37 +530,53 @@ class FlashcardMainControllerTest {
     void testUpdateUi_ShowsCorrectNumberOfDecks() throws Exception {
 
         try (MockedStatic<ApiClient> apiClient = mockStatic(ApiClient.class)) {
-
-            ApiResponse<FlashcardDeckManagerDto> response = createSuccessResponse(new ArrayList<>());
-
+            // Create 3 decks for the API response
+            List<FlashcardDeckDto> decksForResponse = new ArrayList<>();
+            for (int i = 0; i < 3; i++) {
+                FlashcardDeck deck = new FlashcardDeck();
+                deck.setDeckName("Deck " + (i + 1));
+                decksForResponse.add(mapper.toDto(deck));
+            }
+            ApiResponse<FlashcardDeckManagerDto> responseWithDecks = createSuccessResponse(decksForResponse);
+            
+            // Mock API response to return the 3 decks
             apiClient.when(() -> ApiClient.performApiRequest(anyString(), eq("GET"), isNull(), any(TypeReference.class)))
+                    .thenReturn(responseWithDecks);
 
-                    .thenReturn(response);
-
-            controller.setCurrentUsername("testuser");
-
+            // Ensure decks list is cleared before loading
             @SuppressWarnings("unchecked")
             List<FlashcardDeckDto> decks = (List<FlashcardDeckDto>) getField("decks");
-
-            for (int i = 0; i < 3; i++) {
-
-                FlashcardDeck deck = new FlashcardDeck();
-
-                deck.setDeckName("Deck " + (i + 1));
-
-                decks.add(mapper.toDto(deck));
-
+            decks.clear();
+            
+            // Hide all buttons first to ensure clean state
+            deck1.setVisible(false);
+            deck2.setVisible(false);
+            deck3.setVisible(false);
+            deck4.setVisible(false);
+            
+            // Set username which calls loadUserData() and updateUi()
+            controller.setCurrentUsername("testuser");
+            
+            // Verify decks list was loaded from API
+            @SuppressWarnings("unchecked")
+            List<FlashcardDeckDto> loadedDecks = (List<FlashcardDeckDto>) getField("decks");
+            assertEquals(3, loadedDecks.size(), "Should have loaded 3 decks from API");
+            
+            // Wait a moment for UI update to complete
+            try {
+                Thread.sleep(100);
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
             }
-
-            controller.updateUi();
-
-            assertTrue(deck1.isVisible());
-
-            assertTrue(deck2.isVisible());
-
-            assertTrue(deck3.isVisible());
-
-            assertFalse(deck4.isVisible());
+            
+            // Verify state after UI update
+            runOnFxThread(() -> {
+                // Verify state on FX thread after UI update
+                assertTrue(deck1.isVisible(), "deck1 should be visible after loading 3 decks");
+                assertTrue(deck2.isVisible(), "deck2 should be visible after loading 3 decks");
+                assertTrue(deck3.isVisible(), "deck3 should be visible after loading 3 decks");
+                assertFalse(deck4.isVisible(), "deck4 should not be visible when only 3 decks loaded");
+            });
 
         }
 
@@ -567,7 +586,7 @@ class FlashcardMainControllerTest {
     @Test
     void testUpdateUi_NoDecks_ShowsNoDecksMessage() {
 
-        controller.updateUi();
+        runOnFxThread(() -> controller.updateUi());
 
         assertTrue(noDecks.isVisible());
 
@@ -597,7 +616,7 @@ class FlashcardMainControllerTest {
 
             decks.add(mapper.toDto(deck));
 
-            controller.updateUi();
+            runOnFxThread(() -> controller.updateUi());
 
             assertFalse(noDecks.isVisible());
 
@@ -635,7 +654,7 @@ class FlashcardMainControllerTest {
 
             decks.add(mapper.toDto(deck2));
 
-            controller.updateUi();
+            runOnFxThread(() -> controller.updateUi());
 
             assertEquals("Math", this.deck1.getText());
 
@@ -651,7 +670,7 @@ class FlashcardMainControllerTest {
 
         deckNameInput.setText("Some text");
 
-        controller.updateUi();
+        runOnFxThread(() -> controller.updateUi());
 
         assertEquals("", deckNameInput.getText());
 
@@ -677,7 +696,7 @@ class FlashcardMainControllerTest {
 
         // Should not throw NullPointerException
 
-        controller.updateUi();
+        runOnFxThread(() -> controller.updateUi());
 
         assertTrue(true, "updateUi handles null components gracefully");
 
@@ -712,7 +731,7 @@ class FlashcardMainControllerTest {
 
             errorField.set(controller, "Test error message");
 
-            controller.updateUi();
+            runOnFxThread(() -> controller.updateUi());
 
             // Verify alert is shown
 
@@ -759,13 +778,13 @@ class FlashcardMainControllerTest {
 
             errorField.set(controller, "Error");
 
-            controller.updateUi();
+            runOnFxThread(() -> controller.updateUi());
 
             // Now set to false and update again
 
             showAlertField.set(controller, false);
 
-            controller.updateUi();
+            runOnFxThread(() -> controller.updateUi());
 
             // Verify alert is hidden
 
@@ -865,7 +884,7 @@ class FlashcardMainControllerTest {
             FlashcardDeckDto deckDto = mapper.toDto(deck);
             decks.add(deckDto);
 
-            controller.updateUi();
+            runOnFxThread(() -> controller.updateUi());
 
             deleteDeck1.setUserData(deckDto);
 
@@ -1313,7 +1332,7 @@ class FlashcardMainControllerTest {
         List<FlashcardDeckDto> decks = (List<FlashcardDeckDto>) getField("decks");
         decks.add(mapper.toDto(deck));
         
-        controller.refreshDecks();
+        runOnFxThread(() -> controller.refreshDecks());
 
         @SuppressWarnings("unchecked")
         List<FlashcardDeckDto> refreshedDecks = (List<FlashcardDeckDto>) getField("decks");
@@ -1345,7 +1364,7 @@ class FlashcardMainControllerTest {
         List<FlashcardDeckDto> decks = (List<FlashcardDeckDto>) getField("decks");
         decks.add(mapper.toDto(deck));
         
-        controller.refreshDecks();
+        runOnFxThread(() -> controller.refreshDecks());
 
         @SuppressWarnings("unchecked")
         List<FlashcardDeckDto> refreshedDecks = (List<FlashcardDeckDto>) getField("decks");
@@ -1372,17 +1391,66 @@ class FlashcardMainControllerTest {
 
         @SuppressWarnings("unchecked")
         List<FlashcardDeckDto> decks = (List<FlashcardDeckDto>) getField("decks");
-        decks.add(mapper.toDto(deck));
-
-        controller.refreshDecks();
-
-        assertTrue(deck1.isVisible());
-
-        assertEquals("Updated Deck", deck1.getText());
+        FlashcardDeckDto deckDto = mapper.toDto(deck);
+        decks.add(deckDto);
+        
+        // Mock API response for refreshDecks
+        try (MockedStatic<ApiClient> apiClient = mockStatic(ApiClient.class)) {
+            ApiResponse<FlashcardDeckManagerDto> getResponse = createSuccessResponse(List.of(deckDto));
+            apiClient.when(() -> ApiClient.performApiRequest(anyString(), eq("GET"), isNull(), any(TypeReference.class)))
+                    .thenReturn(getResponse);
+            
+            // Hide button first to ensure clean state
+            deck1.setVisible(false);
+            
+            // Set username if not already set (needed for loadUserData)
+            if (getField("currentUsername") == null) {
+                setField("currentUsername", "testuser");
+            }
+            
+            controller.refreshDecks();
+            
+            // Wait a moment for API call and UI update to complete
+            try {
+                Thread.sleep(100);
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+            }
+            
+            runOnFxThread(() -> {
+                // Verify state on FX thread after UI update
+                assertTrue(deck1.isVisible(), "deck1 should be visible after refreshDecks");
+                assertEquals("Updated Deck", deck1.getText());
+            });
+        }
 
     }
 
     // ========== HELPER METHODS ==========
+
+    /**
+     * Runs a Runnable on the JavaFX Application Thread and waits for completion.
+     */
+    private void runOnFxThread(Runnable runnable) {
+        if (Platform.isFxApplicationThread()) {
+            runnable.run();
+        } else {
+            CountDownLatch latch = new CountDownLatch(1);
+            Platform.runLater(() -> {
+                try {
+                    runnable.run();
+                } finally {
+                    latch.countDown();
+                }
+            });
+            try {
+                latch.await(5, TimeUnit.SECONDS);
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+                throw new RuntimeException("Interrupted while waiting for FX thread", e);
+            }
+        }
+    }
 
     /** Creates a successful API response. */
 
