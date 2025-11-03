@@ -4,39 +4,98 @@ skinparam monochrome true
 skinparam shadowing false
 !pragma layout smetana
 
-actor User
+actor "App User" as AppUser
 
 package "Flashcards Application" {
+    
     
     node "FXUI Module" as fxui {
         component FlashcardLoginController
         component FlashcardMainController
         component FlashcardDeckController
         component FlashcardController
+        component FlashcardSignUpController
         component "FXML Files"
+        component "REST API Client"
+    }
+    
+    
+    
+    node "Server Module" as server {
+        component UserController
+        component FlashcardController as ServerFlashcardController
+        component UserService
+        component FlashcardService
+        component "Spring Boot Application"
+    }
+        
+       
+    
+
+     node "Storage Module" as storage {
+        component FlashcardPersistent
+        component "JSON File I/O"
+        component "User Data Files"
     }
 
     node "Core Module" as core {
         component Flashcard
         component FlashcardDeck
         component FlashcardDeckManager
+        component User
+        component UserData
+        component LoginValidator
     }
+    
+    node "Shared Module" as shared{
+        
+        package "dto"{
+            component LoginRequestDto
+            component LoginResponseDto
+            component FlashcardDto
+            component UserDataDto
+            component FlashcardDeckDto
+            component FlashcardDeckManagerDto
 
-    node "Storage Module" as storage {
-        component FlashcardPersistent
-        component "JSON File I/O"
-        component "User Data Files"
+            package "Mappers" {
+                component FlashcardMapper
+                component FlashcardDeckMapper
+                component UserMapper
+            }
+
+        }
+        
+        package "Shared" {
+            component ApiConstants
+            component ApiEndPoints
+            component ApiResponse
+        }
+        
     }
 }
 
-User --> fxui : Interacts with JavaFX GUI
-fxui --> core : Uses domain models and logic
-fxui --> storage : Persists user data
+AppUser --> fxui : Interacts with JavaFX GUI
+fxui --> shared : Uses DTOs for API communication
+shared --> core: Using buisness logic for DTOs
+fxui ..> server : HTTP/REST API calls
+server --> shared : Uses DTOs for requests/responses
+server --> core : Uses domain models and logic
+server --> storage : Persists user data
 storage --> core : Serializes core objects
 
 note right of storage
 JSON files stored in
 storage/data/users/
+end note
+
+note top of server
+Spring Boot REST API
+Port: 8080
+Endpoints:
+• /api/v1/users/login
+• /api/v1/users/register
+• /api/v1/flashcards/*
+• /api/v1/decks/*
 end note
 
 @enduml
