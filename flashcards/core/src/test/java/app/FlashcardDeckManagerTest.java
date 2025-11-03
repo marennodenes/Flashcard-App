@@ -2,14 +2,17 @@ package app;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 /**
- * Test class for FlashcardDeckManager functionality.
+ * Test class for {@link FlashcardDeckManager} functionality.
  * Tests deck management operations including adding and removing decks.
  * 
  * @author isamw
+ * 
+ * @see FlashcardDeckManager
  */
 public class FlashcardDeckManagerTest {
 

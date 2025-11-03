@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -11,10 +12,12 @@ import org.mockito.Mockito;
 /**
  * Test class for {@link LoginValidator} functionality.
  * Tests user authentication, user creation, and username validation using mocked persistence layer.
- * Uses Mockito to mock {@link UserPersistence} for isolated unit testing.
+ * Uses Mockito to mock UserPersistence for isolated unit testing.
  * 
  * @author isamw
  * @author chrsom
+ * 
+ * @see LoginValidator
  */
 public class LoginValidatorTest {
 
@@ -35,10 +38,10 @@ public class LoginValidatorTest {
   /**
    * Tests the {@link LoginValidator#createUser(String, String)} method.
    * Validates user creation scenarios including:
-   *   Creating a new user successfully
-   *   Creating a user when username doesn't exist
-   *   Preventing duplicate user creation when username already exists
-   * 
+   * - Creating a new user successfully
+   * - Creating a user when username doesn't exist
+   * - Preventing duplicate user creation when username already exists
+   *
    * @see LoginValidator#createUser(String, String)
    */
   @Test
@@ -60,8 +63,8 @@ public class LoginValidatorTest {
   /**
    * Tests the {@link LoginValidator#isUsernameUnique(String)} method.
    * Validates username uniqueness checking:
-   *   Returns true for unique usernames
-   *   Returns false for existing usernames
+   * - Returns true for unique usernames
+   * - Returns false for existing usernames
    * 
    * @see LoginValidator#isUsernameUnique(String)
    */
@@ -77,11 +80,11 @@ public class LoginValidatorTest {
   /**
    * Tests the {@link LoginValidator#authenticateUser(String, String)} method.
    * Validates user authentication scenarios including:
-   *   Successful authentication with correct credentials
-   *   Failed authentication with wrong password
-   *   Failed authentication for non-existent users
-   *   Proper handling of legacy plain text passwords
-   * 
+   * - Successful authentication with correct credentials
+   * - Failed authentication with wrong password
+   * - Failed authentication for non-existent users
+   * - Proper handling of legacy plain text passwords
+   *
    * @see LoginValidator#authenticateUser(String, String)
    */
   @Test

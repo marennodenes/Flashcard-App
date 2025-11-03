@@ -2,6 +2,7 @@ package app;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+
 import org.junit.jupiter.api.Test;
 
 /**
@@ -10,6 +11,8 @@ import org.junit.jupiter.api.Test;
  * 
  * @author isamw
  * @author chrsom
+ * 
+ * @see User
  */
 public class UserTest {
   
