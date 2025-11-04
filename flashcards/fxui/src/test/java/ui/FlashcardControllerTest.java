@@ -7,7 +7,6 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.io.IOException;
 import java.util.concurrent.TimeoutException;
 
 import org.junit.jupiter.api.AfterEach;
@@ -586,11 +585,7 @@ public class FlashcardControllerTest extends ApplicationTest {
     public void testWhenBackButtonIsClicked() {
         Platform.runLater(() -> {
             assertDoesNotThrow(() -> {
-                try {
-                    controller.whenBackButtonIsClicked();
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
+                controller.whenBackButtonIsClicked();
             });
         });
         pause(100);
@@ -604,11 +599,7 @@ public class FlashcardControllerTest extends ApplicationTest {
         Platform.runLater(() -> {
             controller.nextButton = null; // Force fallback
             assertDoesNotThrow(() -> {
-                try {
-                    controller.whenBackButtonIsClicked();
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
+                controller.whenBackButtonIsClicked();
             });
         });
         pause(100);
@@ -623,11 +614,7 @@ public class FlashcardControllerTest extends ApplicationTest {
             controller.nextButton = null;
             controller.backButton = null; // Force fallback to card
             assertDoesNotThrow(() -> {
-                try {
-                    controller.whenBackButtonIsClicked();
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
+                controller.whenBackButtonIsClicked();
             });
         });
         pause(100);
@@ -643,11 +630,7 @@ public class FlashcardControllerTest extends ApplicationTest {
             controller.backButton = null;
             controller.card = null; // All null, should log error
             assertDoesNotThrow(() -> {
-                try {
-                    controller.whenBackButtonIsClicked();
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
+                controller.whenBackButtonIsClicked();
             });
         });
         pause(100);

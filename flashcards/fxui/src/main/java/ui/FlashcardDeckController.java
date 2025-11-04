@@ -12,6 +12,7 @@ import dto.FlashcardDto;
 import dto.FlashcardDeckDto;
 import shared.ApiEndpoints;
 import shared.ApiResponse;
+import shared.ApiConstants;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -129,10 +130,12 @@ public class FlashcardDeckController {
       if (result != null && result.isSuccess() && result.getData() != null) {
         currentDeck = result.getData();
       } else if (result != null && !result.isSuccess()) {
-        ApiClient.showAlert("Load Error", result.getMessage());
+        System.err.println(ApiConstants.SERVER_ERROR + ": " + result.getMessage());
+        ApiClient.showAlert(ApiConstants.LOAD_ERROR, ApiConstants.FAILED_TO_LOAD_DECK_DATA);
       }
     } catch (Exception e) {
-      ApiClient.showAlert("Load Error", "Could not load deck data: " + e.getMessage());
+      System.err.println("Unexpected error: " + e.getMessage());
+      ApiClient.showAlert("Error", ApiConstants.UNEXPECTED_ERROR);
     }
   }
 
@@ -176,6 +179,8 @@ public class FlashcardDeckController {
 
     // Only create card if both fields have content
     if (q.isEmpty() || a.isEmpty() || currentDeck == null) {
+      // Log validation error to terminal only, no user notification
+      System.err.println(ApiConstants.VALIDATION_ERROR + ": " + ApiConstants.FLASHCARD_QUESTION_ANSWER_EMPTY);
       return;
     }
 
@@ -199,11 +204,22 @@ public class FlashcardDeckController {
         clearInputFields();
         updateUi();
       } else {
-        String errorMsg = result != null ? result.getMessage() : "No response from server";
-        ApiClient.showAlert("Create Error", "Failed to create flashcard: " + errorMsg);
+        String errorMsg = result != null ? result.getMessage() : ApiConstants.NO_RESPONSE_FROM_SERVER;
+        
+        // Check if it's a validation error (just log, no popup for validation)
+        if (errorMsg != null && (errorMsg.contains("empty") || errorMsg.contains("invalid") || 
+            errorMsg.contains("required") || errorMsg.contains("missing"))) {
+          System.err.println(ApiConstants.VALIDATION_ERROR + ": " + errorMsg);
+        } else {
+          // Server error - log technical details, show popup to user
+          System.err.println(ApiConstants.SERVER_ERROR + ": " + errorMsg);
+          ApiClient.showAlert(ApiConstants.SERVER_ERROR, ApiConstants.FAILED_TO_CREATE_FLASHCARD);
+        }
       }
     } catch (Exception e) {
-      ApiClient.showAlert("Create Error", "Failed to create flashcard: " + e.getMessage());
+      // Unknown error type - log technical details, show generic message to user
+      System.err.println("Unexpected error: " + e.getMessage());
+      ApiClient.showAlert("Error", ApiConstants.UNEXPECTED_ERROR);
     }
   }
 
@@ -235,11 +251,15 @@ public class FlashcardDeckController {
       if (result != null && result.isSuccess()) {
         updateUi();
       } else {
-        String errorMsg = result != null ? result.getMessage() : "No response from server";
-        ApiClient.showAlert("Delete Error", "Failed to delete flashcard: " + errorMsg);
+        // Server error - log technical details, show popup to user
+        String errorMsg = result != null ? result.getMessage() : ApiConstants.NO_RESPONSE_FROM_SERVER;
+        System.err.println(ApiConstants.SERVER_ERROR + ": " + errorMsg);
+        ApiClient.showAlert(ApiConstants.SERVER_ERROR, ApiConstants.FAILED_TO_DELETE_FLASHCARD);
       }
     } catch (Exception e) {
-      ApiClient.showAlert("Delete Error", "Failed to delete flashcard: " + e.getMessage());
+      // Unknown error type - log technical details, show generic message to user
+      System.err.println("Unexpected error: " + e.getMessage());
+      ApiClient.showAlert("Error", ApiConstants.UNEXPECTED_ERROR);
     }
   }
   
@@ -260,18 +280,23 @@ public class FlashcardDeckController {
    * @throws IOException if the FXML file cannot be loaded
    */
   @FXML
-  public void whenBackButtonIsClicked() throws IOException {
-    FXMLLoader loader = new FXMLLoader(getClass().getResource("FlashcardMain.fxml"));
-    Parent root = loader.load();
-    
-    // Send current username and refresh deck list
-    FlashcardMainController mainController = loader.getController();
-    mainController.setCurrentUsername(currentUsername);
-    mainController.refreshDecks();
-    
-    Stage stage = (Stage) questionField.getScene().getWindow();
-    stage.setScene(new Scene(root));
-    stage.show();
+  public void whenBackButtonIsClicked() {
+    try {
+      FXMLLoader loader = new FXMLLoader(getClass().getResource("FlashcardMain.fxml"));
+      Parent root = loader.load();
+      
+      // Send current username and refresh deck list
+      FlashcardMainController mainController = loader.getController();
+      mainController.setCurrentUsername(currentUsername);
+      mainController.refreshDecks();
+      
+      Stage stage = (Stage) questionField.getScene().getWindow();
+      stage.setScene(new Scene(root));
+      stage.show();
+    } catch (IOException e) {
+      System.err.println(ApiConstants.LOAD_ERROR + ": " + e.getMessage());
+      ApiClient.showAlert(ApiConstants.LOAD_ERROR, ApiConstants.UNEXPECTED_ERROR);
+    }
   }
 
   /**
@@ -282,21 +307,26 @@ public class FlashcardDeckController {
    * @throws IOException if the FXML file cannot be loaded or found
    */
   @FXML
-  public void whenStartLearningButtonIsClicked() throws IOException {
+  public void whenStartLearningButtonIsClicked() {
     if (currentDeck == null) {
       return;
     }
     
-    FXMLLoader loader = new FXMLLoader(getClass().getResource("FlashcardLearning.fxml"));
-    Parent root = loader.load();
+    try {
+      FXMLLoader loader = new FXMLLoader(getClass().getResource("FlashcardLearning.fxml"));
+      Parent root = loader.load();
 
-    FlashcardController controller = loader.getController();
-    controller.setCurrentUsername(currentUsername);
-    controller.setDeck(currentDeck);
+      FlashcardController controller = loader.getController();
+      controller.setCurrentUsername(currentUsername);
+      controller.setDeck(currentDeck);
 
-    Stage stage = (Stage) startLearning.getScene().getWindow();
-    stage.setScene(new Scene(root));
-    stage.show();
+      Stage stage = (Stage) startLearning.getScene().getWindow();
+      stage.setScene(new Scene(root));
+      stage.show();
+    } catch (IOException e) {
+      System.err.println(ApiConstants.LOAD_ERROR + ": " + e.getMessage());
+      ApiClient.showAlert(ApiConstants.LOAD_ERROR, ApiConstants.UNEXPECTED_ERROR);
+    }
   }
 
   /**
@@ -317,7 +347,8 @@ public class FlashcardDeckController {
       stage.setScene(scene);
       stage.show();
     } catch (IOException e) {
-      e.printStackTrace();
+      System.err.println(ApiConstants.LOAD_ERROR + ": " + e.getMessage());
+      ApiClient.showAlert(ApiConstants.LOAD_ERROR, ApiConstants.UNEXPECTED_ERROR);
     }
   }
 }

@@ -64,6 +64,7 @@ public class FlashcardSignUpController {
   /**
    * Handles the sign-in button click event.
    * Validates user input and initiates the user registration process.
+   * Shows inline errors for validation failures and popup errors for server issues.
    */
   @FXML
   public void whenSignInButtonClicked() {
@@ -96,8 +97,9 @@ public class FlashcardSignUpController {
       Stage stage = (Stage) backButton.getScene().getWindow();
       stage.setScene(new Scene(root));
       stage.show();
-    } catch (IOException e) { 
-      showError(ApiConstants.INVALID_REQUEST);
+    } catch (IOException e) {
+      System.err.println(ApiConstants.LOAD_ERROR + ": " + e.getMessage());
+      ApiClient.showAlert(ApiConstants.LOAD_ERROR, ApiConstants.UNEXPECTED_ERROR);
     }
   }
 
@@ -112,13 +114,13 @@ public class FlashcardSignUpController {
   private boolean validateInput(String username, String password, String confirmedPassword) {
     // Check for empty fields
     if (username.isEmpty() || password.isEmpty() || confirmedPassword.isEmpty()) {
-      showError("Username and password\nfields cannot be empty");
+      showInlineError(ApiConstants.EMPTY_SIGNUP_FIELDS);
       return false;
     }
 
     // Check if passwords match
     if (!password.equals(confirmedPassword)) {
-      showError("Passwords must be equal");
+      showInlineError(ApiConstants.PASSWORDS_NOT_EQUAL);
       return false;
     }
 
@@ -129,46 +131,50 @@ public class FlashcardSignUpController {
 
   /**
    * Attempts to create a new user via REST API.
+   * Shows popup error if server connection fails, inline error for other server responses.
    * 
    * @param username the username to create
    * @param password the password for the user
    */
   private void createUser(String username, String password) {
-    ApiResponse<UserDataDto> result = ApiClient.performApiRequest(
-      ApiEndpoints.REGISTER_URL,
-      "POST", 
-      new LoginRequestDto(username, password),
-      new TypeReference<ApiResponse<UserDataDto>>() {}
-    );
+    ApiResponse<UserDataDto> result = null;
+    try {
+      result = ApiClient.performApiRequest(
+        ApiEndpoints.REGISTER_URL,
+        "POST", 
+        new LoginRequestDto(username, password),
+        new TypeReference<ApiResponse<UserDataDto>>() {}
+      );
+    } catch (RuntimeException e) {
+      System.err.println(ApiConstants.SERVER_ERROR + ": " + e.getMessage());
+      // Show popup when server can't be reached
+      ApiClient.showAlert(ApiConstants.SERVER_ERROR, ApiConstants.SERVER_CONNECTION_ERROR);
+      return;
+    }
 
     if (result.isSuccess()) {
-      // User created successfully via API
-      System.out.println("User created via API: " + username);
-      try {
-        navigateToMainApp(username);
-      } catch (IOException e) {
-        ApiClient.showAlert("Error", "Failed to load main application");
-      }
+      navigateToMainApp(username);
     } else {
       // Handle different types of errors with specific text messages
       String errorMessage = result.getMessage();
-      if (errorMessage.toLowerCase().contains("already exists")) {
-        showError("Username already exists, \ntry with another username");
+      if (errorMessage != null && errorMessage.toLowerCase().contains("already exists")) {
+        showInlineError(ApiConstants.USERNAME_ALREADY_EXISTS);
       } else {
         //Show the error message directly as text
-        showError(errorMessage);
+        showInlineError(errorMessage != null ? errorMessage : ApiConstants.SERVER_CONNECTION_ERROR);
       }
-      System.out.println("Registration failed: " + errorMessage);
     }
   }
 
   /**
-   * Shows an error message to the user.
+   * Shows an inline error message without popup.
+   * Used for validation errors that should only appear as text.
    * 
-   * @param message the error message to display
+   * @param message the error message to display inline
    */
-  private void showError(String message) {
+  private void showInlineError(String message) {
     // Update state and ensure the UI refresh runs on the JavaFX Application Thread.
+    // Validation errors show as inline text only
     error = message;
     showAlert = true;
     if (Platform.isFxApplicationThread()) {
@@ -185,17 +191,22 @@ public class FlashcardSignUpController {
    * @param username the logged-in username to pass to the main controller
    * @throws IOException if the FXML file cannot be loaded
    */
-  private void navigateToMainApp(String username) throws IOException {
-    FXMLLoader loader = new FXMLLoader(getClass().getResource("/ui/FlashcardMain.fxml"));
-    Parent root = loader.load();
-    
-    // Get the controller and set the username
-    FlashcardMainController mainController = loader.getController();
-    mainController.setCurrentUsername(username);
-    
-    // Switch to the main scene
-    Stage stage = (Stage) signInButton.getScene().getWindow();
-    stage.setScene(new Scene(root));
-    stage.show();
+  private void navigateToMainApp(String username) {
+    try {
+      FXMLLoader loader = new FXMLLoader(getClass().getResource("/ui/FlashcardMain.fxml"));
+      Parent root = loader.load();
+      
+      // Get the controller and set the username
+      FlashcardMainController mainController = loader.getController();
+      mainController.setCurrentUsername(username);
+      
+      // Switch to the main scene
+      Stage stage = (Stage) signInButton.getScene().getWindow();
+      stage.setScene(new Scene(root));
+      stage.show();
+    } catch (IOException e) {
+      System.err.println(ApiConstants.LOAD_ERROR + ": " + e.getMessage());
+      ApiClient.showAlert(ApiConstants.LOAD_ERROR, ApiConstants.UNEXPECTED_ERROR);
+    }
   }
 }

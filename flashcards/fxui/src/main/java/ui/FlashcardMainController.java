@@ -12,6 +12,7 @@ import dto.FlashcardDeckDto;
 import dto.FlashcardDeckManagerDto;
 import shared.ApiResponse;
 import shared.ApiEndpoints;
+import shared.ApiConstants;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -23,71 +24,94 @@ import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
 /**
- * Controller for the main flashcard deck management interface.
- * Handles displaying, creating, editing, and deleting flashcard decks.
- * Provides navigation to deck editing and learning interfaces.
- * Integrates with REST API for persistent data storage.
+ * Controller for the main flashcard deck management interface. Handles
+ * displaying, creating, editing, and deleting flashcard decks. Provides
+ * navigation to deck editing and learning interfaces. Integrates with REST API
+ * for persistent data storage.
  * 
  * @author chrsom
  * @author marennod
  * @author marieroe
  */
 public class FlashcardMainController {
-  @FXML private Button deck_1;
-  @FXML private Button deck_2;
-  @FXML private Button deck_3;
-  @FXML private Button deck_4;
-  @FXML private Button deck_5;
-  @FXML private Button deck_6;
-  @FXML private Button deck_7;
-  @FXML private Button deck_8;
+  @FXML
+  private Button deck_1;
+  @FXML
+  private Button deck_2;
+  @FXML
+  private Button deck_3;
+  @FXML
+  private Button deck_4;
+  @FXML
+  private Button deck_5;
+  @FXML
+  private Button deck_6;
+  @FXML
+  private Button deck_7;
+  @FXML
+  private Button deck_8;
 
-  @FXML private Button deleteDeck_1;
-  @FXML private Button deleteDeck_2;
-  @FXML private Button deleteDeck_3;
-  @FXML private Button deleteDeck_4;
-  @FXML private Button deleteDeck_5;
-  @FXML private Button deleteDeck_6;
-  @FXML private Button deleteDeck_7;
-  @FXML private Button deleteDeck_8;
+  @FXML
+  private Button deleteDeck_1;
+  @FXML
+  private Button deleteDeck_2;
+  @FXML
+  private Button deleteDeck_3;
+  @FXML
+  private Button deleteDeck_4;
+  @FXML
+  private Button deleteDeck_5;
+  @FXML
+  private Button deleteDeck_6;
+  @FXML
+  private Button deleteDeck_7;
+  @FXML
+  private Button deleteDeck_8;
 
-  @FXML private TextField deckNameInput;
+  @FXML
+  private TextField deckNameInput;
 
-  @FXML private Button newDeckButton;
+  @FXML
+  private Button newDeckButton;
 
-  @FXML private Button logOutButton;
+  @FXML
+  private Button logOutButton;
 
-  @FXML private Text usernameField;
+  @FXML
+  private Text usernameField;
 
-  @FXML private Text alertMessage;
+  @FXML
+  private Text alertMessage;
 
-  @FXML private Text ex;
+  @FXML
+  private Text ex;
 
-  @FXML private Text noDecks;
+  @FXML
+  private Text noDecks;
 
   private List<FlashcardDeckDto> decks = new ArrayList<>();
-  
+
   private String currentUsername;
-  
+
   private boolean showAlert = false;
-  
+
   private String error = "";
 
   private Button[] deckButtons;
-  
+
   private Button[] deleteButtons;
 
   /**
-   * Initializes the controller after FXML loading.
-   * Sets up button arrays for deck and delete buttons, configures event handlers,
-   * loads the current user's data from storage, and updates the UI display.
+   * Initializes the controller after FXML loading. Sets up button arrays for deck
+   * and delete buttons, configures event handlers, loads the current user's data
+   * from storage, and updates the UI display.
    */
-  @FXML 
+  @FXML
   public void initialize() {
     // Initialize button arrays for easier iteration
-    deckButtons = new Button[]{ deck_1, deck_2, deck_3, deck_4, deck_5, deck_6, deck_7, deck_8 };
-    deleteButtons = new Button[]{ deleteDeck_1, deleteDeck_2, deleteDeck_3, deleteDeck_4,
-                                     deleteDeck_5, deleteDeck_6, deleteDeck_7, deleteDeck_8 };
+    deckButtons = new Button[] { deck_1, deck_2, deck_3, deck_4, deck_5, deck_6, deck_7, deck_8 };
+    deleteButtons = new Button[] { deleteDeck_1, deleteDeck_2, deleteDeck_3, deleteDeck_4, deleteDeck_5, deleteDeck_6,
+        deleteDeck_7, deleteDeck_8 };
 
     hideAllDeckButtons();
     // Don't load user data here - wait for setCurrentUsername to be called
@@ -95,39 +119,37 @@ public class FlashcardMainController {
   }
 
   /**
-   * Updates the UI with current data and deck information.
-   * Displays username, handles alert messages, shows/hides deck buttons based on available decks,
+   * Updates the UI with current data and deck information. Displays username,
+   * handles alert messages, shows/hides deck buttons based on available decks,
    * and configures button states and visibility.
    */
-  public void updateUi(){
+  public void updateUi() {
     if (usernameField != null) {
       usernameField.setText(currentUsername);
     }
-    
 
     if (showAlert) {
-      if(alertMessage != null){
+      if (alertMessage != null) {
         alertMessage.setText(error);
-      alertMessage.setVisible(true);
+        alertMessage.setVisible(true);
       }
-      if(ex != null){
+      if (ex != null) {
         ex.setVisible(true);
       }
-      
+
       showAlert = false;
     } else {
       if (alertMessage != null) {
         alertMessage.setVisible(false);
       }
-      if(ex!= null){
-ex.setVisible(false);
+      if (ex != null) {
+        ex.setVisible(false);
       }
-      
+
     }
-    if(noDecks != null){
+    if (noDecks != null) {
       noDecks.setVisible(decks.isEmpty());
     }
-    
 
     hideAllDeckButtons();
 
@@ -135,16 +157,16 @@ ex.setVisible(false);
     for (int i = 0; i < deckButtons.length; i++) {
       if (i < decks.size()) {
         FlashcardDeckDto deck = decks.get(i);
-        if(deckButtons[i] != null){
-deckButtons[i].setText(deck.getDeckName());
-        deckButtons[i].setDisable(false);
-        deckButtons[i].setVisible(true);
-        // Store deck reference in button for event handling
-        deckButtons[i].setUserData(deck);
+        if (deckButtons[i] != null) {
+          deckButtons[i].setText(deck.getDeckName());
+          deckButtons[i].setDisable(false);
+          deckButtons[i].setVisible(true);
+          // Store deck reference in button for event handling
+          deckButtons[i].setUserData(deck);
         }
-        
+
         // Show corresponding delete button
-        if(deleteButtons[i] != null){
+        if (deleteButtons[i] != null) {
           deleteButtons[i].setVisible(true);
           // Store deck reference in delete button for event handling
           deleteButtons[i].setUserData(deck);
@@ -152,62 +174,61 @@ deckButtons[i].setText(deck.getDeckName());
       }
     }
 
-   // Disable new deck button if maximum number of decks reached
+    // Disable new deck button if maximum number of decks reached
     if (newDeckButton != null) {
-        newDeckButton.setDisable(decks.size() >= 8);
+      newDeckButton.setDisable(decks.size() >= 8);
     }
-    
+
     if (deckNameInput != null) {
-        deckNameInput.clear();
+      deckNameInput.clear();
     }
   }
 
   /**
-   * Hides and disables all deck and delete buttons.
-   * Used to reset the UI state before showing only the relevant buttons.
+   * Hides and disables all deck and delete buttons. Used to reset the UI state
+   * before showing only the relevant buttons.
    */
   private void hideAllDeckButtons() {
     for (Button b : deckButtons) {
-        b.setVisible(false);
-        b.setDisable(true);
+      b.setVisible(false);
+      b.setDisable(true);
     }
     for (Button b : deleteButtons) {
-        b.setVisible(false);
+      b.setVisible(false);
     }
   }
 
-
   /**
-   * Loads user data from REST API.
-   * Attempts to retrieve the user's flashcard deck collection from the REST API.
-   * If the API call fails, creates a new empty deck list.
+   * Loads user data from REST API. Attempts to retrieve the user's flashcard deck
+   * collection from the REST API. If the API call fails, creates a new empty deck
+   * list.
    */
   private void loadUserData() {
     try {
       ApiResponse<FlashcardDeckManagerDto> result = ApiClient.performApiRequest(
-        ApiEndpoints.getUserDecksUrl(currentUsername),
-        "GET",
-        null,
-        new TypeReference<ApiResponse<FlashcardDeckManagerDto>>() {}
-      );
+          ApiEndpoints.getUserDecksUrl(currentUsername), "GET", null,
+          new TypeReference<ApiResponse<FlashcardDeckManagerDto>>() {
+          });
 
       if (result != null && result.isSuccess() && result.getData() != null) {
         decks = new ArrayList<>(result.getData().getDecks());
       } else {
         if (result != null && !result.isSuccess()) {
-          ApiClient.showAlert("Load Error", result.getMessage());
+          System.err.println(ApiConstants.SERVER_ERROR + ": " + result.getMessage());
+          ApiClient.showAlert(ApiConstants.LOAD_ERROR, ApiConstants.FAILED_TO_LOAD_USER_DATA);
         }
         decks = new ArrayList<>();
       }
     } catch (Exception e) {
-      ApiClient.showAlert("Load Error", "Could not load user data: " + e.getMessage());
+      System.err.println("Unexpected error: " + e.getMessage());
+      ApiClient.showAlert(ApiConstants.LOAD_ERROR, ApiConstants.UNEXPECTED_ERROR);
       decks = new ArrayList<>();
     }
   }
 
   /**
-   * Sets the current username and loads their data.
-   * This method is called from the login controller to set the logged-in user.
+   * Sets the current username and loads their data. This method is called from
+   * the login controller to set the logged-in user.
    * 
    * @param username the username to set as current user
    */
@@ -220,45 +241,40 @@ deckButtons[i].setText(deck.getDeckName());
   }
 
   /**
-   * Creates a new deck with the entered name.
-   * Reads the deck name from the input field, creates a new deck via REST API,
-   * reloads the deck list, and updates the UI.
-   * Shows an error message if deck creation fails.
+   * Creates a new deck with the entered name. Reads the deck name from the input
+   * field, creates a new deck via REST API, reloads the deck list, and updates
+   * the UI. Shows an error message if deck creation fails.
    * 
    * @param event the action event from clicking the new deck button
    */
   @FXML
-  public void whenNewDeckButtonIsClicked(ActionEvent event){
+  public void whenNewDeckButtonIsClicked(ActionEvent event) {
     try {
       String deckName = deckNameInput.getText().trim();
       if (deckName.isEmpty()) {
-        error = "Deck name cannot be empty";
-        showAlert = true;
-        updateUi();
+        // Validation error - show as inline text only, no popup
+        showInlineError(ApiConstants.DECK_NAME_EMPTY);
         return;
       }
-      
+
       if (currentUsername == null || currentUsername.isEmpty()) {
-        error = "No user logged in";
-        showAlert = true;
-        ApiClient.showAlert("Create Error", "No user logged in");
-        updateUi();
+        // Internal error - show popup and log to terminal
+        System.err.println(ApiConstants.SERVER_ERROR + ": No user logged in when creating deck");
+        ApiClient.showAlert(ApiConstants.SERVER_ERROR, ApiConstants.FAILED_TO_CREATE_DECK);
         return;
       }
-      
-      String url = ApiEndpoints.SERVER_BASE_URL + ApiEndpoints.DECKS + "/" 
-          + URLEncoder.encode(deckName, StandardCharsets.UTF_8)
-          + "?username=" + URLEncoder.encode(currentUsername, StandardCharsets.UTF_8)
-          + "&deckName=" + URLEncoder.encode(deckName, StandardCharsets.UTF_8);
-      
+
+      String url = ApiEndpoints.SERVER_BASE_URL + ApiEndpoints.DECKS + "/"
+          + URLEncoder.encode(deckName, StandardCharsets.UTF_8) + "?username="
+          + URLEncoder.encode(currentUsername, StandardCharsets.UTF_8) + "&deckName="
+          + URLEncoder.encode(deckName, StandardCharsets.UTF_8);
+
       // Send empty JSON object as body since ApiClient requires it for POST requests
-      // Server doesn't use the body (uses URL parameters), but ApiClient validation requires it
-      ApiResponse<FlashcardDeckDto> result = ApiClient.performApiRequest(
-        url,
-        "POST",
-        "{}", // Empty JSON object string
-        new TypeReference<ApiResponse<FlashcardDeckDto>>() {}
-      );
+      // Server doesn't use the body (uses URL parameters), but ApiClient validation
+      // requires it
+      ApiResponse<FlashcardDeckDto> result = ApiClient.performApiRequest(url, "POST", "{}", // Empty JSON object string
+          new TypeReference<ApiResponse<FlashcardDeckDto>>() {
+          });
 
       if (result != null && result.isSuccess()) {
         // Clear input field
@@ -268,75 +284,81 @@ deckButtons[i].setText(deck.getDeckName());
         // Update UI to show new deck
         updateUi();
       } else {
-        String errorMsg = result != null ? result.getMessage() : "No response from server";
-        error = errorMsg;
-        showAlert = true;
-        ApiClient.showAlert("Create Error", "Failed to create deck: " + errorMsg);
-        updateUi();
+        String errorMsg = result != null ? result.getMessage() : ApiConstants.NO_RESPONSE_FROM_SERVER;
+        
+        // Check if it's a validation error that should be shown as text
+        if (errorMsg != null && (errorMsg.contains("already exists") || errorMsg.contains("duplicate") || 
+            errorMsg.contains("invalid") || errorMsg.contains("name"))) {
+          // Validation error - show as inline text only, no popup
+          showInlineError(errorMsg);
+        } else {
+          // Server error - show popup and log to terminal
+          System.err.println(ApiConstants.SERVER_ERROR + ": " + errorMsg);
+          ApiClient.showAlert(ApiConstants.SERVER_ERROR, ApiConstants.FAILED_TO_CREATE_DECK);
+        }
       }
     } catch (RuntimeException e) {
-      // ApiClient throws RuntimeException for request failures
+      // Network/API error - show popup and log to terminal
       String errorMsg = e.getMessage();
       if (e.getCause() != null) {
         errorMsg = e.getCause().getMessage();
       }
-      error = "Failed to create deck: " + errorMsg;
-      showAlert = true;
-      ApiClient.showAlert("Create Error", error);
-      updateUi();
+      System.err.println(ApiConstants.SERVER_ERROR + ": " + errorMsg);
+      ApiClient.showAlert(ApiConstants.SERVER_ERROR, ApiConstants.FAILED_TO_CREATE_DECK);
     } catch (Exception e) {
-      error = "Failed to create deck: " + e.getMessage();
-      showAlert = true;
-      ApiClient.showAlert("Create Error", error);
-      updateUi();
+      // General error - show popup and log to terminal
+      System.err.println(ApiConstants.SERVER_ERROR + ": " + e.getMessage());
+      ApiClient.showAlert(ApiConstants.SERVER_ERROR, ApiConstants.UNEXPECTED_ERROR);
     }
   }
 
   /**
-   * Deletes the selected deck.
-   * Retrieves the deck from the clicked delete button's user data,
-   * deletes it via REST API, reloads the deck list, and refreshes the UI.
+   * Deletes the selected deck. Retrieves the deck from the clicked delete
+   * button's user data, deletes it via REST API, reloads the deck list, and
+   * refreshes the UI.
    * 
    * @param event the action event from clicking a delete button
    */
   @FXML
-  public void whenDeleteDeckButtonIsClicked(ActionEvent event){
+  public void whenDeleteDeckButtonIsClicked(ActionEvent event) {
     Button clickedButton = (Button) event.getSource();
     FlashcardDeckDto deck = (FlashcardDeckDto) clickedButton.getUserData();
-    
+
     if (deck == null) {
       return;
     }
-    
+
     try {
-      String url = ApiEndpoints.SERVER_BASE_URL + ApiEndpoints.DECKS + "/" 
-          + URLEncoder.encode(deck.getDeckName(), StandardCharsets.UTF_8)
-          + "?username=" + URLEncoder.encode(currentUsername, StandardCharsets.UTF_8)
-          + "&deckName=" + URLEncoder.encode(deck.getDeckName(), StandardCharsets.UTF_8);
-      
-      ApiResponse<Void> result = ApiClient.performApiRequest(
-        url,
-        "DELETE",
-        null,
-        new TypeReference<ApiResponse<Void>>() {}
-      );
+      String url = ApiEndpoints.SERVER_BASE_URL + ApiEndpoints.DECKS + "/"
+          + URLEncoder.encode(deck.getDeckName(), StandardCharsets.UTF_8) + "?username="
+          + URLEncoder.encode(currentUsername, StandardCharsets.UTF_8) + "&deckName="
+          + URLEncoder.encode(deck.getDeckName(), StandardCharsets.UTF_8);
+
+      ApiResponse<Void> result = ApiClient.performApiRequest(url, "DELETE", null,
+          new TypeReference<ApiResponse<Void>>() {
+          });
 
       if (result != null && result.isSuccess()) {
         loadUserData();
         updateUi();
       } else {
-        String errorMsg = result != null ? result.getMessage() : "No response from server";
-        ApiClient.showAlert("Delete Error", "Failed to delete deck: " + errorMsg);
+        String errorMsg = result != null ? result.getMessage() : ApiConstants.NO_RESPONSE_FROM_SERVER;
+        // Server error - show popup and log to terminal
+        System.err.println(ApiConstants.SERVER_ERROR + ": " + errorMsg);
+        ApiClient.showAlert(ApiConstants.SERVER_ERROR, ApiConstants.FAILED_TO_DELETE_DECK);
       }
     } catch (Exception e) {
-      ApiClient.showAlert("Delete Error", "Failed to delete deck: " + e.getMessage());
+      // Network/API error - show popup and log to terminal
+      System.err.println(ApiConstants.SERVER_ERROR + ": " + e.getMessage());
+      ApiClient.showAlert(ApiConstants.SERVER_ERROR, ApiConstants.UNEXPECTED_ERROR);
     }
   }
 
-    /**
-   * Handles clicking on a deck button to navigate to the deck view.
-   * Retrieves the selected deck from the button's user data, loads the FlashcardListUI,
-   * passes the current username and selected deck DTO to the controller, and switches scenes.
+  /**
+   * Handles clicking on a deck button to navigate to the deck view. Retrieves the
+   * selected deck from the button's user data, loads the FlashcardListUI, passes
+   * the current username and selected deck DTO to the controller, and switches
+   * scenes.
    * 
    * @param event the action event from clicking a deck button
    */
@@ -354,31 +376,32 @@ deckButtons[i].setText(deck.getDeckName());
       Parent root = loader.load();
 
       FlashcardDeckController controller = loader.getController();
-      controller.setCurrentUsername(currentUsername);  // Send current username
-      controller.setDeck(selectedDeck);  // Send selected deck DTO
+      controller.setCurrentUsername(currentUsername); // Send current username
+      controller.setDeck(selectedDeck); // Send selected deck DTO
 
       Stage stage = (Stage) clickedButton.getScene().getWindow();
       stage.setScene(new Scene(root));
       stage.show();
 
     } catch (IOException e) {
-      e.printStackTrace();
+      System.err.println(ApiConstants.LOAD_ERROR + ": " + e.getMessage());
+      ApiClient.showAlert(ApiConstants.LOAD_ERROR, ApiConstants.UNEXPECTED_ERROR);
     }
   }
 
   /**
-   * Handles log out button click event.
-   * Loads the login screen, applies the appropriate CSS styling, and switches to the login scene.
+   * Handles log out button click event. Loads the login screen, applies the
+   * appropriate CSS styling, and switches to the login scene.
    * 
    * @param event the action event from clicking the log out button
    */
   @FXML
-  public void whenLogOut(ActionEvent event){
+  public void whenLogOut(ActionEvent event) {
     try {
       // Load login screen
       FXMLLoader loader = new FXMLLoader(getClass().getResource("FlashcardLogin.fxml"));
       Parent root = loader.load();
-      
+
       // Switch to login scene
       Stage stage = (Stage) logOutButton.getScene().getWindow();
       Scene scene = new Scene(root);
@@ -386,7 +409,8 @@ deckButtons[i].setText(deck.getDeckName());
       stage.setScene(scene);
       stage.show();
     } catch (IOException e) {
-      e.printStackTrace();
+      System.err.println(ApiConstants.LOAD_ERROR + ": " + e.getMessage());
+      ApiClient.showAlert(ApiConstants.LOAD_ERROR, ApiConstants.UNEXPECTED_ERROR);
     }
   }
 
@@ -396,6 +420,18 @@ deckButtons[i].setText(deck.getDeckName());
    */
   public void refreshDecks() {
     loadUserData();
+    updateUi();
+  }
+
+  /**
+   * Shows an inline error message without popup.
+   * Used for validation errors that should only appear as text.
+   * 
+   * @param message the error message to display inline
+   */
+  private void showInlineError(String message) {
+    error = message;
+    showAlert = true;
     updateUi();
   }
 }

@@ -1,0 +1,60 @@
+{
+  "username" : "marieroed",
+  "password" : "Wj8Nz6Ib512xixT6j4FI0w==:VV8HESRc1NdA+60EBmam2NR4XpOs+Yc56fKKjxTyuq8=",
+  "deckManager" : {
+    "decks" : [ {
+      "deckName" : "test",
+      "flashcards" : [ {
+        "number" : 1,
+        "question" : "asdasd",
+        "answer" : "aaaa"
+      }, {
+        "number" : 2,
+        "question" : "asdasdasd",
+        "answer" : "aaa"
+      }, {
+        "number" : 3,
+        "question" : "hoho",
+        "answer" : "hoho"
+      }, {
+        "number" : 4,
+        "question" : "hihi",
+        "answer" : "aaaaa"
+      } ]
+    }, {
+      "deckName" : "qwe",
+      "flashcards" : [ ]
+    }, {
+      "deckName" : "asdsd",
+      "flashcards" : [ ]
+    }, {
+      "deckName" : "ssss",
+      "flashcards" : [ ]
+    }, {
+      "deckName" : "aaa",
+      "flashcards" : [ ]
+    }, {
+      "deckName" : "marie",
+      "flashcards" : [ {
+        "number" : 1,
+        "question" : "hei",
+        "answer" : "ho"
+      }, {
+        "number" : 2,
+        "question" : "q2",
+        "answer" : "a2"
+      }, {
+        "number" : 3,
+        "question" : "q3",
+        "answer" : "a3"
+      } ]
+    }, {
+      "deckName" : "s",
+      "flashcards" : [ {
+        "number" : 1,
+        "question" : "s",
+        "answer" : "a"
+      } ]
+    } ]
+  }
+}

@@ -50,9 +50,9 @@ public class UserController {
     try {
       User user = userService.getUser(username);
       UserDataDto dto = mapper.toDto(user);
-      return new ApiResponse<>(true, "User retrieved successfully", dto);
+      return new ApiResponse<>(true, ApiConstants.USER_RETRIEVED, dto);
     } catch (Exception e) {
-      return new ApiResponse<>(false, "Error retrieving user: " + e.getMessage(), null);
+      return new ApiResponse<>(false, e.getMessage(), null);
     }
   }
 
@@ -100,7 +100,7 @@ public class UserController {
         return new ApiResponse<>(true, "Login response", responseDto);
       }
     } catch (Exception e) {
-      return new ApiResponse<>(false, "Error logging in user: " + e.getMessage(), null);
+      return new ApiResponse<>(false, e.getMessage(), null);
     }
   }
 
@@ -114,9 +114,9 @@ public class UserController {
   public ApiResponse <Boolean> validatePassword(@RequestParam String username, @RequestParam String password) {
     try {
       Boolean isValid = userService.validatePassword(username, password);
-      return new ApiResponse<>(true, "Password validation successful", isValid);
+      return new ApiResponse<>(true, ApiConstants.PASSWORD_VALIDATION_SUCCESS, isValid);
     } catch (Exception e) {
-      return new ApiResponse<>(false, "Error validating password: " + e.getMessage(), null);
+      return new ApiResponse<>(false, e.getMessage(), null);
     }
   }
 
@@ -130,9 +130,9 @@ public class UserController {
   public ApiResponse <Boolean> findUser(@RequestParam String username) {
     try {
       Boolean exists = userService.userExists(username);
-      return new ApiResponse<>(true, "User existence check successful", exists);
+      return new ApiResponse<>(true, ApiConstants.USER_EXISTENCE_CHECK_SUCCESS, exists);
     } catch (Exception e) {
-      return new ApiResponse<>(false, "Error checking user existence: " + e.getMessage(), null);
+      return new ApiResponse<>(false, e.getMessage(), null);
     }
   }
 }

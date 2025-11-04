@@ -18,6 +18,7 @@ import javafx.scene.text.Text;
 import javafx.scene.transform.Rotate;
 import javafx.stage.Stage;
 import javafx.util.Duration;
+import shared.ApiConstants;
 /**
  * Controller for the flashcard learning interface.
  * Handles navigation between cards, flipping animations, and progress tracking.
@@ -185,36 +186,41 @@ public class FlashcardController {
    * @throws IOException if the FXML file cannot be loaded or found
    */
   @FXML
-  public void whenBackButtonIsClicked() throws IOException {
-    FXMLLoader loader = new FXMLLoader(getClass().getResource("FlashcardDeck.fxml"));
-    Parent root = loader.load();
+  public void whenBackButtonIsClicked() {
+    try {
+      FXMLLoader loader = new FXMLLoader(getClass().getResource("FlashcardDeck.fxml"));
+      Parent root = loader.load();
 
-    FlashcardDeckController controller = loader.getController();
-    controller.setCurrentUsername(currentUsername);
-    
-    if (originalDeck != null) {
-      controller.setDeck(originalDeck);
-    }
+      FlashcardDeckController controller = loader.getController();
+      controller.setCurrentUsername(currentUsername);
+      
+      if (originalDeck != null) {
+        controller.setDeck(originalDeck);
+      }
 
-    // Null check for nextButton to prevent crash
-    if (nextButton != null && nextButton.getScene() != null) {
-      Stage stage = (Stage) nextButton.getScene().getWindow();
-      stage.setScene(new Scene(root));
-      stage.show();
-    } else {
-      // Fallback: try to get stage from any available button
-      if (backButton != null && backButton.getScene() != null) {
-        Stage stage = (Stage) backButton.getScene().getWindow();
-        stage.setScene(new Scene(root));
-        stage.show();
-      } else if (card != null && card.getScene() != null) {
-        Stage stage = (Stage) card.getScene().getWindow();
+      // Null check for nextButton to prevent crash
+      if (nextButton != null && nextButton.getScene() != null) {
+        Stage stage = (Stage) nextButton.getScene().getWindow();
         stage.setScene(new Scene(root));
         stage.show();
       } else {
-        // Could not get stage, do nothing or log error
-        System.err.println("Error: No valid button to get stage for scene switch.");
+        // Fallback: try to get stage from any available button
+        if (backButton != null && backButton.getScene() != null) {
+          Stage stage = (Stage) backButton.getScene().getWindow();
+          stage.setScene(new Scene(root));
+          stage.show();
+        } else if (card != null && card.getScene() != null) {
+          Stage stage = (Stage) card.getScene().getWindow();
+          stage.setScene(new Scene(root));
+          stage.show();
+        } else {
+          // Could not get stage, do nothing or log error
+          System.err.println(ApiConstants.NO_VALID_BUTTON_FOR_SCENE_SWITCH);
+        }
       }
+    } catch (IOException e) {
+      System.err.println(ApiConstants.LOAD_ERROR + ": " + e.getMessage());
+      ApiClient.showAlert(ApiConstants.LOAD_ERROR, ApiConstants.UNEXPECTED_ERROR);
     }
   }
 
@@ -305,7 +311,8 @@ public class FlashcardController {
       stage.setScene(scene);
       stage.show();
     } catch (IOException e) {
-      e.printStackTrace();
+      System.err.println(ApiConstants.LOAD_ERROR + ": " + e.getMessage());
+      ApiClient.showAlert(ApiConstants.LOAD_ERROR, ApiConstants.UNEXPECTED_ERROR);
     }
   }
 
