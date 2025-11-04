@@ -38,6 +38,9 @@ public class UserService {
 
   private final FlashcardPersistent persistent;
   
+  /**
+   * Default constructor initializing with a new FlashcardPersistent instance.
+   */
   public UserService() {
     this.persistent = new FlashcardPersistent();
   }
@@ -45,9 +48,8 @@ public class UserService {
   /**
    * Retrieves user information for the specified username.
    * 
-   * @param username
+   * @param username the username of the user to retrieve
    * @return the User object associated with the given username
-   * 
    * @throws IllegalArgumentException if the user does not exist
    */
   public User getUser(String username) {
@@ -56,6 +58,51 @@ public class UserService {
     }
 
     return persistent.readUserData(username);
+  }
+
+  /**
+   * Checks if a user exists with the given username.
+   * 
+   * @param username the username to check
+   * @return true if the user exists, false otherwise
+   * @throws IllegalArgumentException if the username is empty
+   */
+  public boolean userExists(String username) {
+    if (username.isEmpty()) {
+      throw new IllegalArgumentException(ApiConstants.INVALID_REQUEST);
+    }
+    return persistent.userExists(username);
+  }
+
+  /**
+   * Creates a new user with the specified username and password.
+   * 
+   * @param username
+   * @param password
+   * @return the newly created User object
+   * @throws IOException if an error occurs while writing user data
+   * @throws IllegalArgumentException if the username or password is empty
+   * @throws IllegalArgumentException if the user already exists
+   * @throws IllegalArgumentException if the password is invalid
+   */
+  public User createUser(String username, String password) throws IOException { 
+    LoginValidator validator = new LoginValidator(persistent);
+
+    if (username.isEmpty() || password.isEmpty()) {
+      throw new IllegalArgumentException(ApiConstants.INVALID_REQUEST);
+    }
+
+    if (!validator.isUsernameUnique(username)) {
+      throw new IllegalArgumentException(ApiConstants.USER_ALREADY_EXISTS);
+    }
+
+    if (!isValidPassword(password)) {
+      throw new IllegalArgumentException(ApiConstants.INVALID_PASSWORD);
+    }
+
+    User newUser = new User(username, password);
+    persistent.writeUserData(newUser);
+    return newUser;
   }
 
   /**
@@ -93,57 +140,13 @@ public class UserService {
   }
 
   /**
-   * Creates a new user with the specified username and password.
-   * 
-   * 
-   * @param username
-   * @param password
-   * @return the newly created User object
-   * @throws IOException if an error occurs while writing user data
-   * @throws IllegalArgumentException if the username or password is empty
-   * @throws IllegalArgumentException if the user already exists
-   * @throws IllegalArgumentException if the password is invalid
-   */
-  public User createUser(String username, String password) throws IOException{ 
-    LoginValidator validator = new LoginValidator(persistent);
-
-    if (username.isEmpty() || password.isEmpty()) {
-      throw new IllegalArgumentException(ApiConstants.INVALID_REQUEST);
-    }
-
-    if (!validator.isUsernameUnique(username)) {
-      throw new IllegalArgumentException(ApiConstants.USER_ALREADY_EXISTS);
-    }
-
-    if (!isValidPassword(password)) {
-      throw new IllegalArgumentException(ApiConstants.INVALID_PASSWORD);
-    }
-
-    User newUser = new User(username, password);
-    persistent.writeUserData(newUser);
-    return newUser;
-  }
-
-  /**
-   * Checks if a user exists with the given username.
-   * @param username
-   * @return boolean
-   * @throws IllegalArgumentException if the username is empty
-   */
-  public boolean userExists(String username) {
-    if (username.isEmpty()) {
-      throw new IllegalArgumentException(ApiConstants.INVALID_REQUEST);
-    }
-    return persistent.userExists(username);
-  }
-
-  /**
    * Used to log in a user with the specified username and password.
    * Checks for empty fields and user existence before validating the password.
    * 
-   * @param username
-   * @param password
-   * @return
+   * @param username the username of the user attempting to log in
+   * @param password the password provided for login
+   * @return true if login is successful, false otherwise
+   * @throws IllegalArgumentException if the username is empty during user existence check
    */
   public boolean logInUser(String username, String password) {
     if (username.isEmpty() || password.isEmpty()) {
@@ -158,15 +161,25 @@ public class UserService {
   /**
    * Validates the password for the given username.
    * 
-   * @param username
-   * @param password
-   * @return
+   * @param username the username of the user
+   * @param password the password to validate
+   * @return true if the password is valid, false otherwise
    */
   public boolean validatePassword(String username, String password) {
     if (username.isEmpty() || password.isEmpty()) {
       return false;
     }
     return isValidPassword(password);
+  }
+
+  /**
+   * Checks if the given password meets the security requirements.
+   * 
+   * @param password the password to check
+   * @return true if the password is valid, false otherwise
+   */
+  public boolean isValidPassword(String password) {
+    return validatePasswordDetailed(password) == null;
   }
 
   /**
@@ -202,15 +215,5 @@ public class UserService {
     }
     
     return null; // Password is valid
-  }
-
-  /**
-   * Checks if the given password meets the security requirements.
-   * 
-   * @param password
-   * @return true if the password is valid, false otherwise
-   */
-  public boolean isValidPassword(String password) {
-    return validatePasswordDetailed(password) == null;
   }
 }

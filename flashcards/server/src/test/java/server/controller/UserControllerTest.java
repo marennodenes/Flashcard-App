@@ -1,12 +1,5 @@
 package server.controller;
 
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +14,13 @@ import app.User;
 import dto.LoginRequestDto;
 import server.service.UserService;
 import shared.ApiEndpoints;
+
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 /**
  * Test class for UserController REST endpoints.
@@ -40,6 +40,7 @@ import shared.ApiEndpoints;
  *
  * @author chrsom 
  * @author isamw
+ * @author parts of class is generated with the help of claude.ai
  * @see UserController
  * @see UserService
  */
@@ -211,83 +212,91 @@ public class UserControllerTest {
         .andExpect(jsonPath("$.message").value("Error logging in user: Invalid password"));
   }
 
-    /**
-     * Tests user login when user does not exist.
-     * Verifies that login fails and returns user not found message.
-     */
-    @SuppressWarnings("null")
-    @Test
-    void testLogInUser_UserNotFound() throws Exception {
-      when(userService.logInUser("ghost", "anyPassword")).thenReturn(false);
-      when(userService.userExists("ghost")).thenReturn(false);
+  /**
+   * Tests user login when user does not exist.
+   * Verifies that login fails and returns user not found message.
+   * 
+   * @throws Exception if the MockMvc request fails
+   */
+  @SuppressWarnings("null")
+  @Test
+  void testLogInUser_UserNotFound() throws Exception {
+    when(userService.logInUser("ghost", "anyPassword")).thenReturn(false);
+    when(userService.userExists("ghost")).thenReturn(false);
 
-      LoginRequestDto request = new LoginRequestDto("ghost", "anyPassword");
-
-    mockMvc.perform(post(ApiEndpoints.USERS_V1 + ApiEndpoints.USER_LOGIN)
-      .contentType(MediaType.APPLICATION_JSON)
-      .content(objectMapper.writeValueAsString(request)))
-          .andExpect(status().isOk())
-          .andExpect(jsonPath("$.success").value(true))
-          .andExpect(jsonPath("$.data.success").value(false))
-    .andExpect(jsonPath("$.data.message").value("User not found."));
-    }
-
-    /**
-     * Tests user login with empty username.
-     * Verifies that login fails and returns error message.
-     */
-    @SuppressWarnings("null")
-    @Test
-    void testLogInUser_EmptyUsername() throws Exception {
-      when(userService.logInUser("", "TestPassword123!")).thenThrow(new IllegalArgumentException("Username cannot be empty"));
-
-      LoginRequestDto request = new LoginRequestDto("", "TestPassword123!");
+    LoginRequestDto request = new LoginRequestDto("ghost", "anyPassword");
 
     mockMvc.perform(post(ApiEndpoints.USERS_V1 + ApiEndpoints.USER_LOGIN)
-      .contentType(MediaType.APPLICATION_JSON)
-      .content(objectMapper.writeValueAsString(request)))
-          .andExpect(status().isOk())
-          .andExpect(jsonPath("$.success").value(false))
-          .andExpect(jsonPath("$.message").value("Error logging in user: Username cannot be empty"));
-    }
+        .contentType(MediaType.APPLICATION_JSON)
+        .content(objectMapper.writeValueAsString(request)))
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$.success").value(true))
+        .andExpect(jsonPath("$.data.success").value(false))
+        .andExpect(jsonPath("$.data.message").value("User not found."));
+  }
 
-    /**
-     * Tests user login with empty password.
-     * Verifies that login fails and returns error message.
-     */
-    @SuppressWarnings("null")
-    @Test
-    void testLogInUser_EmptyPassword() throws Exception {
-      when(userService.logInUser("testUser", "")).thenThrow(new IllegalArgumentException("Password cannot be empty"));
+  /**
+   * Tests user login with empty username.
+   * Verifies that login fails and returns error message.
+   * 
+   * @throws Exception if the MockMvc request fails
+   */
+  @SuppressWarnings("null")
+  @Test
+  void testLogInUser_EmptyUsername() throws Exception {
+    when(userService.logInUser("", "TestPassword123!")).thenThrow(new IllegalArgumentException("Username cannot be empty"));
 
-      LoginRequestDto request = new LoginRequestDto("testUser", "");
-
-    mockMvc.perform(post(ApiEndpoints.USERS_V1 + ApiEndpoints.USER_LOGIN)
-      .contentType(MediaType.APPLICATION_JSON)
-      .content(objectMapper.writeValueAsString(request)))
-          .andExpect(status().isOk())
-          .andExpect(jsonPath("$.success").value(false))
-          .andExpect(jsonPath("$.message").value("Error logging in user: Password cannot be empty"));
-    }
-
-    /**
-     * Tests user login when an exception occurs in service.
-     * Verifies that login fails and returns error message.
-     */
-    @SuppressWarnings("null")
-    @Test
-    void testLogInUser_Exception() throws Exception {
-      when(userService.logInUser(anyString(), anyString())).thenThrow(new RuntimeException("Unexpected error"));
-
-      LoginRequestDto request = new LoginRequestDto("testUser", "TestPassword123!");
+    LoginRequestDto request = new LoginRequestDto("", "TestPassword123!");
 
     mockMvc.perform(post(ApiEndpoints.USERS_V1 + ApiEndpoints.USER_LOGIN)
-      .contentType(MediaType.APPLICATION_JSON)
-      .content(objectMapper.writeValueAsString(request)))
-          .andExpect(status().isOk())
-          .andExpect(jsonPath("$.success").value(false))
-          .andExpect(jsonPath("$.message").value("Error logging in user: Unexpected error"));
-    }
+        .contentType(MediaType.APPLICATION_JSON)
+        .content(objectMapper.writeValueAsString(request)))
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$.success").value(false))
+        .andExpect(jsonPath("$.message").value("Error logging in user: Username cannot be empty"));
+  }
+
+  /**
+   * Tests user login with empty password.
+   * Verifies that login fails and returns error message.
+   * 
+   * @throws Exception if the MockMvc request fails
+   */
+  @SuppressWarnings("null")
+  @Test
+  void testLogInUser_EmptyPassword() throws Exception {
+    when(userService.logInUser("testUser", "")).thenThrow(new IllegalArgumentException("Password cannot be empty"));
+
+    LoginRequestDto request = new LoginRequestDto("testUser", "");
+
+    mockMvc.perform(post(ApiEndpoints.USERS_V1 + ApiEndpoints.USER_LOGIN)
+        .contentType(MediaType.APPLICATION_JSON)
+        .content(objectMapper.writeValueAsString(request)))
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$.success").value(false))
+        .andExpect(jsonPath("$.message").value("Error logging in user: Password cannot be empty"));
+  }
+
+  /**
+   * Tests user login when an exception occurs in service.
+   * Verifies that login fails and returns error message.
+   * 
+   * @throws Exception if the MockMvc request fails
+   */
+  @SuppressWarnings("null")
+  @Test
+  void testLogInUser_Exception() throws Exception {
+    when(userService.logInUser(anyString(), anyString())).thenThrow(new RuntimeException("Unexpected error"));
+
+    LoginRequestDto request = new LoginRequestDto("testUser", "TestPassword123!");
+
+    mockMvc.perform(post(ApiEndpoints.USERS_V1 + ApiEndpoints.USER_LOGIN)
+        .contentType(MediaType.APPLICATION_JSON)
+        .content(objectMapper.writeValueAsString(request)))
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$.success").value(false))
+        .andExpect(jsonPath("$.message").value("Error logging in user: Unexpected error"));
+  }
 
   /**
    * Tests password validation with a valid password.

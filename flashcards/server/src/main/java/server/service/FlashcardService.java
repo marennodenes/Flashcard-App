@@ -29,6 +29,9 @@ import shared.ApiConstants;
  * 
  * @author chrsom
  * @author isamw
+ * @see FlashcardPersistent
+ * @see DeckService
+ * @see ApiConstants
  */
 @Service
 public class FlashcardService {

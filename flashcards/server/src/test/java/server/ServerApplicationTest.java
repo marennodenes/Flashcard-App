@@ -1,8 +1,8 @@
 package server;
 
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
-
 import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
 /**
  * Unit tests for the {@link ServerApplication} class.
@@ -12,10 +12,11 @@ import org.junit.jupiter.api.Test;
  * 
  * @author chrsom
  * @author isamw
+ * @author parts of class is generated with the help of claude.ai
  */
 public class ServerApplicationTest {
 
-   /**
+  /**
    * Tests that the main method runs without throwing exceptions.
    * 
    * Verifies the application can start successfully with default configuration.
