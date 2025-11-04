@@ -157,7 +157,8 @@ public class FlashcardPersistent implements UserPersistence {
                 UserData userData = objectMapper.readValue(file, UserData.class);
                 return userData;
             } catch (IOException e) {
-                e.printStackTrace();
+                // Throw the error so it can be properly handled by calling methods
+                throw new RuntimeException("Failed to read user data file for user '" + username + "': " + e.getMessage(), e);
             }
         }
         

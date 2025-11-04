@@ -246,10 +246,11 @@ public void testWhenLoginButtonClicked_navigateToMainAppIOException() throws Exc
         // Act: call the public method, which will internally call navigateToMainApp and hit the IOException
         controller.whenLoginButtonClicked();
 
-        // Assert: error message shown
-        verify(alertMessage).setText("Failed to load main application");
-        verify(alertMessage, atLeastOnce()).setVisible(true);
-        verify(ex, atLeastOnce()).setVisible(true);
+        // Assert: ApiClient.showAlert should be called for navigation errors
+        mockedApiClient.verify(() -> ApiClient.showAlert(
+            eq("Load Error"), 
+            eq("An unexpected error occurred. Please try again.")
+        ));
     }
 }
     
@@ -293,8 +294,9 @@ public void testNavigateToMainApp_failure() throws Exception {
     // Arrange
     String username = "testuser";
 
-    // Mock FXMLLoader construction
-    try (MockedConstruction<FXMLLoader> mocked = mockConstruction(FXMLLoader.class,
+    // Mock FXMLLoader construction to throw IOException
+    try (MockedStatic<ApiClient> mockedApiClient = mockStatic(ApiClient.class);
+         MockedConstruction<FXMLLoader> mocked = mockConstruction(FXMLLoader.class,
         (loader, context) -> {
             when(loader.load()).thenThrow(new IOException("Load failed"));
         })) {
@@ -306,12 +308,15 @@ public void testNavigateToMainApp_failure() throws Exception {
         var method = FlashcardLoginController.class.getDeclaredMethod("navigateToMainApp", String.class);
         method.setAccessible(true);
 
-        // Act & Assert
-        Exception thrown = assertThrows(Exception.class, () -> method.invoke(controller, username));
-        // Unwrap InvocationTargetException
-        Throwable cause = thrown.getCause();
-        assertTrue(cause instanceof IOException);
-        assertEquals("Load failed", cause.getMessage());
+        // Act: navigateToMainApp now handles IOException internally and calls showAlert
+        // Run directly since the method is already designed to handle errors internally
+        method.invoke(controller, username);
+
+        // Assert: ApiClient.showAlert should be called for navigation errors
+        mockedApiClient.verify(() -> ApiClient.showAlert(
+            eq("Load Error"), 
+            eq("An unexpected error occurred. Please try again.")
+        ));
     }
 }
 
@@ -466,18 +471,20 @@ public void testNavigateToSignUpPageFailure() throws Exception {
     @Test
     public void testWhenSignUpButtonClicked_ioException() throws Exception {
         // Use MockedConstruction to simulate IOException (same pattern as your other working tests)
-        try (MockedConstruction<FXMLLoader> mockedFXMLLoader = mockConstruction(FXMLLoader.class,
+        try (MockedStatic<ApiClient> mockedApiClient = mockStatic(ApiClient.class);
+             MockedConstruction<FXMLLoader> mockedFXMLLoader = mockConstruction(FXMLLoader.class,
              (loader, context) -> {
                  when(loader.load()).thenThrow(new IOException("Simulated navigation error"));
              })) {
             
-            // Act
+            // Act: Run directly - the showAlert call will be mocked
             controller.whenSignUpButtonClicked();
             
-            // Assert: error message should be shown
-            verify(alertMessage).setText("Failed to load signup page");
-            verify(alertMessage, atLeastOnce()).setVisible(true);
-            verify(ex, atLeastOnce()).setVisible(true);
+            // Assert: ApiClient.showAlert should be called for navigation errors
+            mockedApiClient.verify(() -> ApiClient.showAlert(
+                eq("Load Error"), 
+                eq("An unexpected error occurred. Please try again.")
+            ));
         }
     }
 

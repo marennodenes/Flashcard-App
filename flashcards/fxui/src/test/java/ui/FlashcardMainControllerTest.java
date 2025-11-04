@@ -1293,7 +1293,7 @@ class FlashcardMainControllerTest {
             // Verify showAlert was called if POST fails
             // Note: showAlert is called from whenNewDeckButtonIsClicked if POST fails
             // But since we mock POST to return failure, showAlert should be called
-            apiClient.verify(() -> ApiClient.showAlert(eq("Create Error"), anyString()), atLeastOnce());
+            apiClient.verify(() -> ApiClient.showAlert(eq("Server Error"), eq("Failed to create deck")), atLeastOnce());
 
         }
 

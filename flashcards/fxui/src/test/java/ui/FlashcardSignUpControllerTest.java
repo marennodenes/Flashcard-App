@@ -352,7 +352,8 @@ class FlashcardSignUpControllerTest {
 
   @Test
   void testBackButton_withIOException_shouldShowError() throws Exception {
-    try (MockedConstruction<FXMLLoader> mockedFXMLLoader = mockConstruction(FXMLLoader.class,
+    try (MockedStatic<ApiClient> apiClientMock = mockStatic(ApiClient.class);
+         MockedConstruction<FXMLLoader> mockedFXMLLoader = mockConstruction(FXMLLoader.class,
         (loader, context) -> {
           try {
             when(loader.load()).thenThrow(new IOException("File not found"));
@@ -361,30 +362,14 @@ class FlashcardSignUpControllerTest {
           }
         })) {
       
-      // When: Back button is clicked
-      // TestFX already runs on FX thread, so we can call directly
+      // When: Back button is clicked - the showAlert call will be mocked
       controller.whenBackButtonIsClicked();
       
-      // Wait for UI update multiple times to ensure async operations complete
-      WaitForAsyncUtils.waitForFxEvents();
-      Thread.sleep(300);
-      WaitForAsyncUtils.waitForFxEvents();
-      
-      // Then: Should show error message
-      // showError sets error field and calls updateUi(), which may reset showAlert to false
-      // So we check the error field directly or if alert message text was set
-      try {
-        var errorField = FlashcardSignUpController.class.getDeclaredField("error");
-        errorField.setAccessible(true);
-        String errorValue = (String) errorField.get(controller);
-        boolean hasError = errorValue != null && errorValue.length() > 0;
-        assertTrue(hasError || (alertMessage.getText() != null && alertMessage.getText().length() > 0), 
-          "Expected error message to be set. Error field: " + errorValue + ", Alert text: " + alertMessage.getText());
-      } catch (Exception e) {
-        // If reflection fails, just check the alert message text
-        assertTrue(alertMessage.getText() != null && alertMessage.getText().length() > 0,
-          "Expected error message to be shown");
-      }
+      // Then: Should call ApiClient.showAlert for navigation errors
+      apiClientMock.verify(() -> ApiClient.showAlert(
+          eq("Load Error"), 
+          eq("An unexpected error occurred. Please try again.")
+      ));
     }
   }
 
@@ -427,8 +412,8 @@ class FlashcardSignUpControllerTest {
       
         // Then: Should call ApiClient.showAlert
         apiClientMock.verify(() -> ApiClient.showAlert(
-          eq("Error"), 
-          eq("Failed to load main application")
+          eq("Load Error"), 
+          eq("An unexpected error occurred. Please try again.")
         ));
       }
     }
