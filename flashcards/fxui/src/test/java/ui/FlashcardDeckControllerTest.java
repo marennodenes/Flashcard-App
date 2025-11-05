@@ -1287,4 +1287,103 @@ class FlashcardDeckControllerTest {
             });
         }
     }
+
+    /**
+     * Tests ListCell updateItem method with valid FlashcardDto.
+     * Covers the updateItem method in the ListCell created by setCellFactory.
+     */
+    @Test
+    public void testListCell_updateItem_withValidFlashcard() throws Exception {
+        runOnFxThread(() -> {
+            try {
+                controller.initialize();
+                
+                // Get the cell factory and create a cell
+                var cellFactory = listView.getCellFactory();
+                assertNotNull(cellFactory);
+                var cell = cellFactory.call(listView);
+                assertNotNull(cell);
+                
+                // Create test flashcard
+                FlashcardDto flashcard = new FlashcardDto("Test Question", "Test Answer", 1);
+                
+                // Find updateItem method in the class hierarchy
+                var updateItemMethod = findUpdateItemMethod(cell.getClass());
+                updateItemMethod.setAccessible(true);
+                updateItemMethod.invoke(cell, flashcard, false);
+                
+                // Verify text is set correctly
+                assertEquals(flashcard.toString(), cell.getText());
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        });
+    }
+
+    /**
+     * Tests ListCell updateItem method with empty cell.
+     * Covers the empty branch in updateItem.
+     */
+    @Test
+    public void testListCell_updateItem_withEmptyCell() throws Exception {
+        runOnFxThread(() -> {
+            try {
+                controller.initialize();
+                
+                var cellFactory = listView.getCellFactory();
+                var cell = cellFactory.call(listView);
+                
+                // Find and invoke updateItem with empty=true
+                var updateItemMethod = findUpdateItemMethod(cell.getClass());
+                updateItemMethod.setAccessible(true);
+                updateItemMethod.invoke(cell, null, true);
+                
+                // Verify text is null for empty cell
+                assertNull(cell.getText());
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        });
+    }
+
+    /**
+     * Tests ListCell updateItem method with null item.
+     * Covers the null item branch in updateItem.
+     */
+    @Test
+    public void testListCell_updateItem_withNullItem() throws Exception {
+        runOnFxThread(() -> {
+            try {
+                controller.initialize();
+                
+                var cellFactory = listView.getCellFactory();
+                var cell = cellFactory.call(listView);
+                
+                // Find and invoke updateItem with null item
+                var updateItemMethod = findUpdateItemMethod(cell.getClass());
+                updateItemMethod.setAccessible(true);
+                updateItemMethod.invoke(cell, null, false);
+                
+                // Verify text is null when item is null
+                assertNull(cell.getText());
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        });
+    }
+    
+    /**
+     * Helper method to find updateItem method in class hierarchy.
+     */
+    private java.lang.reflect.Method findUpdateItemMethod(Class<?> clazz) throws NoSuchMethodException {
+        Class<?> current = clazz;
+        while (current != null) {
+            try {
+                return current.getDeclaredMethod("updateItem", Object.class, boolean.class);
+            } catch (NoSuchMethodException e) {
+                current = current.getSuperclass();
+            }
+        }
+        throw new NoSuchMethodException("updateItem not found in class hierarchy");
+    }
 }
