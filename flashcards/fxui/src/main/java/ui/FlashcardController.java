@@ -27,19 +27,17 @@ import shared.ApiConstants;
  */
 public class FlashcardController {
 
-    // Remove 'private' from these fields to make them package-private for test access
-    @FXML Button backButton;
-    @FXML Button nextButton;  // Changed from nextCard to match FXML
-    @FXML Button previousButton;  // Changed from previousCard to match FXML
-    @FXML Button card;
-    @FXML ProgressBar progressBar;
-    @FXML Text usernameField;
-    @FXML Text decknameField;
-    @FXML Text cardNumber;
+  private @FXML Button backButton;
+  private @FXML Button nextButton; 
+  private @FXML Button previousButton; 
+  private @FXML Button card;
+  private @FXML ProgressBar progressBar;
+  private @FXML Text usernameField;
+  private @FXML Text decknameField;
+  private @FXML Text cardNumber;
 
-  // Remove 'private' for test access
-  List<FlashcardDto> deck = new ArrayList<>();
-  int currentCardI;
+  private List<FlashcardDto> deck = new ArrayList<>();
+  private int currentCardI;
   private String currentUsername;
 
   private String questionStyle = """
