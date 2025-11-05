@@ -18,7 +18,6 @@ import dto.FlashcardDto;
 import dto.mappers.FlashcardDeckMapper;
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.text.Text;
@@ -52,45 +51,40 @@ public class FlashcardControllerTest {
 
     @BeforeEach
     public void setUp() throws Exception {
-        // Reset fields to null before initialization
-        controller = null;
-        backButton = null;
-        nextButton = null;
-        previousButton = null;
-        card = null;
-        progressBar = null;
-        usernameField = null;
-        decknameField = null;
-        cardNumber = null;
-        
         CountDownLatch latch = new CountDownLatch(1);
         Platform.runLater(() -> {
             try {
-                FXMLLoader loader = new FXMLLoader(getClass().getResource("FlashcardLearning.fxml"));
-                Parent root = loader.load();
-                controller = loader.getController();
+                // Create controller and components manually
+                controller = new FlashcardController();
+                backButton = new Button();
+                nextButton = new Button();
+                previousButton = new Button();
+                card = new Button();
+                progressBar = new ProgressBar();
+                usernameField = new Text();
+                decknameField = new Text();
+                cardNumber = new Text();
                 
-                if (controller == null) {
-                    throw new IllegalStateException("Controller not loaded from FXML");
-                }
+                // Inject components into controller using reflection
+                setField("backButton", backButton);
+                setField("nextButton", nextButton);
+                setField("previousButton", previousButton);
+                setField("card", card);
+                setField("progressBar", progressBar);
+                setField("usernameField", usernameField);
+                setField("decknameField", decknameField);
+                setField("cardNumber", cardNumber);
                 
-                backButton = (Button) root.lookup("#backButton");
-                nextButton = (Button) root.lookup("#nextButton");
-                previousButton = (Button) root.lookup("#previousButton");
-                card = (Button) root.lookup("#card");
-                progressBar = (ProgressBar) root.lookup("#progressBar");
-                usernameField = (Text) root.lookup("#usernameField");
-                decknameField = (Text) root.lookup("#decknameField");
-                cardNumber = (Text) root.lookup("#cardNumber");
+                // Initialize controller
+                controller.initialize();
                 
-                if (controller != null) {
-                    controller.setCurrentUsername("testUser");
-                    FlashcardDeck deck = new FlashcardDeck("Test Deck");
-                    deck.addFlashcard(new Flashcard("Q1", "A1"));
-                    deck.addFlashcard(new Flashcard("Q2", "A2"));
-                    deck.addFlashcard(new Flashcard("Q3", "A3"));
-                    controller.setDeck(mapper.toDto(deck));
-                }
+                // Set test data
+                controller.setCurrentUsername("testUser");
+                FlashcardDeck deck = new FlashcardDeck("Test Deck");
+                deck.addFlashcard(new Flashcard("Q1", "A1"));
+                deck.addFlashcard(new Flashcard("Q2", "A2"));
+                deck.addFlashcard(new Flashcard("Q3", "A3"));
+                controller.setDeck(mapper.toDto(deck));
                 
                 latch.countDown();
             } catch (Exception e) {
@@ -103,10 +97,17 @@ public class FlashcardControllerTest {
             throw new IllegalStateException("setUp() did not complete within timeout");
         }
         
-        // Verify that controller is initialized (most critical field)
+        // Verify that controller is initialized
         if (controller == null) {
             throw new IllegalStateException("Controller was not initialized in setUp()");
         }
+    }
+    
+    /** Sets private field using reflection. */
+    private void setField(String fieldName, Object value) throws Exception {
+        var field = FlashcardController.class.getDeclaredField(fieldName);
+        field.setAccessible(true);
+        field.set(controller, value);
     }
 
     @Test
@@ -277,9 +278,14 @@ public class FlashcardControllerTest {
             latch.countDown();
         });
         latch.await(2, TimeUnit.SECONDS);
-        Thread.sleep(600);
+        Thread.sleep(700); // Increased wait time for animation
         
-        assertEquals("A1", card.getText());
+        CountDownLatch verifyLatch = new CountDownLatch(1);
+        Platform.runLater(() -> {
+            assertEquals("A1", card.getText());
+            verifyLatch.countDown();
+        });
+        verifyLatch.await(2, TimeUnit.SECONDS);
     }
 
     @Test

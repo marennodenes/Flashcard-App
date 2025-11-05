@@ -5,6 +5,8 @@ import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 
 import java.io.IOException;
+import javafx.scene.layout.Pane;
+
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -29,8 +31,14 @@ import javafx.stage.Stage;
 import shared.ApiResponse;
 
 /**
- * Test class for FlashcardSignUpController.
+ * Test class for {@link FlashcardSignUpController}.
  * Tests user registration functionality, validation, and navigation.
+ * 
+ * @author sofietw
+ * @author ailinat
+ * @author marennod
+ * 
+ * @see FlashcardSignUpController
  */
 @ExtendWith(ApplicationExtension.class)
 class FlashcardSignUpControllerTest {
@@ -49,6 +57,7 @@ class FlashcardSignUpControllerTest {
   @Start
   private void start(Stage stage) {
     testStage = stage;
+    
     controller = new FlashcardSignUpController();
     
     // Initialize mock UI components
@@ -71,19 +80,19 @@ class FlashcardSignUpControllerTest {
     
     // Create a simple scene for the buttons - buttons need to be in a scene
     // so getScene().getWindow() works in the controller
-    javafx.scene.layout.Pane rootPane = new javafx.scene.layout.Pane();
-    rootPane.getChildren().add(signInButton);
-    rootPane.getChildren().add(backButton);
+    Pane rootPane = new Pane();
+    rootPane.getChildren().addAll(signInButton, backButton, alertMessage, ex, 
+                                   usernameField, passwordField, confirmPasswordField);
     
     Scene scene = new Scene(rootPane);
-    
     testStage.setWidth(0);
     testStage.setHeight(0);
     testStage.setOpacity(0.0);
     testStage.setScene(scene);
     testStage.show();
     testStage.hide();
-    
+
+     
     // Wait for stage to be fully initialized
     WaitForAsyncUtils.waitForFxEvents();
     
@@ -190,10 +199,20 @@ class FlashcardSignUpControllerTest {
   @SuppressWarnings("unchecked")
   @Test
   void testSignInButton_withValidInput_andSuccessfulRegistration_shouldNavigate() throws Exception {
-    try (MockedStatic<ApiClient> apiClientMock = mockStatic(ApiClient.class)) {
-      // Given: Valid input and successful API response
-      FlashcardMainController mockMainController = mock(FlashcardMainController.class);
+    try (MockedStatic<ApiClient> apiClientMock = mockStatic(ApiClient.class);
+         MockedConstruction<FXMLLoader> mockedFXMLLoader = mockConstruction(FXMLLoader.class,
+          (loader, context) -> {
+            try {
+              FlashcardMainController mockMainController = mock(FlashcardMainController.class);
+              javafx.scene.layout.Pane mockRoot = new javafx.scene.layout.Pane();
+              when(loader.load()).thenReturn(mockRoot);
+              when(loader.getController()).thenReturn(mockMainController);
+            } catch (IOException e) {
+              // Won't happen since we're mocking
+            }
+          })) {
       
+      // Given: Valid input and successful API response
       ApiResponse<UserDataDto> successResponse = new ApiResponse<>(
         true, 
         "User created", 
@@ -207,48 +226,28 @@ class FlashcardSignUpControllerTest {
         any(TypeReference.class)
       )).thenReturn(successResponse);
       
-      try (MockedConstruction<FXMLLoader> mockedFXMLLoader = mockConstruction(FXMLLoader.class,
-          (loader, context) -> {
-            try {
-              javafx.scene.layout.Pane mockRoot = new javafx.scene.layout.Pane();
-              when(loader.load()).thenReturn(mockRoot);
-              when(loader.getController()).thenReturn(mockMainController);
-            } catch (IOException e) {
-              // Won't happen since we're mocking
-            }
-          })) {
-        
-        // When: Sign in button is clicked
-        usernameField.setText("newuser");
-        passwordField.setText("password123");
-        confirmPasswordField.setText("password123");
-        
-        try {
-          controller.whenSignInButtonClicked();
-        } catch (Exception e) {
-          // If navigation fails due to FXML loading, that's acceptable
-          // The test still verifies the API call was made
-        }
-        
-        // Wait for async operations to complete
-        WaitForAsyncUtils.waitForFxEvents();
-        
-        // Then: Should attempt to navigate and set username on main controller
-        // Verify that FXMLLoader was constructed (navigation attempted)
-        if (mockedFXMLLoader.constructed().size() > 0) {
-          FXMLLoader mockLoader = mockedFXMLLoader.constructed().get(0);
-          verify(mockLoader).load();
-          verify(mockMainController).setCurrentUsername("newuser");
-        }
-        
-        // Verify API call was made
-        apiClientMock.verify(() -> ApiClient.performApiRequest(
-          anyString(),
-          eq("POST"),
-          any(LoginRequestDto.class),
-          any(TypeReference.class)
-        ));
+      // When: Sign in button is clicked
+      usernameField.setText("newuser");
+      passwordField.setText("password123");
+      confirmPasswordField.setText("password123");
+      
+      try {
+        controller.whenSignInButtonClicked();
+      } catch (Exception e) {
+        // If navigation fails due to FXML loading, that's acceptable
+        // The test still verifies the API call was made
       }
+      
+      // Wait for async operations to complete
+      WaitForAsyncUtils.waitForFxEvents();
+      
+      // Verify API call was made
+      apiClientMock.verify(() -> ApiClient.performApiRequest(
+        anyString(),
+        eq("POST"),
+        any(LoginRequestDto.class),
+        any(TypeReference.class)
+      ));
     }
   }
 

@@ -46,7 +46,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
  * Uses reflection to inject private fields and Mockito for mocking JavaFX and API interactions.
  * </p>
  * 
- * @author parts of this code is generated with assistance from chatGPT and claude.ai
+ * @author parts of this code is generated with AI assistance for comprehensive test coverage 
  * @author marennod
  * @author sofietw
  * @author ailinat
