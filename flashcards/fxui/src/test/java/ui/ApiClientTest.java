@@ -18,20 +18,19 @@ import org.mockito.Mockito;
 
 /**
  * Unit tests for the {@link ApiClient} utility class.
- * <p>
+ * 
  * This test class verifies all public static methods in {@code ApiClient}, including:
- * <ul>
- *   <li>HTTP request handling (GET, POST, PUT)</li>
- *   <li>JSON serialization and deserialization</li>
- *   <li>Error handling and edge cases</li>
- *   <li>Coverage of the default constructor for JaCoCo</li>
- * </ul>
- * <p>
+ * - HTTP request handling (GET, POST, PUT)
+ * - JSON serialization and deserialization
+ * - Error handling and edge cases
+ * - Coverage of the default constructor for JaCoCo
+ * 
  * All major branches, error paths, and edge cases are tested to ensure robust and maintainable code.
  * @author marennod
  * @author sofietw
+ * @see ApiClient
  */
-public class FlashcardApiClientTest {
+public class ApiClientTest {
 
     /**
      * Verifies that sendRequest throws IllegalArgumentException for null or blank URI/method.

@@ -19,6 +19,7 @@ import javafx.scene.transform.Rotate;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 import shared.ApiConstants;
+
 /**
  * Controller for the flashcard learning interface.
  * Handles navigation between cards, flipping animations, and progress tracking.
