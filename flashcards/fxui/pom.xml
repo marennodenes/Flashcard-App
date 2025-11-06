@@ -17,13 +17,6 @@
     <packaging>jar</packaging>
     
     <dependencies>
-        <!-- Dependency on the storage module -->
-        <dependency>
-            <groupId>it1901</groupId>
-            <artifactId>storage</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-
         <!-- Dependency on the shared module -->
         <dependency>
             <groupId>it1901</groupId>
@@ -94,6 +87,31 @@
             <artifactId>hamcrest</artifactId>
             <scope>test</scope>
         </dependency>
+        
+        <!-- Monocle for headless JavaFX testing -->
+        <dependency>
+            <groupId>org.testfx</groupId>
+            <artifactId>openjfx-monocle</artifactId>
+            <version>jdk-12.0.1+2</version>
+            <scope>test</scope>
+        </dependency>
+
+        <!-- Mockito for testing (version managed by parent) -->
+    <dependency>
+        <groupId>org.mockito</groupId>
+        <artifactId>mockito-core</artifactId>
+        <scope>test</scope>
+    </dependency>
+    <dependency>
+        <groupId>org.mockito</groupId>
+        <artifactId>mockito-inline</artifactId>
+        <scope>test</scope>
+    </dependency>
+    <dependency>
+        <groupId>org.mockito</groupId>
+        <artifactId>mockito-junit-jupiter</artifactId>
+        <scope>test</scope>
+    </dependency>
     </dependencies>
 
     <build>
@@ -105,7 +123,17 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
+                <configuration>
+                    <argLine>
+                        @{argLine}
+                        --add-opens javafx.graphics/com.sun.javafx.application=ALL-UNNAMED
+                        --add-opens javafx.graphics/com.sun.glass.ui=ALL-UNNAMED
+                        --add-opens javafx.graphics/com.sun.glass.ui.monocle=ALL-UNNAMED
+                        --add-exports javafx.graphics/com.sun.glass.ui=ALL-UNNAMED
+                    </argLine>
+                </configuration>
             </plugin>
+            
             
             <!-- JavaFX Maven plugin for running the application -->
             <plugin>

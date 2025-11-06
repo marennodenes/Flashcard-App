@@ -65,11 +65,12 @@ public class FlashcardDeck {
    * @param question the question text
    * @param answer the answer text
    */
-  public void addFlashcard(Flashcard flashcard) {
+ public void addFlashcard(Flashcard flashcard) {
+    if (flashcard != null) {
         flashcard.setNumber(deck.size() + 1);
-        deck.add(flashcard);
-      
-  }
+    }
+    deck.add(flashcard);
+}
 
   /**
    * Removes a flashcard from the deck at the specified index.

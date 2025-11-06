@@ -7,8 +7,6 @@ import org.springframework.stereotype.Service;
 
 import app.FlashcardDeck;
 import app.FlashcardDeckManager;
-import dto.FlashcardDeckManagerDto;
-import dto.mappers.FlashcardDeckMapper;
 import itp.storage.FlashcardPersistent;
 import shared.ApiConstants;
 
@@ -89,8 +87,10 @@ public class DeckService {
     public FlashcardDeck createDeck(String username, String deckName) throws IOException {
         FlashcardDeck deck = new FlashcardDeck(deckName);
 
-        getAllDecks(username).addDeck(deck);
-        flashcardPersistent.writeDeck(username, getAllDecks(username));
+        // Get manager once and reuse it (don't call getAllDecks twice!)
+        FlashcardDeckManager manager = getAllDecks(username);
+        manager.addDeck(deck);
+        flashcardPersistent.writeDeck(username, manager);
         
         return deck;
     }
@@ -104,10 +104,16 @@ public class DeckService {
      * @throws IllegalArgumentException if the user does not exist or the deck is not found
      */
     public void deleteDeck(String username, String deckname) throws IOException {
-
+        // Get manager once and reuse it
         FlashcardDeckManager manager = getAllDecks(username);
-
-        manager.removeDeck(getDeck(username, deckname));
+        
+        // Find deck in the manager's decks list (don't call getDeck which reads from file again)
+        FlashcardDeck deck = manager.getDecks().stream()
+            .filter(d -> d.getDeckName().equals(deckname))
+            .findFirst()
+            .orElseThrow(() -> new IllegalArgumentException(ApiConstants.DECK_NOT_FOUND));
+        
+        manager.removeDeck(deck);
         flashcardPersistent.writeDeck(username, manager);
     }
 
@@ -119,13 +125,12 @@ public class DeckService {
      * @throws IOException if an error occurs while writing to persistent storage
      * @throws IllegalArgumentException if the user does not exist
      */
-    public void updateAllDecks(String username, FlashcardDeckManagerDto deckManagerDto) throws IOException {
+    public void updateAllDecks(String username, FlashcardDeckManager deckManager) throws IOException {
         if (!flashcardPersistent.userExists(username)) {
             throw new IllegalArgumentException(ApiConstants.USER_NOT_FOUND);
         }
-        FlashcardDeckMapper mapper = new FlashcardDeckMapper();
         FlashcardDeckManager manager = new FlashcardDeckManager();
-        manager.setDecks(mapper.fromDtoList(deckManagerDto.getDecks()));
+        manager.setDecks(deckManager.getDecks());
         flashcardPersistent.writeDeck(username, manager);
     }
 }
