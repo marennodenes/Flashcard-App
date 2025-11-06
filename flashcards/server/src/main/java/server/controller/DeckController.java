@@ -54,9 +54,9 @@ public class DeckController {
     try {
       FlashcardDeckManager deckManager = deckService.getAllDecks(username);
       FlashcardDeckManagerDto dto = new FlashcardDeckManagerDto(mapper.toDtoList(deckManager.getDecks()));
-      return new ApiResponse<>(true, "Decks retrieved successfully", dto);
+      return new ApiResponse<>(true, ApiConstants.DECKS_RETRIEVED, dto);
     } catch (Exception e) {
-      return new ApiResponse<>(false, "Error retrieving decks: " + e.getMessage(), null);
+      return new ApiResponse<>(false, e.getMessage(), null);
     }
   }
 
@@ -71,9 +71,9 @@ public class DeckController {
     try {
       FlashcardDeck deck = deckService.getDeck(username, deckName);
       FlashcardDeckDto dto = mapper.toDto(deck);
-      return new ApiResponse<>(true, "Deck retrieved successfully", dto);
+      return new ApiResponse<>(true, ApiConstants.DECK_RETRIEVED, dto);
     } catch (Exception e) {
-      return new ApiResponse<>(false, "Error retrieving deck: " + e.getMessage(), null);
+      return new ApiResponse<>(false, e.getMessage(), null);
     }
   }
 
@@ -90,7 +90,7 @@ public class DeckController {
       FlashcardDeckDto dto = mapper.toDto(deck);
       return new ApiResponse<>(true, ApiConstants.DECK_CREATED, dto);
     } catch (Exception e) {
-      return new ApiResponse<>(false, "Error creating deck: " + e.getMessage(), null);
+      return new ApiResponse<>(false, e.getMessage(), null);
     }
   }
 
@@ -106,7 +106,7 @@ public class DeckController {
       deckService.deleteDeck(username, deckName);
       return new ApiResponse<>(true, ApiConstants.DECK_DELETED, null);
     } catch (Exception e) {
-      return new ApiResponse<>(false, "Error deleting deck: " + e.getMessage(), null);
+      return new ApiResponse<>(false, e.getMessage(), null);
     }
   }
 
@@ -116,9 +116,9 @@ public class DeckController {
         @RequestBody FlashcardDeckManager deckManager) {
       try {
         deckService.updateAllDecks(username, deckManager);
-        return new ApiResponse<>(true, "Decks updated successfully", null);
+        return new ApiResponse<>(true, ApiConstants.DECKS_UPDATED, null);
       } catch (Exception e) {
-        return new ApiResponse<>(false, "Error updating decks: " + e.getMessage(), null);
+        return new ApiResponse<>(false, e.getMessage(), null);
       }
     }
 }

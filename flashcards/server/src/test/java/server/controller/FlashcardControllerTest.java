@@ -116,7 +116,7 @@ public class FlashcardControllerTest {
         .param("answer", "A programming language"))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.success").value(false))
-        .andExpect(jsonPath("$.message").value("Failed to create flashcard: User not found"));
+        .andExpect(jsonPath("$.message").value("User not found"));
   }
 
   /**
@@ -138,7 +138,7 @@ public class FlashcardControllerTest {
         .param("answer", "A programming language"))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.success").value(false))
-        .andExpect(jsonPath("$.message").value("Failed to create flashcard: Deck not found"));
+        .andExpect(jsonPath("$.message").value("Deck not found"));
   }
 
   /**
@@ -160,7 +160,7 @@ public class FlashcardControllerTest {
         .param("answer", ""))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.success").value(false))
-        .andExpect(jsonPath("$.message").value("Failed to create flashcard: Invalid flashcard data"));
+        .andExpect(jsonPath("$.message").value("Invalid flashcard data"));
   }
 
   /**
@@ -203,7 +203,7 @@ public class FlashcardControllerTest {
         .param("number", "99"))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.success").value(false))
-        .andExpect(jsonPath("$.message").value("Failed to retrieve flashcard: Flashcard not found"));
+        .andExpect(jsonPath("$.message").value("Flashcard not found"));
   }
 
   /**
@@ -224,7 +224,7 @@ public class FlashcardControllerTest {
         .param("number", "1"))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.success").value(false))
-        .andExpect(jsonPath("$.message").value("Failed to retrieve flashcard: Deck not found"));
+        .andExpect(jsonPath("$.message").value("Deck not found"));
   }
 
   /**
@@ -266,7 +266,7 @@ public class FlashcardControllerTest {
         .param("deckname", "NonExistentDeck"))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.success").value(false))
-        .andExpect(jsonPath("$.message").value("Failed to retrieve flashcards: Deck not found"));
+        .andExpect(jsonPath("$.message").value("Deck not found"));
   }
 
   /**
@@ -286,7 +286,7 @@ public class FlashcardControllerTest {
         .param("deckname", "TestDeck"))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.success").value(false))
-        .andExpect(jsonPath("$.message").value("Failed to retrieve flashcards: User not found"));
+        .andExpect(jsonPath("$.message").value("User not found"));
   }
 
   /**
@@ -349,7 +349,7 @@ public class FlashcardControllerTest {
         .param("number", "99"))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.success").value(false))
-        .andExpect(jsonPath("$.message").value("Failed to delete flashcard: Flashcard not found"));
+        .andExpect(jsonPath("$.message").value("Flashcard not found"));
   }
 
   /**
@@ -370,7 +370,7 @@ public class FlashcardControllerTest {
         .param("number", "1"))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.success").value(false))
-        .andExpect(jsonPath("$.message").value("Failed to delete flashcard: Deck not found"));
+        .andExpect(jsonPath("$.message").value("Deck not found"));
   }
 
   /**
@@ -391,7 +391,7 @@ public class FlashcardControllerTest {
         .param("number", "1"))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.success").value(false))
-        .andExpect(jsonPath("$.message").value("Failed to delete flashcard: User not found"));
+        .andExpect(jsonPath("$.message").value("User not found"));
   }
 
   /**
@@ -412,6 +412,6 @@ public class FlashcardControllerTest {
         .param("number", "-1"))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.success").value(false))
-        .andExpect(jsonPath("$.message").value("Failed to delete flashcard: Invalid position"));
+        .andExpect(jsonPath("$.message").value("Invalid position"));
   }
 }

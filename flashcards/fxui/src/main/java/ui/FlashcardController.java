@@ -4,9 +4,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import app.Flashcard;
-import app.FlashcardDeck;
-import app.FlashcardDeckManager;
+import dto.FlashcardDto;
+import dto.FlashcardDeckDto;
 import javafx.animation.RotateTransition;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -19,6 +18,8 @@ import javafx.scene.text.Text;
 import javafx.scene.transform.Rotate;
 import javafx.stage.Stage;
 import javafx.util.Duration;
+import shared.ApiConstants;
+
 /**
  * Controller for the flashcard learning interface.
  * Handles navigation between cards, flipping animations, and progress tracking.
@@ -26,21 +27,18 @@ import javafx.util.Duration;
  */
 public class FlashcardController {
 
-    // Remove 'private' from these fields to make them package-private for test access
-    @FXML Button backButton;
-    @FXML Button nextButton;  // Changed from nextCard to match FXML
-    @FXML Button previousButton;  // Changed from previousCard to match FXML
-    @FXML Button card;
-    @FXML ProgressBar progressBar;
-    @FXML Text usernameField;
-    @FXML Text decknameField;
-    @FXML Text cardNumber;
+  private @FXML Button backButton;
+  private @FXML Button nextButton; 
+  private @FXML Button previousButton; 
+  private @FXML Button card;
+  private @FXML ProgressBar progressBar;
+  private @FXML Text usernameField;
+  private @FXML Text decknameField;
+  private @FXML Text cardNumber;
 
-  // Remove 'private' for test access
-  List<Flashcard> deck = new ArrayList<>();
-  int currentCardI;
+  private List<FlashcardDto> deck = new ArrayList<>();
+  private int currentCardI;
   private String currentUsername;
-  private FlashcardDeckManager deckManager;
 
   private String questionStyle = """
             -fx-background-color: #89b9bf; /* spørsmål default */
@@ -60,7 +58,7 @@ public class FlashcardController {
 
   private boolean isShowingAnswer = false;
 
-  private FlashcardDeck originalDeck;
+  private FlashcardDeckDto originalDeck;
 
   /**
    * Initializes the controller after FXML loading.
@@ -90,7 +88,7 @@ public class FlashcardController {
         if (usernameField != null) {
             usernameField.setText(currentUsername == null || currentUsername.isEmpty() ? "" : currentUsername);
         }
-        Flashcard current = getCurrentCard();
+        FlashcardDto current = getCurrentCard();
         if (card != null) {
             if (current == null) {
                 card.setText("");
@@ -118,11 +116,11 @@ public class FlashcardController {
         }
     }
 
-    Flashcard getCurrentCard() {
+    FlashcardDto getCurrentCard() {
         if (deck == null || deck.isEmpty() || currentCardI < 0 || currentCardI >= deck.size()) {
             return null;
         }
-        Flashcard cardObj = deck.get(currentCardI);
+        FlashcardDto cardObj = deck.get(currentCardI);
         return cardObj == null ? null : cardObj;
     }
 
@@ -143,78 +141,19 @@ public class FlashcardController {
     }
 
   /**
-   * Sets the deck manager and current deck to work with.
-   * This ensures that changes are saved to the complete deck collection.
-   * Creates defensive copies to prevent external modification.
-   * 
-   * @param deckManager the complete deck manager
-   * @param selectedDeck the specific deck to work with
-   */
-  public void setDeckManager(FlashcardDeckManager deckManager, FlashcardDeck selectedDeck) {
-    if (deckManager == null || selectedDeck == null) {
-        this.deckManager = null;
-        this.originalDeck = null;
-        this.deck = new ArrayList<>();
-        currentCardI = 0;
-        updateUi();
-        updateProgress();
-        return;
-    }
-    // Create defensive copy of deck manager to prevent external modification
-    this.deckManager = new FlashcardDeckManager();
-    for (FlashcardDeck deck : deckManager.getDecks()) {
-      this.deckManager.addDeck(deck);
-    }
-    // Create defensive copy of the selected deck
-    this.originalDeck = new FlashcardDeck(selectedDeck.getDeckName());
-    for (app.Flashcard card : selectedDeck.getDeck()) {
-      if (card != null) {
-        this.originalDeck.addFlashcard(new app.Flashcard(card.getQuestion(), card.getAnswer()));
-      } else {
-        this.originalDeck.addFlashcard(null);
-      }
-    }
-    this.deck = new ArrayList<>(this.originalDeck.getDeck()); // Copy flashcards for learning
-    // Assign numbers to non-null flashcards only
-    for (int i = 0; i < this.deck.size(); i++) {
-      Flashcard flashcard = this.deck.get(i);
-      if (flashcard != null) {
-        flashcard.setNumber(i + 1);
-      }
-    }
-    currentCardI = 0;
-    updateUi();
-    updateProgress();
-  }
-
-  /**
    * Sets the deck for the controller and updates UI/progress.
-   * Defensive copy is not strictly necessary for test coverage, so this is simple.
-   * @param deck the deck to set (can be null)
+   * @param deck the deck DTO to set (can be null)
    */
-  public void setDeck(FlashcardDeck deck) {
+  public void setDeck(FlashcardDeckDto deck) {
     if (deck == null) {
         this.originalDeck = null;
         this.deck = new ArrayList<>();
         currentCardI = 0;
     } else {
-        // Defensive copy
-        this.originalDeck = new FlashcardDeck(deck.getDeckName());
-        for (Flashcard card : deck.getDeck()) {
-            if (card != null) {
-                this.originalDeck.addFlashcard(new Flashcard(card.getQuestion(), card.getAnswer()));
-            } else {
-                this.originalDeck.addFlashcard(null);
-            }
-        }
-        this.deck = new ArrayList<>(this.originalDeck.getDeck());
-        // Assign numbers to non-null flashcards only
-        for (int i = 0; i < this.deck.size(); i++) {
-            Flashcard flashcard = this.deck.get(i);
-            if (flashcard != null) {
-                flashcard.setNumber(i + 1);
-            }
-        }
+        // Create defensive copy
+        List<FlashcardDto> deckList = new ArrayList<>(deck.getDeck());
+        this.originalDeck = new FlashcardDeckDto(deck.getDeckName(), deckList);
+        this.deck = new ArrayList<>(deckList);
         currentCardI = 0;
     }
     updateUi();
@@ -246,37 +185,41 @@ public class FlashcardController {
    * @throws IOException if the FXML file cannot be loaded or found
    */
   @FXML
-  public void whenBackButtonIsClicked() throws IOException {
-    FXMLLoader loader = new FXMLLoader(getClass().getResource("FlashcardDeck.fxml"));
-    Parent root = loader.load();
+  public void whenBackButtonIsClicked() {
+    try {
+      FXMLLoader loader = new FXMLLoader(getClass().getResource("FlashcardDeck.fxml"));
+      Parent root = loader.load();
 
-    FlashcardDeckController controller = loader.getController();
-    controller.setCurrentUsername(currentUsername);  // Send current username
-    
-    if (deckManager != null && originalDeck != null) {
-      // Send the complete deck manager and current deck
-      controller.setDeckManager(deckManager, originalDeck);
-    }
+      FlashcardDeckController controller = loader.getController();
+      controller.setCurrentUsername(currentUsername);
+      
+      if (originalDeck != null) {
+        controller.setDeck(originalDeck);
+      }
 
-    // Null check for nextButton to prevent crash
-    if (nextButton != null && nextButton.getScene() != null) {
-      Stage stage = (Stage) nextButton.getScene().getWindow();
-      stage.setScene(new Scene(root));
-      stage.show();
-    } else {
-      // Fallback: try to get stage from any available button
-      if (backButton != null && backButton.getScene() != null) {
-        Stage stage = (Stage) backButton.getScene().getWindow();
-        stage.setScene(new Scene(root));
-        stage.show();
-      } else if (card != null && card.getScene() != null) {
-        Stage stage = (Stage) card.getScene().getWindow();
+      // Null check for nextButton to prevent crash
+      if (nextButton != null && nextButton.getScene() != null) {
+        Stage stage = (Stage) nextButton.getScene().getWindow();
         stage.setScene(new Scene(root));
         stage.show();
       } else {
-        // Could not get stage, do nothing or log error
-        System.err.println("Error: No valid button to get stage for scene switch.");
+        // Fallback: try to get stage from any available button
+        if (backButton != null && backButton.getScene() != null) {
+          Stage stage = (Stage) backButton.getScene().getWindow();
+          stage.setScene(new Scene(root));
+          stage.show();
+        } else if (card != null && card.getScene() != null) {
+          Stage stage = (Stage) card.getScene().getWindow();
+          stage.setScene(new Scene(root));
+          stage.show();
+        } else {
+          // Could not get stage, do nothing or log error
+          System.err.println(ApiConstants.NO_VALID_BUTTON_FOR_SCENE_SWITCH);
+        }
       }
+    } catch (IOException e) {
+      System.err.println(ApiConstants.LOAD_ERROR + ": " + e.getMessage());
+      ApiClient.showAlert(ApiConstants.LOAD_ERROR, ApiConstants.UNEXPECTED_ERROR);
     }
   }
 
@@ -328,7 +271,7 @@ public class FlashcardController {
         rotateIn.setToAngle(360);
 
         rotateOut.setOnFinished(e -> {
-            Flashcard current = getCurrentCard();
+            FlashcardDto current = getCurrentCard();
             if (!isShowingAnswer) {
                 String answer = (current != null && current.getAnswer() != null) ? current.getAnswer() : "";
                 card.setText(answer);
@@ -367,7 +310,8 @@ public class FlashcardController {
       stage.setScene(scene);
       stage.show();
     } catch (IOException e) {
-      e.printStackTrace();
+      System.err.println(ApiConstants.LOAD_ERROR + ": " + e.getMessage());
+      ApiClient.showAlert(ApiConstants.LOAD_ERROR, ApiConstants.UNEXPECTED_ERROR);
     }
   }
 

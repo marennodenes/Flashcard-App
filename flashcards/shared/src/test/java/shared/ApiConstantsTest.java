@@ -19,9 +19,7 @@ public class ApiConstantsTest {
     void testUserConstants() {
         assertEquals("User not found.", ApiConstants.USER_NOT_FOUND);
         assertEquals("User created successfully.", ApiConstants.USER_CREATED);
-        assertEquals("User updated.", ApiConstants.USER_UPDATED);
         assertEquals("User already exists.", ApiConstants.USER_ALREADY_EXISTS);
-        assertEquals("Login failed, invalid\nusername or password.", ApiConstants.LOGIN_FAILED);
         assertEquals("Login success.", ApiConstants.LOGIN_SUCCESS);
         assertEquals("Invalid password", ApiConstants.INVALID_PASSWORD);
         // Test detailed password validation messages

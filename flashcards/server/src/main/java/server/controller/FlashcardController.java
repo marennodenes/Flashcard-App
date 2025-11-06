@@ -76,7 +76,7 @@ public class FlashcardController {
       return new ApiResponse<>(true, ApiConstants.FLASHCARD_CREATED, flashcardDto);
     } catch (Exception e) {
       // Return server error if creation fails
-      return new ApiResponse<>(false, "Failed to create flashcard: " + e.getMessage(), null);
+      return new ApiResponse<>(false, e.getMessage(), null);
     }
   }
 
@@ -100,7 +100,7 @@ public class FlashcardController {
       return new ApiResponse<>(true, ApiConstants.FLASHCARD_DELETED, null);
     } catch (Exception e) {
       // Return server error if deletion fails
-      return new ApiResponse<>(false, "Failed to delete flashcard: " + e.getMessage(), null);
+      return new ApiResponse<>(false, e.getMessage(), null);
     }
   }
 
@@ -124,10 +124,10 @@ public class FlashcardController {
       
       // Convert to DTO for response
       FlashcardDto flashcardDto = mapper.toDto(flashcard);
-      return new ApiResponse<>(true, "Flashcard retrieved successfully", flashcardDto);
+      return new ApiResponse<>(true, ApiConstants.FLASHCARD_RETRIEVED, flashcardDto);
     } catch (Exception e) {
       // Return server error if flashcard not found or other error
-      return new ApiResponse<>(false, "Failed to retrieve flashcard: " + e.getMessage(), null);
+      return new ApiResponse<>(false, e.getMessage(), null);
     }
   }
 
@@ -147,10 +147,10 @@ public class FlashcardController {
       // Get all flashcards from the specified deck
       List<Flashcard> flashcards = flashcardService.getAllFlashcards(username, deckname);
       List<FlashcardDto> flashcardDtos = mapper.toDtoList(flashcards);
-      return new ApiResponse<>(true, "Flashcards retrieved successfully", flashcardDtos);
+      return new ApiResponse<>(true, ApiConstants.FLASHCARDS_RETRIEVED, flashcardDtos);
     } catch (Exception e) {
       // Return error if deck not found or other error
-      return new ApiResponse<>(false, "Failed to retrieve flashcards: " + e.getMessage(), null);
+      return new ApiResponse<>(false, e.getMessage(), null);
     }
   }
 

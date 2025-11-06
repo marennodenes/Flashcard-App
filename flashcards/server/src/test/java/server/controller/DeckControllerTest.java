@@ -120,7 +120,7 @@ public class DeckControllerTest {
         .param("username", "nonExistent"))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.success").value(false))
-        .andExpect(jsonPath("$.message").value("Error retrieving decks: User not found"));
+        .andExpect(jsonPath("$.message").value("User not found"));
   }
 
   /**
@@ -159,7 +159,7 @@ public class DeckControllerTest {
         .param("deckName", "NonExistentDeck"))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.success").value(false))
-        .andExpect(jsonPath("$.message").value("Error retrieving deck: Deck not found"));
+        .andExpect(jsonPath("$.message").value("Deck not found"));
   }
 
   /**
@@ -199,7 +199,7 @@ public class DeckControllerTest {
         .param("deckName", "NewDeck"))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.success").value(false))
-        .andExpect(jsonPath("$.message").value("Error creating deck: User not found"));
+        .andExpect(jsonPath("$.message").value("User not found"));
   }
 
   /**
@@ -219,7 +219,7 @@ public class DeckControllerTest {
         .param("deckName", "TestDeck"))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.success").value(false))
-        .andExpect(jsonPath("$.message").value("Error creating deck: Deck already exists"));
+        .andExpect(jsonPath("$.message").value("Deck already exists"));
   }
 
   /**
@@ -258,7 +258,7 @@ public class DeckControllerTest {
         .param("deckName", "NonExistentDeck"))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.success").value(false))
-        .andExpect(jsonPath("$.message").value("Error deleting deck: Deck not found"));
+        .andExpect(jsonPath("$.message").value("Deck not found"));
   }
 
   /**
@@ -278,7 +278,7 @@ public class DeckControllerTest {
         .param("deckName", "TestDeck"))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.success").value(false))
-        .andExpect(jsonPath("$.message").value("Error deleting deck: User not found"));
+        .andExpect(jsonPath("$.message").value("User not found"));
   }
 
   /**
@@ -321,7 +321,7 @@ public class DeckControllerTest {
         .content(objectMapper.writeValueAsString(testDeckManagerDto)))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.success").value(false))
-        .andExpect(jsonPath("$.message").value("Error updating decks: User not found"));
+        .andExpect(jsonPath("$.message").value("User not found"));
   }
 
   /**
@@ -343,6 +343,6 @@ public class DeckControllerTest {
         .content(objectMapper.writeValueAsString(testDeckManagerDto)))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.success").value(false))
-        .andExpect(jsonPath("$.message").value("Error updating decks: Invalid deck data"));
+        .andExpect(jsonPath("$.message").value("Invalid deck data"));
   }
 }

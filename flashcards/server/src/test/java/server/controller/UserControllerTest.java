@@ -101,7 +101,7 @@ public class UserControllerTest {
         .param("username", "nonExistent"))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.success").value(false))
-        .andExpect(jsonPath("$.message").value("Error retrieving user: User not found"));
+        .andExpect(jsonPath("$.message").value("User not found"));
   }
 
   /**
@@ -208,7 +208,7 @@ public class UserControllerTest {
         .content(objectMapper.writeValueAsString(wrongRequest)))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.success").value(false))
-        .andExpect(jsonPath("$.message").value("Error logging in user: Invalid password"));
+        .andExpect(jsonPath("$.message").value("Invalid password"));
   }
 
     /**
@@ -248,7 +248,7 @@ public class UserControllerTest {
       .content(objectMapper.writeValueAsString(request)))
           .andExpect(status().isOk())
           .andExpect(jsonPath("$.success").value(false))
-          .andExpect(jsonPath("$.message").value("Error logging in user: Username cannot be empty"));
+          .andExpect(jsonPath("$.message").value("Username cannot be empty"));
     }
 
     /**
@@ -267,7 +267,7 @@ public class UserControllerTest {
       .content(objectMapper.writeValueAsString(request)))
           .andExpect(status().isOk())
           .andExpect(jsonPath("$.success").value(false))
-          .andExpect(jsonPath("$.message").value("Error logging in user: Password cannot be empty"));
+          .andExpect(jsonPath("$.message").value("Password cannot be empty"));
     }
 
     /**
@@ -286,7 +286,7 @@ public class UserControllerTest {
       .content(objectMapper.writeValueAsString(request)))
           .andExpect(status().isOk())
           .andExpect(jsonPath("$.success").value(false))
-          .andExpect(jsonPath("$.message").value("Error logging in user: Unexpected error"));
+          .andExpect(jsonPath("$.message").value("Unexpected error"));
     }
 
   /**
@@ -345,7 +345,7 @@ public class UserControllerTest {
         .param("password", "TestPassword123!"))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.success").value(false))
-        .andExpect(jsonPath("$.message").value("Error validating password: Validation error"));
+        .andExpect(jsonPath("$.message").value("Validation error"));
   }
 
   /**
@@ -399,6 +399,6 @@ public class UserControllerTest {
         .param("username", "testUser"))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.success").value(false))
-        .andExpect(jsonPath("$.message").value("Error checking user existence: Database error"));
+        .andExpect(jsonPath("$.message").value("Database error"));
   }
 }

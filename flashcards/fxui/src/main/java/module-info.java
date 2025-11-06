@@ -1,6 +1,4 @@
 module flashcards.fxui {
-  requires flashcards.core;
-  requires flashcards.storage;
   requires javafx.controls;
   requires javafx.fxml;
   requires javafx.graphics;
@@ -10,7 +8,6 @@ module flashcards.fxui {
   requires java.net.http;
   
   // Jackson for JSON processing
-  requires com.fasterxml.jackson.core;
   requires com.fasterxml.jackson.databind;
   requires com.fasterxml.jackson.datatype.jsr310;
   

@@ -87,4 +87,14 @@ public class FlashcardDto {
   public int getNumber() {
     return number;
   }
+
+  /**
+   * Returns a string representation of the flashcard showing question and answer.
+   *
+   * @return a string in the format "Question \n Answer"
+   */
+  @Override
+  public String toString() {
+    return question + "\n" + answer;
+  }
 }
