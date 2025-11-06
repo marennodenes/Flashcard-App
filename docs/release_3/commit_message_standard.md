@@ -20,6 +20,8 @@ feat(auth): add login validation
 Added input checks to prevent invalid user logins
 and improved error messages for failed attempts.
 
+Co-authored-by: Full Name <username@example.com>
+
 Closes #12
 ```
 

@@ -46,7 +46,6 @@ This module contains the business logic and domain models for flashcards and dec
 This module is responsible for JSON persistence and user data management.
 This module handles all JavaFX user interface components and controllers.
 
-
 ## Learning System Implementation
 
 We implemented a comprehensive learning interface that forms the core of our flashcard application.
@@ -63,19 +62,21 @@ Our development approach emphasized pair programming and regular communication, 
 As of this release, the project maintains high code quality standards through multiple tools and practices. For detailed information about our code quality approach, see our [Code Quality](code-quality.md) documentation.
 
 Key quality measures include:
+
 - Comprehensive Javadoc documentation for all major controllers
 - SpotBugs static analysis with defensive programming practices
 - Checkstyle compliance following Google Java Style guidelines
 - Unit and integration testing with coverage goals
 - Updated UML documentation reflecting current architecture
 
-## Further improvements 
+## Further improvements
 
 - Include secure login system that safely saves username and password
 
 ## Architecture Documentation
 
 We have updated our UML documentation to accurately reflect the current application structure:
+
 - **[Class diagrams](uml_documentation/class.puml)** show the relationships between domain models and controllers
 - **[Package diagrams](uml_documentation/package.puml)** illustrate the three-module architecture
 - **[Architecture diagrams](uml_documentation/Architecture.puml)** provide an overview of the application's component structure
