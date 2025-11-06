@@ -36,6 +36,10 @@ import shared.ApiConstants;
  * 
  * @author chrsom
  * @author isamw
+ * @author parts of class is generated with the help of claude.ai
+ * @see FlashcardService
+ * @see FlashcardPersistent
+ * @see DeckService
  *
  */
 class FlashcardServiceTest {
@@ -124,6 +128,7 @@ class FlashcardServiceTest {
      * - The requested flashcard index is invalid (less than 1)
      * - The requested flashcard index exceeds the number of flashcards in the deck
      * 
+     * @throws IOException if persistence operations fail during test execution
      */
     @Test
     void testGetFlashcard_Throws() throws IOException {
@@ -142,8 +147,10 @@ class FlashcardServiceTest {
         FlashcardDeckManager manager2 = mock(FlashcardDeckManager.class);
         FlashcardDeck deck2 = mock(FlashcardDeck.class);
         when(deck2.getDeckName()).thenReturn("deck1");
+        when(deck2.getDeck()).thenReturn(Collections.singletonList(new Flashcard("Q", "A")));
         when(manager2.getDecks()).thenReturn(Arrays.asList(deck2));
         when(persistent.readDeck("user")).thenReturn(manager2);
+        when(deckService.getDeck("user", "deck1")).thenReturn(deck2);
     
         var ex2 = assertThrows(IllegalArgumentException.class, () ->
                 flashcardService.getFlashcard("user", "deck1", 0));
@@ -175,6 +182,7 @@ class FlashcardServiceTest {
      * from a given deck for a user. It checks that the returned list of flashcards
      * matches the expected size and content.
      * 
+     * @throws IOException if persistence operations fail during test execution
      */
     @Test
     void testGetAllFlashcards() throws IOException {
@@ -200,13 +208,15 @@ class FlashcardServiceTest {
      * the changes. It checks that the created flashcard has the correct properties
      * and that the appropriate methods on the deck and persistence layers are invoked.
      * 
+     * @throws IOException if persistence operations fail during test execution
      */
     @Test
     void testCreateFlashcard() throws IOException {
         FlashcardDeck deck = mock(FlashcardDeck.class);
         FlashcardDeckManager manager = mock(FlashcardDeckManager.class);
 
-        when(deckService.getDeck("user", "deck1")).thenReturn(deck);
+        when(deck.getDeckName()).thenReturn("deck1");
+        when(manager.getDecks()).thenReturn(Arrays.asList(deck));
         when(deckService.getAllDecks("user")).thenReturn(manager);
 
         Flashcard newCard = flashcardService.createFlashcard("user", "deck1", "A", "Q");
@@ -225,15 +235,19 @@ class FlashcardServiceTest {
      * methods on the deck and persistence layers are invoked to remove the
      * flashcard and persist the changes.
      * 
+     * @throws IOException if persistence operations fail during test execution
      */
     @Test
     void testDeleteFlashcard() throws IOException {
         FlashcardDeck deck = mock(FlashcardDeck.class);
         FlashcardDeckManager manager = mock(FlashcardDeckManager.class);
-        when(deckService.getDeck("user", "deck1")).thenReturn(deck);
+        
+        when(deck.getDeckName()).thenReturn("deck1");
+        when(deck.getDeck()).thenReturn(Arrays.asList(new Flashcard("Q", "A")));
+        when(manager.getDecks()).thenReturn(Arrays.asList(deck));
         when(deckService.getAllDecks("user")).thenReturn(manager);
 
-        flashcardService.deleteFlashcard("user", "deck1", 0);
+        flashcardService.deleteFlashcard("user", "deck1", 1);
 
         verify(deck).removeFlashcardByIndex(0);
         verify(persistent).writeDeck("user", manager);

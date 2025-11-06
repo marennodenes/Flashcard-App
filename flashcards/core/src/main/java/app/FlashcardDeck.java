@@ -9,6 +9,11 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
 /**
  * Manages flashcards for the application.
+ * A flashcard deck contains a name and a list of flashcards.
+ * Each flashcard has a question and an answer.
+ * 
+ * @author isamw
+ * @author chrsom
  */
 @JsonPropertyOrder({"deckName", "flashcards"})
 public class FlashcardDeck {
@@ -16,7 +21,7 @@ public class FlashcardDeck {
   @JsonProperty("deckName")
   private String deckName;
 
-  /** List of all flashcards in this deck. */
+  // List of all flashcards in this deck.
   @JsonProperty("flashcards")
   private List<Flashcard> deck;
 
@@ -38,37 +43,53 @@ public class FlashcardDeck {
   }
 
   /**
-   * Gets all flashcards as an observable list.
-   * 
-   * 
+   * Gets all flashcards as a list.
+   *
    * @return list of flashcards
    */
-  public List<Flashcard> getDeck() { //Changed from ObservableList to list
+  public List<Flashcard> getDeck() {
     return new ArrayList<>(deck);
   }
 
+  /**
+   * Sets the flashcards in the deck.
+   *
+   * @param deck list of flashcards to set
+   */
   public void setDeck(List<Flashcard> deck){
     this.deck = new ArrayList<>(deck);
   }
 
+  /**
+   * Gets the name of the deck.
+   * 
+   * @return the deck name
+   */
   public String getDeckName() {
     return deckName;
   }
 
+  /**
+   * Sets the name of the deck.
+   * 
+   * @param deckName the name to set for the deck
+   */
   public void setDeckName(String deckName) {
     this.deckName = deckName;
   }
 
   /**
-   * Adds a new flashcard.
+   * Adds a new flashcard to the deck
    * 
    * @param question the question text
    * @param answer the answer text
    */
   public void addFlashcard(Flashcard flashcard) {
-        flashcard.setNumber(deck.size() + 1);
-        deck.add(flashcard);
-      
+    if (flashcard != null) {
+      flashcard.setNumber(deck.size() + 1);
+    }
+
+    deck.add(flashcard);
   }
 
   /**
@@ -95,7 +116,7 @@ public class FlashcardDeck {
    * Checks if the text displayed on the card is a question or answer
    * 
    * @param current the question text to check
-   * @return true if the question exists in the deck, false otherwise
+   * @return true if the question exists, false otherwise
    */
   public boolean isQuestion(String current){
     for (Flashcard card : deck) {

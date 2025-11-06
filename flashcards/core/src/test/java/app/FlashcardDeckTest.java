@@ -1,21 +1,23 @@
 package app;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 
 /**
- * Test class for FlashcardDeck functionality.
+ * Test class for {@link FlashcardDeck} functionality.
  * Tests deck operations including adding flashcards, managing deck names, and validation.
  * 
  * @author isamw
+ * 
+ * @see FlashcardDeck
  */
 public class FlashcardDeckTest {
 

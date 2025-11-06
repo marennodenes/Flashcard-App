@@ -2,6 +2,7 @@ package app;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import org.junit.jupiter.api.Test;
 
 /**
@@ -11,16 +12,18 @@ import org.junit.jupiter.api.Test;
  * 
  * @author isamw
  * @author chrsom
+ * 
+ * @see PasswordEncoder
  */
 public class PasswordEncoderTest {
   /**
    * Tests the {@link PasswordEncoder#encode(String)} and {@link PasswordEncoder#matches(String, String)} methods.
    * Validates password encoding and verification functionality including:
-   *   Successful password encoding with salt generation
-   *   Correct password verification with encoded password
-   *   Rejection of incorrect passwords against encoded password
-   *   Rejection of plain text passwords that aren't properly encoded
-   *   Proper handling of invalid Base64 encoded passwords
+   * - Successful password encoding with salt generation
+   * - Correct password verification with encoded password
+   * - Rejection of incorrect passwords against encoded password
+   * - Rejection of plain text passwords that aren't properly encoded
+   * - Proper handling of invalid Base64 encoded passwords
    * 
    * The test ensures that:
    * - Encoded passwords can be successfully verified with the original password

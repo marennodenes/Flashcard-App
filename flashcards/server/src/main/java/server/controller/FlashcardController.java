@@ -22,15 +22,16 @@ import shared.ApiResponse;
 /**
  * Controller for managing flashcards.
  * Uses the FlashcardService to handle business logic.
- * @see server.service.FlashcardService
+ * 
  * @author parts of class is generated with the help of claude.ai
  * @author ailinat
  * @author sofietw
  * @author marennod
+ * @see server.service.FlashcardService
  */
 
 @RestController
-@RequestMapping (ApiEndpoints.FLASHCARDS) // Maps to "/api/v1/flashcards"
+@RequestMapping(ApiEndpoints.FLASHCARDS) // Maps to "/api/v1/flashcards"
 public class FlashcardController {
 
   @Autowired
@@ -48,6 +49,56 @@ public class FlashcardController {
   }
 
   /**
+   * Retrieves a specific flashcard by its position in the deck.
+   * 
+   * @param username the username of the user who owns the deck
+   * @param deckname the name of the deck containing the flashcard
+   * @param number the position/index of the flashcard to retrieve
+   * @return ApiResponse containing the FlashcardDto on success,
+   *         or error message on failure
+   */
+  @GetMapping(ApiEndpoints.FLASHCARD_GET)
+  public ApiResponse<FlashcardDto> getFlashcard(
+      @RequestParam String username,
+      @RequestParam String deckname,
+      @RequestParam int number) {
+    try {
+      // Get flashcard from specified position in deck
+      Flashcard flashcard = flashcardService.getFlashcard(username, deckname, number);
+      
+      // Convert to DTO for response
+      FlashcardDto flashcardDto = mapper.toDto(flashcard);
+      return new ApiResponse<>(true, ApiConstants.FLASHCARD_RETRIEVED, flashcardDto);
+    } catch (Exception e) {
+      // Return server error if flashcard not found or other error
+      return new ApiResponse<>(false, ApiConstants.FLASHCARD_RETRIEVED_FAILED + e.getMessage(), null);
+    }
+  }
+
+  /**
+   * Retrieves all flashcards from a specific deck.
+   * 
+   * @param username the username of the user who owns the deck
+   * @param deckname the name of the deck to retrieve flashcards from
+   * @return ApiResponse containing a list of all FlashcardDto objects on success,
+   *         or error message on failure
+   */
+  @GetMapping(ApiEndpoints.FLASHCARD_GET_ALL)
+  public ApiResponse<List<FlashcardDto>> getAllFlashcards(
+      @RequestParam String username,
+      @RequestParam String deckname) {
+    try {
+      // Get all flashcards from the specified deck
+      List<Flashcard> flashcards = flashcardService.getAllFlashcards(username, deckname);
+      List<FlashcardDto> flashcardDtos = mapper.toDtoList(flashcards);
+      return new ApiResponse<>(true, ApiConstants.FLASHCARDS_RETRIEVED, flashcardDtos);
+    } catch (Exception e) {
+      // Return error if deck not found or other error
+      return new ApiResponse<>(false, ApiConstants.FLASHCARDS_RETRIEVED_FAILED + e.getMessage(), null);
+    }
+  }
+
+  /**
    * Creates a new flashcard with the provided question and answer.
    * 
    * @param username the username of the user who owns the deck
@@ -57,8 +108,8 @@ public class FlashcardController {
    * @return ApiResponse containing the created FlashcardDto on success,
    *         or error message on failure
    */
-  @PostMapping (ApiEndpoints.FLASHCARD_CREATE)
-  public ApiResponse <FlashcardDto> createFlashcard(
+  @PostMapping(ApiEndpoints.FLASHCARD_CREATE)
+  public ApiResponse<FlashcardDto> createFlashcard(
       @RequestParam String username,
       @RequestParam String deckname,
       @RequestParam String question, 
@@ -71,12 +122,12 @@ public class FlashcardController {
       List<Flashcard> allFlashcards = flashcardService.getAllFlashcards(username, deckname);
       int position = allFlashcards.size(); // New card is at the end (1-indexed)
       
-      // Return the created flashcard as DTO
+      // Return the created flashcard as Dto
       FlashcardDto flashcardDto = mapper.toDto(flashcardService.getFlashcard(username, deckname, position));
       return new ApiResponse<>(true, ApiConstants.FLASHCARD_CREATED, flashcardDto);
     } catch (Exception e) {
       // Return server error if creation fails
-      return new ApiResponse<>(false, "Failed to create flashcard: " + e.getMessage(), null);
+      return new ApiResponse<>(false, ApiConstants.FLASHCARD_FAILED + e.getMessage(), null);
     }
   }
 
@@ -89,8 +140,8 @@ public class FlashcardController {
    * @return ApiResponse with success message on successful deletion,
    *         or error message on failure
    */
-  @DeleteMapping (ApiEndpoints.FLASHCARD_DELETE)
-  public ApiResponse <Void> deleteFlashcard(
+  @DeleteMapping(ApiEndpoints.FLASHCARD_DELETE)
+  public ApiResponse<Void> deleteFlashcard(
       @RequestParam String username,
       @RequestParam String deckname,
       @RequestParam int number) {
@@ -100,57 +151,7 @@ public class FlashcardController {
       return new ApiResponse<>(true, ApiConstants.FLASHCARD_DELETED, null);
     } catch (Exception e) {
       // Return server error if deletion fails
-      return new ApiResponse<>(false, "Failed to delete flashcard: " + e.getMessage(), null);
-    }
-  }
-
-  /**
-   * Retrieves a specific flashcard by its position in the deck.
-   * 
-   * @param username the username of the user who owns the deck
-   * @param deckname the name of the deck containing the flashcard
-   * @param number the position/index of the flashcard to retrieve
-   * @return ApiResponse containing the FlashcardDto on success,
-   *         or error message on failure
-   */
-  @GetMapping (ApiEndpoints.FLASHCARD_GET)
-  public ApiResponse <FlashcardDto> getFlashcard(
-      @RequestParam String username,
-      @RequestParam String deckname,
-      @RequestParam int number) {
-    try {
-      // Get flashcard from specified position in deck
-      Flashcard flashcard = flashcardService.getFlashcard(username, deckname, number);
-      
-      // Convert to DTO for response
-      FlashcardDto flashcardDto = mapper.toDto(flashcard);
-      return new ApiResponse<>(true, "Flashcard retrieved successfully", flashcardDto);
-    } catch (Exception e) {
-      // Return server error if flashcard not found or other error
-      return new ApiResponse<>(false, "Failed to retrieve flashcard: " + e.getMessage(), null);
-    }
-  }
-
-  /**
-   * Retrieves all flashcards from a specific deck.
-   * 
-   * @param username the username of the user who owns the deck
-   * @param deckname the name of the deck to retrieve flashcards from
-   * @return ApiResponse containing a list of all FlashcardDto objects on success,
-   *         or error message on failure
-   */
-  @GetMapping (ApiEndpoints.FLASHCARD_GET_ALL)
-  public ApiResponse <List<FlashcardDto>> getAllFlashcards(
-      @RequestParam String username,
-      @RequestParam String deckname) {
-    try {
-      // Get all flashcards from the specified deck
-      List<Flashcard> flashcards = flashcardService.getAllFlashcards(username, deckname);
-      List<FlashcardDto> flashcardDtos = mapper.toDtoList(flashcards);
-      return new ApiResponse<>(true, "Flashcards retrieved successfully", flashcardDtos);
-    } catch (Exception e) {
-      // Return error if deck not found or other error
-      return new ApiResponse<>(false, "Failed to retrieve flashcards: " + e.getMessage(), null);
+      return new ApiResponse<>(false, ApiConstants.FLASHCARD_FAILED_TO_DELETE + e.getMessage(), null);
     }
   }
 

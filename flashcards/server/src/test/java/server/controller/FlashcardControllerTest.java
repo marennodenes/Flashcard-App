@@ -1,16 +1,5 @@
 package server.controller;
 
-import static org.mockito.ArgumentMatchers.anyInt;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,6 +13,17 @@ import org.springframework.test.web.servlet.MockMvc;
 import app.Flashcard;
 import server.service.FlashcardService;
 import shared.ApiEndpoints;
+
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 /**
  * Test class for FlashcardController REST endpoints.
@@ -42,6 +42,7 @@ import shared.ApiEndpoints;
  *
  * @author chrsom
  * @author isamw
+ * @author parts of class is generated with the help of claude.ai
  * @see FlashcardController
  * @see FlashcardService
  */
@@ -69,99 +70,6 @@ public class FlashcardControllerTest {
     testFlashcardList.add(new Flashcard("What is Spring?", "A framework"));
   }
 
-  /**
-   * Tests successful creation of a flashcard.
-   * Verifies that a new flashcard can be created with question and answer,
-   * and returns HTTP 200 with the created flashcard data.
-   *
-   * @throws Exception if the MockMvc request fails
-   */
-  @Test
-  void testCreateFlashcard_Success() throws Exception {
-    when(flashcardService.createFlashcard(anyString(), anyString(), anyString(), anyString()))
-        .thenReturn(testFlashcard);
-    when(flashcardService.getAllFlashcards(anyString(), anyString()))
-        .thenReturn(testFlashcardList);
-    when(flashcardService.getFlashcard(anyString(), anyString(), anyInt()))
-        .thenReturn(testFlashcard);
-
-    mockMvc.perform(post(ApiEndpoints.FLASHCARDS + ApiEndpoints.FLASHCARD_CREATE)
-        .param("username", "testUser")
-        .param("deckname", "TestDeck")
-        .param("question", "What is Java?")
-        .param("answer", "A programming language"))
-        .andExpect(status().isOk())
-        .andExpect(jsonPath("$.success").value(true))
-        .andExpect(jsonPath("$.message").value("Flashcard created successfully."))
-        .andExpect(jsonPath("$.data.question").value("What is Java?"))
-        .andExpect(jsonPath("$.data.answer").value("A programming language"));
-  }
-
-  /**
-   * Tests flashcard creation when user does not exist.
-   * Verifies that the endpoint returns appropriate error response
-   * when attempting to create a flashcard for non-existent user.
-   *
-   * @throws Exception if the MockMvc request fails
-   */
-  @Test
-  void testCreateFlashcard_UserNotFound() throws Exception {
-    when(flashcardService.createFlashcard(anyString(), anyString(), anyString(), anyString()))
-        .thenThrow(new IllegalArgumentException("User not found"));
-
-    mockMvc.perform(post(ApiEndpoints.FLASHCARDS + ApiEndpoints.FLASHCARD_CREATE)
-        .param("username", "nonExistent")
-        .param("deckname", "TestDeck")
-        .param("question", "What is Java?")
-        .param("answer", "A programming language"))
-        .andExpect(status().isOk())
-        .andExpect(jsonPath("$.success").value(false))
-        .andExpect(jsonPath("$.message").value("Failed to create flashcard: User not found"));
-  }
-
-  /**
-   * Tests flashcard creation when deck does not exist.
-   * Verifies that the endpoint returns appropriate error response
-   * when attempting to create a flashcard in non-existent deck.
-   *
-   * @throws Exception if the MockMvc request fails
-   */
-  @Test
-  void testCreateFlashcard_DeckNotFound() throws Exception {
-    when(flashcardService.createFlashcard(anyString(), anyString(), anyString(), anyString()))
-        .thenThrow(new IllegalArgumentException("Deck not found"));
-
-    mockMvc.perform(post(ApiEndpoints.FLASHCARDS + ApiEndpoints.FLASHCARD_CREATE)
-        .param("username", "testUser")
-        .param("deckname", "NonExistentDeck")
-        .param("question", "What is Java?")
-        .param("answer", "A programming language"))
-        .andExpect(status().isOk())
-        .andExpect(jsonPath("$.success").value(false))
-        .andExpect(jsonPath("$.message").value("Failed to create flashcard: Deck not found"));
-  }
-
-  /**
-   * Tests flashcard creation with empty question or answer.
-   * Verifies that the endpoint returns appropriate error response
-   * when provided with invalid flashcard data.
-   *
-   * @throws Exception if the MockMvc request fails
-   */
-  @Test
-  void testCreateFlashcard_InvalidData() throws Exception {
-    when(flashcardService.createFlashcard(anyString(), anyString(), anyString(), anyString()))
-        .thenThrow(new IllegalArgumentException("Invalid flashcard data"));
-
-    mockMvc.perform(post(ApiEndpoints.FLASHCARDS + ApiEndpoints.FLASHCARD_CREATE)
-        .param("username", "testUser")
-        .param("deckname", "TestDeck")
-        .param("question", "")
-        .param("answer", ""))
-        .andExpect(status().isOk())
-        .andExpect(jsonPath("$.success").value(false))
-        .andExpect(jsonPath("$.message").value("Failed to create flashcard: Invalid flashcard data"));
-  }
 
   /**
    * Tests successful retrieval of a specific flashcard by position.
@@ -172,17 +80,17 @@ public class FlashcardControllerTest {
   @Test
   void testGetFlashcard_Success() throws Exception {
     when(flashcardService.getFlashcard("testUser", "TestDeck", 1))
-        .thenReturn(testFlashcard);
+      .thenReturn(testFlashcard);
 
     mockMvc.perform(get(ApiEndpoints.FLASHCARDS + ApiEndpoints.FLASHCARD_GET)
-        .param("username", "testUser")
-        .param("deckname", "TestDeck")
-        .param("number", "1"))
-        .andExpect(status().isOk())
-        .andExpect(jsonPath("$.success").value(true))
-        .andExpect(jsonPath("$.message").value("Flashcard retrieved successfully"))
-        .andExpect(jsonPath("$.data.question").value("What is Java?"))
-        .andExpect(jsonPath("$.data.answer").value("A programming language"));
+      .param("username", "testUser")
+      .param("deckname", "TestDeck")
+      .param("number", "1"))
+      .andExpect(status().isOk())
+      .andExpect(jsonPath("$.success").value(true))
+      .andExpect(jsonPath("$.message").value("Flashcard retrieved successfully"))
+      .andExpect(jsonPath("$.data.question").value("What is Java?"))
+      .andExpect(jsonPath("$.data.answer").value("A programming language"));
   }
 
   /**
@@ -195,7 +103,7 @@ public class FlashcardControllerTest {
   @Test
   void testGetFlashcard_FlashcardNotFound() throws Exception {
     when(flashcardService.getFlashcard("testUser", "TestDeck", 99))
-        .thenThrow(new IllegalArgumentException("Flashcard not found"));
+      .thenThrow(new IllegalArgumentException("Flashcard not found"));
 
     mockMvc.perform(get(ApiEndpoints.FLASHCARDS + ApiEndpoints.FLASHCARD_GET)
         .param("username", "testUser")
@@ -203,7 +111,7 @@ public class FlashcardControllerTest {
         .param("number", "99"))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.success").value(false))
-        .andExpect(jsonPath("$.message").value("Failed to retrieve flashcard: Flashcard not found"));
+        .andExpect(jsonPath("$.message").value("Flashcard not found"));
   }
 
   /**
@@ -216,7 +124,7 @@ public class FlashcardControllerTest {
   @Test
   void testGetFlashcard_DeckNotFound() throws Exception {
     when(flashcardService.getFlashcard("testUser", "NonExistentDeck", 1))
-        .thenThrow(new IllegalArgumentException("Deck not found"));
+      .thenThrow(new IllegalArgumentException("Deck not found"));
 
     mockMvc.perform(get(ApiEndpoints.FLASHCARDS + ApiEndpoints.FLASHCARD_GET)
         .param("username", "testUser")
@@ -224,7 +132,7 @@ public class FlashcardControllerTest {
         .param("number", "1"))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.success").value(false))
-        .andExpect(jsonPath("$.message").value("Failed to retrieve flashcard: Deck not found"));
+        .andExpect(jsonPath("$.message").value("Deck not found"));
   }
 
   /**
@@ -236,17 +144,17 @@ public class FlashcardControllerTest {
   @Test
   void testGetAllFlashcards_Success() throws Exception {
     when(flashcardService.getAllFlashcards("testUser", "TestDeck"))
-        .thenReturn(testFlashcardList);
+      .thenReturn(testFlashcardList);
 
     mockMvc.perform(get(ApiEndpoints.FLASHCARDS + ApiEndpoints.FLASHCARD_GET_ALL)
-        .param("username", "testUser")
-        .param("deckname", "TestDeck"))
-        .andExpect(status().isOk())
-        .andExpect(jsonPath("$.success").value(true))
-        .andExpect(jsonPath("$.message").value("Flashcards retrieved successfully"))
-        .andExpect(jsonPath("$.data").isArray())
-        .andExpect(jsonPath("$.data[0].question").value("What is Java?"))
-        .andExpect(jsonPath("$.data[1].question").value("What is Spring?"));
+      .param("username", "testUser")
+      .param("deckname", "TestDeck"))
+      .andExpect(status().isOk())
+      .andExpect(jsonPath("$.success").value(true))
+      .andExpect(jsonPath("$.message").value("Flashcards retrieved successfully"))
+      .andExpect(jsonPath("$.data").isArray())
+      .andExpect(jsonPath("$.data[0].question").value("What is Java?"))
+      .andExpect(jsonPath("$.data[1].question").value("What is Spring?"));
   }
 
   /**
@@ -259,14 +167,14 @@ public class FlashcardControllerTest {
   @Test
   void testGetAllFlashcards_DeckNotFound() throws Exception {
     when(flashcardService.getAllFlashcards("testUser", "NonExistentDeck"))
-        .thenThrow(new IllegalArgumentException("Deck not found"));
+      .thenThrow(new IllegalArgumentException("Deck not found"));
 
     mockMvc.perform(get(ApiEndpoints.FLASHCARDS + ApiEndpoints.FLASHCARD_GET_ALL)
-        .param("username", "testUser")
-        .param("deckname", "NonExistentDeck"))
-        .andExpect(status().isOk())
-        .andExpect(jsonPath("$.success").value(false))
-        .andExpect(jsonPath("$.message").value("Failed to retrieve flashcards: Deck not found"));
+      .param("username", "testUser")
+      .param("deckname", "NonExistentDeck"))
+      .andExpect(status().isOk())
+      .andExpect(jsonPath("$.success").value(false))
+      .andExpect(jsonPath("$.message").value("Failed to retrieve flashcards: Deck not found"));
   }
 
   /**
@@ -279,14 +187,14 @@ public class FlashcardControllerTest {
   @Test
   void testGetAllFlashcards_UserNotFound() throws Exception {
     when(flashcardService.getAllFlashcards("nonExistent", "TestDeck"))
-        .thenThrow(new IllegalArgumentException("User not found"));
+      .thenThrow(new IllegalArgumentException("User not found"));
 
     mockMvc.perform(get(ApiEndpoints.FLASHCARDS + ApiEndpoints.FLASHCARD_GET_ALL)
         .param("username", "nonExistent")
         .param("deckname", "TestDeck"))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.success").value(false))
-        .andExpect(jsonPath("$.message").value("Failed to retrieve flashcards: User not found"));
+        .andExpect(jsonPath("$.message").value("User not found"));
   }
 
   /**
@@ -299,18 +207,114 @@ public class FlashcardControllerTest {
   @Test
   void testGetAllFlashcards_EmptyDeck() throws Exception {
     when(flashcardService.getAllFlashcards("testUser", "EmptyDeck"))
-        .thenReturn(new ArrayList<>());
+      .thenReturn(new ArrayList<>());
 
     mockMvc.perform(get(ApiEndpoints.FLASHCARDS + ApiEndpoints.FLASHCARD_GET_ALL)
-        .param("username", "testUser")
-        .param("deckname", "EmptyDeck"))
-        .andExpect(status().isOk())
-        .andExpect(jsonPath("$.success").value(true))
-        .andExpect(jsonPath("$.message").value("Flashcards retrieved successfully"))
-        .andExpect(jsonPath("$.data").isArray())
-        .andExpect(jsonPath("$.data").isEmpty());
+      .param("username", "testUser")
+      .param("deckname", "EmptyDeck"))
+      .andExpect(status().isOk())
+      .andExpect(jsonPath("$.success").value(true))
+      .andExpect(jsonPath("$.message").value("Flashcards retrieved successfully"))
+      .andExpect(jsonPath("$.data").isArray())
+      .andExpect(jsonPath("$.data").isEmpty());
   }
 
+  // POST methods tests
+  /**
+   * Tests successful creation of a flashcard.
+   * Verifies that a new flashcard can be created with question and answer,
+   * and returns HTTP 200 with the created flashcard data.
+   *
+   * @throws Exception if the MockMvc request fails
+   */
+  @Test
+  void testCreateFlashcard_Success() throws Exception {
+    when(flashcardService.createFlashcard(anyString(), anyString(), anyString(), anyString()))
+      .thenReturn(testFlashcard);
+    when(flashcardService.getAllFlashcards(anyString(), anyString()))
+      .thenReturn(testFlashcardList);
+    when(flashcardService.getFlashcard(anyString(), anyString(), anyInt()))
+      .thenReturn(testFlashcard);
+
+    mockMvc.perform(post(ApiEndpoints.FLASHCARDS + ApiEndpoints.FLASHCARD_CREATE)
+      .param("username", "testUser")
+      .param("deckname", "TestDeck")
+      .param("question", "What is Java?")
+      .param("answer", "A programming language"))
+      .andExpect(status().isOk())
+      .andExpect(jsonPath("$.success").value(true))
+      .andExpect(jsonPath("$.message").value("Flashcard created successfully."))
+      .andExpect(jsonPath("$.data.question").value("What is Java?"))
+      .andExpect(jsonPath("$.data.answer").value("A programming language"));
+  }
+
+  /**
+   * Tests flashcard creation when user does not exist.
+   * Verifies that the endpoint returns appropriate error response
+   * when attempting to create a flashcard for non-existent user.
+   *
+   * @throws Exception if the MockMvc request fails
+   */
+  @Test
+  void testCreateFlashcard_UserNotFound() throws Exception {
+    when(flashcardService.createFlashcard(anyString(), anyString(), anyString(), anyString()))
+      .thenThrow(new IllegalArgumentException("User not found"));
+
+    mockMvc.perform(post(ApiEndpoints.FLASHCARDS + ApiEndpoints.FLASHCARD_CREATE)
+      .param("username", "nonExistent")
+      .param("deckname", "TestDeck")
+      .param("question", "What is Java?")
+      .param("answer", "A programming language"))
+      .andExpect(status().isOk())
+      .andExpect(jsonPath("$.success").value(false))
+      .andExpect(jsonPath("$.message").value("User not found"));
+  }
+
+  /**
+   * Tests flashcard creation when deck does not exist.
+   * Verifies that the endpoint returns appropriate error response
+   * when attempting to create a flashcard in non-existent deck.
+   *
+   * @throws Exception if the MockMvc request fails
+   */
+  @Test
+  void testCreateFlashcard_DeckNotFound() throws Exception {
+    when(flashcardService.createFlashcard(anyString(), anyString(), anyString(), anyString()))
+      .thenThrow(new IllegalArgumentException("Deck not found"));
+
+    mockMvc.perform(post(ApiEndpoints.FLASHCARDS + ApiEndpoints.FLASHCARD_CREATE)
+      .param("username", "testUser")
+      .param("deckname", "NonExistentDeck")
+      .param("question", "What is Java?")
+      .param("answer", "A programming language"))
+      .andExpect(status().isOk())
+      .andExpect(jsonPath("$.success").value(false))
+      .andExpect(jsonPath("$.message").value("Deck not found"));
+  }
+
+  /**
+   * Tests flashcard creation with empty question or answer.
+   * Verifies that the endpoint returns appropriate error response
+   * when provided with invalid flashcard data.
+   *
+   * @throws Exception if the MockMvc request fails
+   */
+  @Test
+  void testCreateFlashcard_InvalidData() throws Exception {
+    when(flashcardService.createFlashcard(anyString(), anyString(), anyString(), anyString()))
+      .thenThrow(new IllegalArgumentException("Invalid flashcard data"));
+
+    mockMvc.perform(post(ApiEndpoints.FLASHCARDS + ApiEndpoints.FLASHCARD_CREATE)
+      .param("username", "testUser")
+      .param("deckname", "TestDeck")
+      .param("question", "")
+      .param("answer", ""))
+      .andExpect(status().isOk())
+      .andExpect(jsonPath("$.success").value(false))
+      .andExpect(jsonPath("$.message").value("Invalid flashcard data"));
+  }
+
+  // DELETE methods tests last
   /**
    * Tests successful deletion of a flashcard by position.
    * Verifies that a flashcard can be successfully deleted and returns
@@ -323,12 +327,12 @@ public class FlashcardControllerTest {
     doNothing().when(flashcardService).deleteFlashcard("testUser", "TestDeck", 1);
 
     mockMvc.perform(delete(ApiEndpoints.FLASHCARDS + ApiEndpoints.FLASHCARD_DELETE)
-        .param("username", "testUser")
-        .param("deckname", "TestDeck")
-        .param("number", "1"))
-        .andExpect(status().isOk())
-        .andExpect(jsonPath("$.success").value(true))
-        .andExpect(jsonPath("$.message").value("Flashcard deleted successfully."));
+      .param("username", "testUser")
+      .param("deckname", "TestDeck")
+      .param("number", "1"))
+      .andExpect(status().isOk())
+      .andExpect(jsonPath("$.success").value(true))
+      .andExpect(jsonPath("$.message").value("Flashcard deleted successfully."));
   }
 
   /**
@@ -341,7 +345,7 @@ public class FlashcardControllerTest {
   @Test
   void testDeleteFlashcard_FlashcardNotFound() throws Exception {
     doThrow(new IllegalArgumentException("Flashcard not found"))
-        .when(flashcardService).deleteFlashcard("testUser", "TestDeck", 99);
+      .when(flashcardService).deleteFlashcard("testUser", "TestDeck", 99);
 
     mockMvc.perform(delete(ApiEndpoints.FLASHCARDS + ApiEndpoints.FLASHCARD_DELETE)
         .param("username", "testUser")
@@ -349,7 +353,7 @@ public class FlashcardControllerTest {
         .param("number", "99"))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.success").value(false))
-        .andExpect(jsonPath("$.message").value("Failed to delete flashcard: Flashcard not found"));
+        .andExpect(jsonPath("$.message").value("Flashcard not found"));
   }
 
   /**
@@ -362,7 +366,7 @@ public class FlashcardControllerTest {
   @Test
   void testDeleteFlashcard_DeckNotFound() throws Exception {
     doThrow(new IllegalArgumentException("Deck not found"))
-        .when(flashcardService).deleteFlashcard("testUser", "NonExistentDeck", 1);
+      .when(flashcardService).deleteFlashcard("testUser", "NonExistentDeck", 1);
 
     mockMvc.perform(delete(ApiEndpoints.FLASHCARDS + ApiEndpoints.FLASHCARD_DELETE)
         .param("username", "testUser")
@@ -370,7 +374,7 @@ public class FlashcardControllerTest {
         .param("number", "1"))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.success").value(false))
-        .andExpect(jsonPath("$.message").value("Failed to delete flashcard: Deck not found"));
+        .andExpect(jsonPath("$.message").value("Deck not found"));
   }
 
   /**
@@ -383,7 +387,7 @@ public class FlashcardControllerTest {
   @Test
   void testDeleteFlashcard_UserNotFound() throws Exception {
     doThrow(new IllegalArgumentException("User not found"))
-        .when(flashcardService).deleteFlashcard("nonExistent", "TestDeck", 1);
+      .when(flashcardService).deleteFlashcard("nonExistent", "TestDeck", 1);
 
     mockMvc.perform(delete(ApiEndpoints.FLASHCARDS + ApiEndpoints.FLASHCARD_DELETE)
         .param("username", "nonExistent")
@@ -391,7 +395,7 @@ public class FlashcardControllerTest {
         .param("number", "1"))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.success").value(false))
-        .andExpect(jsonPath("$.message").value("Failed to delete flashcard: User not found"));
+        .andExpect(jsonPath("$.message").value("User not found"));
   }
 
   /**
@@ -404,7 +408,7 @@ public class FlashcardControllerTest {
   @Test
   void testDeleteFlashcard_InvalidPosition() throws Exception {
     doThrow(new IllegalArgumentException("Invalid position"))
-        .when(flashcardService).deleteFlashcard("testUser", "TestDeck", -1);
+      .when(flashcardService).deleteFlashcard("testUser", "TestDeck", -1);
 
     mockMvc.perform(delete(ApiEndpoints.FLASHCARDS + ApiEndpoints.FLASHCARD_DELETE)
         .param("username", "testUser")
@@ -412,6 +416,6 @@ public class FlashcardControllerTest {
         .param("number", "-1"))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.success").value(false))
-        .andExpect(jsonPath("$.message").value("Failed to delete flashcard: Invalid position"));
+        .andExpect(jsonPath("$.message").value("Invalid position"));
   }
 }

@@ -10,7 +10,8 @@ import dto.FlashcardDto;
 
 /**
  * Mapper class for converting between FlashcardDeck and FlashcardDeckDto.
- * Uses FlashcardMapper for mapping individual Flashcards.
+ * Uses {@link FlashcardMapper} for mapping individual Flashcards.
+ * 
  * @author ailinat
  * @author sofietw
  */
@@ -18,6 +19,7 @@ public class FlashcardDeckMapper {
   
   /**
    * Converts a FlashcardDeck to a FlashcardDeckDto.
+   * 
    * @param deck the FlashcardDeck to convert
    * @return the corresponding FlashcardDeckDto
    */
@@ -37,8 +39,10 @@ public class FlashcardDeckMapper {
 
   /**
    * Converts a FlashcardDeckDto to a FlashcardDeck.
+   * 
    * @param dto the FlashcardDeckDto to convert
    * @return the corresponding FlashcardDeck
+   * @throws IllegalArgumentException if dto is null
    */
   public FlashcardDeck fromDto(FlashcardDeckDto dto) {
     if (dto == null) {
@@ -58,6 +62,7 @@ public class FlashcardDeckMapper {
 
   /**
    * Converts a list of FlashcardDecks to a list of FlashcardDeckDtos.
+   * 
    * @param decks the list of FlashcardDecks to convert
    * @return the corresponding list of FlashcardDeckDtos
    */
@@ -73,6 +78,7 @@ public class FlashcardDeckMapper {
 
   /**
    * Converts a list of FlashcardDeckDtos to a list of FlashcardDecks.
+   * 
    * @param dtoList the list of FlashcardDeckDtos to convert
    * @return the corresponding list of FlashcardDecks
    */

@@ -29,6 +29,9 @@ import shared.ApiConstants;
  * 
  * @author chrsom
  * @author isamw
+ * @see FlashcardPersistent
+ * @see DeckService
+ * @see ApiConstants
  */
 @Service
 public class FlashcardService {
@@ -65,14 +68,20 @@ public class FlashcardService {
     } else if (!this.persistent.readDeck(username).getDecks().stream().map(mapper -> mapper.getDeckName())
         .anyMatch(name -> name.equals(deckname))) {
       throw new IllegalArgumentException(ApiConstants.DECK_NOT_FOUND);
-    } else if (number < 1 || number >= 8) {
-      throw new IllegalArgumentException(ApiConstants.FLASHCARD_NOT_FOUND);
-    } else if (this.deckService.getDeck(username, deckname).getDeck().size() < number) {
-      throw new IllegalArgumentException(ApiConstants.FLASHCARD_NOT_FOUND);
-    } else {
-      return this.deckService.getAllDecks(username).getDecks().stream().filter(x -> x.getDeckName().equals(deckname))
-          .findFirst().get().getDeck().get(number - 1);
     }
+    
+    FlashcardDeck deck = this.deckService.getDeck(username, deckname);
+    if (deck == null) {
+      throw new IllegalArgumentException(ApiConstants.DECK_NOT_FOUND);
+    }
+    
+    int deckSize = deck.getDeck().size();
+    
+    if (number < 1 || number > deckSize) {
+      throw new IllegalArgumentException(ApiConstants.FLASHCARD_NOT_FOUND);
+    }
+    
+    return deck.getDeck().get(number - 1);
   }
 
   /**
@@ -108,9 +117,18 @@ public class FlashcardService {
   public Flashcard createFlashcard(String username, String deckname, String answer, String question)
       throws IOException {
     Flashcard flashcard = new Flashcard(question, answer);
-    this.deckService.getDeck(username, deckname).addFlashcard(flashcard);
-
-    this.persistent.writeDeck(username, this.deckService.getAllDecks(username));
+    
+    // Get the manager once and reuse it
+    FlashcardDeckManager manager = this.deckService.getAllDecks(username);
+    FlashcardDeck deck = manager.getDecks().stream()
+        .filter(d -> d.getDeckName().equals(deckname))
+        .findFirst()
+        .orElseThrow(() -> new IllegalArgumentException(ApiConstants.DECK_NOT_FOUND));
+    
+    deck.addFlashcard(flashcard);
+    
+    // Write the updated manager to persistent storage
+    this.persistent.writeDeck(username, manager);
     return flashcard;
   }
 
@@ -124,10 +142,22 @@ public class FlashcardService {
    *                     persistent storage
    */
   public void deleteFlashcard(String username, String deckname, int number) throws IOException {
+    // Get the manager once and reuse it
     FlashcardDeckManager manager = this.deckService.getAllDecks(username);
-    FlashcardDeck deck = this.deckService.getDeck(username, deckname);
-    deck.removeFlashcardByIndex(number);
+    FlashcardDeck deck = manager.getDecks().stream()
+        .filter(d -> d.getDeckName().equals(deckname))
+        .findFirst()
+        .orElseThrow(() -> new IllegalArgumentException(ApiConstants.DECK_NOT_FOUND));
+    
+    // Convert from 1-indexed (number) to 0-indexed (index)
+    int index = number - 1;
+    if (index < 0 || index >= deck.getDeck().size()) {
+      throw new IllegalArgumentException(ApiConstants.FLASHCARD_NOT_FOUND);
+    }
+    
+    deck.removeFlashcardByIndex(index);
 
+    // Write the updated manager to persistent storage
     this.persistent.writeDeck(username, manager);
   }
 }

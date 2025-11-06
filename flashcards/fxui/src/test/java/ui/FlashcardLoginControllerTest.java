@@ -1,489 +1,533 @@
-// package ui;
+package ui;
 
-// import static org.junit.jupiter.api.Assertions.assertFalse;
-// import static org.junit.jupiter.api.Assertions.assertNotNull;
-// import static org.junit.jupiter.api.Assertions.assertTrue;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.mockito.Mock;
+import org.mockito.MockedConstruction;
+import org.mockito.MockedStatic;
+import org.mockito.MockitoAnnotations;
 
-// import java.util.concurrent.CountDownLatch;
-// import java.util.concurrent.TimeUnit;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.*;
+import static org.junit.jupiter.api.Assertions.*;
 
-// import org.junit.jupiter.api.AfterEach;
-// import org.junit.jupiter.api.BeforeAll;
-// import org.junit.jupiter.api.BeforeEach;
-// import org.junit.jupiter.api.Test;
-// import org.junit.jupiter.api.extension.ExtendWith;
-// import org.testfx.api.FxToolkit;
-// import org.testfx.framework.junit5.ApplicationExtension;
-// import org.testfx.framework.junit5.ApplicationTest;
+import java.io.IOException;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.util.concurrent.CountDownLatch;
 
-// import javafx.application.Platform;
-// import javafx.fxml.FXMLLoader;
-// import javafx.scene.Parent;
-// import javafx.scene.Scene;
-// import javafx.scene.control.Button;
-// import javafx.scene.control.TextField;
-// import javafx.scene.text.Text;
-// import javafx.stage.Stage;
+import javafx.application.Platform;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.control.Button;
+import javafx.scene.control.TextField;
+import javafx.scene.text.Text;
+import javafx.stage.Stage;
+import javafx.scene.Scene;
+import javafx.scene.Parent;
+import dto.LoginRequestDto;
+import dto.LoginResponseDto;
+import shared.ApiResponse;
+import com.fasterxml.jackson.core.type.TypeReference;
 
-// /**
-//  * Comprehensive test class for the FlashcardLoginController using TestFX.
-//  * Tests login validation, UI interactions, error handling, and navigation.
+public class FlashcardLoginControllerTest {
+    
+    private FlashcardLoginController controller;
+    
+    @Mock
+    private Text alertMessage;
+    
+    @Mock 
+    private Text ex;
+    
+    @Mock
+    private Button loginButton;
+    
+    @Mock
+    private TextField usernameField;
+    
+    @Mock
+    private TextField passwordField;
+    
+    @Mock
+    private Button signUpButton;
+    
+    @Mock
+    private Stage stage;
+    
+    @Mock
+    private Scene scene;
 
-//  * @author Generated with AI assistance for comprehensive test coverage
-//  */
-// @ExtendWith(ApplicationExtension.class)
-// public class FlashcardLoginControllerTest extends ApplicationTest {
-    
-//     private FlashcardLoginController controller;
-//     private Text alertMessage;
-//     private Button loginButton;
-//     private TextField usernameField;
-//     private TextField passwordField;
-    
-//     /**
-//      * Sets up the JavaFX platform before all tests.
-//      * Ensures that the JavaFX toolkit is properly initialized for testing.
-//      * 
-//      * @throws Exception if JavaFX platform initialization fails
-//      */
-//     @BeforeAll
-//     public static void setUpClass() throws Exception {
-//         if (!Platform.isFxApplicationThread()) {
-//             try {
-//                 Platform.startup(() -> {
-//                     // Empty runnable for platform initialization
-//                 });
-//             } catch (IllegalStateException e) {
-//                 // Platform already initialized, this is expected in some test environments
-//             }
-//         }
-//     }
-    
-//     /**
-//      * Sets up the JavaFX application for testing.
-//      * Loads the FlashcardLoginUI.fxml and initializes the controller.
-//      * 
-//      * @param stage the primary stage for the JavaFX application
-//      * @throws Exception if FXML loading fails
-//      */
-//     @Override
-//     public void start(Stage stage) throws Exception {
-//         try {
-//             // Load FXML
-//             FXMLLoader loader = new FXMLLoader(getClass().getResource("FlashcardLogin.fxml"));
-//             Parent root = loader.load();
-//             controller = loader.getController();
-            
-//             // Set up scene
-//             Scene scene = new Scene(root);
-//             stage.setScene(scene);
-//             stage.show();
-            
-//             // Initialize component references
-//             initializeComponentReferences();
-//         } catch (Exception e) {
-//             e.printStackTrace();
-//             throw e;
-//         }
-//     }
-    
-//     /**
-//      * Initializes references to FXML components for testing.
-//      * Looks up UI components by their FXML IDs.
-//      */
-//     private void initializeComponentReferences() {
-//         try {
-//             alertMessage = lookup("#alertMessage").query();
-//             loginButton = lookup("#loginButton").query();
-//             usernameField = lookup("#usernameField").query();
-//             passwordField = lookup("#passwordField").query();
-//         } catch (Exception e) {
-//             // Some components might not be found, that's okay for basic testing
-//             System.out.println("Warning: Some UI components could not be initialized: " + e.getMessage());
-//         }
-//     }
-    
+    @BeforeAll
+    public static void initJavaFX() throws InterruptedException {
+        // Initialize JavaFX toolkit
+        if (!Platform.isFxApplicationThread()) {
+            try {
+                CountDownLatch latch = new CountDownLatch(1);
+                Platform.startup(() -> latch.countDown());
+                latch.await();
+            } catch (IllegalStateException e) {
+                // Toolkit already initialized
+            }
+        }
+    }
 
-    
-//     /**
-//      * Helper method to wait for JavaFX thread operations to complete.
-//      * Uses CountDownLatch to ensure proper synchronization with JavaFX Application Thread.
-//      */
-//     private void waitForJavaFX() {
-//         CountDownLatch latch = new CountDownLatch(1);
-//         Platform.runLater(latch::countDown);
-//         try {
-//             assertTrue(latch.await(10, TimeUnit.SECONDS), 
-//                       "JavaFX operations should complete within 10 seconds");
-//         } catch (InterruptedException e) {
-//             Thread.currentThread().interrupt();
-//             throw new RuntimeException("Thread interrupted while waiting for JavaFX", e);
-//         }
-//     }
-    
-//     /**
-//      * Tests that the controller is properly initialized after FXML loading.
-//      * Verifies that all required UI components are present and accessible.
-//      */
-//     @Test
-//     public void testControllerInitialization() {
-//         assertNotNull(controller, "Controller should be initialized");
+    @AfterAll
+    public static void tearDown() {
+        if (Platform.isFxApplicationThread()) {
+            Platform.exit();
+        }
+    }
+
+
+
+    @BeforeEach
+    public void setUp() throws Exception {
+        MockitoAnnotations.openMocks(this);
+        controller = new FlashcardLoginController();
         
-//         // Only test components that could be initialized
-//         if (alertMessage != null) {
-//             assertNotNull(alertMessage, "Alert message should be initialized");
-//         }
-//         if (loginButton != null) {
-//             assertNotNull(loginButton, "Login button should be initialized");
-//         }
-//         if (usernameField != null) {
-//             assertNotNull(usernameField, "Username field should be initialized");
-//         }
-//         if (passwordField != null) {
-//             assertNotNull(passwordField, "Password field should be initialized");
-//         }
+        // Inject mocked FXML fields using reflection
+        injectMockField("alertMessage", alertMessage);
+        injectMockField("ex", ex);
+        injectMockField("loginButton", loginButton);
+        injectMockField("usernameField", usernameField);
+        injectMockField("passwordField", passwordField);
+        injectMockField("signUpButton", signUpButton);
         
-//         // This test passes if controller is not null, which means FXML loading worked
-//         assertTrue(true, "Controller initialization test completed");
-//     }
+        // Set up common mock behaviors
+        when(loginButton.getScene()).thenReturn(scene);
+        when(signUpButton.getScene()).thenReturn(scene);
+        when(scene.getWindow()).thenReturn(stage);
+    }
     
-//     /**
-//      * Tests the updateUi method functionality.
-//      * Verifies that UI components are properly updated when the method is called.
-//      */
-//     @Test
-//     public void testUpdateUi() {
-//         Platform.runLater(() -> controller.updateUi());
-//         waitForJavaFX();
-        
-//         // Verify alert message is hidden initially
-//         if (alertMessage != null) {
-//             assertFalse(alertMessage.isVisible(), "Alert message should be hidden initially");
-//         }
-        
-//         assertTrue(true, "UpdateUi test completed successfully");
-//     }
-    
-//     /**
-//      * Tests login with valid username and password.
-//      * Verifies that the login process works with non-empty credentials.
-//      */
-//     @Test
-//     public void testValidLogin() {
-//         if (usernameField != null && passwordField != null) {
-//             // Set valid credentials
-//             clickOn(usernameField).write("testUser");
-//             clickOn(passwordField).write("testPassword");
-            
-//             // Attempt login (navigation will likely fail in test environment, but that's expected)
-//             try {
-//                 Platform.runLater(() -> controller.whenLoginButtonClicked());
-//                 waitForJavaFX();
-                
-//                 // If we get here without exception, the validation part worked
-//                 assertTrue(true, "Login with valid credentials should not cause validation errors");
-//             } catch (Exception e) {
-//                 // Navigation failure is expected in test environment
-//                 assertTrue(true, "Login validation handled gracefully: " + e.getMessage());
-//             }
-//         } else {
-//             assertTrue(true, "Login test skipped due to missing UI components");
-//         }
-//     }
-    
-//     /**
-//      * Tests login with empty username.
-//      * Verifies that appropriate error message is shown for empty username.
-//      */
-//     @Test
-//     public void testEmptyUsername() {
-//         if (usernameField != null && passwordField != null) {
-//             // Set empty username and valid password
-//             clickOn(passwordField).write("testPassword");
-            
-//             Platform.runLater(() -> controller.whenLoginButtonClicked());
-//             waitForJavaFX();
-            
-//             // Check if alert message is shown
-//             if (alertMessage != null) {
-//                 assertTrue(alertMessage.isVisible(), "Alert message should be visible for empty username");
-//                 assertTrue(alertMessage.getText().contains("cannot be empty"), 
-//                           "Alert should mention empty fields");
-//             }
-//         } else {
-//             assertTrue(true, "Empty username test skipped due to missing UI components");
-//         }
-//     }
-    
-//     /**
-//      * Tests login with empty password.
-//      * Verifies that appropriate error message is shown for empty password.
-//      */
-//     @Test
-//     public void testEmptyPassword() {
-//         if (usernameField != null && passwordField != null) {
-//             // Set valid username and empty password
-//             clickOn(usernameField).write("testUser");
-            
-//             Platform.runLater(() -> controller.whenLoginButtonClicked());
-//             waitForJavaFX();
-            
-//             // Check if alert message is shown
-//             if (alertMessage != null) {
-//                 assertTrue(alertMessage.isVisible(), "Alert message should be visible for empty password");
-//                 assertTrue(alertMessage.getText().contains("cannot be empty"), 
-//                           "Alert should mention empty fields");
-//             }
-//         } else {
-//             assertTrue(true, "Empty password test skipped due to missing UI components");
-//         }
-//     }
-    
-//     /**
-//      * Tests login with both username and password empty.
-//      * Verifies that appropriate error message is shown for both empty fields.
-//      */
-//     @Test
-//     public void testBothFieldsEmpty() {
-//         if (usernameField != null && passwordField != null) {
-//             // Leave both fields empty
-//             Platform.runLater(() -> controller.whenLoginButtonClicked());
-//             waitForJavaFX();
-            
-//             // Check if alert message is shown
-//             if (alertMessage != null) {
-//                 assertTrue(alertMessage.isVisible(), "Alert message should be visible for empty fields");
-//                 assertTrue(alertMessage.getText().contains("cannot be empty"), 
-//                           "Alert should mention empty fields");
-//             }
-//         } else {
-//             assertTrue(true, "Both fields empty test skipped due to missing UI components");
-//         }
-//     }
-    
-//     /**
-//      * Tests login with whitespace-only username.
-//      * Verifies that whitespace-only usernames are treated as empty.
-//      */
-//     @Test
-//     public void testWhitespaceOnlyUsername() {
-//         if (usernameField != null && passwordField != null) {
-//             // Set whitespace-only username and valid password
-//             clickOn(usernameField).write("   ");
-//             clickOn(passwordField).write("testPassword");
-            
-//             Platform.runLater(() -> controller.whenLoginButtonClicked());
-//             waitForJavaFX();
-            
-//             // Check if alert message is shown
-//             if (alertMessage != null) {
-//                 assertTrue(alertMessage.isVisible(), "Alert message should be visible for whitespace-only username");
-//                 assertTrue(alertMessage.getText().contains("cannot be empty"), 
-//                           "Alert should mention empty fields");
-//             }
-//         } else {
-//             assertTrue(true, "Whitespace-only username test skipped due to missing UI components");
-//         }
-//     }
-    
-//     /**
-//      * Tests login with whitespace-only password.
-//      * Verifies that whitespace-only passwords are treated as empty.
-//      */
-//     @Test
-//     public void testWhitespaceOnlyPassword() {
-//         if (usernameField != null && passwordField != null) {
-//             // Set valid username and whitespace-only password
-//             clickOn(usernameField).write("testUser");
-//             clickOn(passwordField).write("   ");
-            
-//             Platform.runLater(() -> controller.whenLoginButtonClicked());
-//             waitForJavaFX();
-            
-//             // Check if alert message is shown
-//             if (alertMessage != null) {
-//                 assertTrue(alertMessage.isVisible(), "Alert message should be visible for whitespace-only password");
-//                 assertTrue(alertMessage.getText().contains("cannot be empty"), 
-//                           "Alert should mention empty fields");
-//             }
-//         } else {
-//             assertTrue(true, "Whitespace-only password test skipped due to missing UI components");
-//         }
-//     }
-    
-//     /**
-//      * Tests input field trimming functionality.
-//      * Verifies that leading and trailing whitespace is properly trimmed from inputs.
-//      */
-//     @Test
-//     public void testInputTrimming() {
-//         if (usernameField != null && passwordField != null) {
-//             // Set inputs with leading/trailing whitespace
-//             clickOn(usernameField).write("  testUser  ");
-//             clickOn(passwordField).write("  testPassword  ");
-            
-//             // Attempt login (navigation will likely fail, but validation should pass)
-//             try {
-//                 Platform.runLater(() -> controller.whenLoginButtonClicked());
-//                 waitForJavaFX();
-                
-//                 // If alert is not visible, trimming worked correctly
-//                 if (alertMessage != null) {
-//                     assertFalse(alertMessage.isVisible(), 
-//                                "Alert should not be visible when trimmed inputs are valid");
-//                 }
-//             } catch (Exception e) {
-//                 // Navigation failure is expected in test environment
-//                 assertTrue(true, "Input trimming validation handled gracefully");
-//             }
-//         } else {
-//             assertTrue(true, "Input trimming test skipped due to missing UI components");
-//         }
-//     }
-    
-//     /**
-//      * Tests error message display functionality.
-//      * Verifies that error messages are properly shown and hidden.
-//      */
-//     @Test
-//     public void testErrorMessageDisplay() {
-//         if (usernameField != null && passwordField != null && alertMessage != null) {
-//             // Initially, alert should be hidden
-//             assertFalse(alertMessage.isVisible(), "Alert should be hidden initially");
-            
-//             // Trigger an error by leaving fields empty
-//             Platform.runLater(() -> controller.whenLoginButtonClicked());
-//             waitForJavaFX();
-            
-//             // Alert should now be visible
-//             assertTrue(alertMessage.isVisible(), "Alert should be visible after validation error");
-            
-//             // Set valid inputs and trigger updateUi to hide alert
-//             clickOn(usernameField).write("testUser");
-//             clickOn(passwordField).write("testPassword");
-//             Platform.runLater(() -> controller.updateUi());
-//             waitForJavaFX();
-            
-//             // Alert should be hidden again after updateUi
-//             assertFalse(alertMessage.isVisible(), "Alert should be hidden after updateUi");
-//         } else {
-//             assertTrue(true, "Error message display test skipped due to missing UI components");
-//         }
-//     }
-    
-//     /**
-//      * Tests the navigation functionality (though it will likely fail in test environment).
-//      * Verifies that the navigation attempt doesn't crash the application.
-//      */
-//     @Test
-//     public void testNavigationAttempt() {
-//         if (usernameField != null && passwordField != null) {
-//             // Set valid credentials
-//             clickOn(usernameField).write("navigationTestUser");
-//             clickOn(passwordField).write("navigationTestPassword");
-            
-//             // Attempt navigation (expected to fail in test environment)
-//             try {
-//                 Platform.runLater(() -> controller.whenLoginButtonClicked());
-//                 waitForJavaFX();
-//                 assertTrue(true, "Navigation attempt completed without crashing");
-//             } catch (Exception e) {
-//                 // Expected to fail in test environment due to missing FlashcardMainUI.fxml context
-//                 assertTrue(true, "Navigation failure handled gracefully: " + e.getMessage());
-//             }
-//         } else {
-//             assertTrue(true, "Navigation test skipped due to missing UI components");
-//         }
-//     }
-    
-//     /**
-//      * Tests error handling during navigation failure.
-//      * Verifies that navigation errors are properly handled and displayed.
-//      */
-//     @Test
-//     public void testNavigationErrorHandling() {
-//         // This test verifies that the controller handles IOException during navigation
-//         // In a real test environment, this would require mocking the FXMLLoader
-//         assertTrue(true, "Navigation error handling test - implementation depends on mocking framework");
-//     }
-    
-//     /**
-//      * Tests the complete login workflow.
-//      * Verifies the typical user interaction flow from input to validation.
-//      */
-//     @Test
-//     public void testCompleteLoginWorkflow() {
-//         try {
-//             if (usernameField != null && passwordField != null) {
-//                 // Step 1: Initial state
-//                 Platform.runLater(() -> controller.updateUi());
-//                 waitForJavaFX();
-                
-//                 // Step 2: Try empty login (should show error)
-//                 Platform.runLater(() -> controller.whenLoginButtonClicked());
-//                 waitForJavaFX();
-                
-//                 // Step 3: Enter valid credentials
-//                 clickOn(usernameField).write("workflowUser");
-//                 clickOn(passwordField).write("workflowPassword");
-                
-//                 // Step 4: Attempt login with valid credentials
-//                 Platform.runLater(() -> controller.whenLoginButtonClicked());
-//                 waitForJavaFX();
-                
-//                 assertTrue(true, "Complete workflow executed without exceptions");
-//             } else {
-//                 assertTrue(true, "Complete workflow test skipped due to missing UI components");
-//             }
-//         } catch (Exception e) {
-//             assertTrue(false, "Complete workflow should not throw unexpected exceptions: " + e.getMessage());
-//         }
-//     }
-    
-//     /**
-//      * Tests button interaction.
-//      * Verifies that the login button can be clicked and responds appropriately.
-//      */
-//     @Test
-//     public void testButtonInteraction() {
-//         if (loginButton != null) {
-//             // Test clicking the button directly
-//             try {
-//                 clickOn(loginButton);
-//                 waitForJavaFX();
-//                 assertTrue(true, "Button click interaction completed");
-//             } catch (Exception e) {
-//                 assertTrue(true, "Button interaction handled gracefully: " + e.getMessage());
-//             }
-//         } else {
-//             assertTrue(true, "Button interaction test skipped due to missing login button");
-//         }
-//     }
-//     /**
-//      * Cleans up any test data created during tests.
-//      * This is a placeholder for actual cleanup logic if needed.
-//      */
-//     @BeforeEach
-//     public void setUp() {
-//         Platform.runLater(() -> {
-//             // Clear all input fields
-//             if (usernameField != null) usernameField.clear();
-//             if (passwordField != null) passwordField.clear();
-//         });
-//         waitForJavaFX();
-//     }
-    
-//     /**
-//      * Cleans up after each test by clearing all data and hiding the stage.
-//     * @throws Exception if cleanup fails
-//     */
-//     @AfterEach
-//     public void tearDown() throws Exception {
-//         try {
-//             FxToolkit.hideStage();
-//         } catch (Exception e) {
-//             // Ignore cleanup exceptions
-//         }
-//     }
+    private void injectMockField(String fieldName, Object mockObject) throws Exception {
+        Field field = FlashcardLoginController.class.getDeclaredField(fieldName);
+        field.setAccessible(true);
+        field.set(controller, mockObject);
+    }
 
-// }
+@Test
+public void testWhenLoginButtonClicked_emptyUsername() throws Exception {
+    when(usernameField.getText()).thenReturn(""); // Empty username
+    when(passwordField.getText()).thenReturn("password"); // Non-empty password
+    
+    controller.whenLoginButtonClicked();
+    
+    verify(alertMessage).setText("Username and password\ncannot be empty");
+    verify(alertMessage).setVisible(true);
+    verify(ex).setVisible(true);
+}
+
+@Test
+public void testWhenLoginButtonClicked_emptyPassword() throws Exception {
+    when(usernameField.getText()).thenReturn("username"); // Non-empty username
+    when(passwordField.getText()).thenReturn(""); // Empty password
+    
+    controller.whenLoginButtonClicked();
+    
+    verify(alertMessage).setText("Username and password\ncannot be empty");
+    verify(alertMessage).setVisible(true);
+    verify(ex).setVisible(true);
+}
+
+@SuppressWarnings("unchecked")
+@Test
+public void testWhenLoginButtonClicked_successfulLogin() throws Exception {
+    when(usernameField.getText()).thenReturn("user");
+    when(passwordField.getText()).thenReturn("pass");
+    LoginResponseDto mockLoginResponse = mock(LoginResponseDto.class);
+    when(mockLoginResponse.isSuccess()).thenReturn(true);
+    ApiResponse<LoginResponseDto> mockApiResponse = mock(ApiResponse.class);
+    when(mockApiResponse.isSuccess()).thenReturn(true);
+    when(mockApiResponse.getData()).thenReturn(mockLoginResponse);
+
+    try (MockedStatic<ApiClient> mockedApiClient = mockStatic(ApiClient.class)) {
+        mockedApiClient.when(() -> ApiClient.performApiRequest(
+            anyString(), anyString(), any(LoginRequestDto.class), any(TypeReference.class)))
+            .thenReturn(mockApiResponse);
+
+        // Use a spy and override the public method to avoid actual navigation
+        FlashcardLoginController spyController = spy(controller);
+
+        // Use reflection to make the private method accessible and stub it
+        Method navigateToMainAppMethod = FlashcardLoginController.class.getDeclaredMethod("navigateToMainApp", String.class);
+        navigateToMainAppMethod.setAccessible(true);
+
+        // Replace controller with spy for this branch
+        Field controllerField = FlashcardLoginControllerTest.class.getDeclaredField("controller");
+        controllerField.setAccessible(true);
+        controllerField.set(this, spyController);
+
+        // Optionally, use doNothing() with reflection (not directly with Mockito)
+        // Or just call the public method and check that no error message is shown
+        spyController.whenLoginButtonClicked();
+
+        // Check that no error message is shown
+        verify(alertMessage, never()).setText("Username and password\ncannot be empty");
+        verify(alertMessage, never()).setText("Invalid credentials");
+        verify(alertMessage, never()).setText("Server error");
+        verify(alertMessage, never()).setText("Failed to load main application");
+    }
+}
+
+@SuppressWarnings("unchecked")
+@Test
+public void testWhenLoginButtonClicked_invalidCredentials() throws Exception {
+    when(usernameField.getText()).thenReturn("user");
+    when(passwordField.getText()).thenReturn("pass");
+    LoginResponseDto mockLoginResponseFail = mock(LoginResponseDto.class);
+    when(mockLoginResponseFail.isSuccess()).thenReturn(false);
+    when(mockLoginResponseFail.getMessage()).thenReturn("Invalid credentials");
+    ApiResponse<LoginResponseDto> mockApiResponseFail = mock(ApiResponse.class);
+    when(mockApiResponseFail.isSuccess()).thenReturn(true);
+    when(mockApiResponseFail.getData()).thenReturn(mockLoginResponseFail);
+
+    try (MockedStatic<ApiClient> mockedApiClient = mockStatic(ApiClient.class)) {
+        mockedApiClient.when(() -> ApiClient.performApiRequest(
+            anyString(), anyString(), any(LoginRequestDto.class), any(TypeReference.class)))
+            .thenReturn(mockApiResponseFail);
+
+        controller.whenLoginButtonClicked();
+        verify(alertMessage).setText("Invalid credentials");
+        verify(alertMessage, atLeastOnce()).setVisible(true);
+        verify(ex, atLeastOnce()).setVisible(true);
+    }
+}
+
+
+@SuppressWarnings("unchecked")
+@Test
+public void testWhenLoginButtonClicked_apiError() throws Exception {
+    when(usernameField.getText()).thenReturn("user");
+    when(passwordField.getText()).thenReturn("pass");
+    ApiResponse<LoginResponseDto> mockApiResponseError = mock(ApiResponse.class);
+    when(mockApiResponseError.isSuccess()).thenReturn(false);
+    when(mockApiResponseError.getMessage()).thenReturn("Server error");
+
+    try (MockedStatic<ApiClient> mockedApiClient = mockStatic(ApiClient.class)) {
+        mockedApiClient.when(() -> ApiClient.performApiRequest(
+            anyString(), anyString(), any(LoginRequestDto.class), any(TypeReference.class)))
+            .thenReturn(mockApiResponseError);
+
+        controller.whenLoginButtonClicked();
+        verify(alertMessage).setText("Server error");
+        verify(alertMessage, atLeastOnce()).setVisible(true);
+        verify(ex, atLeastOnce()).setVisible(true);
+    }
+}
+
+
+@SuppressWarnings("unchecked")
+@Test
+public void testWhenLoginButtonClicked_navigateToMainAppIOException() throws Exception {
+    // Arrange: valid username/password
+    when(usernameField.getText()).thenReturn("user");
+    when(passwordField.getText()).thenReturn("pass");
+
+    // Mock successful login response
+    LoginResponseDto mockLoginResponse = mock(LoginResponseDto.class);
+    when(mockLoginResponse.isSuccess()).thenReturn(true);
+    ApiResponse<LoginResponseDto> mockApiResponse = mock(ApiResponse.class);
+    when(mockApiResponse.isSuccess()).thenReturn(true);
+    when(mockApiResponse.getData()).thenReturn(mockLoginResponse);
+
+    try (MockedStatic<ApiClient> mockedApiClient = mockStatic(ApiClient.class);
+         MockedConstruction<FXMLLoader> mockedFXMLLoader = mockConstruction(FXMLLoader.class,
+             (loader, context) -> {
+                 when(loader.load()).thenThrow(new IOException("Simulated IO error"));
+             })) {
+
+        mockedApiClient.when(() -> ApiClient.performApiRequest(
+            anyString(), anyString(), any(LoginRequestDto.class), any(TypeReference.class)))
+            .thenReturn(mockApiResponse);
+
+        // Act: call the public method, which will internally call navigateToMainApp and hit the IOException
+        controller.whenLoginButtonClicked();
+
+        // Assert: ApiClient.showAlert should be called for navigation errors
+        mockedApiClient.verify(() -> ApiClient.showAlert(
+            eq("Load Error"), 
+            eq("An unexpected error occurred. Please try again.")
+        ));
+    }
+}
+    
+@Test
+public void testNavigateToMainApp_success() throws Exception {
+    // Arrange
+    String username = "testuser";
+    Parent realRoot = new javafx.scene.layout.Pane(); // Use a real JavaFX Parent subclass
+    FlashcardMainController mockMainController = mock(FlashcardMainController.class);
+    Stage mockStage = mock(Stage.class);
+    Scene mockScene = mock(Scene.class);
+
+    // Mock FXMLLoader construction
+    try (MockedConstruction<FXMLLoader> mocked = mockConstruction(FXMLLoader.class,
+        (loader, context) -> {
+            when(loader.load()).thenReturn(realRoot);
+            when(loader.getController()).thenReturn(mockMainController);
+        })) {
+
+        // Inject loginButton and its scene/stage
+        injectMockField("loginButton", loginButton);
+        when(loginButton.getScene()).thenReturn(mockScene);
+        when(mockScene.getWindow()).thenReturn(mockStage);
+
+        // Make the private method accessible
+        Method navigateToMainAppMethod = FlashcardLoginController.class.getDeclaredMethod("navigateToMainApp", String.class);
+        navigateToMainAppMethod.setAccessible(true);
+
+        // Act
+        navigateToMainAppMethod.invoke(controller, username);
+
+        // Assert
+        verify(mockMainController).setCurrentUsername(username);
+        verify(mockStage).setScene(any(Scene.class));
+        verify(mockStage).show();
+    }
+}
+
+@Test
+public void testNavigateToMainApp_failure() throws Exception {
+    // Arrange
+    String username = "testuser";
+
+    // Mock FXMLLoader construction to throw IOException
+    try (MockedStatic<ApiClient> mockedApiClient = mockStatic(ApiClient.class);
+         MockedConstruction<FXMLLoader> mocked = mockConstruction(FXMLLoader.class,
+        (loader, context) -> {
+            when(loader.load()).thenThrow(new IOException("Load failed"));
+        })) {
+
+        injectMockField("loginButton", loginButton);
+        when(loginButton.getScene()).thenReturn(scene);
+        when(scene.getWindow()).thenReturn(stage);
+
+        var method = FlashcardLoginController.class.getDeclaredMethod("navigateToMainApp", String.class);
+        method.setAccessible(true);
+
+        // Act: navigateToMainApp now handles IOException internally and calls showAlert
+        // Run directly since the method is already designed to handle errors internally
+        method.invoke(controller, username);
+
+        // Assert: ApiClient.showAlert should be called for navigation errors
+        mockedApiClient.verify(() -> ApiClient.showAlert(
+            eq("Load Error"), 
+            eq("An unexpected error occurred. Please try again.")
+        ));
+    }
+}
+
+   @Test
+    public void testUpdateUiShowAlertTrue() throws Exception {
+        FlashcardLoginController controller = new FlashcardLoginController();
+
+        // Access private fields via reflection
+        Field showAlertField = FlashcardLoginController.class.getDeclaredField("showAlert");
+        Field errorField = FlashcardLoginController.class.getDeclaredField("error");
+        Field alertMessageField = FlashcardLoginController.class.getDeclaredField("alertMessage");
+        Field exField = FlashcardLoginController.class.getDeclaredField("ex");
+
+        showAlertField.setAccessible(true);
+        errorField.setAccessible(true);
+        alertMessageField.setAccessible(true);
+        exField.setAccessible(true);
+
+        // Mock UI components
+        Text mockAlert = new Text();
+        Text mockEx = new Text();
+
+        alertMessageField.set(controller, mockAlert);
+        exField.set(controller, mockEx);
+
+        // Set up state for the 'true' branch
+        showAlertField.set(controller, true);
+        errorField.set(controller, "Invalid credentials");
+
+        // Act
+        controller.updateUi();
+
+        // Assert (verify side effects)
+        assertFalse((boolean) showAlertField.get(controller)); // should reset to false
+        assertEquals("Invalid credentials", mockAlert.getText());
+        assertTrue(mockAlert.isVisible());
+        assertTrue(mockEx.isVisible());
+    }
+
+    @Test
+    public void testUpdateUiShowAlertFalse() throws Exception {
+        FlashcardLoginController controller = new FlashcardLoginController();
+
+        Field showAlertField = FlashcardLoginController.class.getDeclaredField("showAlert");
+        Field alertMessageField = FlashcardLoginController.class.getDeclaredField("alertMessage");
+        Field exField = FlashcardLoginController.class.getDeclaredField("ex");
+
+        showAlertField.setAccessible(true);
+        alertMessageField.setAccessible(true);
+        exField.setAccessible(true);
+
+        // Mock UI components
+        Text mockAlert = new Text();
+        Text mockEx = new Text();
+
+        mockAlert.setVisible(true);
+        mockEx.setVisible(true);
+
+        alertMessageField.set(controller, mockAlert);
+        exField.set(controller, mockEx);
+
+        showAlertField.set(controller, false);
+
+        // Act
+        controller.updateUi();
+
+        // Assert
+        assertFalse(mockAlert.isVisible());
+        assertFalse(mockEx.isVisible());
+    }
+
+
+    @Test
+public void testNavigateToSignUpPageSuccess() throws Exception {
+    // Arrange
+    Parent realRoot = new javafx.scene.layout.Pane(); // Use a real JavaFX Parent subclass
+    Stage mockStage = mock(Stage.class);
+    Scene mockScene = mock(Scene.class);
+
+    try (MockedConstruction<FXMLLoader> mocked = mockConstruction(FXMLLoader.class,
+        (loader, context) -> {
+            when(loader.load()).thenReturn(realRoot);
+        })) {
+
+        injectMockField("signUpButton", signUpButton);
+        when(signUpButton.getScene()).thenReturn(mockScene);
+        when(mockScene.getWindow()).thenReturn(mockStage);
+
+        // Make the private method accessible
+        Method method = FlashcardLoginController.class.getDeclaredMethod("navigateToSignUpPage");
+        method.setAccessible(true);
+
+        // Act
+        method.invoke(controller);
+
+        // Assert
+        verify(mockStage).setScene(any(Scene.class));
+        verify(mockStage).show();
+    }
+}
+
+@Test
+public void testNavigateToSignUpPageFailure() throws Exception {
+    // Arrange
+    try (MockedConstruction<FXMLLoader> mocked = mockConstruction(FXMLLoader.class,
+        (loader, context) -> {
+            when(loader.load()).thenThrow(new IOException("Load failed"));
+        })) {
+
+        injectMockField("signUpButton", signUpButton);
+        when(signUpButton.getScene()).thenReturn(scene);
+        when(scene.getWindow()).thenReturn(stage);
+
+        Method method = FlashcardLoginController.class.getDeclaredMethod("navigateToSignUpPage");
+        method.setAccessible(true);
+
+        // Act & Assert
+        Exception thrown = assertThrows(Exception.class, () -> method.invoke(controller));
+        Throwable cause = thrown.getCause();
+        assertTrue(cause instanceof IOException);
+        assertEquals("Load failed", cause.getMessage());
+    }
+}
+
+    @Test
+    public void testWhenSignUpButtonClicked_success() throws Exception {
+        // Mock successful FXMLLoader construction (same pattern as your other success tests)
+        Parent realRoot = new javafx.scene.layout.Pane();
+        Stage mockStage = mock(Stage.class);
+        Scene mockScene = mock(Scene.class);
+
+        try (MockedConstruction<FXMLLoader> mockedFXMLLoader = mockConstruction(FXMLLoader.class,
+             (loader, context) -> {
+                 when(loader.load()).thenReturn(realRoot); // Make load() succeed
+             })) {
+            
+            // Set up mocks for the navigation
+            injectMockField("signUpButton", signUpButton);
+            when(signUpButton.getScene()).thenReturn(mockScene);
+            when(mockScene.getWindow()).thenReturn(mockStage);
+            
+            // Act
+            controller.whenSignUpButtonClicked();
+            
+            // Assert: no error should be shown and navigation should succeed
+            verify(alertMessage, never()).setText("Failed to load signup page");
+            verify(mockStage).setScene(any(Scene.class));
+            verify(mockStage).show();
+        }
+    }
+
+    @Test
+    public void testWhenSignUpButtonClicked_ioException() throws Exception {
+        // Use MockedConstruction to simulate IOException (same pattern as your other working tests)
+        try (MockedStatic<ApiClient> mockedApiClient = mockStatic(ApiClient.class);
+             MockedConstruction<FXMLLoader> mockedFXMLLoader = mockConstruction(FXMLLoader.class,
+             (loader, context) -> {
+                 when(loader.load()).thenThrow(new IOException("Simulated navigation error"));
+             })) {
+            
+            // Act: Run directly - the showAlert call will be mocked
+            controller.whenSignUpButtonClicked();
+            
+            // Assert: ApiClient.showAlert should be called for navigation errors
+            mockedApiClient.verify(() -> ApiClient.showAlert(
+                eq("Load Error"), 
+                eq("An unexpected error occurred. Please try again.")
+            ));
+        }
+    }
+
+    @Test
+    public void testInitialize() throws Exception {
+        // Since showAlert defaults to false, initialize should hide the alert elements
+        
+        // Act
+        controller.initialize();
+        
+        // Assert: verify that alert elements are hidden (default state)
+        verify(alertMessage).setVisible(false);
+        verify(ex).setVisible(false);
+    }
+
+    @Test
+    public void testFlashcardLoginController() {
+        assertNotNull(controller);
+    }
+
+    @SuppressWarnings("unchecked")
+    @Test
+    public void testWhenLoginButtonClicked_successfulApiButNullData() throws Exception {
+        when(usernameField.getText()).thenReturn("user");
+        when(passwordField.getText()).thenReturn("pass");
+        
+        // Mock API response that is successful but returns null data
+        ApiResponse<LoginResponseDto> mockApiResponse = mock(ApiResponse.class);
+        when(mockApiResponse.isSuccess()).thenReturn(true);
+        when(mockApiResponse.getData()).thenReturn(null); // This is the key difference
+        when(mockApiResponse.getMessage()).thenReturn("No user data received");
+
+        try (MockedStatic<ApiClient> mockedApiClient = mockStatic(ApiClient.class)) {
+            mockedApiClient.when(() -> ApiClient.performApiRequest(
+                anyString(), anyString(), any(LoginRequestDto.class), any(TypeReference.class)))
+                .thenReturn(mockApiResponse);
+
+            controller.whenLoginButtonClicked();
+            
+            // Should hit the else branch and show the API response message
+            verify(alertMessage).setText("No user data received");
+            verify(alertMessage, atLeastOnce()).setVisible(true);
+            verify(ex, atLeastOnce()).setVisible(true);
+        }
+    }
+}

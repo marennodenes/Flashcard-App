@@ -12,16 +12,18 @@ import org.junit.jupiter.api.Test;
  * 
  * @author isamw
  * @author chrsom
+ * 
+ * @see UserData
  */
 public class UserDataTest {
 
   /**
    * Tests the {@link UserData#UserData(User, FlashcardDeckManager)} constructor with null deck manager.
    * Validates that when a null deck manager is provided:
-   *   A new empty FlashcardDeckManager is created automatically
-   *   The deck manager is properly initialized and accessible
-   *   The deck manager starts with zero decks  
-   * 
+   * - A new empty FlashcardDeckManager is created automatically
+   * - The deck manager is properly initialized and accessible
+   * - The deck manager starts with zero decks
+   *
    * @see UserData#UserData(User, FlashcardDeckManager)
    * @see UserData#getDeckManager()
    */
@@ -37,10 +39,10 @@ public class UserDataTest {
   /**
    * Tests the {@link UserData#UserData(User)} constructor with user only.
    * Validates that the single-parameter constructor:
-   *   Properly stores the provided user
-   *   Creates a new empty FlashcardDeckManager automatically
-   *   Initializes the deck manager with zero decks
-   * 
+   * - Properly stores the provided user
+   * - Creates a new empty FlashcardDeckManager automatically
+   * - Initializes the deck manager with zero decks
+   *
    * @see UserData#UserData(User)
    * @see UserData#getUser()
    * @see UserData#getDeckManager()
@@ -59,11 +61,11 @@ public class UserDataTest {
   /**
    * Tests the {@link UserData#UserData(User, FlashcardDeckManager)} constructor with user and deck manager.
    * Validates that when both user and deck manager are provided:
-   *   The user is properly stored
-   *   A defensive copy of the deck manager is created
-   *   All decks from the original manager are copied to the new manager
-   *   External modifications to the original manager don't affect the UserData
-   *  
+   * - The user is properly stored
+   * - A defensive copy of the deck manager is created
+   * - All decks from the original manager are copied to the new manager
+   * - External modifications to the original manager don't affect the UserData
+   *
    * @see UserData#UserData(User, FlashcardDeckManager)
    * @see UserData#getUser()
    * @see UserData#getDeckManager()
@@ -85,11 +87,11 @@ public class UserDataTest {
   /**
    * Tests the {@link UserData#setDeckManager(FlashcardDeckManager)} method.
    * Validates proper handling of:
-   *   Null deck manager parameter (creates empty manager)
-   *   Empty deck manager setting
-   *   Defensive copying behavior (external changes don't affect internal state)
-   *   Populated deck manager with correct deck count
-   * 
+   * - Null deck manager parameter (creates empty manager)
+   * - Empty deck manager setting
+   * - Defensive copying behavior (external changes don't affect internal state)
+   * - Populated deck manager with correct deck count
+   *
    * @see UserData#setDeckManager(FlashcardDeckManager)
    * @see UserData#getDeckManager()
    */
@@ -116,11 +118,11 @@ public class UserDataTest {
   /**
    * Tests the defensive copying behavior of {@link UserData#getDeckManager()}.
    * Validates that the getDeckManager method returns a defensive copy that:
-   *   Prevents external modification of internal state
-   *   Allows modifications to the returned copy without affecting the original
-   *   Maintains data integrity and encapsulation
-   *   Protects against inadvertent mutations from external code
-   * 
+   * - Prevents external modification of internal state
+   * - Allows modifications to the returned copy without affecting the original
+   * - Maintains data integrity and encapsulation
+   * - Protects against inadvertent mutations from external code
+   *
    * This test ensures that adding decks to the returned copy does not modify
    * the internal deck manager of the UserData instance.
    * 
@@ -146,11 +148,11 @@ public class UserDataTest {
   /**
    * Tests the {@link UserData#getUser()} method.
    * Validates that the getUser method:
-   *   Returns the correct user object that was provided during construction
-   *   Preserves the username correctly
-   *   Maintains the password data integrity
-   *   Provides proper access to user credentials
-   * 
+   * - Returns the correct user object that was provided during construction
+   * - Preserves the username correctly
+   * - Maintains the password data integrity
+   * - Provides proper access to user credentials
+   *
    * @see UserData#getUser()
    * @see UserData#UserData(User)
    */

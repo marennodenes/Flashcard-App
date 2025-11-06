@@ -1,11 +1,5 @@
 package server.service;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
-
 import java.io.IOException;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -18,6 +12,12 @@ import app.FlashcardDeck;
 import app.FlashcardDeckManager;
 import itp.storage.FlashcardPersistent;
 import shared.ApiConstants;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 
 /**
  * Unit tests for the {@link DeckService} class.
@@ -40,6 +40,7 @@ import shared.ApiConstants;
  * 
  * @author chrsom
  * @author isamw
+ * @author parts of class is generated with the help of claude.ai
  * @see DeckService
  * @see FlashcardPersistent
  * @see FlashcardDeckManager
@@ -259,33 +260,34 @@ public class DeckServiceTest {
   }
 
 
-    /**
-     * Tests error handling when attempting operations on non-existent users.
-     * 
-     * This test verifies that all deck operations properly validate user
-     * existence and throw appropriate exceptions when attempting to perform
-     * operations for users that don't exist in the system.
-     * 
-     * @see DeckService#getDeck(String, String)
-     * @see DeckService#createDeck(String, String)
-     * @see DeckService#deleteDeck(String, String)
-     */
+  /**
+   * Tests error handling when attempting operations on non-existent users.
+   * 
+   * This test verifies that all deck operations properly validate user
+   * existence and throw appropriate exceptions when attempting to perform
+   * operations for users that don't exist in the system.
+   * 
+   * @throws IOException if persistence operations fail during test execution
+   * @see DeckService#getDeck(String, String)
+   * @see DeckService#createDeck(String, String)
+   * @see DeckService#deleteDeck(String, String)
+   */
   @Test
   void testUpdateAllDecks() throws IOException {
-      String username = "existingUser";
-      FlashcardDeckManager manager = new FlashcardDeckManager();
-      manager.addDeck(new FlashcardDeck("Deck1"));
+    String username = "existingUser";
+    FlashcardDeckManager manager = new FlashcardDeckManager();
+    manager.addDeck(new FlashcardDeck("Deck1"));
 
-      // userExists = false
-      org.mockito.Mockito.when(flashcardPersistent.userExists(username)).thenReturn(false);
-      IllegalArgumentException ex = assertThrows(IllegalArgumentException.class, 
-          () -> deckService.updateAllDecks(username, manager));
-      assertEquals(ApiConstants.USER_NOT_FOUND, ex.getMessage());
+    // userExists = false
+    org.mockito.Mockito.when(flashcardPersistent.userExists(username)).thenReturn(false);
+    IllegalArgumentException ex = assertThrows(IllegalArgumentException.class, 
+        () -> deckService.updateAllDecks(username, manager));
+    assertEquals(ApiConstants.USER_NOT_FOUND, ex.getMessage());
 
-      // userExists = true
-      org.mockito.Mockito.when(flashcardPersistent.userExists(username)).thenReturn(true);
+    // userExists = true
+    org.mockito.Mockito.when(flashcardPersistent.userExists(username)).thenReturn(true);
 
-      deckService.updateAllDecks(username, manager);
-      org.mockito.Mockito.verify(flashcardPersistent).writeDeck(eq(username), any(FlashcardDeckManager.class));
+    deckService.updateAllDecks(username, manager);
+    org.mockito.Mockito.verify(flashcardPersistent).writeDeck(eq(username), any(FlashcardDeckManager.class));
   }
 }

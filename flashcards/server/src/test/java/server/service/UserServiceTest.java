@@ -1,15 +1,16 @@
 package server.service;
 
-import app.User;
-import itp.storage.FlashcardPersistent;
+import java.io.IOException;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import shared.ApiConstants;
 
-import java.io.IOException;
+import app.User;
+import itp.storage.FlashcardPersistent;
+import shared.ApiConstants;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
@@ -31,7 +32,11 @@ import static org.mockito.Mockito.*;
  * 
  * @author chrsom
  * @author isamw
-
+ * @author parts of class is generated with the help of claude.ai
+ * @see UserService
+ * @see FlashcardPersistent
+ * @see ApiConstants
+ * 
  */
 @ExtendWith(MockitoExtension.class)
 class UserServiceTest {
@@ -297,6 +302,7 @@ class UserServiceTest {
      * - Proper exceptions are thrown for various validation failures
      * - IOException from persistence layer is properly handled
      * 
+     * @throws IOException if an I/O error occurs during user creation
      */
     @Test
     void testCreateUserWithValidation() throws IOException {
