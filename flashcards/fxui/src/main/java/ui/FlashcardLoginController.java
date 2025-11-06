@@ -9,7 +9,6 @@ import dto.LoginResponseDto;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.scene.text.Text;
@@ -151,7 +150,7 @@ public class FlashcardLoginController {
     Parent root = loader.load();
 
     Stage stage = (Stage) signUpButton.getScene().getWindow();
-    stage.setScene(new Scene(root));
+    stage.setScene(SceneUtils.createScaledScene(root));
     stage.show();
   }
 
@@ -169,7 +168,7 @@ public class FlashcardLoginController {
         FlashcardMainController mainController = loader.getController();
         mainController.setCurrentUsername(username);
         Stage stage = (Stage) loginButton.getScene().getWindow();
-        stage.setScene(new Scene(root));
+        stage.setScene(SceneUtils.createScaledScene(root));
         stage.show();
     } catch (IOException e) {
         System.err.println(ApiConstants.LOAD_ERROR + ": " + e.getMessage());

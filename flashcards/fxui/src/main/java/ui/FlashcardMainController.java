@@ -380,7 +380,7 @@ public class FlashcardMainController {
       controller.setDeck(selectedDeck); // Send selected deck DTO
 
       Stage stage = (Stage) clickedButton.getScene().getWindow();
-      stage.setScene(new Scene(root));
+      stage.setScene(SceneUtils.createScaledScene(root));
       stage.show();
 
     } catch (IOException e) {
@@ -404,7 +404,7 @@ public class FlashcardMainController {
 
       // Switch to login scene
       Stage stage = (Stage) logOutButton.getScene().getWindow();
-      Scene scene = new Scene(root);
+      Scene scene = SceneUtils.createScaledScene(root);
       scene.getStylesheets().add(getClass().getResource("FlashcardLogin.css").toExternalForm());
       stage.setScene(scene);
       stage.show();

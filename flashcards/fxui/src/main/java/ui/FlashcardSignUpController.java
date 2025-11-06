@@ -95,7 +95,7 @@ public class FlashcardSignUpController {
       FXMLLoader loader = new FXMLLoader(getClass().getResource("/ui/FlashcardLogin.fxml"));
       Parent root = loader.load();
       Stage stage = (Stage) backButton.getScene().getWindow();
-      stage.setScene(new Scene(root));
+      stage.setScene(SceneUtils.createScaledScene(root));
       stage.show();
     } catch (IOException e) {
       System.err.println(ApiConstants.LOAD_ERROR + ": " + e.getMessage());
@@ -202,7 +202,7 @@ public class FlashcardSignUpController {
       
       // Switch to the main scene
       Stage stage = (Stage) signInButton.getScene().getWindow();
-      stage.setScene(new Scene(root));
+      stage.setScene(SceneUtils.createScaledScene(root));
       stage.show();
     } catch (IOException e) {
       System.err.println(ApiConstants.LOAD_ERROR + ": " + e.getMessage());
