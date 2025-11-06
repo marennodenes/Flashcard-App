@@ -280,19 +280,19 @@ public class FlashcardDeckController {
    * @throws IOException if the FXML file cannot be loaded
    */
   @FXML
-  public void whenBackButtonIsClicked() {
-    try {
+  public void whenBackButtonIsClicked() throws IOException {
+    try{
       FXMLLoader loader = new FXMLLoader(getClass().getResource("FlashcardMain.fxml"));
       Parent root = loader.load();
-      
-      // Send current username and refresh deck list
+
+      // Send current username and updated deck manager back to main controller
       FlashcardMainController mainController = loader.getController();
-      mainController.setCurrentUsername(currentUsername);
-      mainController.refreshDecks();
-      
-      Stage stage = (Stage) questionField.getScene().getWindow();
-      stage.setScene(new Scene(root));
-      stage.show();
+    mainController.setCurrentUsername(currentUsername);
+    mainController.refreshDecks();
+
+    Stage stage = (Stage) questionField.getScene().getWindow();
+    stage.setScene(SceneUtils.createScaledScene(root));
+    stage.show();
     } catch (IOException e) {
       System.err.println(ApiConstants.LOAD_ERROR + ": " + e.getMessage());
       ApiClient.showAlert(ApiConstants.LOAD_ERROR, ApiConstants.UNEXPECTED_ERROR);
@@ -321,7 +321,7 @@ public class FlashcardDeckController {
       controller.setDeck(currentDeck);
 
       Stage stage = (Stage) startLearning.getScene().getWindow();
-      stage.setScene(new Scene(root));
+      stage.setScene(SceneUtils.createScaledScene(root));
       stage.show();
     } catch (IOException e) {
       System.err.println(ApiConstants.LOAD_ERROR + ": " + e.getMessage());
@@ -342,7 +342,7 @@ public class FlashcardDeckController {
       
       // Switch to login scene
       Stage stage = (Stage) questionField.getScene().getWindow();
-      Scene scene = new Scene(root);
+      Scene scene = SceneUtils.createScaledScene(root);
       scene.getStylesheets().add(getClass().getResource("FlashcardLogin.css").toExternalForm());
       stage.setScene(scene);
       stage.show();
