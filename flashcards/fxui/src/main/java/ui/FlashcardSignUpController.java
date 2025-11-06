@@ -6,14 +6,14 @@ import com.fasterxml.jackson.core.type.TypeReference;
 
 import dto.LoginRequestDto;
 import dto.UserDataDto;
-import shared.ApiResponse;
-import shared.ApiEndpoints;
 import shared.ApiConstants;
+import shared.ApiEndpoints;
+import shared.ApiResponse;
+
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.scene.text.Text;
@@ -167,24 +167,6 @@ public class FlashcardSignUpController {
   }
 
   /**
-   * Shows an inline error message without popup.
-   * Used for validation errors that should only appear as text.
-   * 
-   * @param message the error message to display inline
-   */
-  private void showInlineError(String message) {
-    // Update state and ensure the UI refresh runs on the JavaFX Application Thread.
-    // Validation errors show as inline text only
-    error = message;
-    showAlert = true;
-    if (Platform.isFxApplicationThread()) {
-      updateUi();
-    } else {
-      Platform.runLater(this::updateUi);
-    }
-  }
-
-  /**
    * Navigates to the main flashcard application.
    * Loads the FlashcardMainUI and passes the username to the controller.
    * 
@@ -207,6 +189,24 @@ public class FlashcardSignUpController {
     } catch (IOException e) {
       System.err.println(ApiConstants.LOAD_ERROR + ": " + e.getMessage());
       ApiClient.showAlert(ApiConstants.LOAD_ERROR, ApiConstants.UNEXPECTED_ERROR);
+    }
+  }
+  
+  /**
+   * Shows an inline error message without popup.
+   * Used for validation errors that should only appear as text.
+   * 
+   * @param message the error message to display inline
+   */
+  private void showInlineError(String message) {
+    // Update state and ensure the UI refresh runs on the JavaFX Application Thread.
+    // Validation errors show as inline text only
+    error = message;
+    showAlert = true;
+    if (Platform.isFxApplicationThread()) {
+      updateUi();
+    } else {
+      Platform.runLater(this::updateUi);
     }
   }
 }

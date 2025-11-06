@@ -10,9 +10,10 @@ import com.fasterxml.jackson.core.type.TypeReference;
 
 import dto.FlashcardDeckDto;
 import dto.FlashcardDeckManagerDto;
-import shared.ApiResponse;
-import shared.ApiEndpoints;
 import shared.ApiConstants;
+import shared.ApiEndpoints;
+import shared.ApiResponse;
+
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -34,60 +35,33 @@ import javafx.stage.Stage;
  * @author marieroe
  */
 public class FlashcardMainController {
-  @FXML
-  private Button deck_1;
-  @FXML
-  private Button deck_2;
-  @FXML
-  private Button deck_3;
-  @FXML
-  private Button deck_4;
-  @FXML
-  private Button deck_5;
-  @FXML
-  private Button deck_6;
-  @FXML
-  private Button deck_7;
-  @FXML
-  private Button deck_8;
+  @FXML private Button deck_1;
+  @FXML private Button deck_2;
+  @FXML private Button deck_3;
+  @FXML private Button deck_4;
+  @FXML private Button deck_5;
+  @FXML private Button deck_6;
+  @FXML private Button deck_7;
+  @FXML private Button deck_8;
 
-  @FXML
-  private Button deleteDeck_1;
-  @FXML
-  private Button deleteDeck_2;
-  @FXML
-  private Button deleteDeck_3;
-  @FXML
-  private Button deleteDeck_4;
-  @FXML
-  private Button deleteDeck_5;
-  @FXML
-  private Button deleteDeck_6;
-  @FXML
-  private Button deleteDeck_7;
-  @FXML
-  private Button deleteDeck_8;
+  @FXML private Button deleteDeck_1;
+  @FXML private Button deleteDeck_2;
+  @FXML private Button deleteDeck_3;
+  @FXML private Button deleteDeck_4;
+  @FXML private Button deleteDeck_5;
+  @FXML private Button deleteDeck_6;
+  @FXML private Button deleteDeck_7;
+  @FXML private Button deleteDeck_8;
 
-  @FXML
-  private TextField deckNameInput;
+  @FXML private TextField deckNameInput;
 
-  @FXML
-  private Button newDeckButton;
+  @FXML private Button newDeckButton;
+  @FXML private Button logOutButton;
 
-  @FXML
-  private Button logOutButton;
-
-  @FXML
-  private Text usernameField;
-
-  @FXML
-  private Text alertMessage;
-
-  @FXML
-  private Text ex;
-
-  @FXML
-  private Text noDecks;
+  @FXML private Text usernameField;
+  @FXML private Text alertMessage;
+  @FXML private Text ex;
+  @FXML private Text noDecks;
 
   private List<FlashcardDeckDto> decks = new ArrayList<>();
 
@@ -98,7 +72,6 @@ public class FlashcardMainController {
   private String error = "";
 
   private Button[] deckButtons;
-
   private Button[] deleteButtons;
 
   /**
@@ -185,47 +158,14 @@ public class FlashcardMainController {
   }
 
   /**
-   * Hides and disables all deck and delete buttons. Used to reset the UI state
-   * before showing only the relevant buttons.
+   * Sets the decks list (used when returning from FlashcardDeckController).
+   * Reloads the deck list from the API to ensure data is up-to-date.
    */
-  private void hideAllDeckButtons() {
-    for (Button b : deckButtons) {
-      b.setVisible(false);
-      b.setDisable(true);
-    }
-    for (Button b : deleteButtons) {
-      b.setVisible(false);
-    }
+  public void refreshDecks() {
+    loadUserData();
+    updateUi();
   }
-
-  /**
-   * Loads user data from REST API. Attempts to retrieve the user's flashcard deck
-   * collection from the REST API. If the API call fails, creates a new empty deck
-   * list.
-   */
-  private void loadUserData() {
-    try {
-      ApiResponse<FlashcardDeckManagerDto> result = ApiClient.performApiRequest(
-          ApiEndpoints.getUserDecksUrl(currentUsername), "GET", null,
-          new TypeReference<ApiResponse<FlashcardDeckManagerDto>>() {
-          });
-
-      if (result != null && result.isSuccess() && result.getData() != null) {
-        decks = new ArrayList<>(result.getData().getDecks());
-      } else {
-        if (result != null && !result.isSuccess()) {
-          System.err.println(ApiConstants.SERVER_ERROR + ": " + result.getMessage());
-          ApiClient.showAlert(ApiConstants.LOAD_ERROR, ApiConstants.FAILED_TO_LOAD_USER_DATA);
-        }
-        decks = new ArrayList<>();
-      }
-    } catch (Exception e) {
-      System.err.println("Unexpected error: " + e.getMessage());
-      ApiClient.showAlert(ApiConstants.LOAD_ERROR, ApiConstants.UNEXPECTED_ERROR);
-      decks = new ArrayList<>();
-    }
-  }
-
+  
   /**
    * Sets the current username and loads their data. This method is called from
    * the login controller to set the logged-in user.
@@ -414,14 +354,7 @@ public class FlashcardMainController {
     }
   }
 
-  /**
-   * Sets the decks list (used when returning from FlashcardDeckController).
-   * Reloads the deck list from the API to ensure data is up-to-date.
-   */
-  public void refreshDecks() {
-    loadUserData();
-    updateUi();
-  }
+
 
   /**
    * Shows an inline error message without popup.
@@ -429,6 +362,49 @@ public class FlashcardMainController {
    * 
    * @param message the error message to display inline
    */
+
+  /**
+   * Hides and disables all deck and delete buttons. Used to reset the UI state
+   * before showing only the relevant buttons.
+   */
+  private void hideAllDeckButtons() {
+    for (Button b : deckButtons) {
+      b.setVisible(false);
+      b.setDisable(true);
+    }
+    for (Button b : deleteButtons) {
+      b.setVisible(false);
+    }
+  }
+
+  /**
+   * Loads user data from REST API. Attempts to retrieve the user's flashcard deck
+   * collection from the REST API. If the API call fails, creates a new empty deck
+   * list.
+   */
+  private void loadUserData() {
+    try {
+      ApiResponse<FlashcardDeckManagerDto> result = ApiClient.performApiRequest(
+          ApiEndpoints.getUserDecksUrl(currentUsername), "GET", null,
+          new TypeReference<ApiResponse<FlashcardDeckManagerDto>>() {
+          });
+
+      if (result != null && result.isSuccess() && result.getData() != null) {
+        decks = new ArrayList<>(result.getData().getDecks());
+      } else {
+        if (result != null && !result.isSuccess()) {
+          System.err.println(ApiConstants.SERVER_ERROR + ": " + result.getMessage());
+          ApiClient.showAlert(ApiConstants.LOAD_ERROR, ApiConstants.FAILED_TO_LOAD_USER_DATA);
+        }
+        decks = new ArrayList<>();
+      }
+    } catch (Exception e) {
+      System.err.println("Unexpected error: " + e.getMessage());
+      ApiClient.showAlert(ApiConstants.LOAD_ERROR, ApiConstants.UNEXPECTED_ERROR);
+      decks = new ArrayList<>();
+    }
+  }
+  
   private void showInlineError(String message) {
     error = message;
     showAlert = true;
