@@ -90,7 +90,7 @@ public class UserController {
       UserDataDto dto = mapper.toDto(user);
       return new ApiResponse<>(true, ApiConstants.USER_CREATED, dto);
     } catch (IllegalArgumentException e) {
-      return new ApiResponse<>(false, e.getMessage(), null);
+      return new ApiResponse<>(false, e.getMessage(), null); //TODO: legge inn api constants error her
     }
   }
 

@@ -39,14 +39,14 @@ public class FlashcardDeckManager {
       throw new IllegalArgumentException("Deck cannot be null");
     }
     if (deck.getDeckName() == null || deck.getDeckName().trim().isEmpty()) {
-      throw new IllegalArgumentException("Deck name cannot be empty");
+      throw new IllegalArgumentException("Deckname cannot be empty");
     }
     if (decks.size() >= MAX_DECKS) {
       throw new IllegalArgumentException("You can only have up to " + MAX_DECKS + " decks");
     }
     for (FlashcardDeck flashcardDeck : decks) {
       if (flashcardDeck.getDeckName().equals(deck.getDeckName())){
-        throw new IllegalArgumentException("Deck with this name already exists");
+        throw new IllegalArgumentException("Deckname must be unique");
       }
     }
     decks.add(deck);

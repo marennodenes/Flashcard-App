@@ -119,10 +119,10 @@ public class DeckControllerTest {
       .thenThrow(new IllegalArgumentException("User not found"));
 
     mockMvc.perform(request(HttpMethod.valueOf("REQUEST"), ApiEndpoints.DECKS)
-      .param("username", "nonExistent"))
-      .andExpect(status().isOk())
-      .andExpect(jsonPath("$.success").value(false))
-      .andExpect(jsonPath("$.message").value("Error retrieving decks: User not found"));
+        .param("username", "nonExistent"))
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$.success").value(false))
+        .andExpect(jsonPath("$.message").value("User not found"));
   }
 
   /**
@@ -157,11 +157,11 @@ public class DeckControllerTest {
       .thenThrow(new IllegalArgumentException("Deck not found"));
 
     mockMvc.perform(request(HttpMethod.valueOf("REQUEST"), ApiEndpoints.DECKS + "/NonExistentDeck")
-      .param("username", "testUser")
-      .param("deckName", "NonExistentDeck"))
-      .andExpect(status().isOk())
-      .andExpect(jsonPath("$.success").value(false))
-      .andExpect(jsonPath("$.message").value("Error retrieving deck: Deck not found"));
+        .param("username", "testUser")
+        .param("deckName", "NonExistentDeck"))
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$.success").value(false))
+        .andExpect(jsonPath("$.message").value("Deck not found"));
   }
 
   // POST methods tests
@@ -198,11 +198,11 @@ public class DeckControllerTest {
       .thenThrow(new IllegalArgumentException("User not found"));
 
     mockMvc.perform(post(ApiEndpoints.DECKS + "/NewDeck")
-      .param("username", "nonExistent")
-      .param("deckName", "NewDeck"))
-      .andExpect(status().isOk())
-      .andExpect(jsonPath("$.success").value(false))
-      .andExpect(jsonPath("$.message").value("Error creating deck: User not found"));
+        .param("username", "nonExistent")
+        .param("deckName", "NewDeck"))
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$.success").value(false))
+        .andExpect(jsonPath("$.message").value("User not found"));
   }
 
   /**
@@ -218,14 +218,14 @@ public class DeckControllerTest {
       .thenThrow(new IllegalArgumentException("Deck already exists"));
 
     mockMvc.perform(post(ApiEndpoints.DECKS + "/TestDeck")
-      .param("username", "testUser")
-      .param("deckName", "TestDeck"))
-      .andExpect(status().isOk())
-      .andExpect(jsonPath("$.success").value(false))
-      .andExpect(jsonPath("$.message").value("Error creating deck: Deck already exists"));
+        .param("username", "testUser")
+        .param("deckName", "TestDeck"))
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$.success").value(false))
+        .andExpect(jsonPath("$.message").value("Deck already exists"));
   }
 
-  // PUT methods tests
+
   /**
    * Tests successful update of all decks for a user.
    * Verifies that multiple decks can be updated in a single operation
@@ -261,12 +261,12 @@ public class DeckControllerTest {
       .when(deckService).updateAllDecks(anyString(), any(FlashcardDeckManager.class));
 
     mockMvc.perform(put(ApiEndpoints.DECKS)
-      .param("username", "nonExistent")
-      .contentType(MediaType.APPLICATION_JSON)
-      .content(objectMapper.writeValueAsString(testDeckManagerDto)))
-      .andExpect(status().isOk())
-      .andExpect(jsonPath("$.success").value(false))
-      .andExpect(jsonPath("$.message").value("Error updating decks: User not found"));
+        .param("username", "nonExistent")
+        .contentType(MediaType.APPLICATION_JSON)
+        .content(objectMapper.writeValueAsString(testDeckManagerDto)))
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$.success").value(false))
+        .andExpect(jsonPath("$.message").value("User not found"));
   }
 
   /**
@@ -283,12 +283,12 @@ public class DeckControllerTest {
       .when(deckService).updateAllDecks(anyString(), any(FlashcardDeckManager.class));
 
     mockMvc.perform(put(ApiEndpoints.DECKS)
-      .param("username", "testUser")
-      .contentType(MediaType.APPLICATION_JSON)
-      .content(objectMapper.writeValueAsString(testDeckManagerDto)))
-      .andExpect(status().isOk())
-      .andExpect(jsonPath("$.success").value(false))
-      .andExpect(jsonPath("$.message").value("Error updating decks: Invalid deck data"));
+        .param("username", "testUser")
+        .contentType(MediaType.APPLICATION_JSON)
+        .content(objectMapper.writeValueAsString(testDeckManagerDto)))
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$.success").value(false))
+        .andExpect(jsonPath("$.message").value("Invalid deck data"));
   }
 
   // DELETE methods tests last
@@ -328,7 +328,7 @@ public class DeckControllerTest {
       .param("deckName", "NonExistentDeck"))
       .andExpect(status().isOk())
       .andExpect(jsonPath("$.success").value(false))
-      .andExpect(jsonPath("$.message").value("Error deleting deck: Deck not found"));
+      .andExpect(jsonPath("$.message").value("Deck not found"));
   }
 
   /**
@@ -348,6 +348,6 @@ public class DeckControllerTest {
       .param("deckName", "TestDeck"))
       .andExpect(status().isOk())
       .andExpect(jsonPath("$.success").value(false))
-      .andExpect(jsonPath("$.message").value("Error deleting deck: User not found"));
+      .andExpect(jsonPath("$.message").value("User not found"));
   }
 }

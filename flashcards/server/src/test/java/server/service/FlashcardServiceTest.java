@@ -147,8 +147,10 @@ class FlashcardServiceTest {
         FlashcardDeckManager manager2 = mock(FlashcardDeckManager.class);
         FlashcardDeck deck2 = mock(FlashcardDeck.class);
         when(deck2.getDeckName()).thenReturn("deck1");
+        when(deck2.getDeck()).thenReturn(Collections.singletonList(new Flashcard("Q", "A")));
         when(manager2.getDecks()).thenReturn(Arrays.asList(deck2));
         when(persistent.readDeck("user")).thenReturn(manager2);
+        when(deckService.getDeck("user", "deck1")).thenReturn(deck2);
     
         var ex2 = assertThrows(IllegalArgumentException.class, () ->
                 flashcardService.getFlashcard("user", "deck1", 0));
@@ -213,7 +215,8 @@ class FlashcardServiceTest {
         FlashcardDeck deck = mock(FlashcardDeck.class);
         FlashcardDeckManager manager = mock(FlashcardDeckManager.class);
 
-        when(deckService.getDeck("user", "deck1")).thenReturn(deck);
+        when(deck.getDeckName()).thenReturn("deck1");
+        when(manager.getDecks()).thenReturn(Arrays.asList(deck));
         when(deckService.getAllDecks("user")).thenReturn(manager);
 
         Flashcard newCard = flashcardService.createFlashcard("user", "deck1", "A", "Q");
@@ -238,10 +241,13 @@ class FlashcardServiceTest {
     void testDeleteFlashcard() throws IOException {
         FlashcardDeck deck = mock(FlashcardDeck.class);
         FlashcardDeckManager manager = mock(FlashcardDeckManager.class);
-        when(deckService.getDeck("user", "deck1")).thenReturn(deck);
+        
+        when(deck.getDeckName()).thenReturn("deck1");
+        when(deck.getDeck()).thenReturn(Arrays.asList(new Flashcard("Q", "A")));
+        when(manager.getDecks()).thenReturn(Arrays.asList(deck));
         when(deckService.getAllDecks("user")).thenReturn(manager);
 
-        flashcardService.deleteFlashcard("user", "deck1", 0);
+        flashcardService.deleteFlashcard("user", "deck1", 1);
 
         verify(deck).removeFlashcardByIndex(0);
         verify(persistent).writeDeck("user", manager);

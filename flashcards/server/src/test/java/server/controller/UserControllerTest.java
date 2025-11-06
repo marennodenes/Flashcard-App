@@ -102,7 +102,7 @@ public class UserControllerTest {
         .param("username", "nonExistent"))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.success").value(false))
-        .andExpect(jsonPath("$.message").value("Error retrieving user: User not found"));
+        .andExpect(jsonPath("$.message").value("User not found"));
   }
 
   /**
@@ -209,7 +209,7 @@ public class UserControllerTest {
         .content(objectMapper.writeValueAsString(wrongRequest)))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.success").value(false))
-        .andExpect(jsonPath("$.message").value("Error logging in user: Invalid password"));
+        .andExpect(jsonPath("$.message").value("Invalid password"));
   }
 
   /**
@@ -249,12 +249,12 @@ public class UserControllerTest {
     LoginRequestDto request = new LoginRequestDto("", "TestPassword123!");
 
     mockMvc.perform(post(ApiEndpoints.USERS_V1 + ApiEndpoints.USER_LOGIN)
-        .contentType(MediaType.APPLICATION_JSON)
-        .content(objectMapper.writeValueAsString(request)))
-        .andExpect(status().isOk())
-        .andExpect(jsonPath("$.success").value(false))
-        .andExpect(jsonPath("$.message").value("Error logging in user: Username cannot be empty"));
-  }
+      .contentType(MediaType.APPLICATION_JSON)
+      .content(objectMapper.writeValueAsString(request)))
+          .andExpect(status().isOk())
+          .andExpect(jsonPath("$.success").value(false))
+          .andExpect(jsonPath("$.message").value("Username cannot be empty"));
+    }
 
   /**
    * Tests user login with empty password.
@@ -270,12 +270,12 @@ public class UserControllerTest {
     LoginRequestDto request = new LoginRequestDto("testUser", "");
 
     mockMvc.perform(post(ApiEndpoints.USERS_V1 + ApiEndpoints.USER_LOGIN)
-        .contentType(MediaType.APPLICATION_JSON)
-        .content(objectMapper.writeValueAsString(request)))
-        .andExpect(status().isOk())
-        .andExpect(jsonPath("$.success").value(false))
-        .andExpect(jsonPath("$.message").value("Error logging in user: Password cannot be empty"));
-  }
+      .contentType(MediaType.APPLICATION_JSON)
+      .content(objectMapper.writeValueAsString(request)))
+          .andExpect(status().isOk())
+          .andExpect(jsonPath("$.success").value(false))
+          .andExpect(jsonPath("$.message").value("Password cannot be empty"));
+    }
 
   /**
    * Tests user login when an exception occurs in service.
@@ -291,12 +291,12 @@ public class UserControllerTest {
     LoginRequestDto request = new LoginRequestDto("testUser", "TestPassword123!");
 
     mockMvc.perform(post(ApiEndpoints.USERS_V1 + ApiEndpoints.USER_LOGIN)
-        .contentType(MediaType.APPLICATION_JSON)
-        .content(objectMapper.writeValueAsString(request)))
-        .andExpect(status().isOk())
-        .andExpect(jsonPath("$.success").value(false))
-        .andExpect(jsonPath("$.message").value("Error logging in user: Unexpected error"));
-  }
+      .contentType(MediaType.APPLICATION_JSON)
+      .content(objectMapper.writeValueAsString(request)))
+          .andExpect(status().isOk())
+          .andExpect(jsonPath("$.success").value(false))
+          .andExpect(jsonPath("$.message").value("Unexpected error"));
+    }
 
   /**
    * Tests password validation with a valid password.
@@ -354,7 +354,7 @@ public class UserControllerTest {
         .param("password", "TestPassword123!"))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.success").value(false))
-        .andExpect(jsonPath("$.message").value("Error validating password: Validation error"));
+        .andExpect(jsonPath("$.message").value("Validation error"));
   }
 
   /**
@@ -408,6 +408,6 @@ public class UserControllerTest {
         .param("username", "testUser"))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.success").value(false))
-        .andExpect(jsonPath("$.message").value("Error checking user existence: Database error"));
+        .andExpect(jsonPath("$.message").value("Database error"));
   }
 }

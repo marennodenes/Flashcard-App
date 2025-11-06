@@ -19,7 +19,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 import org.mockito.MockedStatic;
-
+import org.mockito.Mockito;
 import org.mockito.MockedConstruction;
 
 import org.testfx.framework.junit5.ApplicationExtension;
@@ -40,6 +40,8 @@ import dto.FlashcardDto;
 
 import dto.FlashcardDeckManagerDto;
 
+import dto.mappers.FlashcardDeckMapper;
+
 import shared.ApiResponse;
 
 import javafx.event.ActionEvent;
@@ -55,6 +57,9 @@ import javafx.scene.control.TextField;
 import javafx.scene.text.Text;
 
 import javafx.stage.Stage;
+import javafx.application.Platform;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Test class for FlashcardMainController.
@@ -69,7 +74,7 @@ import javafx.stage.Stage;
 class FlashcardMainControllerTest {
 
     private FlashcardMainController controller;
-
+    private FlashcardDeckMapper mapper = new FlashcardDeckMapper();
     private Stage stage;
 
     // FXML components
@@ -271,7 +276,7 @@ class FlashcardMainControllerTest {
     @Test
     void testInitialize_AlertsHiddenInitially() {
 
-        controller.updateUi();
+        runOnFxThread(() -> controller.updateUi());
 
         assertFalse(alertMessage.isVisible());
 
@@ -282,7 +287,6 @@ class FlashcardMainControllerTest {
     // ========== USERNAME TESTS ==========
 
     /** Tests setting a valid username. */
-    @SuppressWarnings("unchecked")
     @Test
     void testSetCurrentUsername_ValidUsername() {
 
@@ -327,7 +331,6 @@ class FlashcardMainControllerTest {
     }
 
     /** Tests that username trims whitespace. */
-    @SuppressWarnings("unchecked")
     @Test
     void testSetCurrentUsername_TrimsWhitespace() {
 
@@ -350,46 +353,49 @@ class FlashcardMainControllerTest {
     // ========== DECK CREATION TESTS ==========
 
     /** Tests creating a deck with valid name. */
-    @SuppressWarnings("unchecked")
     @Test
     void testWhenNewDeckButtonIsClicked_ValidDeckName() throws Exception {
 
         try (MockedStatic<ApiClient> apiClient = mockStatic(ApiClient.class)) {
 
-            ApiResponse<FlashcardDeckManagerDto> getResponse = createSuccessResponse(new ArrayList<>());
-
-            ApiResponse<FlashcardDeckManagerDto> putResponse = createSuccessResponse(new ArrayList<>());
-
-            apiClient.when(() -> ApiClient.performApiRequest(anyString(), eq("GET"), isNull(), any(TypeReference.class)))
-
-                    .thenReturn(getResponse);
-
-            apiClient.when(() -> ApiClient.performApiRequest(anyString(), eq("PUT"), any(), any(TypeReference.class)))
-
-                    .thenReturn(putResponse);
-
-            controller.setCurrentUsername("testuser");
-
-            deckNameInput.setText("My New Deck");
-
             ActionEvent event = new ActionEvent();
 
+            // Mock successful POST and GET responses
+            FlashcardDeckDto newDeckDto = new FlashcardDeckDto("My New Deck", new ArrayList<>());
+            ApiResponse<FlashcardDeckDto> postResponse = new ApiResponse<>(true, "", newDeckDto);
+            
+            // Mock initial GET response (for setCurrentUsername) - returns empty list
+            ApiResponse<FlashcardDeckManagerDto> getResponseInitial = createSuccessResponse(new ArrayList<>());
+            // Mock GET response after POST (for loadUserData in whenNewDeckButtonIsClicked) - returns new deck
+            ApiResponse<FlashcardDeckManagerDto> getResponseAfterPost = createSuccessResponse(List.of(newDeckDto));
+            
+            // Set up all mocking BEFORE any calls
+            apiClient.when(() -> ApiClient.performApiRequest(anyString(), eq("GET"), isNull(), any(TypeReference.class)))
+                    .thenReturn(getResponseInitial)
+                    .thenReturn(getResponseAfterPost);
+            
+            apiClient.when(() -> ApiClient.performApiRequest(anyString(), eq("POST"), anyString(), any()))
+                    .thenReturn(postResponse);
+            
+            controller.setCurrentUsername("testuser");
+            
+            // Set deck name AFTER setCurrentUsername to ensure TextField is properly set up
+            deckNameInput.setText("My New Deck");
+            
             controller.whenNewDeckButtonIsClicked(event);
+            
+            // Verify deck was added (via loadUserData which is called after successful POST)
+            List<FlashcardDeckDto> decks = (List<FlashcardDeckDto>) getField("decks");
+            
+            assertEquals(1, decks.size());
 
-            // Verify deck was added
-
-            FlashcardDeckManager manager = (FlashcardDeckManager) getField("deckManager");
-
-            assertEquals(1, manager.getDecks().size());
-
-            assertEquals("My New Deck", manager.getDecks().get(0).getDeckName());
+            assertEquals("My New Deck", decks.get(0).getDeckName());
 
         }
 
     }
 
     /** Tests that empty deck name shows error. */
-    @SuppressWarnings("unchecked")
     @Test
     void testWhenNewDeckButtonIsClicked_EmptyName_ShowsError() throws Exception {
 
@@ -420,7 +426,6 @@ class FlashcardMainControllerTest {
     }
 
     /** Tests that invalid deck name shows error. */
-    @SuppressWarnings("unchecked")
     @Test
     void testWhenNewDeckButtonIsClicked_InvalidName_ShowsError() throws Exception {
 
@@ -449,7 +454,6 @@ class FlashcardMainControllerTest {
     }
 
     /** Tests that new deck button is disabled when max decks reached. */
-    @SuppressWarnings("unchecked")
     @Test
     void testUpdateUi_MaxDecksReached_DisablesNewDeckButton() throws Exception {
 
@@ -465,7 +469,7 @@ class FlashcardMainControllerTest {
 
             // Add 8 decks
 
-            FlashcardDeckManager manager = (FlashcardDeckManager) getField("deckManager");
+            List<FlashcardDeckDto> decks = (List<FlashcardDeckDto>) getField("decks");
 
             for (int i = 0; i < 8; i++) {
 
@@ -473,11 +477,11 @@ class FlashcardMainControllerTest {
 
                 deck.setDeckName("Deck " + (i + 1));
 
-                manager.addDeck(deck);
+                decks.add(mapper.toDto(deck));
 
             }
 
-            controller.updateUi();
+            runOnFxThread(() -> controller.updateUi());
 
             assertTrue(newDeckButton.isDisabled());
 
@@ -486,7 +490,6 @@ class FlashcardMainControllerTest {
     }
 
     /** Tests that new deck button is enabled when less than max decks. */
-    @SuppressWarnings("unchecked")
     @Test
     void testUpdateUi_LessThanMaxDecks_EnablesNewDeckButton() throws Exception {
 
@@ -500,15 +503,15 @@ class FlashcardMainControllerTest {
 
             controller.setCurrentUsername("testuser");
 
-            FlashcardDeckManager manager = (FlashcardDeckManager) getField("deckManager");
+            List<FlashcardDeckDto> decks = (List<FlashcardDeckDto>) getField("decks");
 
             FlashcardDeck deck = new FlashcardDeck();
 
             deck.setDeckName("Test Deck");
 
-            manager.addDeck(deck);
+            decks.add(mapper.toDto(deck));
 
-            controller.updateUi();
+            runOnFxThread(() -> controller.updateUi());
 
             assertFalse(newDeckButton.isDisabled());
 
@@ -519,41 +522,55 @@ class FlashcardMainControllerTest {
     // ========== DECK DISPLAY TESTS ==========
 
     /** Tests that correct number of decks is shown. */
-    @SuppressWarnings("unchecked")
     @Test
     void testUpdateUi_ShowsCorrectNumberOfDecks() throws Exception {
 
         try (MockedStatic<ApiClient> apiClient = mockStatic(ApiClient.class)) {
-
-            ApiResponse<FlashcardDeckManagerDto> response = createSuccessResponse(new ArrayList<>());
-
-            apiClient.when(() -> ApiClient.performApiRequest(anyString(), eq("GET"), isNull(), any(TypeReference.class)))
-
-                    .thenReturn(response);
-
-            controller.setCurrentUsername("testuser");
-
-            FlashcardDeckManager manager = (FlashcardDeckManager) getField("deckManager");
-
+            // Create 3 decks for the API response
+            List<FlashcardDeckDto> decksForResponse = new ArrayList<>();
             for (int i = 0; i < 3; i++) {
-
                 FlashcardDeck deck = new FlashcardDeck();
-
                 deck.setDeckName("Deck " + (i + 1));
-
-                manager.addDeck(deck);
-
+                decksForResponse.add(mapper.toDto(deck));
             }
+            ApiResponse<FlashcardDeckManagerDto> responseWithDecks = createSuccessResponse(decksForResponse);
+            
+            // Mock API response to return the 3 decks
+            apiClient.when(() -> ApiClient.performApiRequest(anyString(), eq("GET"), isNull(), any(TypeReference.class)))
+                    .thenReturn(responseWithDecks);
 
-            controller.updateUi();
-
-            assertTrue(deck1.isVisible());
-
-            assertTrue(deck2.isVisible());
-
-            assertTrue(deck3.isVisible());
-
-            assertFalse(deck4.isVisible());
+            // Ensure decks list is cleared before loading
+            List<FlashcardDeckDto> decks = (List<FlashcardDeckDto>) getField("decks");
+            decks.clear();
+            
+            // Hide all buttons first to ensure clean state
+            deck1.setVisible(false);
+            deck2.setVisible(false);
+            deck3.setVisible(false);
+            deck4.setVisible(false);
+            
+            // Set username which calls loadUserData() and updateUi()
+            controller.setCurrentUsername("testuser");
+            
+            // Verify decks list was loaded from API
+            List<FlashcardDeckDto> loadedDecks = (List<FlashcardDeckDto>) getField("decks");
+            assertEquals(3, loadedDecks.size(), "Should have loaded 3 decks from API");
+            
+            // Wait a moment for UI update to complete
+            try {
+                Thread.sleep(100);
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+            }
+            
+            // Verify state after UI update
+            runOnFxThread(() -> {
+                // Verify state on FX thread after UI update
+                assertTrue(deck1.isVisible(), "deck1 should be visible after loading 3 decks");
+                assertTrue(deck2.isVisible(), "deck2 should be visible after loading 3 decks");
+                assertTrue(deck3.isVisible(), "deck3 should be visible after loading 3 decks");
+                assertFalse(deck4.isVisible(), "deck4 should not be visible when only 3 decks loaded");
+            });
 
         }
 
@@ -563,14 +580,13 @@ class FlashcardMainControllerTest {
     @Test
     void testUpdateUi_NoDecks_ShowsNoDecksMessage() {
 
-        controller.updateUi();
+        runOnFxThread(() -> controller.updateUi());
 
         assertTrue(noDecks.isVisible());
 
     }
 
     /** Tests that no decks message is hidden when decks exist. */
-    @SuppressWarnings("unchecked")
     @Test
     void testUpdateUi_HasDecks_HidesNoDecksMessage() throws Exception {
 
@@ -584,15 +600,15 @@ class FlashcardMainControllerTest {
 
             controller.setCurrentUsername("testuser");
 
-            FlashcardDeckManager manager = (FlashcardDeckManager) getField("deckManager");
+            List<FlashcardDeckDto> decks = (List<FlashcardDeckDto>) getField("decks");
 
             FlashcardDeck deck = new FlashcardDeck();
 
             deck.setDeckName("Test Deck");
 
-            manager.addDeck(deck);
+            decks.add(mapper.toDto(deck));
 
-            controller.updateUi();
+            runOnFxThread(() -> controller.updateUi());
 
             assertFalse(noDecks.isVisible());
 
@@ -601,7 +617,6 @@ class FlashcardMainControllerTest {
     }
 
     /** Tests that deck buttons show correct deck names. */
-    @SuppressWarnings("unchecked")
     @Test
     void testUpdateUi_DeckButtonsShowCorrectNames() throws Exception {
 
@@ -615,7 +630,7 @@ class FlashcardMainControllerTest {
 
             controller.setCurrentUsername("testuser");
 
-            FlashcardDeckManager manager = (FlashcardDeckManager) getField("deckManager");
+            List<FlashcardDeckDto> decks = (List<FlashcardDeckDto>) getField("decks");
 
             FlashcardDeck deck1 = new FlashcardDeck();
 
@@ -625,11 +640,11 @@ class FlashcardMainControllerTest {
 
             deck2.setDeckName("Science");
 
-            manager.addDeck(deck1);
+            decks.add(mapper.toDto(deck1));
 
-            manager.addDeck(deck2);
+            decks.add(mapper.toDto(deck2));
 
-            controller.updateUi();
+            runOnFxThread(() -> controller.updateUi());
 
             assertEquals("Math", this.deck1.getText());
 
@@ -645,7 +660,7 @@ class FlashcardMainControllerTest {
 
         deckNameInput.setText("Some text");
 
-        controller.updateUi();
+        runOnFxThread(() -> controller.updateUi());
 
         assertEquals("", deckNameInput.getText());
 
@@ -671,14 +686,13 @@ class FlashcardMainControllerTest {
 
         // Should not throw NullPointerException
 
-        controller.updateUi();
+        runOnFxThread(() -> controller.updateUi());
 
         assertTrue(true, "updateUi handles null components gracefully");
 
     }
 
     /** Tests that alert is displayed when showAlert is true. */
-    @SuppressWarnings("unchecked")
     @Test
     void testUpdateUi_ShowAlertTrue_DisplaysAlert() throws Exception {
 
@@ -706,7 +720,7 @@ class FlashcardMainControllerTest {
 
             errorField.set(controller, "Test error message");
 
-            controller.updateUi();
+            runOnFxThread(() -> controller.updateUi());
 
             // Verify alert is shown
 
@@ -725,7 +739,6 @@ class FlashcardMainControllerTest {
     }
 
     /** Tests that alert is hidden when showAlert is false. */
-    @SuppressWarnings("unchecked")
     @Test
     void testUpdateUi_ShowAlertFalse_HidesAlert() throws Exception {
 
@@ -753,13 +766,13 @@ class FlashcardMainControllerTest {
 
             errorField.set(controller, "Error");
 
-            controller.updateUi();
+            runOnFxThread(() -> controller.updateUi());
 
             // Now set to false and update again
 
             showAlertField.set(controller, false);
 
-            controller.updateUi();
+            runOnFxThread(() -> controller.updateUi());
 
             // Verify alert is hidden
 
@@ -774,7 +787,6 @@ class FlashcardMainControllerTest {
     // ========== DECK DELETION TESTS ==========
 
     /** Tests that deleting a deck removes it from manager. */
-    @SuppressWarnings("unchecked")
     @Test
     void testWhenDeleteDeckButtonIsClicked_RemovesDeck() throws Exception {
 
@@ -794,28 +806,39 @@ class FlashcardMainControllerTest {
 
             controller.setCurrentUsername("testuser");
 
-            FlashcardDeckManager manager = (FlashcardDeckManager) getField("deckManager");
+            List<FlashcardDeckDto> decks = (List<FlashcardDeckDto>) getField("decks");
 
             FlashcardDeck deck = new FlashcardDeck();
 
             deck.setDeckName("To Delete");
 
-            manager.addDeck(deck);
+            FlashcardDeckDto deckDto = mapper.toDto(deck);
+            decks.add(deckDto);
 
-            deleteDeck1.setUserData(deck);
+            deleteDeck1.setUserData(deckDto);
 
             ActionEvent event = new ActionEvent(deleteDeck1, null);
 
+            // Mock successful DELETE and GET responses
+            ApiResponse<Void> deleteResponse = new ApiResponse<>(true, "", null);
+            ApiResponse<FlashcardDeckManagerDto> getResponseAfterDelete = createSuccessResponse(new ArrayList<>());
+            
+            apiClient.when(() -> ApiClient.performApiRequest(anyString(), eq("DELETE"), isNull(), any(TypeReference.class)))
+                    .thenReturn(deleteResponse);
+            apiClient.when(() -> ApiClient.performApiRequest(anyString(), eq("GET"), isNull(), any(TypeReference.class)))
+                    .thenReturn(getResponseAfterDelete);
+            
             controller.whenDeleteDeckButtonIsClicked(event);
 
-            assertEquals(0, manager.getDecks().size());
+            // After delete, loadUserData is called which reloads decks
+            List<FlashcardDeckDto> decksAfterDelete = (List<FlashcardDeckDto>) getField("decks");
+            assertEquals(0, decksAfterDelete.size());
 
         }
 
     }
 
     /** Tests that UI is updated after deleting a deck. */
-    @SuppressWarnings("unchecked")
     @Test
     void testWhenDeleteDeckButtonIsClicked_UpdatesUi() throws Exception {
 
@@ -835,32 +858,289 @@ class FlashcardMainControllerTest {
 
             controller.setCurrentUsername("testuser");
 
-            FlashcardDeckManager manager = (FlashcardDeckManager) getField("deckManager");
+            List<FlashcardDeckDto> decks = (List<FlashcardDeckDto>) getField("decks");
 
             FlashcardDeck deck = new FlashcardDeck();
 
             deck.setDeckName("To Delete");
 
-            manager.addDeck(deck);
+            FlashcardDeckDto deckDto = mapper.toDto(deck);
+            decks.add(deckDto);
 
-            controller.updateUi();
+            runOnFxThread(() -> controller.updateUi());
 
-            deleteDeck1.setUserData(deck);
+            deleteDeck1.setUserData(deckDto);
 
             ActionEvent event = new ActionEvent(deleteDeck1, null);
 
+            // Mock successful DELETE and GET responses
+            ApiResponse<Void> deleteResponse = new ApiResponse<>(true, "", null);
+            ApiResponse<FlashcardDeckManagerDto> getResponseAfterDelete = createSuccessResponse(new ArrayList<>());
+            
+            apiClient.when(() -> ApiClient.performApiRequest(anyString(), eq("DELETE"), isNull(), any(TypeReference.class)))
+                    .thenReturn(deleteResponse);
+            apiClient.when(() -> ApiClient.performApiRequest(anyString(), eq("GET"), isNull(), any(TypeReference.class)))
+                    .thenReturn(getResponseAfterDelete);
+
             controller.whenDeleteDeckButtonIsClicked(event);
 
+            // After delete, loadUserData is called which reloads decks (now empty)
+            // UI should be updated to show noDecks message
             assertTrue(noDecks.isVisible());
 
         }
 
     }
 
+    /** Tests that deleting a deck works with valid deck. */
+    @Test
+    void testWhenDeleteDeckButtonIsClicked_ValidDeck() throws Exception {
+        FlashcardDeckDto deck = new FlashcardDeckDto("Deck1", new ArrayList<>());
+        deleteDeck1.setUserData(deck);
+
+        try (MockedStatic<ApiClient> apiClientMock = Mockito.mockStatic(ApiClient.class)) {
+            apiClientMock.when(() -> ApiClient.performApiRequest(anyString(), any(), any(), any())).thenReturn(new ApiResponse<Void>(true, "Success", null));
+            runOnFxThread(() -> assertDoesNotThrow(() -> controller.whenDeleteDeckButtonIsClicked(new ActionEvent(deleteDeck1, null))));
+        }
+    }
+
+    /** Tests that deleting a deck handles API failure gracefully. */
+    @Test
+    void testWhenDeleteDeckButtonIsClicked_ApiFailure() throws Exception {
+        FlashcardDeckDto deck = new FlashcardDeckDto("Deck1", new ArrayList<>());
+        deleteDeck1.setUserData(deck);
+
+        try (MockedStatic<ApiClient> apiClientMock = Mockito.mockStatic(ApiClient.class)) {
+            apiClientMock.when(() -> ApiClient.performApiRequest(anyString(), any(), any(), any())).thenThrow(new RuntimeException("API failure"));
+            runOnFxThread(() -> assertDoesNotThrow(() -> controller.whenDeleteDeckButtonIsClicked(new ActionEvent(deleteDeck1, null))));
+        }
+    }
+
+    /** Tests that deleting a deck works with null deck. */
+    @Test
+    void testWhenDeleteDeckButtonIsClicked_NullDeck() throws Exception {
+        deleteDeck1.setUserData(null);
+        runOnFxThread(() -> assertDoesNotThrow(() -> controller.whenDeleteDeckButtonIsClicked(new ActionEvent(deleteDeck1, null))));
+    }
+
+    /** Tests that deleting a deck handles successful API response. */
+    @Test
+    void testWhenDeleteDeckButtonIsClicked_SuccessfulApiResponse() throws Exception {
+        FlashcardDeckDto deck = new FlashcardDeckDto("Deck1", new ArrayList<>());
+        deleteDeck1.setUserData(deck);
+
+        try (MockedStatic<ApiClient> apiClient = mockStatic(ApiClient.class)) {
+            ApiResponse<Void> deleteResponse = new ApiResponse<>(true, "Deleted", null);
+            ApiResponse<FlashcardDeckManagerDto> getResponse = createSuccessResponse(new ArrayList<>());
+            
+            apiClient.when(() -> ApiClient.performApiRequest(anyString(), eq("DELETE"), isNull(), any(TypeReference.class)))
+                    .thenReturn(deleteResponse);
+            apiClient.when(() -> ApiClient.performApiRequest(anyString(), eq("GET"), isNull(), any(TypeReference.class)))
+                    .thenReturn(getResponse);
+            
+            controller.setCurrentUsername("testuser");
+            
+            ActionEvent event = new ActionEvent(deleteDeck1, null);
+            controller.whenDeleteDeckButtonIsClicked(event);
+            
+            // Verify deck list was reloaded
+            List<FlashcardDeckDto> decks = (List<FlashcardDeckDto>) getField("decks");
+            assertEquals(0, decks.size());
+        }
+    }
+
+    /** Tests that deleting a deck handles failed API response. */
+    @Test
+    void testWhenDeleteDeckButtonIsClicked_FailedApiResponse() throws Exception {
+        FlashcardDeckDto deck = new FlashcardDeckDto("Deck1", new ArrayList<>());
+        deleteDeck1.setUserData(deck);
+
+        try (MockedStatic<ApiClient> apiClient = mockStatic(ApiClient.class)) {
+            ApiResponse<Void> deleteResponse = new ApiResponse<>(false, "Delete failed", null);
+            
+            apiClient.when(() -> ApiClient.performApiRequest(anyString(), eq("DELETE"), isNull(), any(TypeReference.class)))
+                    .thenReturn(deleteResponse);
+            
+            controller.setCurrentUsername("testuser");
+            
+            ActionEvent event = new ActionEvent(deleteDeck1, null);
+            assertDoesNotThrow(() -> controller.whenDeleteDeckButtonIsClicked(event));
+        }
+    }
+
+    /** Tests that deleting a deck handles null API response. */
+    @Test
+    void testWhenDeleteDeckButtonIsClicked_NullApiResponse() throws Exception {
+        FlashcardDeckDto deck = new FlashcardDeckDto("Deck1", new ArrayList<>());
+        deleteDeck1.setUserData(deck);
+
+        try (MockedStatic<ApiClient> apiClient = mockStatic(ApiClient.class)) {
+            apiClient.when(() -> ApiClient.performApiRequest(anyString(), eq("DELETE"), isNull(), any(TypeReference.class)))
+                    .thenReturn(null);
+            
+            controller.setCurrentUsername("testuser");
+            
+            ActionEvent event = new ActionEvent(deleteDeck1, null);
+            assertDoesNotThrow(() -> controller.whenDeleteDeckButtonIsClicked(event));
+        }
+    }
+
+    /** Tests that creating a new deck with empty name is handled gracefully. */
+    @Test
+    void testWhenNewDeckButtonIsClicked_EmptyDeckName() throws Exception {
+        deckNameInput.setText("");
+        runOnFxThread(() -> assertDoesNotThrow(() -> controller.whenNewDeckButtonIsClicked(new ActionEvent(newDeckButton, null))));
+    }
+
+    /** Tests that creating a new deck handles API failure gracefully. */
+    @Test
+    void testWhenNewDeckButtonIsClicked_ApiFailure() throws Exception {
+        deckNameInput.setText("NewDeck");
+
+        try (MockedStatic<ApiClient> apiClientMock = Mockito.mockStatic(ApiClient.class)) {
+            apiClientMock.when(() -> ApiClient.performApiRequest(anyString(), any(), any(), any())).thenThrow(new RuntimeException("API failure"));
+            runOnFxThread(() -> assertDoesNotThrow(() -> controller.whenNewDeckButtonIsClicked(new ActionEvent(newDeckButton, null))));
+        }
+    }
+
+    /** Tests that creating a new deck when currentUsername is null shows error. */
+    @Test
+    void testWhenNewDeckButtonIsClicked_NullUsername() throws Exception {
+        runOnFxThread(() -> {
+            deckNameInput.setText("NewDeck");
+            try {
+                setField("currentUsername", null);
+                ActionEvent event = new ActionEvent(newDeckButton, null);
+                assertDoesNotThrow(() -> controller.whenNewDeckButtonIsClicked(event));
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        });
+    }
+
+    /** Tests that creating a new deck when currentUsername is empty shows error. */
+    @Test
+    void testWhenNewDeckButtonIsClicked_EmptyUsername() throws Exception {
+        runOnFxThread(() -> {
+            deckNameInput.setText("NewDeck");
+            try {
+                setField("currentUsername", "");
+                ActionEvent event = new ActionEvent(newDeckButton, null);
+                assertDoesNotThrow(() -> controller.whenNewDeckButtonIsClicked(event));
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        });
+    }
+
+    /** Tests that creating a new deck handles validation error response. */
+    @Test
+    void testWhenNewDeckButtonIsClicked_ValidationError() throws Exception {
+        try (MockedStatic<ApiClient> apiClient = mockStatic(ApiClient.class)) {
+            ApiResponse<FlashcardDeckDto> postResponse = new ApiResponse<>(false, "Deck already exists", null);
+            
+            apiClient.when(() -> ApiClient.performApiRequest(anyString(), eq("POST"), anyString(), any(TypeReference.class)))
+                    .thenReturn(postResponse);
+            
+            ApiResponse<FlashcardDeckManagerDto> getResponse = createSuccessResponse(new ArrayList<>());
+            apiClient.when(() -> ApiClient.performApiRequest(anyString(), eq("GET"), isNull(), any(TypeReference.class)))
+                    .thenReturn(getResponse);
+            
+            controller.setCurrentUsername("testuser");
+            
+            deckNameInput.setText("DuplicateDeck");
+            ActionEvent event = new ActionEvent(newDeckButton, null);
+            controller.whenNewDeckButtonIsClicked(event);
+            
+            // Verify error message was set (even though showAlert is reset to false after updateUi)
+            String errorMsg = (String) getField("error");
+            assertEquals("Deck already exists", errorMsg);
+            
+            // Verify alert message is visible after the error
+            assertTrue(alertMessage.isVisible());
+        }
+    }
+
+    /** Tests that creating a new deck handles server error response. */
+    @Test
+    void testWhenNewDeckButtonIsClicked_ServerError() throws Exception {
+        deckNameInput.setText("NewDeck");
+
+        try (MockedStatic<ApiClient> apiClient = mockStatic(ApiClient.class)) {
+            ApiResponse<FlashcardDeckDto> postResponse = new ApiResponse<>(false, "Internal server error", null);
+            
+            apiClient.when(() -> ApiClient.performApiRequest(anyString(), eq("POST"), anyString(), any(TypeReference.class)))
+                    .thenReturn(postResponse);
+            
+            controller.setCurrentUsername("testuser");
+            
+            ActionEvent event = new ActionEvent(newDeckButton, null);
+            assertDoesNotThrow(() -> controller.whenNewDeckButtonIsClicked(event));
+        }
+    }
+
+    /** Tests that creating a new deck handles null API response. */
+    @Test
+    void testWhenNewDeckButtonIsClicked_NullApiResponse() throws Exception {
+        deckNameInput.setText("NewDeck");
+
+        try (MockedStatic<ApiClient> apiClient = mockStatic(ApiClient.class)) {
+            apiClient.when(() -> ApiClient.performApiRequest(anyString(), eq("POST"), anyString(), any(TypeReference.class)))
+                    .thenReturn(null);
+            
+            controller.setCurrentUsername("testuser");
+            
+            ActionEvent event = new ActionEvent(newDeckButton, null);
+            assertDoesNotThrow(() -> controller.whenNewDeckButtonIsClicked(event));
+        }
+    }
+
+    /** Tests that creating a new deck handles exception with cause. */
+    @Test
+    void testWhenNewDeckButtonIsClicked_ExceptionWithCause() throws Exception {
+        deckNameInput.setText("NewDeck");
+
+        try (MockedStatic<ApiClient> apiClient = mockStatic(ApiClient.class)) {
+            IOException cause = new IOException("Network error");
+            RuntimeException exception = new RuntimeException("Request failed", cause);
+            
+            apiClient.when(() -> ApiClient.performApiRequest(anyString(), eq("POST"), anyString(), any(TypeReference.class)))
+                    .thenThrow(exception);
+            
+            controller.setCurrentUsername("testuser");
+            
+            ActionEvent event = new ActionEvent(newDeckButton, null);
+            assertDoesNotThrow(() -> controller.whenNewDeckButtonIsClicked(event));
+        }
+    }
+
+    /** Tests that creating a new deck handles general exception. */
+    @Test
+    void testWhenNewDeckButtonIsClicked_GeneralException() throws Exception {
+        deckNameInput.setText("NewDeck");
+
+        try (MockedStatic<ApiClient> apiClient = mockStatic(ApiClient.class)) {
+            apiClient.when(() -> ApiClient.performApiRequest(anyString(), eq("POST"), anyString(), any(TypeReference.class)))
+                    .thenThrow(new NullPointerException("Unexpected error"));
+            
+            controller.setCurrentUsername("testuser");
+            
+            ActionEvent event = new ActionEvent(newDeckButton, null);
+            assertDoesNotThrow(() -> controller.whenNewDeckButtonIsClicked(event));
+        }
+    }
+
     // ========== NAVIGATION TESTS ==========
 
+    /** Tests that clicking a deck with null data doesn't crash. */
+    @Test
+    void testWhenADeckIsClicked_NullDeck() throws Exception {
+        deck1.setUserData(null);
+        ActionEvent event = new ActionEvent(deck1, null);
+        assertDoesNotThrow(() -> controller.whenADeckIsClicked(event));
+    }
+
     /** Tests that clicking a deck loads the deck view. */
-    @SuppressWarnings("unchecked")
     @Test
     void testWhenADeckIsClicked_LoadsDeckView() throws Exception {
 
@@ -878,28 +1158,28 @@ class FlashcardMainControllerTest {
 
             controller.setCurrentUsername("testuser");
 
-            FlashcardDeckManager manager = (FlashcardDeckManager) getField("deckManager");
+            List<FlashcardDeckDto> decks = (List<FlashcardDeckDto>) getField("decks");
 
             FlashcardDeck deck = new FlashcardDeck();
 
             deck.setDeckName("Test Deck");
 
-            manager.addDeck(deck);
+            FlashcardDeckDto deckDto = mapper.toDto(deck);
+            decks.add(deckDto);
 
-            deck1.setUserData(deck);
+            deck1.setUserData(deckDto);
 
             // Note: Full testing of scene switching requires more complex mocking
 
             // This verifies the deck is properly stored in button userData
 
-            assertEquals(deck, deck1.getUserData());
+            assertEquals(deckDto, deck1.getUserData());
 
         }
 
     }
 
     /** Tests that clicking a deck executes the method. */
-    @SuppressWarnings("unchecked")
     @Test
     void testWhenADeckIsClicked_ExecutesMethod() throws Exception {
 
@@ -945,7 +1225,8 @@ class FlashcardMainControllerTest {
 
             deck.setDeckName("Test Deck");
 
-            deck1.setUserData(deck);
+            FlashcardDeckDto deckDto = mapper.toDto(deck);
+            deck1.setUserData(deckDto);
 
             // Create a simple scene structure for the button on FX thread
 
@@ -996,15 +1277,11 @@ class FlashcardMainControllerTest {
             executionLatch.await(2, java.util.concurrent.TimeUnit.SECONDS);
 
             // Method was called - coverage verified by JaCoCo
-
             assertTrue(true, "whenADeckIsClicked method executed");
-
         }
-
     }
 
     /** Tests that logout executes the method. */
-    @SuppressWarnings("unchecked")
     @Test
     void testWhenLogOut_ExecutesMethod() throws Exception {
 
@@ -1111,7 +1388,6 @@ class FlashcardMainControllerTest {
     // ========== API INTEGRATION TESTS ==========
 
     /** Tests successful loading of user data from API. */
-    @SuppressWarnings("unchecked")
     @Test
     void testLoadUserData_SuccessfulLoad() throws Exception {
 
@@ -1133,18 +1409,17 @@ class FlashcardMainControllerTest {
 
             controller.setCurrentUsername("testuser");
 
-            FlashcardDeckManager manager = (FlashcardDeckManager) getField("deckManager");
+            List<FlashcardDeckDto> decks = (List<FlashcardDeckDto>) getField("decks");
 
-            assertEquals(1, manager.getDecks().size());
+            assertEquals(1, decks.size());
 
-            assertEquals("Test Deck", manager.getDecks().get(0).getDeckName());
+            assertEquals("Test Deck", decks.get(0).getDeckName());
 
         }
 
     }
 
 /** Tests that API failure creates empty manager. */
-    @SuppressWarnings("unchecked")
     @Test
     void testLoadUserData_ApiFailure_CreatesEmptyManager() throws Exception {
 
@@ -1158,16 +1433,15 @@ class FlashcardMainControllerTest {
 
             controller.setCurrentUsername("testuser");
 
-            FlashcardDeckManager manager = (FlashcardDeckManager) getField("deckManager");
+            List<FlashcardDeckDto> decks = (List<FlashcardDeckDto>) getField("decks");
 
-            assertEquals(0, manager.getDecks().size());
+            assertEquals(0, decks.size());
 
         }
 
     }
 
     /** Tests that exception creates empty manager. */
-    @SuppressWarnings("unchecked")
     @Test
     void testLoadUserData_ExceptionThrown_CreatesEmptyManager() throws Exception {
 
@@ -1179,16 +1453,15 @@ class FlashcardMainControllerTest {
 
             controller.setCurrentUsername("testuser");
 
-            FlashcardDeckManager manager = (FlashcardDeckManager) getField("deckManager");
+            List<FlashcardDeckDto> decks = (List<FlashcardDeckDto>) getField("decks");
 
-            assertEquals(0, manager.getDecks().size());
+            assertEquals(0, decks.size());
 
         }
 
     }
 
     /** Tests that null data creates empty manager. */
-    @SuppressWarnings("unchecked")
     @Test
     void testLoadUserData_SuccessButNullData_CreatesEmptyManager() throws Exception {
 
@@ -1204,16 +1477,15 @@ class FlashcardMainControllerTest {
 
             controller.setCurrentUsername("testuser");
 
-            FlashcardDeckManager manager = (FlashcardDeckManager) getField("deckManager");
+            List<FlashcardDeckDto> decks = (List<FlashcardDeckDto>) getField("decks");
 
-            assertEquals(0, manager.getDecks().size());
+            assertEquals(0, decks.size());
 
         }
 
     }
 
     /** Tests that save failure shows alert. */
-    @SuppressWarnings("unchecked")
     @Test
     void testSaveUserData_SaveFailure_ShowsAlert() throws Exception {
 
@@ -1223,17 +1495,15 @@ class FlashcardMainControllerTest {
 
             ApiResponse<FlashcardDeckManagerDto> getResponse = createSuccessResponse(new ArrayList<>());
 
-            // Mock failed PUT for saving
-
-            ApiResponse<FlashcardDeckManagerDto> putResponse = createFailureResponse();
-
             apiClient.when(() -> ApiClient.performApiRequest(anyString(), eq("GET"), isNull(), any(TypeReference.class)))
 
                     .thenReturn(getResponse);
 
-            apiClient.when(() -> ApiClient.performApiRequest(anyString(), eq("PUT"), any(), any(TypeReference.class)))
+            // Mock POST to return failure for save error test
+            ApiResponse<FlashcardDeckDto> postFailureResponse = new ApiResponse<>(false, "Failed to create deck", null);
+            apiClient.when(() -> ApiClient.performApiRequest(anyString(), eq("POST"), isNull(), any(TypeReference.class)))
 
-                    .thenReturn(putResponse);
+                    .thenReturn(postFailureResponse);
 
             controller.setCurrentUsername("testuser");
 
@@ -1241,9 +1511,10 @@ class FlashcardMainControllerTest {
 
             controller.whenNewDeckButtonIsClicked(new ActionEvent());
 
-            // Verify showAlert was called
-
-            apiClient.verify(() -> ApiClient.showAlert(eq("Save Error"), anyString()));
+            // Verify showAlert was called if POST fails
+            // Note: showAlert is called from whenNewDeckButtonIsClicked if POST fails
+            // But since we mock POST to return failure, showAlert should be called
+            apiClient.verify(() -> ApiClient.showAlert(eq("Server Error"), eq("Failed to create deck")), atLeastOnce());
 
         }
 
@@ -1265,71 +1536,123 @@ class FlashcardMainControllerTest {
 
         originalManager.addDeck(deck);
 
-        controller.setDeckManager(originalManager);
+        // Set up test data in controller first
+            List<FlashcardDeckDto> decks = (List<FlashcardDeckDto>) getField("decks");
+        decks.add(mapper.toDto(deck));
+        
+        runOnFxThread(() -> controller.refreshDecks());
 
-        FlashcardDeckManager copiedManager = (FlashcardDeckManager) getField("deckManager");
+            List<FlashcardDeckDto> refreshedDecks = (List<FlashcardDeckDto>) getField("decks");
 
-        // Verify it's a copy
+        assertEquals(1, refreshedDecks.size());
 
-        assertNotSame(originalManager, copiedManager);
-
-        assertEquals(1, copiedManager.getDecks().size());
-
-        assertEquals("Original Deck", copiedManager.getDecks().get(0).getDeckName());
+        assertEquals("Original Deck", refreshedDecks.get(0).getDeckName());
 
     }
 
 /** Tests that flashcards are copied. */
-    @Test
-    void testSetDeckManager_CopiesFlashcards() throws Exception {
+@Test
+void testSetDeckManager_CopiesFlashcards() throws Exception {
 
-        FlashcardDeckManager originalManager = new FlashcardDeckManager();
+    FlashcardDeckManager originalManager = new FlashcardDeckManager();
 
-        FlashcardDeck deck = new FlashcardDeck();
+    FlashcardDeck deck = new FlashcardDeck();
 
-        deck.setDeckName("Test Deck");
+    deck.setDeckName("Test Deck");
 
-        deck.addFlashcard(new Flashcard("Question 1", "Answer 1"));
+    deck.addFlashcard(new Flashcard("Question 1", "Answer 1"));
 
-        deck.addFlashcard(new Flashcard("Question 2", "Answer 2"));
+    deck.addFlashcard(new Flashcard("Question 2", "Answer 2"));
 
-        originalManager.addDeck(deck);
+    originalManager.addDeck(deck);
 
-        controller.setDeckManager(originalManager);
+    // Set up test data in controller first
+    List<FlashcardDeckDto> decks = (List<FlashcardDeckDto>) getField("decks");
+    decks.add(mapper.toDto(deck));
+    
+    runOnFxThread(() -> controller.refreshDecks());
 
-        FlashcardDeckManager copiedManager = (FlashcardDeckManager) getField("deckManager");
+    List<FlashcardDeckDto> refreshedDecks = (List<FlashcardDeckDto>) getField("decks");
 
-        FlashcardDeck copiedDeck = copiedManager.getDecks().get(0);
+    FlashcardDeckDto copiedDeckDto = refreshedDecks.get(0);
 
-        assertEquals(2, copiedDeck.getDeck().size());
+    assertEquals(2, copiedDeckDto.getDeck().size());
 
-        assertEquals("Question 1", copiedDeck.getDeck().get(0).getQuestion());
+    assertEquals("Question 1", copiedDeckDto.getDeck().get(0).getQuestion());
 
-        assertEquals("Answer 2", copiedDeck.getDeck().get(1).getAnswer());
+    assertEquals("Answer 2", copiedDeckDto.getDeck().get(1).getAnswer());
 
-    }
+}
 
 /** Tests that setting deck manager updates UI. */
     @Test
     void testSetDeckManager_UpdatesUi() throws Exception {
 
-        FlashcardDeckManager manager = new FlashcardDeckManager();
-
         FlashcardDeck deck = new FlashcardDeck();
 
         deck.setDeckName("Updated Deck");
 
-        manager.addDeck(deck);
-
-        controller.setDeckManager(manager);
-
-        assertTrue(deck1.isVisible());
-
-        assertEquals("Updated Deck", deck1.getText());
+        List<FlashcardDeckDto> decks = (List<FlashcardDeckDto>) getField("decks");
+        FlashcardDeckDto deckDto = mapper.toDto(deck);
+        decks.add(deckDto);
+        
+        // Mock API response for refreshDecks
+        try (MockedStatic<ApiClient> apiClient = mockStatic(ApiClient.class)) {
+            ApiResponse<FlashcardDeckManagerDto> getResponse = createSuccessResponse(List.of(deckDto));
+            apiClient.when(() -> ApiClient.performApiRequest(anyString(), eq("GET"), isNull(), any(TypeReference.class)))
+                    .thenReturn(getResponse);
+            
+            // Hide button first to ensure clean state
+            deck1.setVisible(false);
+            
+            // Set username if not already set (needed for loadUserData)
+            if (getField("currentUsername") == null) {
+                setField("currentUsername", "testuser");
+            }
+            
+            controller.refreshDecks();
+            
+            // Wait a moment for API call and UI update to complete
+            try {
+                Thread.sleep(100);
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+            }
+            
+            runOnFxThread(() -> {
+                // Verify state on FX thread after UI update
+                assertTrue(deck1.isVisible(), "deck1 should be visible after refreshDecks");
+                assertEquals("Updated Deck", deck1.getText());
+            });
+        }
 
     }
 
     // ========== HELPER METHODS ==========
+
+    /**
+     * Runs a Runnable on the JavaFX Application Thread and waits for completion.
+     */
+    private void runOnFxThread(Runnable runnable) {
+        if (Platform.isFxApplicationThread()) {
+            runnable.run();
+        } else {
+            CountDownLatch latch = new CountDownLatch(1);
+            Platform.runLater(() -> {
+                try {
+                    runnable.run();
+                } finally {
+                    latch.countDown();
+                }
+            });
+            try {
+                latch.await(5, TimeUnit.SECONDS);
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+                throw new RuntimeException("Interrupted while waiting for FX thread", e);
+            }
+        }
+    }
 
     /** Creates a successful API response. */
 

@@ -151,18 +151,19 @@ public class FlashcardPersistent implements UserPersistence {
   private UserData readUserDataInternal(String username) {        
     File file = getUserFile(username);
 
-    if (file.exists()) {            
-      try {
-        // Try reading as UserData
-        UserData userData = objectMapper.readValue(file, UserData.class);
-        return userData;
-      } catch (IOException e) {
-        e.printStackTrace();
-      }
+        if (file.exists()) {            
+            try {
+                // Try reading as UserData
+                UserData userData = objectMapper.readValue(file, UserData.class);
+                return userData;
+            } catch (IOException e) {
+                // Throw the error so it can be properly handled by calling methods
+                throw new RuntimeException("Failed to read user data file for user '" + username + "': " + e.getMessage(), e);
+            }
+        }
+        
+        return null;
     }
-    
-    return null;
-  }
 
   /**
    * Internal method to write complete user data to file.
