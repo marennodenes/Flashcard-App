@@ -12,6 +12,9 @@ package storage {
         + User readUserData(String username)
         + void writeUserData(User user)
         + boolean userExists(String username)
+        - UserData readUserDataInternal(String username)
+        - void writeUserDataInternal(UserData userData)
+        - File getUserFile(String username)
     }
 }
 

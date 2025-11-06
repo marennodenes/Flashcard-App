@@ -1,131 +1,178 @@
 @startuml class_fxui
 title FXUI Module - JavaFX User Interface
 
+left to right direction
+
 package ui {
     class ApiClient {
-        - {static} String BASE_URL
         - {static} HttpClient HTTP_CLIENT
         - {static} ObjectMapper OBJECT_MAPPER
 
-        + {static} <T> T performApiRequest(String url, String method, Object data, TypeReference<T> responseType)
+        + {static} HttpResponse<String> sendRequest(String uri, String httpMethod, String json)
+        + {static} <T> T parseResponse(String responseBody, TypeReference<T> responseType)
+        + {static} String convertObjectToJson(Object data)
         + {static} void showAlert(String title, String message)
-        - {static} HttpResponse<String> sendRequest(String url, String method, String json)
-        - {static} String convertObjectToJson(Object data)
-        - {static} <T> T parseResponse(String responseBody, TypeReference<T> responseType)
+        + {static} <T> T performApiRequest(String url, String method, Object data, TypeReference<T> responseType)
     }
 
     class FlashcardApp {
-        + void start(Stage stage)
         + {static} void main(String[] args)
+        # Parent loadLoginScene()
+        # URL getLoginStylesheet()
+        + void start(Stage stage)
     }
 
     class FlashcardController {
-        - Text questionText
-        - Text answerText
-        - Button flipButton
         - Button backButton
-        - Flashcard currentFlashcard
+        - Button nextButton
+        - Button previousButton
+        - Button card
+        - ProgressBar progressBar
+        - Text usernameField
+        - Text deckNameField
+        - Text cardNumber
+        - List<FlashcardDto> deck
+        - int currentCardI
         - String currentUsername
-        - String currentDeckName
-        - int currentIndex
-        - List<FlashcardDto> flashcards
+        - String questionStyle
+        - String answerStyle
+        - boolean isShowingAnswer
+        - FlashcardDeckDto originalDeck
         
         + void initialize()
+        + void updateUi()
+        + void updateProgress()
+        + FlashcardDto getCurrentCart()
+        + void setDeck(FlashcardDeckDto deck)
         + void setCurrentUsername(String username)
         + void setCurrentDeckName(String deckName)
-        + void whenFlipButtonIsClicked()
         + void whenBackButtonIsClicked()
         + void whenNextButtonIsClicked()
         + void whenPreviousButtonIsClicked()
-        - void loadFlashcards()
-        - void displayFlashcard()
-        - void updateUi()
+        + void whenCardButtonIsClicked()
+        + void whenLogOut(ActionEvent event)
+        - void goToNextCard()
+        - void goToPreviousCard()
+        - void flipCard()
+
     }
 
     class FlashcardDeckController {
-        - ListView<String> flashcardListView
-        - TextField questionInput
-        - TextField answerInput
-        - Button addButton
-        - Button deleteButton
-        - Button backButton
-        - Text deckNameText
-        - Text alertMessage
+        - TextField questionField
+        - TextField answerField
+        - ListView<FlashcardDto> listView
+        - Text username
+        - Button startLearning
+        - Button deleteCardButton
+        - FlashcardDeckDto currentDeck
         - String currentUsername
-        - String currentDeckName
-        - List<FlashcardDto> flashcards
         
         + void initialize()
+        + void updateUi()
+        + void setDeck(FlashcardDeckDto deck)
         + void setCurrentUsername(String username)
-        + void setCurrentDeckName(String deckName)
-        + void whenAddButtonIsClicked()
+        + void whenCreateCardButtonIsClicked()
         + void whenDeleteButtonIsClicked()
         + void whenBackButtonIsClicked()
-        + void whenFlashcardIsClicked()
-        - void loadFlashcards()
-        - void updateUi()
+        + void whenStartLearningButtonIsClicked()
+        + void whenLogOut()
+        - void loadDeckData()
+        - void cleanInputFields()
     }
 
     class FlashcardLoginController {
-        - TextField usernameField
-        - PasswordField passwordField
-        - Button loginButton
-        - Button signUpButton
         - Text alertMessage
         - Text ex
+        - Button loginButton
+        - TextField usernameField
+        - TextField passwordField
+        - Button signUpButton
+        - boolean showAlert
+        - String error
         
         + void initialize()
-        + void whenLoginButtonIsClicked()
-        + void whenSignUpButtonIsClicked()
-        - void navigateToMainApp(String username)
+        + void updateUi()
+        + void whenLoginButtonClicked()
+        + void whenSignUpButtonClicked()
         - void navigateToSignUpPage()
-        - void updateUi()
+        - void navigateToMainApp(String username)
+        - void showInLineError(String message)
     }
 
     class FlashcardMainController {
-        - ListView<String> deckListView
+        - Button deck_1
+        - Button deck_2
+        - Button deck_3
+        - Button deck_4
+        - Button deck_5
+        - Button deck_6
+        - Button deck_7
+        - Button deck_8
+        - Button deleteDeck_1
+        - Button deleteDeck_2
+        - Button deleteDeck_3
+        - Button deleteDeck_4
+        - Button deleteDeck_5
+        - Button deleteDeck_6
+        - Button deleteDeck_7
+        - Button deleteDeck_8
         - TextField deckNameInput
         - Button newDeckButton
-        - Button deleteDeckButton
-        - Button openDeckButton
-        - Text usernameText
+        - Button logOutButton
+        - Text usernameField
         - Text alertMessage
+        - Text ex
+        - Text noDecks
+        - List<FlashcardDeckDto> decks 
         - String currentUsername
-        - List<FlashcardDeckDto> decks
+        - boolean showAlert
+        - String error
+        - Button[] deckButtons
+        - Button[] deleteButtons
         
         + void initialize()
+        + void updateUi()
         + void setCurrentUsername(String username)
         + void whenNewDeckButtonIsClicked()
         + void whenDeleteDeckButtonIsClicked()
-        + void whenOpenDeckButtonIsClicked()
-        + void whenDeckIsClicked()
-        + void whenLogoutButtonIsClicked()
+        + void whenADeckIsClicked(ActionEvent event)
+        + void whenLogout(ActionEvent event)
+        + void refreshDecks()
         - void loadUserData()
-        - void updateUi()
+        - void hideAllDeckButtons()
+        - void showInLineError(String message)
     }
 
     class FlashcardSignUpController {
-        - TextField usernameField
-        - PasswordField passwordField
-        - PasswordField confirmPasswordField
-        - Button signUpButton
-        - Button backButton
         - Text alertMessage
         - Text ex
+        - TextField usernameField
+        - TextField passwordField
+        - TextField confirmPasswordField
+        - Button signInButton
+        - Button backButton
+        - boolean showAlert
+        - String error
         
         + void initialize()
-        + void whenSignUpButtonIsClicked()
+        + void updateUi()
+        + void whenSignInButtonIsClicked()
         + void whenBackButtonIsClicked()
-        - void navigateToLogin()
-        - void updateUi()
+        - boolean validateInput(String username, String password, String confirmPassword)
+        - void createUser(String username, String password)
+        - void navigateToMainApp(String username)
+        - void showInLineError(String message)
+        
+
     }
 
     class SceneUtils {
         - {static} double SCALE_FACTOR = 2.0
         - {static} double OFFSET_FACTOR = 1.0
-
+         
         + {static} Scene createScaledScene(Parent root)
         + {static} void applyScaling(Parent root)
+        - SceneUtils()
     }
 }
 

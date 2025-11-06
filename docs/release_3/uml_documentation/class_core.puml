@@ -57,9 +57,9 @@ package core {
     }
 
     class PasswordEncoder {
-        - {static} String ALGORITHM = "SHA-256"
-        - {static} int SALT_LENGTH = 16
-        - {static} SecureRandom SECURE_RANDOM
+        - {static} final String ALGORITHM = "SHA-256"
+        - {static} final int SALT_LENGTH = 16
+        - {static} final SecureRandom SECURE_RANDOM
 
         + {static} String encode(String password)
         + {static} boolean matches(String password, String encodedPassword)
@@ -81,8 +81,8 @@ package core {
         - FlashcardDeckManager deckManager
 
         + UserData()
-        + UserData(User user, FlashcardDeckManager deckManager)
         + UserData(User user)
+        + UserData(User user, FlashcardDeckManager deckManager)
         + User getUser()
         + FlashcardDeckManager getDeckManager()
         + void setDeckManager(FlashcardDeckManager deckManager)
@@ -95,12 +95,13 @@ package core {
     }
 }
 
-' Relationships within core
+' Relationships
 FlashcardDeck "1" *-- "0..*" Flashcard : contains
 FlashcardDeckManager "1" *-- "0..*" FlashcardDeck : manages
 UserData "1" *-- "1" User : contains
 UserData "1" *-- "1" FlashcardDeckManager : contains
 LoginValidator --> UserPersistence : uses
 LoginValidator ..> PasswordEncoder : uses
+User ..> PasswordEncoder : uses
 
 @enduml

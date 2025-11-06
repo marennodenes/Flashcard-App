@@ -21,25 +21,26 @@ package server {
 
         class FlashcardController {
             - FlashcardService flashcardService
-            - FlashcardMapper flashcardMapper
+            - FlashcardMapper mapper
 
             + FlashcardController(FlashcardService flashcardService)
+            + ApiResponse<FlashcardDto> getFlashcard(String username, String deckname, int number)
+            + ApiResponse<List<FlashcardDto>> getAllFlashcards(String username, String deckname)  
             + ApiResponse<FlashcardDto> createFlashcard(String username, String deckname, String question, String answer)
             + ApiResponse<Void> deleteFlashcard(String username, String deckName, int flashcardNumber)
-            + ApiResponse<FlashcardDto> getFlashcard(String username, String deckname, int number)
-            + ApiResponse<List<FlashcardDto>> getAllFlashcards(String username, String deckname)   
         }
 
         class UserController {
             - UserService userService
-            - UserMapper userMapper
+            - UserMapper mapper
 
             + UserController(UserService userService)
             + ApiResponse<UserDataDto> getUser(String username)
+            + ApiResponse<Boolean> findUser(String username)
             + ApiResponse<UserDataDto> createUser(LoginRequestDto request)
             + ApiResponse<LoginResponseDto> logInUser(LoginRequestDto request)
             + ApiResponse<Boolean> validatePassword(String username, String password)
-            + ApiResponse<Boolean> findUser(String username)
+            
         }
     }
 
@@ -73,13 +74,13 @@ package server {
 
             + UserService()
             + User getUser(String username)
-            + User createUserWithValidation(String username, String password)
-            + User createUser(String username, String password)
             + boolean userExists(String username)
+            + User createUser(String username, String password)
+            + User createUserWithValidation(String username, String password)
             + boolean logInUser(String username, String password)
             + boolean validatePassword(String username, String password)
-            - String validatePasswordDetailed(String password)
-            - boolean isValidPassword(String password)
+            + String validatePasswordDetailed(String password)
+            + boolean isValidPassword(String password)
         }
     }
 }

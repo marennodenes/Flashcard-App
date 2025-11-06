@@ -32,10 +32,11 @@ package "flashcards" {
     }
 }
 
+"itp.server" --> "itp.core" : "Depends on"
 "itp.server" --> "itp.storage" : "Depends on"
 "itp.server" --> "itp.shared" : "Depends on"
-"itp.server" --> "itp.core" : "Depends on"
 "itp.fxui" --> "itp.shared" : "Depends on"
 "itp.shared" --> "itp.core" : "Depends on"
+"itp.storage" --> "itp.core" : "Depends on"
 
 @enduml
