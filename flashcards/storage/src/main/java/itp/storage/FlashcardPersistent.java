@@ -18,6 +18,7 @@ import app.FlashcardDeckManager;
  * @author sofietw
  * @author ailinat
  * @author marennod
+ * @author chrsom
  * 
  */
 public class FlashcardPersistent implements UserPersistence {
