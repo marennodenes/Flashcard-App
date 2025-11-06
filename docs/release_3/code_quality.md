@@ -43,15 +43,17 @@ Example of our REST controller pattern:
 @RequestMapping(ApiEndpoints.USERS_V1)
 public class UserController {
     
-    @PostMapping(ApiEndpoints.USER_LOGIN)
-    public ApiResponse<LoginResponseDto> logInUser(@RequestBody LoginRequestDto request) {
-        try {
-            Boolean login = userService.logInUser(request.getUsername(), request.getPassword());
-            return new ApiResponse<>(true, "Login successful", responseDto);
-        } catch (Exception e) {
-            return new ApiResponse<>(false, "Error logging in user: " + e.getMessage(), null);
-        }
+  @PostMapping (ApiEndpoints.USER_REGISTER)
+  public ApiResponse <UserDataDto> createUser(@RequestBody LoginRequestDto request) {
+    try {
+      User user = userService.createUserWithValidation(request.getUsername(), request.getPassword());
+      UserDataDto dto = mapper.toDto(user);
+      return new ApiResponse<>(true, ApiConstants.USER_CREATED, dto);
+    } catch (IllegalArgumentException e) {
+      System.err.println(ApiConstants.USER_CREATION_ERROR + ": '" + request.getUsername() + "' - " + e.getMessage());
+      return new ApiResponse<>(false, ApiConstants.USER_CREATION_ERROR, null);
     }
+  }
 }
 ```
 

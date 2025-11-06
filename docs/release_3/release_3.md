@@ -103,6 +103,57 @@ Key quality measures include:
 
 For the current release, the application provides a robust, scalable foundation with modern architecture patterns that support future enhancements such as multi-device synchronization, advanced analytics, and enterprise-level deployment scenarios.
 
-## Architecture Documentation
+## UML diagrams
 
-Add when done. TODO!!
+[UML diagrams](uml_documentation)
+
+The UML documentation provides comprehensive visual representations of the application's structure and behavior through various diagrams. These diagrams illustrate how the different modules interact, how data flows through the system, and how the classes are organized within each module.
+
+### Class diagrams
+
+Due to the extensive number of classes across the project, we have organized the class diagrams by module to provide clear, focused views of each architectural layer. Each diagram shows the classes, their attributes and methods, and the relationships between them within that specific module.
+
+The class diagrams follow UML conventions where `+` indicates public visibility, `-` indicates private visibility, and `#` indicates protected visibility. Solid arrows show dependencies and associations, while dashed arrows show interface implementations or usage relationships.
+
+**core**
+![core module class diagram](uml_documentation/screenshots/class_core.png)
+
+The core module contains the fundamental domain models including `Flashcard`, `FlashcardDeck`, `FlashcardDeckManager`, and authentication-related classes like `User`, `UserData`, `LoginValidator`, and `PasswordEncoder`.
+
+**fxui**
+![fxui module class diagram](uml_documentation/screenshots/class_fxui.png)
+
+The fxui module shows all JavaFX controllers and the `ApiClient` that handles REST API communication. This includes controllers for login, signup, main view, deck management, and flashcard learning.
+
+**server**
+![server module class diagram](uml_documentation/screenshots/class_server.png)
+
+The server module illustrates the Spring Boot REST API structure with controllers (`UserController`, `DeckController`, `FlashcardController`) and services (`UserService`, `DeckService`, `FlashcardService`) that implement the business logic.
+
+**shared**
+![shared module class diagram](uml_documentation/screenshots/class_shared.png)
+
+The shared module contains all Data Transfer Objects (DTOs) used for client-server communication, mapper classes for converting between domain objects and DTOs, and API constants and endpoints.
+
+**storage**
+![storage module class diagram](uml_documentation/screenshots/class_storage.png)
+
+The storage module shows the `FlashcardPersistent` class which implements the `UserPersistence` interface and handles JSON-based file storage for user data and flashcards.
+
+### Architecture diagram
+
+![architecture diagram](uml_documentation/screenshots/architecture.png)
+
+The architecture diagram provides a high-level overview of the system's structure, showing how the five modules (core, fxui, server, shared, storage) interact with each other. It illustrates the client-server separation, with the JavaFX client communicating with the Spring Boot server via REST API, and the server using the storage layer for data persistence.
+
+### Sequence diagram
+
+![sequence diagram](uml_documentation/screenshots/sequence_diagram.png)
+
+The sequence diagram illustrates the flow of a typical user interaction, such as logging in or creating a flashcard. It shows the chronological order of method calls between objects across different modules, demonstrating how the JavaFX controllers interact with the `ApiClient`, which communicates with the REST API, which in turn uses services and storage to fulfill the request.
+
+### Package diagram
+
+![package diagram](uml_documentation/screenshots/package.png)
+
+The package diagram shows the dependencies between the five main modules of the application. It clearly illustrates how the modules depend on each other, with the shared module being used by both client (fxui) and server modules, the server depending on core, storage, and shared, and the clean separation of concerns enforced by this multi-module architecture.

@@ -6,23 +6,34 @@ The team meets twice a week, a schedule that was agreed upon early in the develo
 
 Meeting times:
 
-- Monday 09:00–15:00
-
-- Thursday 09:00–12:00
+- Monday 09:00 - 15:00
+- Thursday 09:00 - 12:00
 
 ## Task Distribution
 
-During the meetings, issues are assigned to team members. For this release, we worked in pairs, with each pair responsible for a specific part of the system:
+During the meetings, issues are assigned to team members based on the nature of the task and availability. We work in pairs, but the pairing is flexible and changes based on what makes most sense for each specific task or feature.
 
-- FXUI and documentation
+For example, pairs are formed based on:
 
-- Server controller and login/signup
+- Who has relevant experience or knowledge for a particular task
+- Who is available at the same time
+- What part of the system needs work
 
-- Server service
+This flexible approach allows us to:
 
-- Shared
+- Match expertise to tasks more effectively
+- Share knowledge across the team
+- Adapt to changing schedules and priorities
 
-Each pair divided tasks internally and coordinated additional meetings if necessary.
+We divided the workflow into main issues, and assigned pairs accordingly:
+
+- Enhancing the login and signup/ user authentication features
+- fxui enhancements and updating fxui to use the REST API
+- Implement the server controllers and mappers in shared
+- Implement the server service classes
+- Implement DTO objects
+
+Each pair divides tasks internally and coordinates additional meetings if necessary.
 
 ## Communication Flow
 
@@ -43,7 +54,5 @@ Write descriptive method names to improve readability and make the code easier t
 When merging code from feature branches into the dev branch, the following process is applied:
 
 1. The feature branch is updated by pulling the latest changes from dev and resolving any conflicts.
-
 2. A pull request is created, which must be reviewed and approved by another team member.
-
 3. Only after all issues in a release are resolved is the dev branch merged into main.
