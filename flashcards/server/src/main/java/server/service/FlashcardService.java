@@ -39,11 +39,20 @@ public class FlashcardService {
   private final FlashcardPersistent persistent;
   private final DeckService deckService;
 
+  /**
+   * Default constructor initializing with a new FlashcardPersistent and DeckService instance.
+   */
   public FlashcardService() {
     this.persistent = new FlashcardPersistent();
     this.deckService = new DeckService();
   }
 
+  /**
+   * Constructor with dependencies.
+   * 
+   * @param persistent
+   * @param deckService
+   */
   public FlashcardService(FlashcardPersistent persistent, DeckService deckService) {
     this.persistent = Objects.requireNonNull(persistent, "FlashcardPersistent cannot be null");
     this.deckService = Objects.requireNonNull(deckService, "DeckService cannot be null");
@@ -56,10 +65,8 @@ public class FlashcardService {
    * @param deckname the name of the deck to retrieve the flashcard from
    * @param number   the index of the flashcard to retrieve
    * @return the Flashcard object at the specified index in the deck
-   * @throws IOException              if an error occurs while reading from
-   *                                  persistent storage
-   * @throws IllegalArgumentException if the specified deck or flashcard is not
-   *                                  found
+   * @throws IOException if an error occurs while reading from persistent storage
+   * @throws IllegalArgumentException if the specified deck or flashcard is not found
    */
   public Flashcard getFlashcard(String username, String deckname, int number) throws IOException {
   
@@ -90,10 +97,8 @@ public class FlashcardService {
    * @param username the username of the user who owns the deck
    * @param deckname the name of the deck to retrieve flashcards from
    * @return a list of all flashcards in the specified deck
-   * @throws IOException              if an error occurs while reading from
-   *                                  persistent storage
-   * @throws IllegalArgumentException if the specified deck is not found for the
-   *                                  user
+   * @throws IOException if an error occurs while reading from persistent storage
+   * @throws IllegalArgumentException if the specified deck is not found for the user
    */
   public List<Flashcard> getAllFlashcards(String username, String deckname) throws IOException {
     return this.deckService.getDeck(username, deckname).getDeck();
@@ -109,10 +114,8 @@ public class FlashcardService {
    * @param answer   the answer text for the flashcard
    * @param question the question text for the flashcard
    * @return the newly created Flashcard object
-   * @throws IOException              if an error occurs while writing the updated
-   *                                  deck to persistent storage
-   * @throws IllegalArgumentException if the specified deck is not found for the
-   *                                  user
+   * @throws IOException if an error occurs while writing the updated deck to persistent storage
+   * @throws IllegalArgumentException if the specified deck is not found for the user
    */
   public Flashcard createFlashcard(String username, String deckname, String answer, String question)
       throws IOException {
@@ -137,9 +140,8 @@ public class FlashcardService {
    * 
    * @param username the username of the user who owns the deck
    * @param deckname the name of the deck containing the flashcard to delete
-   * @param number   the index of the flashcard to remove from the deck
-   * @throws IOException if an error occurs while writing the updated deck to
-   *                     persistent storage
+   * @param number the index of the flashcard to remove from the deck
+   * @throws IOException if an error occurs while writing the updated deck to persistent storage
    */
   public void deleteFlashcard(String username, String deckname, int number) throws IOException {
     // Get the manager once and reuse it

@@ -38,6 +38,7 @@ import javafx.stage.Stage;
  * @author ailinat
  * 
  * @see FlashcardController
+ * 
  */
 @ExtendWith(ApplicationExtension.class)
 public class FlashcardControllerTest {
@@ -52,6 +53,7 @@ public class FlashcardControllerTest {
    * Initializes the JavaFX application for testing.
    * 
    * @param stage the primary stage for the application
+   * 
    */
   @Start
   public void start(Stage stage) {
@@ -72,6 +74,7 @@ public class FlashcardControllerTest {
    * Sets up the test environment before each test.
    * 
    * @throws Exception when reflection access fails
+   * 
    */
   @BeforeEach
   public void setUp() throws Exception {
@@ -108,6 +111,7 @@ public class FlashcardControllerTest {
    * Tests that the controller initializes correctly.
    * 
    * @throws Exception when accessing fields fails
+   * 
    */
   @Test
   public void testControllerInitialization() throws Exception {
@@ -119,6 +123,7 @@ public class FlashcardControllerTest {
    * Tests initialize method with empty deck.
    * 
    * @throws Exception when initializing fails
+   * 
    */
   @Test
   public void testInitialize_WithEmptyDeck() throws Exception {
@@ -131,6 +136,7 @@ public class FlashcardControllerTest {
    * Tests initialize method with non-empty deck.
    * 
    * @throws Exception when initializing fails
+   * 
    */
   @Test
   public void testInitialize_WithNonEmptyDeck() throws Exception {
@@ -152,6 +158,7 @@ public class FlashcardControllerTest {
    * Tests initialize method sets currentCardI to 0.
    * 
    * @throws Exception when initializing fails
+   * 
    */
   @Test
   public void testInitialize_SetsCurrentCardIToZero() throws Exception {
@@ -166,6 +173,7 @@ public class FlashcardControllerTest {
    * Tests setting the current username.
    * 
    * @throws Exception when accessing fields fails
+   * 
    */
   @Test
   public void testSetCurrentUsername() throws Exception {
@@ -173,10 +181,11 @@ public class FlashcardControllerTest {
     assertEquals("newUser", getField("currentUsername"));
   }
 
-    /**
+  /**
    * Tests setting the current username with various inputs.
    * 
    * @throws Exception when setting the username fails
+   * 
    */
   @Test
   public void testSetCurrentUsername_WithNull() throws Exception {
@@ -188,6 +197,7 @@ public class FlashcardControllerTest {
    * Tests setting the current username with empty string.   
    * 
    * @throws Exception when setting the username fails
+   * 
    */
   @Test
   public void testSetCurrentUsername_WithEmptyString() throws Exception {
@@ -199,6 +209,7 @@ public class FlashcardControllerTest {
    * Tests setting the current username with leading/trailing whitespace.
    * 
    * @throws Exception when setting the username fails
+   * 
    */
   @Test
   public void testSetCurrentUsername_WithWhitespace() throws Exception {
@@ -210,6 +221,7 @@ public class FlashcardControllerTest {
    * Tests setting the current username with a valid username.
    * 
    * @throws Exception when setting the username fails
+   * 
    */
   @Test
   public void testSetCurrentUsername_WithValidUsername() throws Exception {
@@ -221,6 +233,7 @@ public class FlashcardControllerTest {
    * Tests setting the current username updates the UI field.
    * 
    * @throws Exception when setting the username fails
+   * 
    */
   @Test
   public void testSetCurrentUsername_UpdatesUsernameField() throws Exception {
@@ -233,6 +246,7 @@ public class FlashcardControllerTest {
    * Tests deck handling functionality.
    * 
    * @throws Exception when accessing fields fails
+   * 
    */
   @SuppressWarnings("unchecked")
   @Test
@@ -249,6 +263,7 @@ public class FlashcardControllerTest {
    * Tests current card index handling.
    * 
    * @throws Exception when accessing fields fails
+   * 
    */
   @Test
   public void testCurrentCardIndexHandling() throws Exception {
@@ -263,6 +278,7 @@ public class FlashcardControllerTest {
    * Tests navigation logic for going to the next card.
    * 
    * @throws Exception when navigating fails
+   * 
    */
   @Test
   public void testNavigationLogic_goToNextCard() throws Exception {
@@ -279,6 +295,7 @@ public class FlashcardControllerTest {
    * Tests navigation logic for going to the previous card.
    * 
    * @throws Exception when navigating fails
+   * 
    */
   @Test
   public void testNavigationLogic_goToPreviousCard() throws Exception {
@@ -295,6 +312,7 @@ public class FlashcardControllerTest {
    * Tests navigation boundaries (wrapping) when going past first or last card.
    * 
    * @throws Exception when navigating fails
+   * 
    */
   @Test
   public void testNavigationBoundaries_atStart() throws Exception {
@@ -307,6 +325,7 @@ public class FlashcardControllerTest {
    * Tests navigation boundaries (wrapping) when going past first or last card.
    * 
    * @throws Exception when navigating fails
+   * 
    */
   @Test
   public void testNavigationBoundaries_atEnd() throws Exception {
@@ -319,6 +338,7 @@ public class FlashcardControllerTest {
    * Tests getting the current card.
    * 
    * @throws Exception when getting the current card fails
+   * 
    */
   @Test
   public void testGetCurrentCard() throws Exception {
@@ -340,7 +360,8 @@ public class FlashcardControllerTest {
   /**
    * Tests handling of empty deck scenarios.
    * 
-   * @throws Exception
+   * @throws Exception if setting the deck fails
+   * 
    */
   @Test
   public void testEmptyDeckHandling() throws Exception {
@@ -356,6 +377,7 @@ public class FlashcardControllerTest {
    * Tests handling of a single-card deck.
    * 
    * @throws Exception when getting the current card fails
+   * 
    */
   @Test
   public void testSingleCardDeck() throws Exception {
@@ -382,6 +404,7 @@ public class FlashcardControllerTest {
    * Tests multiple navigation calls in sequence.
    * 
    * @throws Exception when navigating fails
+   * 
    */
   @Test
   public void testMultipleNavigationSequence() throws Exception {
@@ -404,6 +427,7 @@ public class FlashcardControllerTest {
    * Tests setting the deck with null input.
    * 
    * @throws Exception when setting the deck fails
+   * 
    */
   @SuppressWarnings("unchecked")
   @Test
@@ -421,6 +445,7 @@ public class FlashcardControllerTest {
    * Tests setting the deck with a valid deck.
    * 
    * @throws Exception when setting the deck fails
+   * 
    */
   @SuppressWarnings("unchecked")
   @Test
@@ -447,6 +472,7 @@ public class FlashcardControllerTest {
    * Tests updateProgress method with null deck.
    * 
    * @throws Exception when updating progress fails
+   * 
    */
   @Test
   public void testUpdateProgress_WithNullDeck() throws Exception {
@@ -460,6 +486,7 @@ public class FlashcardControllerTest {
    * Tests updateProgress method with negative card index.
    * 
    * @throws Exception when updating progress fails
+   * 
    */
   @Test
   public void testUpdateProgress_WithNegativeCardIndex() throws Exception {
@@ -471,6 +498,7 @@ public class FlashcardControllerTest {
    * Tests updateProgress method with valid state.
    * 
    * @throws Exception when updating progress fails
+   * 
    */
   @Test
   public void testUpdateProgress_WithValidState() throws Exception {
@@ -482,6 +510,7 @@ public class FlashcardControllerTest {
    * Tests getCurrentCard method with various edge cases.
    * 
    * @throws Exception when getting the current card fails
+   * 
    */
   @Test
   public void testGetCurrentCard_WithNullDeck() throws Exception {
@@ -496,6 +525,7 @@ public class FlashcardControllerTest {
    * Tests getCurrentCard method with invalid index.
    * 
    * @throws Exception when getting the current card fails
+   * 
    */
   @Test
   public void testGetCurrentCard_WithInvalidIndex() throws Exception {
@@ -510,6 +540,7 @@ public class FlashcardControllerTest {
    * Tests getCurrentCard method with negative index.
    * 
    * @throws Exception when getting the current card fails
+   * 
    */
   @Test
   public void testGetCurrentCard_WithNegativeIndex() throws Exception {
@@ -524,6 +555,7 @@ public class FlashcardControllerTest {
    * Tests navigation methods with empty deck.
    * 
    * @throws Exception when navigating fails
+   * 
    */
   @Test
   public void testNavigationWithEmptyDeck() throws Exception {
@@ -541,6 +573,7 @@ public class FlashcardControllerTest {
    * Tests navigation methods with null deck.
    * 
    * @throws Exception when navigating fails
+   * 
    */
   @Test
   public void testNavigationWithNullDeck() throws Exception {
@@ -558,6 +591,7 @@ public class FlashcardControllerTest {
    * Tests getCurrentCard method when deck contains null cards.
    * 
    * @throws Exception when getting the current card fails
+   * 
    */
   @Test
   public void testDeckWithNullCards() throws Exception {
@@ -578,7 +612,9 @@ public class FlashcardControllerTest {
    * Tests that setDeck creates defensive copies of the deck and originalDeck.
    * 
    * @throws Exception when setting the deck fails
+   * 
    */
+  @SuppressWarnings("unchecked")
   @Test
   public void testSetDeck_CreatesDefensiveCopy() throws Exception {
     FlashcardDeck originalDeck = new FlashcardDeck("Original");
@@ -589,7 +625,6 @@ public class FlashcardControllerTest {
     
     controller.setDeck(deckDto);
     
-    @SuppressWarnings("unchecked")
     List<FlashcardDto> internalDeck = (List<FlashcardDto>) getField("deck");
     assertNotSame(originalList, internalDeck);
     
@@ -606,6 +641,7 @@ public class FlashcardControllerTest {
    * Tests that navigation resets the showing answer state.
    * 
    * @throws Exception when navigating fails
+   * 
    */
   @Test
   public void testNavigationResetsShowingAnswerState() throws Exception {
@@ -626,6 +662,7 @@ public class FlashcardControllerTest {
    * Tests updateUi method with null originalDeck.
    * 
    * @throws Exception when updating UI fails
+   * 
    */
   @Test
   public void testUpdateUi_WithNullOriginalDeck() throws Exception {
@@ -637,6 +674,7 @@ public class FlashcardControllerTest {
    * Tests updateUi method when showing answer.
    * 
    * @throws Exception when updating UI fails
+   * 
    */
   @Test
   public void testUpdateUi_WithShowingAnswerTrue() throws Exception {
@@ -646,6 +684,7 @@ public class FlashcardControllerTest {
     Platform.runLater(() -> {
       assertDoesNotThrow(() -> controller.updateUi());
     });
+
     WaitForAsyncUtils.waitForFxEvents();
   }
 
@@ -653,6 +692,7 @@ public class FlashcardControllerTest {
    * Tests updateUi method when current card index is invalid.
    * 
    * @throws Exception when updating UI fails
+   * 
    */
   @Test
   public void testUpdateUi_WithNullCurrentCard() throws Exception {
@@ -664,6 +704,7 @@ public class FlashcardControllerTest {
    * Tests updateUi method when current card has null question/answer.
    * 
    * @throws Exception when updating UI fails
+   * 
    */
   @Test
   public void testUpdateUi_WithNullTextInCard() throws Exception {
@@ -681,6 +722,7 @@ public class FlashcardControllerTest {
     Platform.runLater(() -> {
       assertDoesNotThrow(() -> controller.updateUi());
     });
+
     WaitForAsyncUtils.waitForFxEvents();
   }
 
@@ -688,6 +730,7 @@ public class FlashcardControllerTest {
    * Tests whenCardButtonClicked method with empty deck.
    * 
    * @throws Exception when clicking the card button fails
+   * 
    */
   @Test
   public void testWhenCardButtonClicked_WithEmptyDeck() throws Exception {
@@ -705,6 +748,7 @@ public class FlashcardControllerTest {
    * Tests whenCardButtonClicked method with non-empty deck.
    * 
    * @throws Exception when clicking the card button fails
+   * 
    */
   @Test
   public void testWhenCardButtonClicked_WithNonEmptyDeck() throws Exception {
@@ -722,6 +766,7 @@ public class FlashcardControllerTest {
    * Tests flipCard method with null card button.
    * 
    * @throws Exception when flipping the card fails
+   * 
    */
   @Test
   public void testFlipCard_WithNullCardButton() throws Exception {
@@ -736,6 +781,7 @@ public class FlashcardControllerTest {
    * Tests flipCard method toggles the showing answer state.
    * 
    * @throws Exception when flipping the card fails
+   * 
    */
   @Test
   public void testFlipCard_TogglesShowingAnswer() throws Exception {
@@ -747,6 +793,7 @@ public class FlashcardControllerTest {
    * Tests whenNextCardButtonClicked method advances the card index.
    * 
    * @throws Exception when clicking the next button fails
+   * 
    */
   @Test
   public void testWhenNextCardButtonClicked() throws Exception {
@@ -761,6 +808,7 @@ public class FlashcardControllerTest {
    * Tests whenPreviousCardButtonClicked method goes back to the previous card.
    * 
    * @throws Exception when clicking the previous button fails
+   * 
    */
   @Test
   public void testWhenPreviousCardButtonClicked() throws Exception {
@@ -783,6 +831,7 @@ public class FlashcardControllerTest {
    * Tests updateProgress method calculates progress correctly.
    * 
    * @throws Exception when updating progress fails
+   * 
    */
   @Test
   public void testUpdateProgress_CalculatesCorrectProgress() throws Exception {
@@ -807,6 +856,7 @@ public class FlashcardControllerTest {
    * Tests setDeck method updates internal state and UI.
    * 
    * @throws Exception when setting the deck fails
+   * 
    */
   @Test
   public void testSetDeck_CallsUpdateUiAndProgress() throws Exception {
@@ -824,6 +874,7 @@ public class FlashcardControllerTest {
    * Tests getCurrentCard method when deck contains null card.
    * 
    * @throws Exception when getting the current card fails
+   * 
    */
   @Test
   public void testGetCurrentCard_ReturnsNullForNullCardInList() throws Exception {
@@ -840,6 +891,7 @@ public class FlashcardControllerTest {
    * Tests navigation methods wrap around correctly.
    * 
    * @throws Exception when navigating fails
+   * 
    */
   @Test
   public void testNavigationWrapping() throws Exception {
@@ -856,6 +908,7 @@ public class FlashcardControllerTest {
    * Tests updateUi method with all UI fields null.
    * 
    * @throws Exception when updating UI fails
+   * 
    */
   @Test
   public void testUpdateUi_HandlesAllNullFields() throws Exception {
@@ -876,6 +929,7 @@ public class FlashcardControllerTest {
    * Tests whenBackButtonIsClicked method with null buttons.
    * 
    * @throws Exception when clicking back button fails
+   * 
    */
   @Test
   public void testWhenBackButtonIsClicked_WithNullButtons() throws Exception {
@@ -890,6 +944,7 @@ public class FlashcardControllerTest {
    * Tests whenLogOut method with null backButton.
    * 
    * @throws Exception when logging out fails
+   * 
    */
   @Test
   public void testWhenLogOut_WithNullButton() throws Exception {
@@ -902,6 +957,7 @@ public class FlashcardControllerTest {
    * Tests updateUi method when showing question.
    * 
    * @throws Exception when updating UI fails
+   * 
    */
   @Test
   public void testUpdateUi_WithShowingAnswerFalse() throws Exception {
@@ -917,6 +973,7 @@ public class FlashcardControllerTest {
    * Tests flipCard method with real card button.
    * 
    * @throws Exception when flipping the card fails
+   * 
    */
   @Test
   public void testFlipCard_WithRealButton() throws Exception {
@@ -934,6 +991,7 @@ public class FlashcardControllerTest {
    * Tests whenBackButtonIsClicked method with real back button.
    * 
    * @throws Exception when clicking back button fails
+   * 
    */
   @Test
   public void testWhenBackButtonIsClicked_WithRealButton() throws Exception {
@@ -953,6 +1011,7 @@ public class FlashcardControllerTest {
    * Tests whenLogOut method with real back button.
    * 
    * @throws Exception when logging out fails
+   * 
    */
   @Test
   public void testWhenLogOut_WithRealButton() throws Exception {
@@ -971,6 +1030,7 @@ public class FlashcardControllerTest {
    * Tests updateUi method with real card button.
    * 
    * @throws Exception when updating UI fails
+   * 
    */
   @Test
   public void testUpdateUi_WithRealButton() throws Exception {
@@ -989,6 +1049,7 @@ public class FlashcardControllerTest {
    * Tests updateUi method when showing answer with real card button.
    * 
    * @throws Exception when updating UI fails
+   * 
    */
   @Test
   public void testUpdateUi_ShowingAnswerWithRealButton() throws Exception {
@@ -1009,6 +1070,7 @@ public class FlashcardControllerTest {
    * @param fieldName the name of the field to set
    * @param value the value to set the field to
    * @throws Exception if setting the field fails
+   * 
    */
   private void setField(String fieldName, Object value) throws Exception {
     Field field = FlashcardController.class.getDeclaredField(fieldName);
@@ -1022,6 +1084,7 @@ public class FlashcardControllerTest {
    * @param fieldName the name of the field to get
    * @return the value of the field
    * @throws Exception if getting the field fails
+   * 
    */
   private Object getField(String fieldName) throws Exception {
     Field field = FlashcardController.class.getDeclaredField(fieldName);
@@ -1035,6 +1098,7 @@ public class FlashcardControllerTest {
    * @param fieldName the name of the field
    * @return the Field object
    * @throws Exception if getting the field fails
+   * 
    */
   private Field getFieldObject(String fieldName) throws Exception {
     Field field = FlashcardController.class.getDeclaredField(fieldName);
@@ -1047,6 +1111,7 @@ public class FlashcardControllerTest {
    * 
    * @param methodName the name of the method to call
    * @throws Exception if calling the method fails
+   * 
    */
   private void callPrivateMethod(String methodName) throws Exception {
     Method method = FlashcardController.class.getDeclaredMethod(methodName);
@@ -1060,6 +1125,7 @@ public class FlashcardControllerTest {
    * @param methodName the name of the method to call
    * @return the return value of the method
    * @throws Exception if calling the method fails
+   * 
    */
   private Object callPrivateMethodWithReturn(String methodName) throws Exception {
     Method method = FlashcardController.class.getDeclaredMethod(methodName);

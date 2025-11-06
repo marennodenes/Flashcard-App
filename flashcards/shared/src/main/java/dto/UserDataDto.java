@@ -16,6 +16,7 @@ import jakarta.validation.constraints.NotBlank;
  * 
  * @author marieroe
  * @author isamw
+ * 
  */
 public class UserDataDto {
 
@@ -52,6 +53,7 @@ public class UserDataDto {
    *
    * @param username the username of the user; must not be null or blank
    * @param password the password of the user; must not be null or blank
+   * 
    */
   public UserDataDto(String username, String password) {
     this.username = username;
@@ -65,6 +67,7 @@ public class UserDataDto {
    * @param username the username of the user; must not be null or blank
    * @param password the password of the user; must not be null or blank
    * @param decks the list of flashcard decks associated with the user
+   * 
    */
   @JsonCreator
   public UserDataDto(@JsonProperty("username") String username, 
@@ -88,6 +91,7 @@ public class UserDataDto {
    * Gets the username of the user.
    *
    * @return the username of the user
+   * 
    */
   public String getUsername() {
     return username;
@@ -98,6 +102,7 @@ public class UserDataDto {
    * Gets the password of the user.
    *
    * @return the password of the user
+   * 
    */
   public String getPassword() {
     return password;
@@ -107,6 +112,7 @@ public class UserDataDto {
    * Gets the flashcard deck manager associated with the user.
    *
    * @return the list of flashcard deck managers
+   * 
    */
   public List<FlashcardDeckManagerDto> getDeckManager() {
     List<FlashcardDeckManagerDto> copy = new ArrayList<>();

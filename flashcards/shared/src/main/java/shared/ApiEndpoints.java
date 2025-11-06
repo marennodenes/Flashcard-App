@@ -9,6 +9,7 @@ package shared;
  * 
  * @author isamw
  * @author marieroe
+ * 
  */
 public class ApiEndpoints {
   // Prevent instantiation

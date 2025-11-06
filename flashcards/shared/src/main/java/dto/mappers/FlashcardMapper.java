@@ -10,6 +10,7 @@ import dto.FlashcardDto;
  * 
  * @author ailinat
  * @author sofietw
+ * 
  */
 public class FlashcardMapper {
 
@@ -18,6 +19,7 @@ public class FlashcardMapper {
    * 
    * @param flashcard the Flashcard to convert
    * @return the corresponding FlashcardDto
+   * 
    */
   public FlashcardDto toDto(Flashcard flashcard) {
     if (flashcard == null) {
@@ -32,6 +34,7 @@ public class FlashcardMapper {
    * 
    * @param flashcardDto the FlashcardDto to convert
    * @return the corresponding Flashcard
+   * 
    */
   public Flashcard fromDto(FlashcardDto flashcardDto) {
     if (flashcardDto == null) {
@@ -46,6 +49,7 @@ public class FlashcardMapper {
    * 
    * @param flashcards the list of Flashcards to convert
    * @return the corresponding list of FlashcardDtos
+   * 
    */
   public List<FlashcardDto> toDtoList(List<Flashcard> flashcards) {
     List<FlashcardDto> dtoList = new java.util.ArrayList<>();
@@ -60,6 +64,7 @@ public class FlashcardMapper {
    * 
    * @param flashcardDtos the list of FlashcardDtos to convert
    * @return the corresponding list of Flashcards
+   * 
    */
   public List<Flashcard> fromDtoList(List<FlashcardDto> flashcardDtos) {
     List<Flashcard> flashcardList = new java.util.ArrayList<>();

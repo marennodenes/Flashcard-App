@@ -28,6 +28,7 @@ import org.mockito.Mockito;
  * @author marennod
  * @author sofietw
  * @see ApiClient
+ * 
  */
 public class ApiClientTest {
 
@@ -140,6 +141,7 @@ public class ApiClientTest {
    * Tests performApiRequest for a successful GET request and valid JSON response.
    * 
    * @throws Exception if mocking fails
+   * 
    */
   @SuppressWarnings("unchecked")
   @Test
@@ -164,6 +166,7 @@ public class ApiClientTest {
    * Verifies that performApiRequest throws RuntimeException for server error status codes.
    * 
    * @throws Exception if mocking fails
+   * 
    */
   @SuppressWarnings("unchecked")
   @Test
@@ -220,6 +223,7 @@ public class ApiClientTest {
    * Verifies that performApiRequest throws RuntimeException when parseResponse throws an exception.
    * 
    * @throws Exception if mocking fails
+   * 
    */
   @SuppressWarnings("unchecked")
   @Test
@@ -244,6 +248,7 @@ public class ApiClientTest {
    * Verifies that performApiRequest returns null if responseType is null on 2xx status code.
    * 
    * @throws Exception if mocking fails
+   * 
    */
   @SuppressWarnings("unchecked")
   @Test
@@ -265,6 +270,7 @@ public class ApiClientTest {
    * Verifies that performApiRequest returns null if response body is null on 2xx status code.
    * 
    * @throws Exception if mocking fails
+   * 
    */
   @SuppressWarnings("unchecked")
   @Test
@@ -287,6 +293,7 @@ public class ApiClientTest {
    * Verifies that performApiRequest returns null if response body is empty/whitespace on 2xx status code.
    * 
    * @throws Exception if mocking fails
+   * 
    */
   @SuppressWarnings("unchecked")
   @Test
@@ -309,6 +316,7 @@ public class ApiClientTest {
    * Verifies that performApiRequest returns null for 2xx status code and parseResponse returns null.
    * 
    * @throws Exception if mocking fails
+   * 
    */
   @SuppressWarnings("unchecked")
   @Test
@@ -332,6 +340,7 @@ public class ApiClientTest {
    * Verifies that performApiRequest throws RuntimeException for non-2xx status code and null body.
    * 
    * @throws Exception if mocking fails
+   * 
    */
   @SuppressWarnings("unchecked")
   @Test

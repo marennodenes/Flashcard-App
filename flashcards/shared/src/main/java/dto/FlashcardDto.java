@@ -12,6 +12,7 @@ import jakarta.validation.constraints.NotBlank;
  * 
  * @author marieroe
  * @author isamw
+ * 
  */
 public class FlashcardDto {
 
@@ -53,6 +54,7 @@ public class FlashcardDto {
    * @param question the question on the flashcard; must not be null or blank
    * @param answer the answer on the flashcard; must not be null or blank
    * @param number the unique number of the flashcard; must be at least 1
+   * 
    */
   public FlashcardDto(String question, String answer, int number) {
     this.question = question;
@@ -64,6 +66,7 @@ public class FlashcardDto {
    * Gets the question on the flashcard.
    *
    * @return the question on the flashcard
+   * 
    */
   public String getQuestion() {
     return question;
@@ -73,6 +76,7 @@ public class FlashcardDto {
    * Gets the answer on the flashcard.
    *
    * @return the answer on the flashcard
+   * 
    */
   public String getAnswer() {
     return answer;
@@ -83,6 +87,7 @@ public class FlashcardDto {
    * Gets the unique number of the flashcard.
    *
    * @return the unique number of the flashcard
+   * 
    */
   public int getNumber() {
     return number;
@@ -92,6 +97,7 @@ public class FlashcardDto {
    * Returns a string representation of the flashcard showing question and answer.
    *
    * @return a string in the format "Question \n Answer"
+   * 
    */
   @Override
   public String toString() {

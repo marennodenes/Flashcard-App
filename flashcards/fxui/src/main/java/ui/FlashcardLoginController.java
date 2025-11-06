@@ -23,20 +23,15 @@ import javafx.stage.Stage;
  * @author marieroe
  * @author sofietw
  * @author ailinat
+ * 
  */
 public class FlashcardLoginController {
-  @FXML
-  private Text alertMessage;
-  @FXML
-  private Text ex;
-  @FXML
-  private Button loginButton;
-  @FXML
-  private TextField usernameField;
-  @FXML
-  private TextField passwordField;
-  @FXML
-  private Button signUpButton;
+  @FXML private Text alertMessage;
+  @FXML private Text ex;
+  @FXML private Button loginButton;
+  @FXML private TextField usernameField;
+  @FXML private TextField passwordField;
+  @FXML private Button signUpButton;
 
   private boolean showAlert = false;
   private String error = "";
@@ -95,7 +90,7 @@ public class FlashcardLoginController {
         System.err.println(ApiConstants.SERVER_ERROR + ": " + e.getMessage());
         ApiClient.showAlert(ApiConstants.SERVER_ERROR, ApiConstants.SERVER_CONNECTION_ERROR);
         return;
-      }        if (result.isSuccess() && result.getData() != null) {
+      } if (result.isSuccess() && result.getData() != null) {
           LoginResponseDto loginResponse = result.getData();
           
           // Check if server confirmed login success
@@ -145,6 +140,7 @@ public class FlashcardLoginController {
    * switches to the sign-up scene.
    * 
    * @throws IOException if the FXML file cannot be loaded
+   * 
    */
   private void navigateToSignUpPage() throws IOException {
     FXMLLoader loader = new FXMLLoader(getClass().getResource("/ui/FlashcardSignUp.fxml"));
@@ -161,19 +157,20 @@ public class FlashcardLoginController {
    * 
    * @param username the logged-in username to pass to the main controller
    * @throws IOException if the FXML file cannot be loaded
+   * 
    */
   private void navigateToMainApp(String username) {
     try {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/ui/FlashcardMain.fxml"));
-        Parent root = loader.load();
-        FlashcardMainController mainController = loader.getController();
-        mainController.setCurrentUsername(username);
-        Stage stage = (Stage) loginButton.getScene().getWindow();
-        stage.setScene(SceneUtils.createScaledScene(root));
-        stage.show();
+      FXMLLoader loader = new FXMLLoader(getClass().getResource("/ui/FlashcardMain.fxml"));
+      Parent root = loader.load();
+      FlashcardMainController mainController = loader.getController();
+      mainController.setCurrentUsername(username);
+      Stage stage = (Stage) loginButton.getScene().getWindow();
+      stage.setScene(SceneUtils.createScaledScene(root));
+      stage.show();
     } catch (IOException e) {
-        System.err.println(ApiConstants.LOAD_ERROR + ": " + e.getMessage());
-        ApiClient.showAlert(ApiConstants.LOAD_ERROR, ApiConstants.UNEXPECTED_ERROR);
+      System.err.println(ApiConstants.LOAD_ERROR + ": " + e.getMessage());
+      ApiClient.showAlert(ApiConstants.LOAD_ERROR, ApiConstants.UNEXPECTED_ERROR);
     }
   }
 
@@ -182,6 +179,7 @@ public class FlashcardLoginController {
    * Used for validation errors that should only appear as text.
    * 
    * @param message the error message to display inline
+   * 
    */
   private void showInlineError(String message) {
     error = message;

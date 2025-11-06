@@ -9,6 +9,7 @@ import com.fasterxml.jackson.annotation.JsonCreator;
  * 
  * @author marieroe
  * @author isamw
+ * 
  */
 public class LoginRequestDto {
   /**
@@ -36,6 +37,7 @@ public class LoginRequestDto {
    *
    * @param username the username of the user; must not be null or blank
    * @param password the password of the user; must not be null or blank
+   * 
    */
   @JsonCreator
   public LoginRequestDto(@JsonProperty("username") String username, @JsonProperty("password") String password) {
@@ -47,6 +49,7 @@ public class LoginRequestDto {
    * Gets the username of the user.
    *
    * @return the username of the user
+   * 
    */
   public String getUsername() {
     return username;
@@ -56,6 +59,7 @@ public class LoginRequestDto {
    * Gets the password of the user.
    *
    * @return the password of the user
+   * 
    */
   public String getPassword() {
     return password;
@@ -65,6 +69,7 @@ public class LoginRequestDto {
    * Sets the username of the user.
    *
    * @param username the new username of the user; must not be null or blank
+   * 
    */
   public void setUsername(String username) {
     this.username = username;
@@ -74,6 +79,7 @@ public class LoginRequestDto {
    * Sets the password of the user.
    *
    * @param password the new password of the user; must not be null or blank
+   * 
    */
   public void setPassword(String password) {
     this.password = password;

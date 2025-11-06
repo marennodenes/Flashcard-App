@@ -14,6 +14,7 @@ import jakarta.validation.constraints.NotBlank;
  * 
  * @author marieroe
  * @author isamw
+ * 
  */
 public class FlashcardDeckDto {
 
@@ -47,6 +48,7 @@ public class FlashcardDeckDto {
    *
    * @param deckName the name of the flashcard deck; must not be null or blank
    * @param deck the list of flashcards in the deck; must contain at least one flashcard
+   * 
    */
   public FlashcardDeckDto(String deckName, List<FlashcardDto> deck) {
     this.deckName = deckName;
@@ -57,6 +59,7 @@ public class FlashcardDeckDto {
    * Gets the name of the flashcard deck.
    *
    * @return the name of the flashcard deck
+   * 
    */
   public String getDeckName() {
     return deckName;
@@ -67,6 +70,7 @@ public class FlashcardDeckDto {
    * Gets the list of flashcards in the deck.
    *
    * @return the list of flashcards in the deck
+   * 
    */
   public List<FlashcardDto> getDeck() {
     return deck;

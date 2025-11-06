@@ -18,14 +18,15 @@ import shared.ApiConstants;
  * intermediary between business logic and data storage.
  * 
  * Operations:
- *   Retrieve all decks or specific decks by name
- *   Create and delete flashcard decks
- *   Validate user existence and deck operations
+ * - Retrieve all decks or specific decks by name
+ * - Create and delete flashcard decks
+ * - Validate user existence and deck operations
  * 
  * Throws IllegalArgumentException for business logic violations and IOException for storage errors.
  * 
  * @author chrsom
  * @author isamw
+ * 
  * @see FlashcardPersistent
  * @see FlashcardDeckManager
  * @see FlashcardDeck
@@ -35,10 +36,19 @@ import shared.ApiConstants;
 public class DeckService {
   private final FlashcardPersistent flashcardPersistent;
 
+  /**
+   * Constructs a DeckService with a default FlashcardPersistent instance.
+   */
   public DeckService() {
     this.flashcardPersistent = new FlashcardPersistent();
   }
 
+  /**
+   * Constructs a DeckService with the specified FlashcardPersistent instance.
+   *
+   * @param flashcardPersistent the FlashcardPersistent instance to use for
+   *                            storage operations
+   */
   public DeckService(FlashcardPersistent flashcardPersistent) {
     this.flashcardPersistent = Objects.requireNonNull(flashcardPersistent, "FlashcardPersistent cannot be null");
   }

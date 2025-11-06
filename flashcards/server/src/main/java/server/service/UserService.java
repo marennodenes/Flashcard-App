@@ -14,15 +14,14 @@ import shared.ApiConstants;
  * Service class for managing user operations including retrieval,
  * creation, existence check, login, and password validation.
  * 
- * This service acts as an intermediary between the API layer and the
- * persistence layer, handling business logic for user-related operations.
+ * This service acts as an intermediary between the API layer and the persistence layer, handling business logic for user-related operations.
  * 
  * The service provides functionality to:
- *   Retrieve user information by username
- *   Create new users with validation
+ * - Retrieve user information by username
+ * - Create new users with validation
  * 
  * Check if a user exists
- *   Log in users by validating credentials
+ * - Log in users by validating credentials
  * 
  * Validate user passwords
  * 

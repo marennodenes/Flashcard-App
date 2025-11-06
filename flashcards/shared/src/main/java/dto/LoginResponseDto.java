@@ -10,6 +10,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  * 
  * @author marieroe
  * @author isamw
+ * 
  */
 public class LoginResponseDto {
   
@@ -40,6 +41,7 @@ public class LoginResponseDto {
    * @param success true if login was successful, false otherwise
    * @param message a message providing additional information about the login result
    * @param userData the user data if login was successful, null otherwise
+   * 
    */
   @JsonCreator
   public LoginResponseDto(@JsonProperty("success") boolean success, @JsonProperty("message") String message, @JsonProperty("userData") UserDataDto userData) {
@@ -52,6 +54,7 @@ public class LoginResponseDto {
    * Gets the success status of the login attempt.
    *
    * @return true if login was successful, false otherwise
+   * 
    */
   public boolean isSuccess() {
     return success;
@@ -62,6 +65,7 @@ public class LoginResponseDto {
    * Gets the message providing additional information about the login result.
    *
    * @return the message about the login result
+   * 
    */
   public String getMessage() {
     return message;
@@ -71,6 +75,7 @@ public class LoginResponseDto {
    * Gets the user data if login was successful.
    *
    * @return the user data, or null if login failed
+   * 
    */
   public UserDataDto getUserData() {
     return userData;

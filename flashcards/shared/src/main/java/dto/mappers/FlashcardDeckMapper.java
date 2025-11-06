@@ -14,6 +14,7 @@ import dto.FlashcardDto;
  * 
  * @author ailinat
  * @author sofietw
+ * 
  */
 public class FlashcardDeckMapper {
   
@@ -22,6 +23,7 @@ public class FlashcardDeckMapper {
    * 
    * @param deck the FlashcardDeck to convert
    * @return the corresponding FlashcardDeckDto
+   * 
    */
   public FlashcardDeckDto toDto(FlashcardDeck deck) {
     if (deck == null) {
@@ -43,6 +45,7 @@ public class FlashcardDeckMapper {
    * @param dto the FlashcardDeckDto to convert
    * @return the corresponding FlashcardDeck
    * @throws IllegalArgumentException if dto is null
+   * 
    */
   public FlashcardDeck fromDto(FlashcardDeckDto dto) {
     if (dto == null) {
@@ -65,6 +68,7 @@ public class FlashcardDeckMapper {
    * 
    * @param decks the list of FlashcardDecks to convert
    * @return the corresponding list of FlashcardDeckDtos
+   * 
    */
   public List<FlashcardDeckDto> toDtoList(List<FlashcardDeck> decks) {
     if (decks == null) {
@@ -81,6 +85,7 @@ public class FlashcardDeckMapper {
    * 
    * @param dtoList the list of FlashcardDeckDtos to convert
    * @return the corresponding list of FlashcardDecks
+   * 
    */
   public List<FlashcardDeck> fromDtoList(List<FlashcardDeckDto> dtoList) {
     if (dtoList == null) {

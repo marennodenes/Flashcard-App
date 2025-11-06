@@ -7,6 +7,7 @@ package shared;
  * 
  * @author marieroe
  * @author isamw
+ * 
  */
 public class ApiConstants {
 

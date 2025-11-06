@@ -14,6 +14,7 @@ import jakarta.validation.constraints.Max;
  * 
  * @author marieroe
  * @author isamw
+ * 
  */
 public class FlashcardDeckManagerDto {
 
@@ -37,6 +38,7 @@ public class FlashcardDeckManagerDto {
    * Constructs a new FlashcardDeckManagerDto with the specified list of decks.
    *
    * @param decks the list of flashcard decks; must not exceed 8 decks
+   * 
    */
   public FlashcardDeckManagerDto(List<FlashcardDeckDto> decks) {
     this.decks = List.copyOf(decks);
@@ -47,6 +49,7 @@ public class FlashcardDeckManagerDto {
    * Gets the list of flashcard decks managed by this DTO.
    *
    * @return the list of flashcard decks
+   * 
    */
   public List<FlashcardDeckDto> getDecks() {
     return new ArrayList<>(decks);

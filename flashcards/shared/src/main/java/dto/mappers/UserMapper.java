@@ -22,6 +22,7 @@ import dto.UserDataDto;
  * @author ailinat
  * @author sofietw
  * @author marennod
+ * 
  */
 public class UserMapper {
 
@@ -30,6 +31,7 @@ public class UserMapper {
    * 
    * @param user User-object
    * @return UserDataDto with username and password
+   * 
    */
   public UserDataDto toDto(User user) {
     return new UserDataDto(
@@ -43,6 +45,7 @@ public class UserMapper {
    * 
    * @param userData UserData-object
    * @return UserDataDto with username, password and deck manager
+   * 
    */
   public UserDataDto toDto(UserData userData) {
     String username = userData.getUser() != null ? userData.getUser().getUsername() : "";
@@ -69,6 +72,7 @@ public class UserMapper {
    * 
    * @param dto UserDataDto-object
    * @return UserData with User and DeckManager
+   * 
    */
   public UserData fromDto(UserDataDto dto) {
     String username = dto.getUsername() != null ? dto.getUsername() : "";
@@ -95,6 +99,7 @@ public class UserMapper {
    * 
    * @param dto LoginRequestDto object with username and password
    * @return User object after logging in
+   * 
    */
   public User fromLoginRequestDto(LoginRequestDto dto) {
     String username = dto.getUsername() != null ? dto.getUsername() : "";

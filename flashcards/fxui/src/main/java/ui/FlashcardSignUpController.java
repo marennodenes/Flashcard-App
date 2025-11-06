@@ -22,8 +22,10 @@ import javafx.stage.Stage;
 /**
  * Controller for the flashcard sign-up page.
  * Handles user registration with validation and navigation to the main application.
+ * 
  * @author sofietw
  * @author ailinat
+ * 
  */
 public class FlashcardSignUpController {
   @FXML private Text alertMessage;
@@ -88,6 +90,7 @@ public class FlashcardSignUpController {
    * to display the login interface.
    *
    * @throws IOException if the FXML file cannot be loaded.
+   * 
    */
   @FXML
   public void whenBackButtonIsClicked() {
@@ -110,6 +113,7 @@ public class FlashcardSignUpController {
    * @param password the entered password
    * @param confirmedPassword the confirmed password
    * @return true if all validation passes, false otherwise
+   * 
    */
   private boolean validateInput(String username, String password, String confirmedPassword) {
     // Check for empty fields
@@ -124,8 +128,6 @@ public class FlashcardSignUpController {
       return false;
     }
 
-    
-
     return true;
   }
 
@@ -135,6 +137,7 @@ public class FlashcardSignUpController {
    * 
    * @param username the username to create
    * @param password the password for the user
+   * 
    */
   private void createUser(String username, String password) {
     ApiResponse<UserDataDto> result = null;
@@ -172,6 +175,7 @@ public class FlashcardSignUpController {
    * 
    * @param username the logged-in username to pass to the main controller
    * @throws IOException if the FXML file cannot be loaded
+   * 
    */
   private void navigateToMainApp(String username) {
     try {
@@ -197,6 +201,7 @@ public class FlashcardSignUpController {
    * Used for validation errors that should only appear as text.
    * 
    * @param message the error message to display inline
+   * 
    */
   private void showInlineError(String message) {
     // Update state and ensure the UI refresh runs on the JavaFX Application Thread.

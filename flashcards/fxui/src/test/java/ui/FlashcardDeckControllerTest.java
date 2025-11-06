@@ -55,6 +55,7 @@ import javafx.stage.Stage;
  * @see FlashcardDeckController
  * @see FlashcardDto
  * @see FlashcardDeckDto
+ * 
  */
 @ExtendWith(ApplicationExtension.class)
 class FlashcardDeckControllerTest {
@@ -72,6 +73,7 @@ class FlashcardDeckControllerTest {
    * Sets up a fresh controller and injects mock UI components before each test.
    * 
    * @throws RuntimeException if reflection fails to inject fields
+   * 
    */
   @BeforeEach
   public void setUp() {
@@ -217,25 +219,25 @@ class FlashcardDeckControllerTest {
     }
   }
 
-    /**
-     * Tests card creation logic and API failure.
-     */
-    @Test
-    public void testWhenCreateButtonIsClickedApiFailure() {
-        FlashcardDeckManager mgr = new FlashcardDeckManager();
-        FlashcardDeck deck = new FlashcardDeck("Deck1");
-        mgr.addDeck(deck);
-        runOnFxThread(() -> controller.setDeck(mapper.toDto(deck)));
-        questionField.setText("Q2");
-        answerField.setText("A2");
-        FlashcardDeck deck1 = new FlashcardDeck("Deck1");
-        setField(controller, "currentDeck", mapper.toDto(deck1));
-        try (MockedStatic<ApiClient> apiClientMock = Mockito.mockStatic(ApiClient.class)) {
-            apiClientMock.when(() -> ApiClient.performApiRequest(any(), any(), any(), any())).thenReturn(new ApiResponse<>(false, ApiConstants.FLASHCARD_OPERATION_FAILED, null));
-            assertDoesNotThrow(() -> controller.whenCreateButtonIsClicked());
-        }
-        // After API call, deck should be reloaded from API, so we can't verify exact state here
+  /**
+   * Tests card creation logic and API failure.
+   */
+  @Test
+  public void testWhenCreateButtonIsClickedApiFailure() {
+    FlashcardDeckManager mgr = new FlashcardDeckManager();
+    FlashcardDeck deck = new FlashcardDeck("Deck1");
+    mgr.addDeck(deck);
+    runOnFxThread(() -> controller.setDeck(mapper.toDto(deck)));
+    questionField.setText("Q2");
+    answerField.setText("A2");
+    FlashcardDeck deck1 = new FlashcardDeck("Deck1");
+    setField(controller, "currentDeck", mapper.toDto(deck1));
+    
+    try (MockedStatic<ApiClient> apiClientMock = Mockito.mockStatic(ApiClient.class)) {
+      apiClientMock.when(() -> ApiClient.performApiRequest(any(), any(), any(), any())).thenReturn(new ApiResponse<>(false, ApiConstants.FLASHCARD_OPERATION_FAILED, null));
+      assertDoesNotThrow(() -> controller.whenCreateButtonIsClicked());
     }
+  }
 
   /**
    * Tests card deletion logic and API success.
@@ -258,28 +260,27 @@ class FlashcardDeckControllerTest {
     }
   }
 
-    /**
-     * Tests card deletion logic and API failure.
-     */
-    @Test
-    public void testWhenDeleteCardButtonIsClickedApiFailure() {
-        FlashcardDeckManager mgr = new FlashcardDeckManager();
-        FlashcardDeck deck = new FlashcardDeck("Deck1");
-        deck.addFlashcard(new Flashcard("Q1", "A1"));
-        mgr.addDeck(deck);
-        runOnFxThread(() -> controller.setDeck(mapper.toDto(deck)));
-        List<FlashcardDto> cardDtos = mapper.toDto(deck).getDeck();
-        listView.setItems(FXCollections.observableArrayList(cardDtos));
-        listView.getSelectionModel().select(0);
-        FlashcardDeck deck1 = new FlashcardDeck("Deck1");
-        setField(controller, "currentDeck", mapper.toDto(deck1));
-        try (MockedStatic<ApiClient> apiClientMock = Mockito.mockStatic(ApiClient.class)) {
-            apiClientMock.when(() -> ApiClient.performApiRequest(any(), any(), any(), any())).thenReturn(new ApiResponse<>(false, ApiConstants.FLASHCARD_OPERATION_FAILED, null));
-            assertDoesNotThrow(() -> controller.whenDeleteCardButtonIsClicked());
-        }
-        // After API call, deck should be reloaded from API, so we can't verify exact state here
-        // The API is mocked to return success, so updateUi will reload the deck
-    }
+  /**
+   * Tests card deletion logic and API failure.
+   */
+  @Test
+  public void testWhenDeleteCardButtonIsClickedApiFailure() {
+    FlashcardDeckManager mgr = new FlashcardDeckManager();
+    FlashcardDeck deck = new FlashcardDeck("Deck1");
+    deck.addFlashcard(new Flashcard("Q1", "A1"));
+    mgr.addDeck(deck);
+    runOnFxThread(() -> controller.setDeck(mapper.toDto(deck)));
+    List<FlashcardDto> cardDtos = mapper.toDto(deck).getDeck();
+    listView.setItems(FXCollections.observableArrayList(cardDtos));
+    listView.getSelectionModel().select(0);
+    FlashcardDeck deck1 = new FlashcardDeck("Deck1");
+    setField(controller, "currentDeck", mapper.toDto(deck1));
+    
+    try (MockedStatic<ApiClient> apiClientMock = Mockito.mockStatic(ApiClient.class)) {
+      apiClientMock.when(() -> ApiClient.performApiRequest(any(), any(), any(), any())).thenReturn(new ApiResponse<>(false, ApiConstants.FLASHCARD_OPERATION_FAILED, null));
+      assertDoesNotThrow(() -> controller.whenDeleteCardButtonIsClicked());
+    }    
+  }
 
   /**
    * Tests clearing input fields.
@@ -358,6 +359,7 @@ class FlashcardDeckControllerTest {
     when(mockField.getScene()).thenReturn(mockScene);
     when(mockScene.getWindow()).thenReturn(mockStage);
     setField(controller, "questionField", mockField);
+
     try (MockedStatic<ApiClient> apiClientMock = Mockito.mockStatic(ApiClient.class)) {
       apiClientMock.when(() -> ApiClient.showAlert(anyString(), anyString())).thenAnswer(inv -> null);
       assertDoesNotThrow(() -> controller.whenBackButtonIsClicked());
@@ -372,25 +374,25 @@ class FlashcardDeckControllerTest {
     runOnFxThread(() -> assertDoesNotThrow(() -> controller.initialize()));
   }
 
-    /**
-     * Tests log out logic when API call fails.
-     */
-    @Test
-    public void testWhenLogOutFailure() {
-        // Mock the questionField to have a scene and window to avoid UI issues
-        TextField mockField = mock(TextField.class);
-        Scene mockScene = mock(Scene.class);
-        Stage mockStage = mock(Stage.class);
-        when(mockField.getScene()).thenReturn(mockScene);
-        when(mockScene.getWindow()).thenReturn(mockStage);
-        setField(controller, "questionField", mockField);
+  /**
+   * Tests log out logic when API call fails.
+   */
+  @Test
+  public void testWhenLogOutFailure() {
+    // Mock the questionField to have a scene and window to avoid UI issues
+    TextField mockField = mock(TextField.class);
+    Scene mockScene = mock(Scene.class);
+    Stage mockStage = mock(Stage.class);
+    when(mockField.getScene()).thenReturn(mockScene);
+    when(mockScene.getWindow()).thenReturn(mockStage);
+    setField(controller, "questionField", mockField);
         
-        try (MockedStatic<ApiClient> apiClientMock = Mockito.mockStatic(ApiClient.class)) {
-            apiClientMock.when(() -> ApiClient.performApiRequest(any(), any(), any(), any()))
-                .thenReturn(new ApiResponse<>(false, ApiConstants.USER_OPERATION_FAILED, null));
-            assertDoesNotThrow(() -> controller.whenLogOut());
-        }
+    try (MockedStatic<ApiClient> apiClientMock = Mockito.mockStatic(ApiClient.class)) {
+      apiClientMock.when(() -> ApiClient.performApiRequest(any(), any(), any(), any()))
+          .thenReturn(new ApiResponse<>(false, ApiConstants.USER_OPERATION_FAILED, null));
+      assertDoesNotThrow(() -> controller.whenLogOut());
     }
+  }
 
   /**
    * Tests setting deck manager with no decks.
@@ -458,6 +460,7 @@ class FlashcardDeckControllerTest {
     listView.getSelectionModel().select(0);
     FlashcardDeck deck1 = new FlashcardDeck("Deck1");
     setField(controller, "currentDeck", mapper.toDto(deck1));
+    
     try (MockedStatic<ApiClient> apiClientMock = Mockito.mockStatic(ApiClient.class)) {
       apiClientMock.when(() -> ApiClient.performApiRequest(any(), any(), any(), any())).thenReturn(new ApiResponse<>(true, "", null));
       assertDoesNotThrow(() -> controller.whenDeleteCardButtonIsClicked());
@@ -534,24 +537,31 @@ class FlashcardDeckControllerTest {
     setField(controller, "currentDeck", mapper.toDto(deck1));
     questionField.setText("Q2");
     answerField.setText("A2");
+    
     try (MockedStatic<ApiClient> apiClientMock = Mockito.mockStatic(ApiClient.class)) {
       apiClientMock.when(() -> ApiClient.performApiRequest(any(), any(), any(), any())).thenReturn(new ApiResponse<>(true, "", null));
       controller.whenCreateButtonIsClicked();
     }
+
     questionField.setText("");
     answerField.setText("");
+    
     try (MockedStatic<ApiClient> apiClientMock = Mockito.mockStatic(ApiClient.class)) {
       apiClientMock.when(() -> ApiClient.performApiRequest(any(), any(), any(), any())).thenReturn(new ApiResponse<>(true, "", null));
       assertDoesNotThrow(() -> controller.whenCreateButtonIsClicked());
     }
+
     questionField.setText("   ");
     answerField.setText("   ");
+
     try (MockedStatic<ApiClient> apiClientMock = Mockito.mockStatic(ApiClient.class)) {
       apiClientMock.when(() -> ApiClient.performApiRequest(any(), any(), any(), any())).thenReturn(new ApiResponse<>(true, "", null));
       assertDoesNotThrow(() -> controller.whenCreateButtonIsClicked());
     }
+
     questionField.setText("Q3");
     answerField.setText("A3");
+
     try (MockedStatic<ApiClient> apiClientMock = Mockito.mockStatic(ApiClient.class)) {
       apiClientMock.when(() -> ApiClient.performApiRequest(any(), any(), any(), any())).thenReturn(new ApiResponse<>(false, ApiConstants.FLASHCARD_FAILED_TO_CREATE, null));
       assertDoesNotThrow(() -> controller.whenCreateButtonIsClicked());
@@ -573,24 +583,31 @@ class FlashcardDeckControllerTest {
     List<FlashcardDto> cardDtos = mapper.toDto(deck).getDeck();
     listView.setItems(FXCollections.observableArrayList(cardDtos));
     listView.getSelectionModel().select(0);
+
     try (MockedStatic<ApiClient> apiClientMock = Mockito.mockStatic(ApiClient.class)) {
       apiClientMock.when(() -> ApiClient.performApiRequest(any(), any(), any(), any())).thenReturn(new ApiResponse<>(true, "", null));
       controller.whenDeleteCardButtonIsClicked();
     }
+
     listView.getSelectionModel().clearSelection();
+
     try (MockedStatic<ApiClient> apiClientMock = Mockito.mockStatic(ApiClient.class)) {
       apiClientMock.when(() -> ApiClient.performApiRequest(any(), any(), any(), any())).thenReturn(new ApiResponse<>(true, "", null));
       assertDoesNotThrow(() -> controller.whenDeleteCardButtonIsClicked());
     }
+
     listView.getSelectionModel().select(0);
+
     try (MockedStatic<ApiClient> apiClientMock = Mockito.mockStatic(ApiClient.class)) {
       apiClientMock.when(() -> ApiClient.performApiRequest(any(), any(), any(), any())).thenReturn(new ApiResponse<>(false, ApiConstants.FLASHCARD_FAILED_TO_DELETE, null));
       assertDoesNotThrow(() -> controller.whenDeleteCardButtonIsClicked());
     }
+
     deck.addFlashcard(new Flashcard("Q3", "A3"));
     List<FlashcardDto> cardDtos2 = mapper.toDto(deck).getDeck();
     listView.setItems(FXCollections.observableArrayList(cardDtos2));
     listView.getSelectionModel().select(0);
+
     try (MockedStatic<ApiClient> apiClientMock = Mockito.mockStatic(ApiClient.class)) {
       apiClientMock.when(() -> ApiClient.performApiRequest(any(), any(), any(), any())).thenReturn(new ApiResponse<>(true, "", null));
       assertDoesNotThrow(() -> controller.whenDeleteCardButtonIsClicked());
@@ -715,26 +732,33 @@ class FlashcardDeckControllerTest {
     setField(controller, "currentDeck", null);
     questionField.setText("Q");
     answerField.setText("A");
+
     try (MockedStatic<ApiClient> apiClientMock = Mockito.mockStatic(ApiClient.class)) {
       apiClientMock.when(() -> ApiClient.performApiRequest(any(), any(), any(), any())).thenReturn(new ApiResponse<>(true, "", null));
       assertDoesNotThrow(() -> controller.whenCreateButtonIsClicked());
     }
+
     FlashcardDeck deck2 = new FlashcardDeck("Deck1");
     setField(controller, "currentDeck", mapper.toDto(deck2));
     questionField.setText("");
     answerField.setText("");
+
     try (MockedStatic<ApiClient> apiClientMock = Mockito.mockStatic(ApiClient.class)) {
       apiClientMock.when(() -> ApiClient.performApiRequest(any(), any(), any(), any())).thenReturn(new ApiResponse<>(true, "", null));
       assertDoesNotThrow(() -> controller.whenCreateButtonIsClicked());
     }
+
     questionField.setText("   ");
     answerField.setText("   ");
+
     try (MockedStatic<ApiClient> apiClientMock = Mockito.mockStatic(ApiClient.class)) {
       apiClientMock.when(() -> ApiClient.performApiRequest(any(), any(), any(), any())).thenReturn(new ApiResponse<>(true, "", null));
       assertDoesNotThrow(() -> controller.whenCreateButtonIsClicked());
     }
+
     questionField.setText("Q");
     answerField.setText("A");
+
     try (MockedStatic<ApiClient> apiClientMock = Mockito.mockStatic(ApiClient.class)) {
       apiClientMock.when(() -> ApiClient.performApiRequest(any(), any(), any(), any())).thenReturn(new ApiResponse<>(false, ApiConstants.FLASHCARD_OPERATION_FAILED, null));
       assertDoesNotThrow(() -> controller.whenCreateButtonIsClicked());
@@ -757,24 +781,29 @@ class FlashcardDeckControllerTest {
     setField(controller, "currentDeck", null);
     listView.setItems(FXCollections.observableArrayList());
     listView.getSelectionModel().clearSelection();
+
     try (MockedStatic<ApiClient> apiClientMock = Mockito.mockStatic(ApiClient.class)) {
       apiClientMock.when(() -> ApiClient.performApiRequest(any(), any(), any(), any())).thenReturn(new ApiResponse<>(true, "", null));
       assertDoesNotThrow(() -> controller.whenDeleteCardButtonIsClicked());
     }
+
     FlashcardDeck deck3 = new FlashcardDeck("Deck1");
     setField(controller, "currentDeck", mapper.toDto(deck3));
     listView.setItems(FXCollections.observableArrayList());
     listView.getSelectionModel().clearSelection();
+
     try (MockedStatic<ApiClient> apiClientMock = Mockito.mockStatic(ApiClient.class)) {
       apiClientMock.when(() -> ApiClient.performApiRequest(any(), any(), any(), any())).thenReturn(new ApiResponse<>(true, "", null));
       assertDoesNotThrow(() -> controller.whenDeleteCardButtonIsClicked());
     }
+
     FlashcardDeck deck = new FlashcardDeck("Deck1");
     deck.addFlashcard(new Flashcard("Q", "A"));
     mgr.addDeck(deck);
     List<FlashcardDto> cardDtos = mapper.toDto(deck).getDeck();
     listView.setItems(FXCollections.observableArrayList(cardDtos));
     listView.getSelectionModel().select(0);
+
     try (MockedStatic<ApiClient> apiClientMock = Mockito.mockStatic(ApiClient.class)) {
       apiClientMock.when(() -> ApiClient.performApiRequest(any(), any(), any(), any())).thenReturn(new ApiResponse<>(false, ApiConstants.FLASHCARD_OPERATION_FAILED, null));
       assertDoesNotThrow(() -> controller.whenDeleteCardButtonIsClicked());
@@ -806,6 +835,7 @@ class FlashcardDeckControllerTest {
 
     // FAILURE: isSuccess=false -> showAlert called
     setField(controller, "currentDeck", new FlashcardDeckDto("DeckLoad", List.of()));
+
     try (MockedStatic<ApiClient> api = Mockito.mockStatic(ApiClient.class)) {
       api.when(() -> ApiClient.performApiRequest(anyString(), eq("GET"), isNull(), any(TypeReference.class)))
       .thenReturn(new ApiResponse<>(false, ApiConstants.DECK_RETRIEVING_ERROR, null));
@@ -816,6 +846,7 @@ class FlashcardDeckControllerTest {
 
     // EXCEPTION: thrown -> generic alert
     setField(controller, "currentDeck", new FlashcardDeckDto("DeckLoad", List.of()));
+
     try (MockedStatic<ApiClient> api = Mockito.mockStatic(ApiClient.class)) {
       api.when(() -> ApiClient.performApiRequest(anyString(), eq("GET"), isNull(), any(TypeReference.class)))
       .thenThrow(new RuntimeException(ApiConstants.SERVER_CONNECTION_ERROR));
@@ -916,7 +947,6 @@ class FlashcardDeckControllerTest {
       .thenAnswer(inv -> { title.set(inv.getArgument(0)); msg.set(inv.getArgument(1)); return null; });
 
       controller.whenCreateButtonIsClicked();
-
             assertEquals(ApiConstants.SERVER_ERROR, title.get());
             assertEquals(ApiConstants.UNEXPECTED_ERROR, msg.get());
         }

@@ -5,9 +5,11 @@ package shared;
  * This class provides a standardized format for API responses including success status,
  * message, and optional data payload.
  *
- * @param <T> the type of data contained in the response
  * @author isamw
  * @author marieroe
+ * 
+ * @param <T> the type of data contained in the response
+ * 
  */
 
  public class ApiResponse<T> {

@@ -24,7 +24,9 @@ import javafx.stage.Stage;
  * 
  * @author marennod
  * @author sofietw
+ * 
  * @see FlashcardApp
+ * 
  */
 public class FlashcardAppTest {
 
@@ -35,6 +37,7 @@ public class FlashcardAppTest {
    * Initializes JavaFX before running tests.
    * 
    * @throws InterruptedException if initialization is interrupted
+   * 
    */
   @BeforeAll
   public static void initializeJavaFx() throws InterruptedException {
@@ -76,6 +79,7 @@ public class FlashcardAppTest {
    * Tests that the main method exists with correct signature.
    * 
    * @throws NoSuchMethodException if main method is not found
+   * 
    */
   @Test
   public void testMainMethodExists() throws NoSuchMethodException {
@@ -105,6 +109,7 @@ public class FlashcardAppTest {
    * Tests the getLoginStylesheet() method directly.
    * 
    * @throws InterruptedException if the test times out
+   * 
    */
   @Test
   public void testGetLoginStylesheetMethod() throws InterruptedException {
@@ -134,6 +139,7 @@ public class FlashcardAppTest {
    * Tests the complete start() method execution using mock resources.
    * 
    * @throws InterruptedException if the test times out
+   * 
    */
   @Test
   public void testStartMethodWithMockResources() throws InterruptedException {

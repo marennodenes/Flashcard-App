@@ -28,12 +28,12 @@ import static org.mockito.ArgumentMatchers.eq;
  * persistence layer.
  * 
  * Key testing scenarios covered:
- *   Constructor validation with null parameters
- *   Deck retrieval for existing and non-existing users
- *   Individual deck retrieval by name
- *   Deck creation with validation
- *   Deck deletion operations
- *   Error handling for invalid operations and non-existent entities
+ * - Constructor validation with null parameters
+ * - Deck retrieval for existing and non-existing users
+ * - Individual deck retrieval by name
+ * - Deck creation with validation
+ * - Deck deletion operations
+ * - Error handling for invalid operations and non-existent entities
  * 
  * All deck operations require a valid username and depend on user existence
  * validation through the persistence layer.
@@ -41,10 +41,12 @@ import static org.mockito.ArgumentMatchers.eq;
  * @author chrsom
  * @author isamw
  * @author parts of class is generated with the help of claude.ai
+ * 
  * @see DeckService
  * @see FlashcardPersistent
  * @see FlashcardDeckManager
  * @see FlashcardDeck
+ * 
  */
 @ExtendWith(MockitoExtension.class)
 public class DeckServiceTest {
@@ -55,7 +57,6 @@ public class DeckServiceTest {
    */
   @Mock
   private FlashcardPersistent flashcardPersistent;
-
   private DeckService deckService;
 
   /**
@@ -64,8 +65,6 @@ public class DeckServiceTest {
    * This method creates a new DeckService instance with the mocked
    * FlashcardPersistent dependency. This ensures that each test runs with
    * a clean state and isolated from external dependencies.
-   * 
-   * @see DeckService#DeckService(FlashcardPersistent)
    */
   @BeforeEach
   void setUp() {
@@ -79,8 +78,6 @@ public class DeckServiceTest {
    * its required dependencies and throws appropriate exceptions when null
    * parameters are provided. This ensures fail-fast behavior and prevents
    * the creation of DeckService instances in an invalid state.
-   * 
-   * @see DeckService#DeckService(FlashcardPersistent)
    */
   @Test
   void testConstructor(){
@@ -94,16 +91,14 @@ public class DeckServiceTest {
    * 
    * This test verifies the {@link DeckService#getAllDecks(String)} method
    * behavior in different situations:
-   * 
-   *   Exception thrown when user does not exist in the system
-   *   Successful retrieval when user exists and has deck data
+   * - Exception thrown when user does not exist in the system
+   * - Successful retrieval when user exists and has deck data
    * 
    * The method should validate user existence before attempting to retrieve
    * deck data and throw an {@link IllegalArgumentException} for non-existent users.
    * 
    * @throws IOException if persistence operations fail during test execution
-   * @see DeckService#getAllDecks(String)
-   * @see ApiConstants#USER_NOT_FOUND
+   * 
    */
   @Test
   void testGetAllDecks() throws IOException {
@@ -137,12 +132,12 @@ public class DeckServiceTest {
    * 
    * This test verifies the {@link DeckService#getDeck(String, String)} method
    * functionality including:
-   *  User existence validation
-   *  Deck retrieval from the user's deck collection
-   *  Proper delegation to the deck manager
+   * - User existence validation
+   * - Deck retrieval from the user's deck collection
+   * - Proper delegation to the deck manager
    * 
    * @throws IOException if persistence operations fail during test execution
-   * @see DeckService#getDeck(String, String)
+   * 
    */
   @Test
   void testGetDeck(){
@@ -179,13 +174,13 @@ public class DeckServiceTest {
    * 
    * This test verifies the {@link DeckService#createDeck(String, String)} method
    * workflow including:
-   *   User existence validation
-   *   New deck creation with the specified name
-   *   Addition of the deck to the user's collection
-   *   Persistence of the updated deck manager
+   * - User existence validation
+   * - New deck creation with the specified name
+   * - Addition of the deck to the user's collection
+   * - Persistence of the updated deck manager
    * 
    * @throws IOException if persistence operations fail during test execution
-   * @see DeckService#createDeck(String, String)
+   * 
    */
   @Test
   void testCreateDeck(){
@@ -210,18 +205,18 @@ public class DeckServiceTest {
     }
   }
 
-/** 
- * Tests deck deletion functionality.
- * 
- * This test verifies the {@link DeckService#deleteDeck(String, String)} method
- * workflow including:
- *   User existence validation
- *   Deck removal from the user's collection
- *   Persistence of the updated deck manager state
- * 
- * @throws IOException if persistence operations fail during test execution
- * @see DeckService#deleteDeck(String, String)
- */
+  /** 
+  * Tests deck deletion functionality.
+  * 
+  * This test verifies the {@link DeckService#deleteDeck(String, String)} method
+  * workflow including:
+  * - User existence validation
+  * - Deck removal from the user's collection
+  * - Persistence of the updated deck manager state
+  * 
+  * @throws IOException if persistence operations fail during test execution
+  *
+  */
   @Test
   void testDeleteDeck(){
     String username = "existingUser";
@@ -268,9 +263,7 @@ public class DeckServiceTest {
    * operations for users that don't exist in the system.
    * 
    * @throws IOException if persistence operations fail during test execution
-   * @see DeckService#getDeck(String, String)
-   * @see DeckService#createDeck(String, String)
-   * @see DeckService#deleteDeck(String, String)
+   * 
    */
   @Test
   void testUpdateAllDecks() throws IOException {

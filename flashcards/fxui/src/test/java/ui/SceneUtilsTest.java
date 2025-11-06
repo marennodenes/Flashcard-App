@@ -43,20 +43,20 @@ public class SceneUtilsTest extends ApplicationTest {
    */
   @Test
   public void testCreateScaledSceneWithPreferredSize() {
-      // Arrange
-      AnchorPane root = new AnchorPane();
-      root.setPrefWidth(416.0);
-      root.setPrefHeight(264.0);
+    // Arrange
+    AnchorPane root = new AnchorPane();
+    root.setPrefWidth(416.0);
+    root.setPrefHeight(264.0);
 
-      // Act
-      Scene scene = SceneUtils.createScaledScene(root);
+    // Act
+    Scene scene = SceneUtils.createScaledScene(root);
 
-      // Assert
-      assertNotNull(scene, "Scene should not be null");
-      assertEquals(416.0 * SCALE_FACTOR, scene.getWidth(), DELTA, 
-          "Scene width should be doubled");
-      assertEquals(264.0 * SCALE_FACTOR, scene.getHeight(), DELTA, 
-          "Scene height should be doubled");
+    // Assert
+    assertNotNull(scene, "Scene should not be null");
+    assertEquals(416.0 * SCALE_FACTOR, scene.getWidth(), DELTA, 
+        "Scene width should be doubled");
+    assertEquals(264.0 * SCALE_FACTOR, scene.getHeight(), DELTA, 
+        "Scene height should be doubled");
   }
 
   /**
@@ -65,19 +65,19 @@ public class SceneUtilsTest extends ApplicationTest {
    */
   @Test
   public void testCreateScaledSceneWithDefaultSize() {
-      // Arrange
-      AnchorPane root = new AnchorPane();
-      // Don't set preferred size - should use defaults
+    // Arrange
+    AnchorPane root = new AnchorPane();
+    // Don't set preferred size - should use defaults
 
-      // Act
-      Scene scene = SceneUtils.createScaledScene(root);
+    // Act
+    Scene scene = SceneUtils.createScaledScene(root);
 
-      // Assert
-      assertNotNull(scene, "Scene should not be null");
-      assertEquals(416.0 * SCALE_FACTOR, scene.getWidth(), DELTA, 
-          "Scene width should use default and be doubled");
-      assertEquals(264.0 * SCALE_FACTOR, scene.getHeight(), DELTA, 
-          "Scene height should use default and be doubled");
+    // Assert
+    assertNotNull(scene, "Scene should not be null");
+    assertEquals(416.0 * SCALE_FACTOR, scene.getWidth(), DELTA, 
+        "Scene width should use default and be doubled");
+    assertEquals(264.0 * SCALE_FACTOR, scene.getHeight(), DELTA, 
+        "Scene height should use default and be doubled");
   }
 
   /**
@@ -86,19 +86,19 @@ public class SceneUtilsTest extends ApplicationTest {
    */
   @Test
   public void testApplyScalingToRoot() {
-      // Arrange
-      AnchorPane root = new AnchorPane();
-      root.setPrefWidth(416.0);
-      root.setPrefHeight(264.0);
+    // Arrange
+    AnchorPane root = new AnchorPane();
+    root.setPrefWidth(416.0);
+    root.setPrefHeight(264.0);
 
-      // Act
-      SceneUtils.applyScaling(root);
+    // Act
+    SceneUtils.applyScaling(root);
 
-      // Assert
-      assertEquals(SCALE_FACTOR, root.getScaleX(), DELTA, 
-          "ScaleX should be set to scale factor");
-      assertEquals(SCALE_FACTOR, root.getScaleY(), DELTA, 
-          "ScaleY should be set to scale factor");
+    // Assert
+    assertEquals(SCALE_FACTOR, root.getScaleX(), DELTA, 
+        "ScaleX should be set to scale factor");
+    assertEquals(SCALE_FACTOR, root.getScaleY(), DELTA, 
+        "ScaleY should be set to scale factor");
   }
 
   /**
@@ -107,18 +107,18 @@ public class SceneUtilsTest extends ApplicationTest {
    */
   @Test
   public void testSceneRootIsWrappedInStackPane() {
-      // Arrange
-      AnchorPane root = new AnchorPane();
-      root.setPrefWidth(416.0);
-      root.setPrefHeight(264.0);
+    // Arrange
+    AnchorPane root = new AnchorPane();
+    root.setPrefWidth(416.0);
+    root.setPrefHeight(264.0);
 
-      // Act
-      Scene scene = SceneUtils.createScaledScene(root);
+    // Act
+    Scene scene = SceneUtils.createScaledScene(root);
 
-      // Assert
-      assertNotNull(scene.getRoot(), "Scene root should not be null");
-      assertTrue(scene.getRoot() instanceof StackPane, 
-          "Scene root should be wrapped in StackPane");
+    // Assert
+    assertNotNull(scene.getRoot(), "Scene root should not be null");
+    assertTrue(scene.getRoot() instanceof StackPane, 
+      "Scene root should be wrapped in StackPane");
   }
 
   /**
@@ -127,20 +127,20 @@ public class SceneUtilsTest extends ApplicationTest {
    */
   @Test
   public void testTranslationIsAppliedForCentering() {
-      // Arrange
-      AnchorPane root = new AnchorPane();
-      root.setPrefWidth(416.0);
-      root.setPrefHeight(264.0);
+    // Arrange
+    AnchorPane root = new AnchorPane();
+    root.setPrefWidth(416.0);
+    root.setPrefHeight(264.0);
 
-      // Act
-      SceneUtils.createScaledScene(root);
+    // Act
+    SceneUtils.createScaledScene(root);
 
-      // Assert
-      // Translation should be applied to compensate for scaling
-      assertNotEquals(0.0, root.getTranslateX(), 
-          "TranslateX should be set to center content");
-      assertNotEquals(0.0, root.getTranslateY(), 
-          "TranslateY should be set to center content");
+    // Assert
+    // Translation should be applied to compensate for scaling
+    assertNotEquals(0.0, root.getTranslateX(), 
+      "TranslateX should be set to center content");
+    assertNotEquals(0.0, root.getTranslateY(), 
+      "TranslateY should be set to center content");
   }
 
   /**
@@ -149,19 +149,19 @@ public class SceneUtilsTest extends ApplicationTest {
    */
   @Test
   public void testCreateScaledSceneWithCustomDimensions() {
-      // Arrange
-      AnchorPane root = new AnchorPane();
-      root.setPrefWidth(600.0);
-      root.setPrefHeight(400.0);
+    // Arrange
+    AnchorPane root = new AnchorPane();
+    root.setPrefWidth(600.0);
+    root.setPrefHeight(400.0);
 
-      // Act
-      Scene scene = SceneUtils.createScaledScene(root);
+    // Act
+    Scene scene = SceneUtils.createScaledScene(root);
 
-      // Assert
-      assertEquals(600.0 * SCALE_FACTOR, scene.getWidth(), DELTA, 
-          "Scene width should match custom size doubled");
-      assertEquals(400.0 * SCALE_FACTOR, scene.getHeight(), DELTA, 
-          "Scene height should match custom size doubled");
+    // Assert
+    assertEquals(600.0 * SCALE_FACTOR, scene.getWidth(), DELTA, 
+      "Scene width should match custom size doubled");
+    assertEquals(400.0 * SCALE_FACTOR, scene.getHeight(), DELTA, 
+      "Scene height should match custom size doubled");
   }
 
   /**
@@ -169,26 +169,27 @@ public class SceneUtilsTest extends ApplicationTest {
    * Verifies that constructor throws UnsupportedOperationException when accessed via reflection.
    * 
    * @throws Exception if reflection fails (expected behavior wraps UnsupportedOperationException)
+   * 
    */
   @Test
   public void testPrivateConstructorThrowsException() {
-      // Act & Assert
-      Exception exception = assertThrows(
-          Exception.class,
-          () -> {
-              // Use reflection to access private constructor
-              var constructor = SceneUtils.class.getDeclaredConstructor();
-              constructor.setAccessible(true);
-              constructor.newInstance();
-          },
-          "Private constructor should throw exception"
+    // Act & Assert
+    Exception exception = assertThrows(
+      Exception.class,
+        () -> {
+            // Use reflection to access private constructor
+            var constructor = SceneUtils.class.getDeclaredConstructor();
+            constructor.setAccessible(true);
+            constructor.newInstance();
+        },
+        "Private constructor should throw exception"
       );
 
-      // Reflection wraps the exception in InvocationTargetException
-      assertTrue(exception.getCause() instanceof UnsupportedOperationException,
-          "Cause should be UnsupportedOperationException");
-      assertEquals("Utility class", exception.getCause().getMessage(), 
-          "Exception message should be 'Utility class'");
+    // Reflection wraps the exception in InvocationTargetException
+    assertTrue(exception.getCause() instanceof UnsupportedOperationException,
+      "Cause should be UnsupportedOperationException");
+    assertEquals("Utility class", exception.getCause().getMessage(), 
+      "Exception message should be 'Utility class'");
   }
 
   /**
@@ -197,18 +198,18 @@ public class SceneUtilsTest extends ApplicationTest {
    */
   @Test
   public void testApplyScalingMultipleTimes() {
-      // Arrange
-      AnchorPane root = new AnchorPane();
+    // Arrange
+    AnchorPane root = new AnchorPane();
 
-      // Act & Assert - should not throw
-      assertDoesNotThrow(() -> {
-          SceneUtils.applyScaling(root);
-          SceneUtils.applyScaling(root); // Apply again
-      });
+    // Act & Assert - should not throw
+    assertDoesNotThrow(() -> {
+        SceneUtils.applyScaling(root);
+        SceneUtils.applyScaling(root); // Apply again
+    });
 
-      // Verify scale is still correct
-      assertEquals(SCALE_FACTOR, root.getScaleX(), DELTA);
-      assertEquals(SCALE_FACTOR, root.getScaleY(), DELTA);
+    // Verify scale is still correct
+    assertEquals(SCALE_FACTOR, root.getScaleX(), DELTA);
+    assertEquals(SCALE_FACTOR, root.getScaleY(), DELTA);
   }
 
   /**
@@ -217,17 +218,17 @@ public class SceneUtilsTest extends ApplicationTest {
    */
   @Test
   public void testCreateScaledSceneWithSmallSize() {
-      // Arrange
-      AnchorPane root = new AnchorPane();
-      root.setPrefWidth(100.0);
-      root.setPrefHeight(50.0);
+    // Arrange
+    AnchorPane root = new AnchorPane();
+    root.setPrefWidth(100.0);
+    root.setPrefHeight(50.0);
 
-      // Act
-      Scene scene = SceneUtils.createScaledScene(root);
+    // Act
+    Scene scene = SceneUtils.createScaledScene(root);
 
-      // Assert
-      assertNotNull(scene, "Scene should not be null");
-      assertEquals(100.0 * SCALE_FACTOR, scene.getWidth(), DELTA);
-      assertEquals(50.0 * SCALE_FACTOR, scene.getHeight(), DELTA);
+    // Assert
+    assertNotNull(scene, "Scene should not be null");
+    assertEquals(100.0 * SCALE_FACTOR, scene.getWidth(), DELTA);
+    assertEquals(50.0 * SCALE_FACTOR, scene.getHeight(), DELTA);
   }
 }

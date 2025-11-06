@@ -24,7 +24,9 @@ import javafx.util.Duration;
 /**
  * Controller for the flashcard learning interface.
  * Handles navigation between cards, flipping animations, and progress tracking.
+ * 
  * @author marieroe
+ * 
  */
 public class FlashcardController {
 
@@ -124,19 +126,21 @@ public class FlashcardController {
 
   /**
    * Sets the deck for the controller and updates UI/progress.
+   * 
    * @param deck the deck DTO to set (can be null)
+   * 
    */
   public void setDeck(FlashcardDeckDto deck) {
     if (deck == null) {
-        this.originalDeck = null;
-        this.deck = new ArrayList<>();
-        currentCardI = 0;
+      this.originalDeck = null;
+      this.deck = new ArrayList<>();
+      currentCardI = 0;
     } else {
-        // Create defensive copy
-        List<FlashcardDto> deckList = new ArrayList<>(deck.getDeck());
-        this.originalDeck = new FlashcardDeckDto(deck.getDeckName(), deckList);
-        this.deck = new ArrayList<>(deckList);
-        currentCardI = 0;
+      // Create defensive copy
+      List<FlashcardDto> deckList = new ArrayList<>(deck.getDeck());
+      this.originalDeck = new FlashcardDeckDto(deck.getDeckName(), deckList);
+      this.deck = new ArrayList<>(deckList);
+      currentCardI = 0;
     }
     updateUi();
     updateProgress();
@@ -146,6 +150,7 @@ public class FlashcardController {
    * Sets the current username for display in the UI.
    *
    * @param username the username to set
+   * 
    */
   public void setCurrentUsername(String username) {
     if (username == null || username.trim().isEmpty()) {
@@ -201,6 +206,7 @@ public class FlashcardController {
    * Passes the current username and deck manager to maintain data consistency.
    * 
    * @throws IOException if the FXML file cannot be loaded or found
+   * 
    */
   @FXML
   public void whenBackButtonIsClicked() {
@@ -246,6 +252,7 @@ public class FlashcardController {
    * Navigates back to the login screen.
    * 
    * @param event the action event from clicking the log out button
+   * 
    */
   @FXML
   public void whenLogOut(ActionEvent event){
@@ -271,6 +278,7 @@ public class FlashcardController {
    * Performs boundary and null checks to ensure safe access.
    *
    * @return the current flashcard, or null if the deck is empty, null, or the index is invalid
+   * 
    */
   private FlashcardDto getCurrentCard() {
     if (deck == null || deck.isEmpty() || currentCardI < 0 || currentCardI >= deck.size()) {

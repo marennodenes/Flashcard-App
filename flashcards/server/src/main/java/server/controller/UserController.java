@@ -22,9 +22,11 @@ import shared.ApiResponse;
  * UserController handles user-related HTTP requests such as registration, login, logout,
  * profile management, and password validation.
  * It interacts with the UserService to perform business logic and data operations.
+ * 
  * @author parts of class is generated with the help of claude.ai
  * @author @ailinat
  * @author @sofietw
+ * 
  * @see server.service.UserService
  */
 @RestController
@@ -47,6 +49,7 @@ public class UserController {
   /**
    * Get user information by username.
    * Uses the userService to retrieve user data
+   * 
    * @param username the username of the user to retrieve
    * @return ApiResponse<UserDataDto> with user data
    */
@@ -67,6 +70,7 @@ public class UserController {
   /**
    * Delete a user.
    * Uses the userService to delete a user
+   * 
    * @param username the username of the user to delete
    * @return ApiResponse<Boolean> indicating if the user was deleted
    */
@@ -86,6 +90,7 @@ public class UserController {
   /**
    * Register a new user.
    * Uses the userService to create a new user with detailed validation
+   * 
    * @param request the login request containing username and password
    * @return ApiResponse<UserDataDto> with created user data
    */
@@ -106,6 +111,7 @@ public class UserController {
   /**
    * Login a user.
    * Uses the userService to login a user
+   * 
    * @param loginRequest the login request containing username and password
    * @return ApiResponse<LoginResponseDto> with login result and user data
    */
@@ -140,6 +146,7 @@ public class UserController {
   /**
    * Validate password for a user.
    * Uses the userService to validate a user's password
+   * 
    * @param request the login request containing username and password
    * @return ApiResponse<Boolean> indicating if the password is valid
    */

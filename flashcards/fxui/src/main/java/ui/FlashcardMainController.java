@@ -33,6 +33,7 @@ import javafx.stage.Stage;
  * @author chrsom
  * @author marennod
  * @author marieroe
+ * 
  */
 public class FlashcardMainController {
   @FXML private Button deck_1;
@@ -171,6 +172,7 @@ public class FlashcardMainController {
    * the login controller to set the logged-in user.
    * 
    * @param username the username to set as current user
+   * 
    */
   public void setCurrentUsername(String username) {
     if (username != null && !username.trim().isEmpty()) {
@@ -186,6 +188,7 @@ public class FlashcardMainController {
    * the UI. Shows an error message if deck creation fails.
    * 
    * @param event the action event from clicking the new deck button
+   * 
    */
   @FXML
   public void whenNewDeckButtonIsClicked(ActionEvent event) {
@@ -258,6 +261,7 @@ public class FlashcardMainController {
    * refreshes the UI.
    * 
    * @param event the action event from clicking a delete button
+   * 
    */
   @FXML
   public void whenDeleteDeckButtonIsClicked(ActionEvent event) {
@@ -300,6 +304,7 @@ public class FlashcardMainController {
    * scenes.
    * 
    * @param event the action event from clicking a deck button
+   * 
    */
   @FXML
   public void whenADeckIsClicked(ActionEvent event) {
@@ -333,6 +338,7 @@ public class FlashcardMainController {
    * appropriate CSS styling, and switches to the login scene.
    * 
    * @param event the action event from clicking the log out button
+   * 
    */
   @FXML
   public void whenLogOut(ActionEvent event) {
@@ -358,13 +364,10 @@ public class FlashcardMainController {
   /**
    * Shows an inline error message without popup.
    * Used for validation errors that should only appear as text.
+   * Hides and disables all deck and delete byttons. Used to reset the UI state before showing onlu the relevant buttons
    * 
    * @param message the error message to display inline
-   */
-
-  /**
-   * Hides and disables all deck and delete buttons. Used to reset the UI state
-   * before showing only the relevant buttons.
+   * 
    */
   private void hideAllDeckButtons() {
     for (Button b : deckButtons) {
@@ -404,6 +407,12 @@ public class FlashcardMainController {
     }
   }
   
+  /**
+   * Private method to show error messages on the UI
+   * 
+   * @param message the error message to show
+   * 
+   */
   private void showInlineError(String message) {
     error = message;
     showAlert = true;

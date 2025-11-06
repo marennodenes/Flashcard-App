@@ -61,6 +61,7 @@ import javafx.stage.Stage;
  * @see FlashcardMainController
  * @see FlashcardDeckDto
  * @see ApiClient
+ * 
  */
 @ExtendWith(ApplicationExtension.class)
 class FlashcardMainControllerTest {
@@ -83,6 +84,7 @@ class FlashcardMainControllerTest {
    * Initializes the test stage.
    * 
    * @param stage the JavaFX stage for testing
+   * 
    */
   @Start
   public void start(Stage stage) {
@@ -97,6 +99,7 @@ class FlashcardMainControllerTest {
    * Sets up test environment before each test.
    * 
    * @throws Exception if component initialization or injection fails
+   * 
    */
   @BeforeEach
   public void setUp() throws Exception {
@@ -139,6 +142,7 @@ class FlashcardMainControllerTest {
    * Injects FXML components into controller using reflection.
    *  
    * @throws Exception if the field is not found or cannot be set
+   * 
    */
   private void injectFxmlComponents() throws Exception {
     setField("deck_1", deck1);
@@ -172,6 +176,7 @@ class FlashcardMainControllerTest {
    * @param fieldName the name of the field to set
    * @param value the value to assign to the field
    * @throws Exception if the field is not found or cannot be set
+   * 
    */
   private void setField(String fieldName, Object value) throws Exception {
     var field = FlashcardMainController.class.getDeclaredField(fieldName);
@@ -185,6 +190,7 @@ class FlashcardMainControllerTest {
    * @param fieldName the name of the field to retrieve
    * @return the value of the field
    * @throws Exception if the field is not found or cannot be accessed
+   * 
    */
   private Object getField(String fieldName) throws Exception {
     var field = FlashcardMainController.class.getDeclaredField(fieldName);
@@ -270,6 +276,7 @@ class FlashcardMainControllerTest {
    * Tests creating a deck with valid name.
    * 
    * @throws Exception if test setup fails
+   * 
    */
   @SuppressWarnings("unchecked")
   @Test
@@ -301,6 +308,7 @@ class FlashcardMainControllerTest {
    * Tests that empty deck name shows error.
    * 
    * @throws Exception if test setup fails
+   * 
    */
   @SuppressWarnings("unchecked")
   @Test
@@ -323,7 +331,8 @@ class FlashcardMainControllerTest {
   /**
    * Tests that invalid deck name shows error.
    *  
-   *  @throws Exception if test setup fails
+   * @throws Exception if test setup fails
+   * 
    */
   @SuppressWarnings("unchecked")
   @Test
@@ -346,6 +355,7 @@ class FlashcardMainControllerTest {
    * Tests that new deck button is disabled when max decks reached.
    * 
    * @throws Exception if test setup failed
+   * 
    */
   @SuppressWarnings("unchecked")
   @Test
@@ -371,6 +381,7 @@ class FlashcardMainControllerTest {
    * Tests that new deck button is enabled when less than max decks.
    * 
    * @throws Exception if test setup fails
+   * 
    */
   @SuppressWarnings("unchecked")
   @Test
@@ -395,6 +406,7 @@ class FlashcardMainControllerTest {
    * Tests that correct number of decks is shown.
    * 
    * @throws Exception if test setup fails
+   * 
    */
   @SuppressWarnings("unchecked")
   @Test
@@ -451,6 +463,7 @@ class FlashcardMainControllerTest {
    * Tests that no decks message is hidden when decks exist.
    * 
    * @throws Exception if test setup fails
+   * 
    */
   @SuppressWarnings("unchecked")
   @Test
@@ -475,6 +488,7 @@ class FlashcardMainControllerTest {
    * Tests that deck buttons show correct deck names.
    * 
    * @throws Exception if test setup fails
+   * 
    */
   @SuppressWarnings("unchecked")
   @Test
@@ -515,6 +529,7 @@ class FlashcardMainControllerTest {
    * Tests that updateUi handles null components gracefully.
    * 
    * @throws Exception if reflection fails
+   * 
    */
   @Test
   public void testUpdateUi_WithNullComponents_HandlesGracefully() throws Exception {
@@ -535,6 +550,7 @@ class FlashcardMainControllerTest {
    * Tests that alert is displayed when showAlert is true.
    * 
    * @throws Exception if reflection fails
+   * 
    */
   @SuppressWarnings("unchecked")
   @Test
@@ -566,6 +582,7 @@ class FlashcardMainControllerTest {
    * Tests that alert is hidden when showAlert is false.
    * 
    * @throws Exception if reflection fails
+   * 
    */
   @SuppressWarnings("unchecked")
   @Test
@@ -598,6 +615,7 @@ class FlashcardMainControllerTest {
    * Tests that deleting a deck removes it from manager.
    * 
    * @throws Exception if test setup fails
+   * 
    */
   @SuppressWarnings("unchecked")
   @Test
@@ -639,6 +657,7 @@ class FlashcardMainControllerTest {
    * Tests that UI is updated after deleting a deck.
    * 
    * @throws Exception if test setup fails
+   * 
    */
   @SuppressWarnings("unchecked")
 @Test
@@ -683,6 +702,7 @@ class FlashcardMainControllerTest {
    * Tests that deleting a deck works with valid deck.
    * 
    * @throws Exception if test setup fails
+   * 
    */
   @Test
   void testWhenDeleteDeckButtonIsClicked_ValidDeck() throws Exception {
@@ -699,6 +719,7 @@ class FlashcardMainControllerTest {
    * Tests that deleting a deck handles API failure gracefully.
    * 
    * @throws Exception if test setup fails
+   * 
    */
   @Test
   public void testWhenDeleteDeckButtonIsClicked_ApiFailure() throws Exception {
@@ -715,6 +736,7 @@ class FlashcardMainControllerTest {
    * Tests that deleting a deck works with null deck.
    * 
    * @throws Exception if test setup fails
+   * 
    */
   @Test
   public void testWhenDeleteDeckButtonIsClicked_NullDeck() throws Exception {
@@ -726,6 +748,7 @@ class FlashcardMainControllerTest {
    * Tests that deleting a deck handles successful API response.
    * 
    * @throws Exception if test setup fails
+   * 
    */
   @SuppressWarnings("unchecked")
   @Test
@@ -756,6 +779,7 @@ class FlashcardMainControllerTest {
    * Tests that deleting a deck handles failed API response.
    * 
    * @throws Exception if test setup fails
+   * 
    */
   @SuppressWarnings("unchecked")
   @Test
@@ -780,6 +804,7 @@ class FlashcardMainControllerTest {
    * Tests that deleting a deck handles null API response.
    * 
    * @throws Exception if test setup fails
+   * 
    */
   @SuppressWarnings("unchecked")
 @Test
@@ -802,6 +827,7 @@ class FlashcardMainControllerTest {
    * Tests that creating a new deck with empty name is handled gracefully.
    * 
    * @throws Exception if test setup fails
+   * 
    */
   @Test
   public void testWhenNewDeckButtonIsClicked_EmptyDeckName() throws Exception {
@@ -813,6 +839,7 @@ class FlashcardMainControllerTest {
    * Tests that creating a new deck handles API failure gracefully.
    * 
    * @throws Exception if test setup fails
+   * 
    */
   @Test
   public void testWhenNewDeckButtonIsClicked_ApiFailure() throws Exception {
@@ -828,6 +855,7 @@ class FlashcardMainControllerTest {
    * Tests that creating a new deck when currentUsername is null shows error. 
    * 
    * @throws Exception if test setup fails
+   * 
    */
   @Test
   public void testWhenNewDeckButtonIsClicked_NullUsername() throws Exception {
@@ -847,6 +875,7 @@ class FlashcardMainControllerTest {
    * Tests that creating a new deck when currentUsername is empty shows error. 
    * 
    * @throws Exception if test setup fails
+   * 
    */
   @Test
   public void testWhenNewDeckButtonIsClicked_EmptyUsername() throws Exception {
@@ -866,6 +895,7 @@ class FlashcardMainControllerTest {
    * Tests that creating a new deck handles validation error response.
    * 
    * @throws Exception if test setup fails
+   * 
    */
   @SuppressWarnings("unchecked")
   @Test
@@ -897,6 +927,7 @@ class FlashcardMainControllerTest {
    * Tests that creating a new deck handles server error response. 
    * 
    * @throws Exception if test setup fails
+   * 
    */
   @SuppressWarnings("unchecked")
   @Test
@@ -920,6 +951,7 @@ class FlashcardMainControllerTest {
    * Tests that creating a new deck handles null API response.
    * 
    * @throws Exception if test setup fails
+   * 
    */
   @SuppressWarnings("unchecked")
   @Test
@@ -941,6 +973,7 @@ class FlashcardMainControllerTest {
    * Tests that creating a new deck handles exception with cause.
    * 
    * @throws Exception if test setup fails
+   * 
    */
   @SuppressWarnings("unchecked")
   @Test
@@ -965,6 +998,7 @@ class FlashcardMainControllerTest {
    * Tests that creating a new deck handles general exception.
    * 
    * @throws Exception if test setup fails
+   * 
    */
   @SuppressWarnings("unchecked")
   @Test
@@ -986,6 +1020,7 @@ class FlashcardMainControllerTest {
    * Tests that clicking a deck with null data doesn't crash.
    * 
    * @throws Exception if test setup fails
+   * 
    */
   @Test
   public void testWhenADeckIsClicked_NullDeck() throws Exception {
@@ -998,6 +1033,7 @@ class FlashcardMainControllerTest {
    * Tests that clicking a deck loads the deck view.
    * 
    * @throws Exception if test setup fails
+   * 
    */
   @SuppressWarnings("unchecked")
   @Test
@@ -1023,6 +1059,7 @@ class FlashcardMainControllerTest {
    * Tests that clicking a deck executes the method.
    * 
    * @throws Exception if test setup fails
+   * 
    */
   @SuppressWarnings("unchecked")
 @Test
@@ -1089,9 +1126,10 @@ class FlashcardMainControllerTest {
    * Tests that logout executes the method.
    * 
    * @throws Exception if test setup fails
+   * 
    */
   @SuppressWarnings("unchecked")
-@Test
+  @Test
   public void testWhenLogOut_ExecutesMethod() throws Exception {
     try (MockedStatic<ApiClient> apiClient = mockStatic(ApiClient.class);
       MockedConstruction<FXMLLoader> mockedLoader = mockConstruction(FXMLLoader.class,
@@ -1104,42 +1142,42 @@ class FlashcardMainControllerTest {
           }
         })) {
 
-    ApiResponse<FlashcardDeckManagerDto> getResponse = createSuccessResponse(new ArrayList<>());
-    ApiResponse<FlashcardDeckManagerDto> putResponse = createSuccessResponse(new ArrayList<>());
+      ApiResponse<FlashcardDeckManagerDto> getResponse = createSuccessResponse(new ArrayList<>());
+      ApiResponse<FlashcardDeckManagerDto> putResponse = createSuccessResponse(new ArrayList<>());
 
-    apiClient.when(() -> ApiClient.performApiRequest(anyString(), eq("GET"), isNull(), any(TypeReference.class)))
-    .thenReturn(getResponse);
+      apiClient.when(() -> ApiClient.performApiRequest(anyString(), eq("GET"), isNull(), any(TypeReference.class)))
+      .thenReturn(getResponse);
 
-    apiClient.when(() -> ApiClient.performApiRequest(anyString(), eq("PUT"), any(), any(TypeReference.class)))
-    .thenReturn(putResponse);
+      apiClient.when(() -> ApiClient.performApiRequest(anyString(), eq("PUT"), any(), any(TypeReference.class)))
+      .thenReturn(putResponse);
 
-    controller.setCurrentUsername("testuser");
+      controller.setCurrentUsername("testuser");
 
-    java.util.concurrent.CountDownLatch setupLatch = new java.util.concurrent.CountDownLatch(1);
+      java.util.concurrent.CountDownLatch setupLatch = new java.util.concurrent.CountDownLatch(1);
 
-    javafx.application.Platform.runLater(() -> {
+      javafx.application.Platform.runLater(() -> {
+        try {
+          javafx.scene.layout.StackPane root = new javafx.scene.layout.StackPane();
+          root.getChildren().add(logOutButton);
+          javafx.scene.Scene scene = new javafx.scene.Scene(root);
+          stage.setScene(scene);
+        } finally {
+          setupLatch.countDown();
+        }
+      });
+
+      setupLatch.await(2, java.util.concurrent.TimeUnit.SECONDS);
+      ActionEvent event = new ActionEvent(logOutButton, null);
+
       try {
-        javafx.scene.layout.StackPane root = new javafx.scene.layout.StackPane();
-        root.getChildren().add(logOutButton);
-        javafx.scene.Scene scene = new javafx.scene.Scene(root);
-        stage.setScene(scene);
-      } finally {
-        setupLatch.countDown();
+        java.lang.reflect.Method method = FlashcardMainController.class.getMethod("whenLogOut", ActionEvent.class);
+        method.invoke(controller, event);
+      } catch (Exception e) {
+        assertTrue(e.getCause() instanceof IOException || e.getCause() instanceof NullPointerException
+        || e.getCause() instanceof IllegalStateException,
+          "Expected IOException or scene-related exception");
       }
-    });
-
-    setupLatch.await(2, java.util.concurrent.TimeUnit.SECONDS);
-    ActionEvent event = new ActionEvent(logOutButton, null);
-
-    try {
-      java.lang.reflect.Method method = FlashcardMainController.class.getMethod("whenLogOut", ActionEvent.class);
-      method.invoke(controller, event);
-    } catch (Exception e) {
-      assertTrue(e.getCause() instanceof IOException || e.getCause() instanceof NullPointerException
-      || e.getCause() instanceof IllegalStateException,
-        "Expected IOException or scene-related exception");
-    }
-    assertTrue(true, "whenLogOut method executed");
+      assertTrue(true, "whenLogOut method executed");
     }
   }
 
@@ -1147,6 +1185,7 @@ class FlashcardMainControllerTest {
    * Tests successful loading of user data from API.
    * 
    * @throws Exception if test setup fails
+   * 
    */
   @SuppressWarnings("unchecked")
   @Test
@@ -1175,6 +1214,7 @@ class FlashcardMainControllerTest {
    * Tests that API failure creates empty manager.
    * 
    * @throws Exception if test setup fails
+   * 
    */
   @SuppressWarnings("unchecked")
   @Test
@@ -1195,6 +1235,7 @@ class FlashcardMainControllerTest {
    * Tests that exception creates empty manager. 
    * 
    * @throws Exception if test setup fails
+   * 
    */
   @SuppressWarnings("unchecked")
   @Test
@@ -1212,6 +1253,7 @@ class FlashcardMainControllerTest {
    * Tests that null data creates empty manager.
    * 
    * @throws Exception if test setup fails
+   * 
    */
   @SuppressWarnings("unchecked")
   @Test
@@ -1231,6 +1273,7 @@ class FlashcardMainControllerTest {
    * Tests that save failure shows alert.
    * 
    * @throws Exception if test setup fails
+   * 
    */
   @SuppressWarnings("unchecked")
   @Test
@@ -1248,9 +1291,6 @@ class FlashcardMainControllerTest {
       deckNameInput.setText("New Deck");
       controller.whenNewDeckButtonIsClicked(new ActionEvent());
 
-      // Verify showAlert was called if POST fails
-      // Note: showAlert is called from whenNewDeckButtonIsClicked if POST fails
-      // But since we mock POST to return failure, showAlert should be called
       apiClient.verify(() -> ApiClient.showAlert(eq(ApiConstants.SERVER_ERROR), eq(ApiConstants.DECK_FAILED_TO_CREATE)), atLeastOnce());
     }
   }
@@ -1259,6 +1299,7 @@ class FlashcardMainControllerTest {
    * Tests that deck manager creates defensive copy.
    * 
    * @throws Exception if test setup fails
+   * 
    */
   @SuppressWarnings("unchecked")
   @Test
@@ -1285,6 +1326,7 @@ class FlashcardMainControllerTest {
    * Tests that flashcards are copied. 
    * 
    * @throws Exception if test setup fails
+   * 
    */
   @SuppressWarnings("unchecked")
   @Test
@@ -1313,6 +1355,7 @@ class FlashcardMainControllerTest {
    * Tests that setting deck manager updates UI. 
    * 
    * @throws Exception if test setup fails
+   * 
    */
   @SuppressWarnings("unchecked")
   @Test
@@ -1356,6 +1399,7 @@ class FlashcardMainControllerTest {
    * 
    * @param runnable the code to execute on the FX thread
    * @throws RuntimeException if interrupted while waiting
+   * 
    */
   private void runOnFxThread(Runnable runnable) {
     if (Platform.isFxApplicationThread()) {
@@ -1383,6 +1427,7 @@ class FlashcardMainControllerTest {
    * 
    * @param decks the list of deck DTOs to include in the response
    * @return a successful API response containing the deck manager DTO
+   * 
    */
   private ApiResponse<FlashcardDeckManagerDto> createSuccessResponse(List<FlashcardDeckDto> decks) {
     FlashcardDeckManagerDto managerDto = new FlashcardDeckManagerDto(decks);
@@ -1393,6 +1438,7 @@ class FlashcardMainControllerTest {
    * Creates a failed API response.
    * 
    * @return a failed API response with null data
+   * 
    */
   private ApiResponse<FlashcardDeckManagerDto> createFailureResponse() {
     return new ApiResponse<>(false, "Error occurred", null);
@@ -1404,6 +1450,7 @@ class FlashcardMainControllerTest {
    * @param deckName the name of the deck
    * @param flashcards variable number of flashcard DTOs to add to the deck
    * @return a new FlashcardDeckDto containing the specified flashcards
+   * 
    */
   private FlashcardDeckDto createDeckDto(String deckName, FlashcardDto... flashcards) {
     List<FlashcardDto> cardList = new ArrayList<>();
@@ -1419,6 +1466,7 @@ class FlashcardMainControllerTest {
    * @param question the question text
    * @param answer the answer text
    * @return a new FlashcardDto with the specified question and answer
+   * 
    */
   private FlashcardDto createFlashcardDto(String question, String answer) {
     return new FlashcardDto(question, answer, 1);

@@ -14,6 +14,7 @@ import app.FlashcardDeckManager;
  * Handles saving and loading user data (credentials and flashcards) to/from JSON files.
  * Implements UserPersistence interface and ensures user credentials are preserved 
  * when updating flashcard data.
+ * 
  * @author parts of these methods are generated with help from claude.ai
  * @author sofietw
  * @author ailinat
@@ -36,9 +37,11 @@ public class FlashcardPersistent implements UserPersistence {
   /**
    * Updates the flashcard deck data for an existing user while preserving
    * their login credentials and other user information.
+   * 
    * @param username the username to save deck data for
    * @param deckManager the flashcard deck manager to save
    * @throws IOException if file writing fails or user does not exist
+   * 
    */
   public void writeDeck(String username, FlashcardDeckManager deckManager) throws IOException {
 
@@ -63,6 +66,7 @@ public class FlashcardPersistent implements UserPersistence {
    * @param username the username to load deck data for
    * @return the user's FlashcardDeckManager or empty one if user doesn't exist
    * @throws IOException if file reading fails
+   * 
    */
   public FlashcardDeckManager readDeck(String username) throws IOException {
     
@@ -81,6 +85,7 @@ public class FlashcardPersistent implements UserPersistence {
    * 
    * @param username the username to check data existence for
    * @return true if user data file exists, false otherwise
+   * 
    */
   public boolean dataExists(String username) {
     File file = getUserFile(username);
@@ -94,6 +99,7 @@ public class FlashcardPersistent implements UserPersistence {
    * 
    * @param username the username to read data for
    * @return User object if found, null otherwise
+   * 
    */
   @Override
   public User readUserData(String username) {        
@@ -112,6 +118,7 @@ public class FlashcardPersistent implements UserPersistence {
    * 
    * @param user the User object containing username and password
    * @throws IOException if file writing fails
+   * 
    */
   @Override
   public void writeUserData(User user) throws IOException {        
@@ -132,6 +139,7 @@ public class FlashcardPersistent implements UserPersistence {
    * 
    * @param username the username to check existence for
    * @return true if user exists with valid credentials, false otherwise
+   * 
    */
   @Override
   public boolean userExists(String username) {
@@ -148,23 +156,24 @@ public class FlashcardPersistent implements UserPersistence {
    * 
    * @param username the username to read data for
    * @return UserData object if found and valid, null otherwise
+   * 
    */
   private UserData readUserDataInternal(String username) {        
     File file = getUserFile(username);
 
-        if (file.exists()) {            
-            try {
-                // Try reading as UserData
-                UserData userData = objectMapper.readValue(file, UserData.class);
-                return userData;
-            } catch (IOException e) {
-                // Throw the error so it can be properly handled by calling methods
-                throw new RuntimeException("Failed to read user data file for user '" + username + "': " + e.getMessage(), e);
-            }
-        }
-        
-        return null;
+    if (file.exists()) {            
+      try {
+        // Try reading as UserData
+        UserData userData = objectMapper.readValue(file, UserData.class);
+        return userData;
+      } catch (IOException e) {
+        // Throw the error so it can be properly handled by calling methods
+        throw new RuntimeException("Failed to read user data file for user '" + username + "': " + e.getMessage(), e);
+      }
     }
+        
+    return null;
+  }
 
   /**
    * Internal method to write complete user data to file.
@@ -172,6 +181,7 @@ public class FlashcardPersistent implements UserPersistence {
    *
    * @param userData the UserData object to write
    * @throws IOException if file writing fails
+   * 
    */
   private void writeUserDataInternal(UserData userData) throws IOException {
     File dataDir = new File(System.getProperty("user.dir") + "/../storage/data/users");
@@ -189,6 +199,7 @@ public class FlashcardPersistent implements UserPersistence {
    * 
    * @param username the username to get file for
    * @return File object pointing to the user's data file
+   * 
    */
   private File getUserFile(String username) {
     String path = System.getProperty("user.dir") + "/../storage/data/users/" + username + ".json";        
