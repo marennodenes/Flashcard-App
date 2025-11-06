@@ -206,8 +206,7 @@ public class FlashcardMainController {
 
       String url = ApiEndpoints.SERVER_BASE_URL + ApiEndpoints.DECKS + "/"
           + URLEncoder.encode(deckName, StandardCharsets.UTF_8) + "?username="
-          + URLEncoder.encode(currentUsername, StandardCharsets.UTF_8) + "&deckName="
-          + URLEncoder.encode(deckName, StandardCharsets.UTF_8);
+          + URLEncoder.encode(currentUsername, StandardCharsets.UTF_8);
 
       // Send empty JSON object as body since ApiClient requires it for POST requests
       // Server doesn't use the body (uses URL parameters), but ApiClient validation
@@ -226,9 +225,10 @@ public class FlashcardMainController {
       } else {
         String errorMsg = result != null ? result.getMessage() : ApiConstants.NO_RESPONSE_FROM_SERVER;
         
-        // Check if it's a validation error that should be shown as text
-        if (errorMsg != null && (errorMsg.contains("already exists") || errorMsg.contains("duplicate") || 
-            errorMsg.contains("invalid") || errorMsg.contains("name"))) {
+        // Check if it's a validation error that should be shown as inline text (not popup)
+        if (errorMsg != null && (errorMsg.equals(ApiConstants.DECK_ALREADY_EXISTS) || 
+            errorMsg.equals(ApiConstants.DECK_LIMIT_REACHED) || 
+            errorMsg.equals(ApiConstants.DECK_NAME_EMPTY))) {
           // Validation error - show as inline text only, no popup
           showInlineError(errorMsg);
         } else {
@@ -271,8 +271,7 @@ public class FlashcardMainController {
     try {
       String url = ApiEndpoints.SERVER_BASE_URL + ApiEndpoints.DECKS + "/"
           + URLEncoder.encode(deck.getDeckName(), StandardCharsets.UTF_8) + "?username="
-          + URLEncoder.encode(currentUsername, StandardCharsets.UTF_8) + "&deckName="
-          + URLEncoder.encode(deck.getDeckName(), StandardCharsets.UTF_8);
+          + URLEncoder.encode(currentUsername, StandardCharsets.UTF_8);
 
       ApiResponse<Void> result = ApiClient.performApiRequest(url, "DELETE", null,
           new TypeReference<ApiResponse<Void>>() {
@@ -394,7 +393,7 @@ public class FlashcardMainController {
       } else {
         if (result != null && !result.isSuccess()) {
           System.err.println(ApiConstants.SERVER_ERROR + ": " + result.getMessage());
-          ApiClient.showAlert(ApiConstants.LOAD_ERROR, ApiConstants.FAILED_TO_LOAD_USER_DATA);
+          ApiClient.showAlert(ApiConstants.LOAD_ERROR, ApiConstants.FAILED_TO_LOAD_DATA);
         }
         decks = new ArrayList<>();
       }

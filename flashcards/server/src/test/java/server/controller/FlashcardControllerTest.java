@@ -13,6 +13,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import app.Flashcard;
 import server.service.FlashcardService;
 import shared.ApiEndpoints;
+import shared.ApiConstants;
 
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -88,7 +89,7 @@ public class FlashcardControllerTest {
       .param("number", "1"))
       .andExpect(status().isOk())
       .andExpect(jsonPath("$.success").value(true))
-      .andExpect(jsonPath("$.message").value("Flashcard retrieved successfully"))
+      .andExpect(jsonPath("$.message").value(ApiConstants.FLASHCARD_RETRIEVED))
       .andExpect(jsonPath("$.data.question").value("What is Java?"))
       .andExpect(jsonPath("$.data.answer").value("A programming language"));
   }
@@ -111,7 +112,7 @@ public class FlashcardControllerTest {
         .param("number", "99"))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.success").value(false))
-        .andExpect(jsonPath("$.message").value("Flashcard not found"));
+        .andExpect(jsonPath("$.message").value(ApiConstants.FLASHCARD_OPERATION_FAILED));
   }
 
   /**
@@ -132,7 +133,7 @@ public class FlashcardControllerTest {
         .param("number", "1"))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.success").value(false))
-        .andExpect(jsonPath("$.message").value("Deck not found"));
+        .andExpect(jsonPath("$.message").value(ApiConstants.FLASHCARD_OPERATION_FAILED));
   }
 
   /**
@@ -151,7 +152,7 @@ public class FlashcardControllerTest {
       .param("deckname", "TestDeck"))
       .andExpect(status().isOk())
       .andExpect(jsonPath("$.success").value(true))
-      .andExpect(jsonPath("$.message").value("Flashcards retrieved successfully"))
+      .andExpect(jsonPath("$.message").value(ApiConstants.FLASHCARDS_RETRIEVED))
       .andExpect(jsonPath("$.data").isArray())
       .andExpect(jsonPath("$.data[0].question").value("What is Java?"))
       .andExpect(jsonPath("$.data[1].question").value("What is Spring?"));
@@ -174,7 +175,7 @@ public class FlashcardControllerTest {
       .param("deckname", "NonExistentDeck"))
       .andExpect(status().isOk())
       .andExpect(jsonPath("$.success").value(false))
-      .andExpect(jsonPath("$.message").value("Failed to retrieve flashcards: Deck not found"));
+      .andExpect(jsonPath("$.message").value(ApiConstants.FLASHCARD_OPERATION_FAILED));
   }
 
   /**
@@ -194,7 +195,7 @@ public class FlashcardControllerTest {
         .param("deckname", "TestDeck"))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.success").value(false))
-        .andExpect(jsonPath("$.message").value("User not found"));
+        .andExpect(jsonPath("$.message").value(ApiConstants.FLASHCARD_OPERATION_FAILED));
   }
 
   /**
@@ -214,7 +215,7 @@ public class FlashcardControllerTest {
       .param("deckname", "EmptyDeck"))
       .andExpect(status().isOk())
       .andExpect(jsonPath("$.success").value(true))
-      .andExpect(jsonPath("$.message").value("Flashcards retrieved successfully"))
+      .andExpect(jsonPath("$.message").value(ApiConstants.FLASHCARDS_RETRIEVED))
       .andExpect(jsonPath("$.data").isArray())
       .andExpect(jsonPath("$.data").isEmpty());
   }
@@ -243,7 +244,7 @@ public class FlashcardControllerTest {
       .param("answer", "A programming language"))
       .andExpect(status().isOk())
       .andExpect(jsonPath("$.success").value(true))
-      .andExpect(jsonPath("$.message").value("Flashcard created successfully."))
+      .andExpect(jsonPath("$.message").value(ApiConstants.FLASHCARD_CREATED))
       .andExpect(jsonPath("$.data.question").value("What is Java?"))
       .andExpect(jsonPath("$.data.answer").value("A programming language"));
   }
@@ -267,7 +268,7 @@ public class FlashcardControllerTest {
       .param("answer", "A programming language"))
       .andExpect(status().isOk())
       .andExpect(jsonPath("$.success").value(false))
-      .andExpect(jsonPath("$.message").value("User not found"));
+      .andExpect(jsonPath("$.message").value(ApiConstants.FLASHCARD_OPERATION_FAILED));
   }
 
   /**
@@ -289,7 +290,7 @@ public class FlashcardControllerTest {
       .param("answer", "A programming language"))
       .andExpect(status().isOk())
       .andExpect(jsonPath("$.success").value(false))
-      .andExpect(jsonPath("$.message").value("Deck not found"));
+      .andExpect(jsonPath("$.message").value(ApiConstants.FLASHCARD_OPERATION_FAILED));
   }
 
   /**
@@ -311,7 +312,7 @@ public class FlashcardControllerTest {
       .param("answer", ""))
       .andExpect(status().isOk())
       .andExpect(jsonPath("$.success").value(false))
-      .andExpect(jsonPath("$.message").value("Invalid flashcard data"));
+      .andExpect(jsonPath("$.message").value(ApiConstants.FLASHCARD_OPERATION_FAILED));
   }
 
   // DELETE methods tests last
@@ -332,7 +333,7 @@ public class FlashcardControllerTest {
       .param("number", "1"))
       .andExpect(status().isOk())
       .andExpect(jsonPath("$.success").value(true))
-      .andExpect(jsonPath("$.message").value("Flashcard deleted successfully."));
+      .andExpect(jsonPath("$.message").value(ApiConstants.FLASHCARD_DELETED));
   }
 
   /**
@@ -351,12 +352,10 @@ public class FlashcardControllerTest {
         .param("username", "testUser")
         .param("deckname", "TestDeck")
         .param("number", "99"))
-        .andExpect(status().isOk())
-        .andExpect(jsonPath("$.success").value(false))
-        .andExpect(jsonPath("$.message").value("Flashcard not found"));
-  }
-
-  /**
+      .andExpect(status().isOk())
+      .andExpect(jsonPath("$.success").value(false))
+      .andExpect(jsonPath("$.message").value(ApiConstants.FLASHCARD_OPERATION_FAILED));
+  }  /**
    * Tests flashcard deletion when deck does not exist.
    * Verifies that the endpoint returns appropriate error response
    * when attempting to delete a flashcard from non-existent deck.
@@ -372,12 +371,10 @@ public class FlashcardControllerTest {
         .param("username", "testUser")
         .param("deckname", "NonExistentDeck")
         .param("number", "1"))
-        .andExpect(status().isOk())
-        .andExpect(jsonPath("$.success").value(false))
-        .andExpect(jsonPath("$.message").value("Deck not found"));
-  }
-
-  /**
+      .andExpect(status().isOk())
+      .andExpect(jsonPath("$.success").value(false))
+      .andExpect(jsonPath("$.message").value(ApiConstants.FLASHCARD_OPERATION_FAILED));
+  }  /**
    * Tests flashcard deletion when user does not exist.
    * Verifies that the endpoint returns appropriate error response
    * when attempting to delete a flashcard for non-existent user.
@@ -395,7 +392,7 @@ public class FlashcardControllerTest {
         .param("number", "1"))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.success").value(false))
-        .andExpect(jsonPath("$.message").value("User not found"));
+        .andExpect(jsonPath("$.message").value(ApiConstants.FLASHCARD_OPERATION_FAILED));
   }
 
   /**
@@ -416,6 +413,6 @@ public class FlashcardControllerTest {
         .param("number", "-1"))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.success").value(false))
-        .andExpect(jsonPath("$.message").value("Invalid position"));
+        .andExpect(jsonPath("$.message").value(ApiConstants.FLASHCARD_OPERATION_FAILED));
   }
 }

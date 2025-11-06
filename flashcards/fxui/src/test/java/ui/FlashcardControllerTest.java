@@ -234,6 +234,7 @@ public class FlashcardControllerTest {
    * 
    * @throws Exception when accessing fields fails
    */
+  @SuppressWarnings("unchecked")
   @Test
   public void testDeckHandling() throws Exception {
     List<FlashcardDto> deck = (List<FlashcardDto>) getField("deck");
@@ -404,6 +405,7 @@ public class FlashcardControllerTest {
    * 
    * @throws Exception when setting the deck fails
    */
+  @SuppressWarnings("unchecked")
   @Test
   public void testSetDeck_WithNullDeck() throws Exception {
     controller.setDeck(null);
@@ -420,6 +422,7 @@ public class FlashcardControllerTest {
    * 
    * @throws Exception when setting the deck fails
    */
+  @SuppressWarnings("unchecked")
   @Test
   public void testSetDeck_WithValidDeck() throws Exception {
     FlashcardDeck newDeck = new FlashcardDeck("New Deck");
@@ -586,6 +589,7 @@ public class FlashcardControllerTest {
     
     controller.setDeck(deckDto);
     
+    @SuppressWarnings("unchecked")
     List<FlashcardDto> internalDeck = (List<FlashcardDto>) getField("deck");
     assertNotSame(originalList, internalDeck);
     

@@ -35,6 +35,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 
 import dto.LoginRequestDto;
 import dto.LoginResponseDto;
+import shared.ApiConstants;
 import shared.ApiResponse;
 
 import javafx.application.Platform;
@@ -231,12 +232,12 @@ public void testWhenLoginButtonClicked_successfulLogin() throws Exception {
       // Or just call the public method and check that no error message is shown
       spyController.whenLoginButtonClicked();
 
-      // Check that no error message is shown
-      verify(alertMessage, never()).setText("Username and password\ncannot be empty");
-      verify(alertMessage, never()).setText("Invalid credentials");
-      verify(alertMessage, never()).setText("Server error");
-      verify(alertMessage, never()).setText("Failed to load main application");
-  }
+        // Check that no error message is shown
+        verify(alertMessage, never()).setText(ApiConstants.EMPTY_FIELDS);
+        verify(alertMessage, never()).setText(ApiConstants.LOGIN_FAILED);
+        verify(alertMessage, never()).setText(ApiConstants.SERVER_ERROR);
+        verify(alertMessage, never()).setText("Failed to load main application");
+    }
 }
 
 /**
@@ -248,25 +249,25 @@ public void testWhenLoginButtonClicked_successfulLogin() throws Exception {
 @SuppressWarnings("unchecked")
 @Test
 public void testWhenLoginButtonClicked_invalidCredentials() throws Exception {
-  when(usernameField.getText()).thenReturn("user");
-  when(passwordField.getText()).thenReturn("pass");
-  LoginResponseDto mockLoginResponseFail = mock(LoginResponseDto.class);
-  when(mockLoginResponseFail.isSuccess()).thenReturn(false);
-  when(mockLoginResponseFail.getMessage()).thenReturn("Invalid credentials");
-  ApiResponse<LoginResponseDto> mockApiResponseFail = mock(ApiResponse.class);
-  when(mockApiResponseFail.isSuccess()).thenReturn(true);
-  when(mockApiResponseFail.getData()).thenReturn(mockLoginResponseFail);
+    when(usernameField.getText()).thenReturn("user");
+    when(passwordField.getText()).thenReturn("pass");
+    LoginResponseDto mockLoginResponseFail = mock(LoginResponseDto.class);
+    when(mockLoginResponseFail.isSuccess()).thenReturn(false);
+    when(mockLoginResponseFail.getMessage()).thenReturn(ApiConstants.LOGIN_FAILED);
+    ApiResponse<LoginResponseDto> mockApiResponseFail = mock(ApiResponse.class);
+    when(mockApiResponseFail.isSuccess()).thenReturn(true);
+    when(mockApiResponseFail.getData()).thenReturn(mockLoginResponseFail);
 
   try (MockedStatic<ApiClient> mockedApiClient = mockStatic(ApiClient.class)) {
       mockedApiClient.when(() -> ApiClient.performApiRequest(
       anyString(), anyString(), any(LoginRequestDto.class), any(TypeReference.class)))
       .thenReturn(mockApiResponseFail);
 
-      controller.whenLoginButtonClicked();
-      verify(alertMessage).setText("Invalid credentials");
-      verify(alertMessage, atLeastOnce()).setVisible(true);
-      verify(ex, atLeastOnce()).setVisible(true);
-  }
+        controller.whenLoginButtonClicked();
+        verify(alertMessage).setText(ApiConstants.LOGIN_FAILED);
+        verify(alertMessage, atLeastOnce()).setVisible(true);
+        verify(ex, atLeastOnce()).setVisible(true);
+    }
 }
 
 
@@ -279,22 +280,22 @@ public void testWhenLoginButtonClicked_invalidCredentials() throws Exception {
 @SuppressWarnings("unchecked")
 @Test
 public void testWhenLoginButtonClicked_apiError() throws Exception {
-  when(usernameField.getText()).thenReturn("user");
-  when(passwordField.getText()).thenReturn("pass");
-  ApiResponse<LoginResponseDto> mockApiResponseError = mock(ApiResponse.class);
-  when(mockApiResponseError.isSuccess()).thenReturn(false);
-  when(mockApiResponseError.getMessage()).thenReturn("Server error");
+    when(usernameField.getText()).thenReturn("user");
+    when(passwordField.getText()).thenReturn("pass");
+    ApiResponse<LoginResponseDto> mockApiResponseError = mock(ApiResponse.class);
+    when(mockApiResponseError.isSuccess()).thenReturn(false);
+    when(mockApiResponseError.getMessage()).thenReturn(ApiConstants.SERVER_ERROR);
 
   try (MockedStatic<ApiClient> mockedApiClient = mockStatic(ApiClient.class)) {
       mockedApiClient.when(() -> ApiClient.performApiRequest(
       anyString(), anyString(), any(LoginRequestDto.class), any(TypeReference.class)))
       .thenReturn(mockApiResponseError);
 
-      controller.whenLoginButtonClicked();
-      verify(alertMessage).setText("Server error");
-      verify(alertMessage, atLeastOnce()).setVisible(true);
-      verify(ex, atLeastOnce()).setVisible(true);
-  }
+        controller.whenLoginButtonClicked();
+        verify(alertMessage).setText(ApiConstants.SERVER_ERROR);
+        verify(alertMessage, atLeastOnce()).setVisible(true);
+        verify(ex, atLeastOnce()).setVisible(true);
+    }
 }
 
 
@@ -331,12 +332,12 @@ public void testWhenLoginButtonClicked_navigateToMainAppIOException() throws Exc
       // Act: call the public method, which will internally call navigateToMainApp and hit the IOException
       controller.whenLoginButtonClicked();
 
-      // Assert: ApiClient.showAlert should be called for navigation errors
-      mockedApiClient.verify(() -> ApiClient.showAlert(
-      eq("Load Error"), 
-      eq("An unexpected error occurred. Please try again.")
-      ));
-  }
+        // Assert: ApiClient.showAlert should be called for navigation errors
+        mockedApiClient.verify(() -> ApiClient.showAlert(
+            eq(ApiConstants.LOAD_ERROR), 
+            eq(ApiConstants.UNEXPECTED_ERROR)
+        ));
+    }
 }
   
 /**
@@ -409,12 +410,12 @@ public void testNavigateToMainApp_failure() throws Exception {
       // Run directly since the method is already designed to handle errors internally
       method.invoke(controller, username);
 
-      // Assert: ApiClient.showAlert should be called for navigation errors
-      mockedApiClient.verify(() -> ApiClient.showAlert(
-      eq("Load Error"), 
-      eq("An unexpected error occurred. Please try again.")
-      ));
-  }
+        // Assert: ApiClient.showAlert should be called for navigation errors
+        mockedApiClient.verify(() -> ApiClient.showAlert(
+            eq(ApiConstants.LOAD_ERROR), 
+            eq(ApiConstants.UNEXPECTED_ERROR)
+        ));
+    }
 }
 
   /**
@@ -615,8 +616,8 @@ public void testNavigateToSignUpPageFailure() throws Exception {
       
       // Assert: ApiClient.showAlert should be called for navigation errors
       mockedApiClient.verify(() -> ApiClient.showAlert(
-          eq("Load Error"), 
-          eq("An unexpected error occurred. Please try again.")
+          ApiConstants.LOAD_ERROR, 
+          ApiConstants.UNEXPECTED_ERROR
       ));
       }
   }

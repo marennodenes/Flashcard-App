@@ -340,10 +340,10 @@ public class FlashcardPersistentTest {
   }
 
   /**
-   * Tests that readUserDataInternal handles malformed JSON files gracefully.
+   * Tests that readUserDataInternal handles malformed JSON files by throwing RuntimeException.
    * 
    * This test creates a malformed JSON file to trigger the IOException catch block
-   * in the readUserDataInternal method, ensuring it returns null when a file
+   * in the readUserDataInternal method, ensuring it throws a RuntimeException when a file
    * exists but cannot be parsed. This is crucial for robustness when dealing with
    * corrupted or manually modified data files.
    * 
@@ -368,9 +368,14 @@ public class FlashcardPersistentTest {
     // Verify the file exists
     assertTrue(userFile.exists());
     
-    // Try to read user data - should return null due to IOException in catch block
-    User userData = persistent.readUserData(testUsername);
-    assertTrue(userData == null);
+    // Try to read user data - should throw RuntimeException due to malformed JSON
+    RuntimeException exception = assertThrows(RuntimeException.class, () -> {
+      persistent.readUserData(testUsername);
+    });
+    
+    // Verify the exception message contains expected information
+    assertTrue(exception.getMessage().contains("Failed to read user data file for user"));
+    assertTrue(exception.getMessage().contains(testUsername));
     
     // Clean up the test file
     userFile.delete();

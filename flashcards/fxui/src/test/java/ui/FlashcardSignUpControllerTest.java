@@ -15,6 +15,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.MockedStatic;
 import org.testfx.framework.junit5.ApplicationExtension;
 
+import shared.ApiConstants;
 import shared.ApiResponse;
 
 import javafx.scene.control.Button;
@@ -898,53 +899,50 @@ public class FlashcardSignUpControllerTest {
       assertTrue(true);
   }
 
-  /**
-   * Tests whenSignInButtonClicked method with valid input surrounded by whitespace.
-   * 
-   * @throws Exception if field access or method invocation via reflection fails
-   * @throws InterruptedException if thread sleep is interrupted
-   */
-  @Test
-  void testWhenSignInButtonClicked_withValidInputAndWhitespace() throws Exception {
-      controller = new FlashcardSignUpController();
-      mockAllUiComponents(controller);
-      
-      // Mock ApiClient
-      try (MockedStatic<ApiClient> mockedApiClient = mockStatic(ApiClient.class)) {
-      ApiResponse<?> mockResponse = mock(ApiResponse.class);
-      when(mockResponse.isSuccess()).thenReturn(false);
-      when(mockResponse.getMessage()).thenReturn("Error");
-      
-      mockedApiClient.when(() -> ApiClient.performApiRequest(
-          anyString(), anyString(), any(), any()
-      )).thenReturn(mockResponse);
-      
-      mockedApiClient.when(() -> ApiClient.showAlert(anyString(), anyString()))
-          .thenAnswer(invocation -> null);
-      
-      // Set up text fields with leading/trailing whitespace
-      var usernameField = FlashcardSignUpController.class.getDeclaredField("usernameField");
-      usernameField.setAccessible(true);
-      usernameField.set(controller, new TextField("  validuser  "));
-      
-      var passwordField = FlashcardSignUpController.class.getDeclaredField("passwordField");
-      passwordField.setAccessible(true);
-      passwordField.set(controller, new TextField("  password123  "));
-      
-      var confirmPasswordField = FlashcardSignUpController.class.getDeclaredField("confirmPasswordField");
-      confirmPasswordField.setAccessible(true);
-      confirmPasswordField.set(controller, new TextField("  password123  "));
-      
-      // Call whenSignInButtonClicked - should trim and call createUser
-      var method = FlashcardSignUpController.class.getDeclaredMethod("whenSignInButtonClicked");
-      method.setAccessible(true);
-      method.invoke(controller);
-      
-      Thread.sleep(100);
-      }
-      
-      assertTrue(true);
-  }
+    /**
+     * Tests whenSignInButtonClicked method with valid input surrounded by whitespace.
+     */
+    @Test
+    void testWhenSignInButtonClicked_withValidInputAndWhitespace() throws Exception {
+        controller = new FlashcardSignUpController();
+        mockAllUiComponents(controller);
+        
+        // Mock ApiClient
+        try (MockedStatic<ApiClient> mockedApiClient = mockStatic(ApiClient.class)) {
+            ApiResponse<?> mockResponse = mock(ApiResponse.class);
+            when(mockResponse.isSuccess()).thenReturn(false);
+            when(mockResponse.getMessage()).thenReturn(ApiConstants.USER_OPERATION_FAILED);
+            
+            mockedApiClient.when(() -> ApiClient.performApiRequest(
+                anyString(), anyString(), any(), any()
+            )).thenReturn(mockResponse);
+            
+            mockedApiClient.when(() -> ApiClient.showAlert(anyString(), anyString()))
+                .thenAnswer(invocation -> null);
+            
+            // Set up text fields with leading/trailing whitespace
+            var usernameField = FlashcardSignUpController.class.getDeclaredField("usernameField");
+            usernameField.setAccessible(true);
+            usernameField.set(controller, new TextField("  validuser  "));
+            
+            var passwordField = FlashcardSignUpController.class.getDeclaredField("passwordField");
+            passwordField.setAccessible(true);
+            passwordField.set(controller, new TextField("  password123  "));
+            
+            var confirmPasswordField = FlashcardSignUpController.class.getDeclaredField("confirmPasswordField");
+            confirmPasswordField.setAccessible(true);
+            confirmPasswordField.set(controller, new TextField("  password123  "));
+            
+            // Call whenSignInButtonClicked - should trim and call createUser
+            var method = FlashcardSignUpController.class.getDeclaredMethod("whenSignInButtonClicked");
+            method.setAccessible(true);
+            method.invoke(controller);
+            
+            Thread.sleep(100);
+        }
+        
+        assertTrue(true);
+    }
 
   /**
    * Tests whenSignInButtonClicked method trim behavior with various whitespace characters.

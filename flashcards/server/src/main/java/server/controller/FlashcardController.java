@@ -70,8 +70,10 @@ public class FlashcardController {
       FlashcardDto flashcardDto = mapper.toDto(flashcard);
       return new ApiResponse<>(true, ApiConstants.FLASHCARD_RETRIEVED, flashcardDto);
     } catch (Exception e) {
-      // Return server error if flashcard not found or other error
-      return new ApiResponse<>(false, ApiConstants.FLASHCARD_RETRIEVED_FAILED + e.getMessage(), null);
+      // Log technical details for developers
+      System.err.println(ApiConstants.FLASHCARD_RETRIEVED_FAILED + " for username: '" + username + "', deck: '" + deckname + "', number: " + number + " - " + e.getMessage());
+      // Return user-friendly message
+      return new ApiResponse<>(false, ApiConstants.FLASHCARD_OPERATION_FAILED, null);
     }
   }
 
@@ -93,8 +95,10 @@ public class FlashcardController {
       List<FlashcardDto> flashcardDtos = mapper.toDtoList(flashcards);
       return new ApiResponse<>(true, ApiConstants.FLASHCARDS_RETRIEVED, flashcardDtos);
     } catch (Exception e) {
-      // Return error if deck not found or other error
-      return new ApiResponse<>(false, ApiConstants.FLASHCARDS_RETRIEVED_FAILED + e.getMessage(), null);
+      // Log technical details for developers
+      System.err.println(ApiConstants.FLASHCARDS_RETRIEVED_FAILED + " for username: '" + username + "', deck: '" + deckname + "' - " + e.getMessage());
+      // Return user-friendly message
+      return new ApiResponse<>(false, ApiConstants.FLASHCARD_OPERATION_FAILED, null);
     }
   }
 
@@ -126,8 +130,10 @@ public class FlashcardController {
       FlashcardDto flashcardDto = mapper.toDto(flashcardService.getFlashcard(username, deckname, position));
       return new ApiResponse<>(true, ApiConstants.FLASHCARD_CREATED, flashcardDto);
     } catch (Exception e) {
-      // Return server error if creation fails
-      return new ApiResponse<>(false, ApiConstants.FLASHCARD_FAILED + e.getMessage(), null);
+      // Log technical details for developers
+      System.err.println(ApiConstants.FLASHCARD_FAILED + " for username: '" + username + "', deck: '" + deckname + "' - " + e.getMessage());
+      // Return user-friendly message
+      return new ApiResponse<>(false, ApiConstants.FLASHCARD_OPERATION_FAILED, null);
     }
   }
 
@@ -150,8 +156,10 @@ public class FlashcardController {
       flashcardService.deleteFlashcard(username, deckname, number);
       return new ApiResponse<>(true, ApiConstants.FLASHCARD_DELETED, null);
     } catch (Exception e) {
-      // Return server error if deletion fails
-      return new ApiResponse<>(false, ApiConstants.FLASHCARD_FAILED_TO_DELETE + e.getMessage(), null);
+      // Log technical details for developers
+      System.err.println(ApiConstants.FLASHCARD_FAILED_TO_DELETE + " for username: '" + username + "', deck: '" + deckname + "', number: " + number + " - " + e.getMessage());
+      // Return user-friendly message
+      return new ApiResponse<>(false, ApiConstants.FLASHCARD_OPERATION_FAILED, null);
     }
   }
 

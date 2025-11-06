@@ -180,8 +180,8 @@ public class FlashcardDeckController {
       }
     } catch (Exception e) {
       // Unknown error type - log technical details, show generic message to user
-      System.err.println("Unexpected error: " + e.getMessage());
-      ApiClient.showAlert("Error", ApiConstants.UNEXPECTED_ERROR);
+      System.err.println(ApiConstants.LOG_UNEXPECTED_ERROR + ": " + e.getMessage());
+      ApiClient.showAlert(ApiConstants.SERVER_ERROR, ApiConstants.UNEXPECTED_ERROR);
     }
   }
 
@@ -220,8 +220,8 @@ public class FlashcardDeckController {
       }
     } catch (Exception e) {
       // Unknown error type - log technical details, show generic message to user
-      System.err.println("Unexpected error: " + e.getMessage());
-      ApiClient.showAlert("Error", ApiConstants.UNEXPECTED_ERROR);
+      System.err.println(ApiConstants.LOG_UNEXPECTED_ERROR + ": " + e.getMessage());
+      ApiClient.showAlert(ApiConstants.SERVER_ERROR, ApiConstants.UNEXPECTED_ERROR);
     }
   }
 
@@ -335,11 +335,11 @@ public class FlashcardDeckController {
         currentDeck = result.getData();
       } else if (result != null && !result.isSuccess()) {
         System.err.println(ApiConstants.SERVER_ERROR + ": " + result.getMessage());
-        ApiClient.showAlert(ApiConstants.LOAD_ERROR, ApiConstants.FAILED_TO_LOAD_DECK_DATA);
+        ApiClient.showAlert(ApiConstants.LOAD_ERROR, ApiConstants.FAILED_TO_LOAD_DATA);
       }
     } catch (Exception e) {
-      System.err.println("Unexpected error: " + e.getMessage());
-      ApiClient.showAlert("Error", ApiConstants.UNEXPECTED_ERROR);
+      System.err.println(ApiConstants.LOG_UNEXPECTED_ERROR + ": " + e.getMessage());
+      ApiClient.showAlert(ApiConstants.LOAD_ERROR, ApiConstants.UNEXPECTED_ERROR);
     }
   }
 

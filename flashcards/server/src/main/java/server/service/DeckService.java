@@ -84,8 +84,9 @@ public class DeckService {
    */
   public FlashcardDeck createDeck(String username, String deckName) throws IOException {
     FlashcardDeck deck = new FlashcardDeck(deckName);
-    getAllDecks(username).addDeck(deck);
-    flashcardPersistent.writeDeck(username, getAllDecks(username));
+    FlashcardDeckManager deckManager = getAllDecks(username);
+    deckManager.addDeck(deck);
+    flashcardPersistent.writeDeck(username, deckManager);
     return deck;
   }
 
@@ -99,7 +100,11 @@ public class DeckService {
    */
   public void deleteDeck(String username, String deckname) throws IOException {
     FlashcardDeckManager manager = getAllDecks(username);
-    manager.removeDeck(getDeck(username, deckname));
+    FlashcardDeck deckToRemove = manager.getDecks().stream()
+        .filter(deck -> deck.getDeckName().equals(deckname))
+        .findFirst()
+        .orElseThrow(() -> new IllegalArgumentException(ApiConstants.DECK_NOT_FOUND));
+    manager.removeDeck(deckToRemove);
     flashcardPersistent.writeDeck(username, manager);
   }
 

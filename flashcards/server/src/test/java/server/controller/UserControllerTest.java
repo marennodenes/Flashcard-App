@@ -14,6 +14,7 @@ import app.User;
 import dto.LoginRequestDto;
 import server.service.UserService;
 import shared.ApiEndpoints;
+import shared.ApiConstants;
 
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
@@ -83,7 +84,7 @@ public class UserControllerTest {
         .param("username", "testUser"))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.success").value(true))
-        .andExpect(jsonPath("$.message").value("User retrieved successfully"))
+        .andExpect(jsonPath("$.message").value(ApiConstants.USER_RETRIEVED))
         .andExpect(jsonPath("$.data.username").value("testUser"));
   }
 
@@ -102,7 +103,7 @@ public class UserControllerTest {
         .param("username", "nonExistent"))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.success").value(false))
-        .andExpect(jsonPath("$.message").value("User not found"));
+        .andExpect(jsonPath("$.message").value(ApiConstants.USER_OPERATION_FAILED));
   }
 
   /**
@@ -122,7 +123,7 @@ public class UserControllerTest {
         .content(objectMapper.writeValueAsString(loginRequest)))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.success").value(true))
-        .andExpect(jsonPath("$.message").value("User created successfully."))
+        .andExpect(jsonPath("$.message").value(ApiConstants.USER_CREATED))
         .andExpect(jsonPath("$.data.username").value("testUser"));
   }
 
@@ -137,14 +138,14 @@ public class UserControllerTest {
   @Test
   void testCreateUser_InvalidCredentials() throws Exception {
     when(userService.createUserWithValidation(anyString(), anyString()))
-        .thenThrow(new IllegalArgumentException("Invalid credentials"));
+        .thenThrow(new IllegalArgumentException(ApiConstants.PASSWORD_TOO_SHORT));
 
     mockMvc.perform(post(ApiEndpoints.USERS_V1 + ApiEndpoints.USER_REGISTER)
         .contentType(MediaType.APPLICATION_JSON)
         .content(objectMapper.writeValueAsString(loginRequest)))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.success").value(false))
-        .andExpect(jsonPath("$.message").value("Invalid credentials"));
+        .andExpect(jsonPath("$.message").value(ApiConstants.PASSWORD_TOO_SHORT));
   }
 
   /**
@@ -157,14 +158,14 @@ public class UserControllerTest {
   @Test
   void testCreateUser_UserAlreadyExists() throws Exception {
     when(userService.createUserWithValidation(anyString(), anyString()))
-        .thenThrow(new IllegalArgumentException("User already exists"));
+        .thenThrow(new IllegalArgumentException(ApiConstants.USER_ALREADY_EXISTS));
 
     mockMvc.perform(post(ApiEndpoints.USERS_V1 + ApiEndpoints.USER_REGISTER)
         .contentType(MediaType.APPLICATION_JSON)
         .content(objectMapper.writeValueAsString(loginRequest)))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.success").value(false))
-        .andExpect(jsonPath("$.message").value("User already exists"));
+        .andExpect(jsonPath("$.message").value(ApiConstants.USER_ALREADY_EXISTS));
   }
 
   /**
@@ -185,7 +186,7 @@ public class UserControllerTest {
         .content(objectMapper.writeValueAsString(loginRequest)))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.success").value(true))
-        .andExpect(jsonPath("$.message").value("Login success."))
+        .andExpect(jsonPath("$.message").value(ApiConstants.LOGIN_SUCCESS))
         .andExpect(jsonPath("$.data.success").value(true))
         .andExpect(jsonPath("$.data.userData.username").value("testUser"));
   }
@@ -209,7 +210,7 @@ public class UserControllerTest {
         .content(objectMapper.writeValueAsString(wrongRequest)))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.success").value(false))
-        .andExpect(jsonPath("$.message").value("Invalid password"));
+        .andExpect(jsonPath("$.message").value(ApiConstants.LOGIN_OPERATION_FAILED));
   }
 
   /**
@@ -232,7 +233,7 @@ public class UserControllerTest {
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.success").value(true))
         .andExpect(jsonPath("$.data.success").value(false))
-        .andExpect(jsonPath("$.data.message").value("User not found."));
+        .andExpect(jsonPath("$.data.message").value(ApiConstants.USER_NOT_FOUND));
   }
 
   /**
@@ -253,7 +254,7 @@ public class UserControllerTest {
       .content(objectMapper.writeValueAsString(request)))
           .andExpect(status().isOk())
           .andExpect(jsonPath("$.success").value(false))
-          .andExpect(jsonPath("$.message").value("Username cannot be empty"));
+          .andExpect(jsonPath("$.message").value(ApiConstants.LOGIN_OPERATION_FAILED));
     }
 
   /**
@@ -274,7 +275,7 @@ public class UserControllerTest {
       .content(objectMapper.writeValueAsString(request)))
           .andExpect(status().isOk())
           .andExpect(jsonPath("$.success").value(false))
-          .andExpect(jsonPath("$.message").value("Password cannot be empty"));
+          .andExpect(jsonPath("$.message").value(ApiConstants.LOGIN_OPERATION_FAILED));
     }
 
   /**
@@ -295,7 +296,7 @@ public class UserControllerTest {
       .content(objectMapper.writeValueAsString(request)))
           .andExpect(status().isOk())
           .andExpect(jsonPath("$.success").value(false))
-          .andExpect(jsonPath("$.message").value("Unexpected error"));
+          .andExpect(jsonPath("$.message").value(ApiConstants.LOGIN_OPERATION_FAILED));
     }
 
   /**
@@ -354,7 +355,7 @@ public class UserControllerTest {
         .param("password", "TestPassword123!"))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.success").value(false))
-        .andExpect(jsonPath("$.message").value("Validation error"));
+        .andExpect(jsonPath("$.message").value(ApiConstants.USER_OPERATION_FAILED));
   }
 
   /**
@@ -408,6 +409,6 @@ public class UserControllerTest {
         .param("username", "testUser"))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.success").value(false))
-        .andExpect(jsonPath("$.message").value("Database error"));
+        .andExpect(jsonPath("$.message").value(ApiConstants.USER_OPERATION_FAILED));
   }
 }

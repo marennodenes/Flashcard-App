@@ -114,7 +114,7 @@ public class FlashcardSignUpController {
   private boolean validateInput(String username, String password, String confirmedPassword) {
     // Check for empty fields
     if (username.isEmpty() || password.isEmpty() || confirmedPassword.isEmpty()) {
-      showInlineError(ApiConstants.EMPTY_SIGNUP_FIELDS);
+      showInlineError(ApiConstants.EMPTY_FIELDS);
       return false;
     }
 
@@ -158,7 +158,7 @@ public class FlashcardSignUpController {
       // Handle different types of errors with specific text messages
       String errorMessage = result.getMessage();
       if (errorMessage != null && errorMessage.toLowerCase().contains("already exists")) {
-        showInlineError(ApiConstants.USERNAME_ALREADY_EXISTS);
+        showInlineError(ApiConstants.USER_ALREADY_EXISTS);
       } else {
         //Show the error message directly as text
         showInlineError(errorMessage != null ? errorMessage : ApiConstants.SERVER_CONNECTION_ERROR);
