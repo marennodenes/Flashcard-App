@@ -1,0 +1,153 @@
+@startuml class_fxui
+title FXUI Module - JavaFX User Interface
+
+package ui {
+    class ApiClient {
+        - {static} String BASE_URL
+        - {static} HttpClient HTTP_CLIENT
+        - {static} ObjectMapper OBJECT_MAPPER
+
+        + {static} <T> T performApiRequest(String url, String method, Object data, TypeReference<T> responseType)
+        + {static} void showAlert(String title, String message)
+        - {static} HttpResponse<String> sendRequest(String url, String method, String json)
+        - {static} String convertObjectToJson(Object data)
+        - {static} <T> T parseResponse(String responseBody, TypeReference<T> responseType)
+    }
+
+    class FlashcardApp {
+        + void start(Stage stage)
+        + {static} void main(String[] args)
+    }
+
+    class FlashcardController {
+        - Text questionText
+        - Text answerText
+        - Button flipButton
+        - Button backButton
+        - Flashcard currentFlashcard
+        - String currentUsername
+        - String currentDeckName
+        - int currentIndex
+        - List<FlashcardDto> flashcards
+        
+        + void initialize()
+        + void setCurrentUsername(String username)
+        + void setCurrentDeckName(String deckName)
+        + void whenFlipButtonIsClicked()
+        + void whenBackButtonIsClicked()
+        + void whenNextButtonIsClicked()
+        + void whenPreviousButtonIsClicked()
+        - void loadFlashcards()
+        - void displayFlashcard()
+        - void updateUi()
+    }
+
+    class FlashcardDeckController {
+        - ListView<String> flashcardListView
+        - TextField questionInput
+        - TextField answerInput
+        - Button addButton
+        - Button deleteButton
+        - Button backButton
+        - Text deckNameText
+        - Text alertMessage
+        - String currentUsername
+        - String currentDeckName
+        - List<FlashcardDto> flashcards
+        
+        + void initialize()
+        + void setCurrentUsername(String username)
+        + void setCurrentDeckName(String deckName)
+        + void whenAddButtonIsClicked()
+        + void whenDeleteButtonIsClicked()
+        + void whenBackButtonIsClicked()
+        + void whenFlashcardIsClicked()
+        - void loadFlashcards()
+        - void updateUi()
+    }
+
+    class FlashcardLoginController {
+        - TextField usernameField
+        - PasswordField passwordField
+        - Button loginButton
+        - Button signUpButton
+        - Text alertMessage
+        - Text ex
+        
+        + void initialize()
+        + void whenLoginButtonIsClicked()
+        + void whenSignUpButtonIsClicked()
+        - void navigateToMainApp(String username)
+        - void navigateToSignUpPage()
+        - void updateUi()
+    }
+
+    class FlashcardMainController {
+        - ListView<String> deckListView
+        - TextField deckNameInput
+        - Button newDeckButton
+        - Button deleteDeckButton
+        - Button openDeckButton
+        - Text usernameText
+        - Text alertMessage
+        - String currentUsername
+        - List<FlashcardDeckDto> decks
+        
+        + void initialize()
+        + void setCurrentUsername(String username)
+        + void whenNewDeckButtonIsClicked()
+        + void whenDeleteDeckButtonIsClicked()
+        + void whenOpenDeckButtonIsClicked()
+        + void whenDeckIsClicked()
+        + void whenLogoutButtonIsClicked()
+        - void loadUserData()
+        - void updateUi()
+    }
+
+    class FlashcardSignUpController {
+        - TextField usernameField
+        - PasswordField passwordField
+        - PasswordField confirmPasswordField
+        - Button signUpButton
+        - Button backButton
+        - Text alertMessage
+        - Text ex
+        
+        + void initialize()
+        + void whenSignUpButtonIsClicked()
+        + void whenBackButtonIsClicked()
+        - void navigateToLogin()
+        - void updateUi()
+    }
+
+    class SceneUtils {
+        - {static} double SCALE_FACTOR = 2.0
+        - {static} double OFFSET_FACTOR = 1.0
+
+        + {static} Scene createScaledScene(Parent root)
+        + {static} void applyScaling(Parent root)
+    }
+}
+
+package shared <<external>> {
+    class ApiResponse<T>
+    class ApiEndpoints
+    class ApiConstants
+}
+
+' Relationships
+FlashcardMainController --> ApiClient : uses
+FlashcardDeckController --> ApiClient : uses
+FlashcardController --> ApiClient : uses
+FlashcardLoginController --> ApiClient : uses
+FlashcardSignUpController --> ApiClient : uses
+ApiClient --> ApiResponse : uses
+ApiClient --> ApiEndpoints : uses
+FlashcardApp --> FlashcardLoginController : starts with
+FlashcardLoginController --> FlashcardMainController : navigates to
+FlashcardLoginController --> FlashcardSignUpController : navigates to
+FlashcardMainController --> FlashcardDeckController : navigates to
+FlashcardDeckController --> FlashcardController : navigates to
+SceneUtils ..> FlashcardApp : used by
+
+@enduml
