@@ -1,10 +1,10 @@
-# Commit message standard 
+# Commit message standard
 
-To maintain a consistent commit history, this project follows a standardized commit message template. The format is based on [Conventional Commits](https://www.conventionalcommits.org/), which support a clear structure, improves readability and enables automated versioning. 
+To maintain a consistent commit history, this project follows a standardized commit message template. The format is based on [Conventional Commits](https://www.conventionalcommits.org/), which support a clear structure, improves readability and enables automated versioning.
 
-## Format for Commit Messages 
+## Format for Commit Messages
 
-Our commit messages follow the following format: 
+Our commit messages follow the following format:
 
 type(scope): short description
 
@@ -12,10 +12,9 @@ type(scope): short description
 
 [optional footer(s)]
 
+## Example of commit messages
 
-## Example of commit messages 
-
-```
+```text
 feat(auth): add login validation
 
 Added input checks to prevent invalid user logins
@@ -23,7 +22,8 @@ and improved error messages for failed attempts.
 
 Closes #12
 ```
-```
+
+```text
 docs(README): finished released_1.md documentation #6
 ```
 
@@ -42,28 +42,32 @@ docs(README): finished released_1.md documentation #6
 - **revert**: Reverting a previous commit.
 - **security**: Implementation of security-related improvements.
 
-## Scope 
+## Scope
 
-`<scope>` is optional but useful to specify which part of the code the change affects. The scopes 
-we use are 
-- **auth** autentication/login-system 
+`<scope>` is optional but useful to specify which part of the code the change affects. The scopes
+we use are
+
+- **auth** autentication/login-system
 - **ui** user interface, FXML, CSS
-- **api** backend API or services 
-- **core** core logic/models 
-- **build** setup, Maven, project structure 
+- **api** backend API or services
+- **core** core logic/models
+- **build** setup, Maven, project structure
 
-## Description 
+## Description
 
-The short description should be a one-line summary of the change 
+The short description should be a one-line summary of the change
 
-### (Optional) body 
-Use the body to explain why the change was made, and not how the change was implemented. 
+### (Optional) body
 
-### (Optional) footers 
+Use the body to explain why the change was made, and not how the change was implemented.
+
+### (Optional) footers
+
 We used the footers for additional information, such as references to issues or breaking changes
 
-## Our checklist for Commit Messages 
+## Our checklist for Commit Messages
+
 1. **Type** Is the type correct (e.g., `docs`, `refactor`)
 2. **Scope** Does the commit have an appropriate scope?
-3. **Description** Does the body explain why the change was made if necessary 
-4. **Footers** Are footers added if needed? 
+3. **Description** Does the body explain why the change was made if necessary
+4. **Footers** Are footers added if needed?

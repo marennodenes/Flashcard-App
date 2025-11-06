@@ -1,4 +1,4 @@
-# AI Tools 
+# AI Tools
 
 ## Our Approach to AI in Development
 
@@ -7,18 +7,19 @@ We view AI as a supportive tool rather than a replacement for our coding skills.
 Below are the specific AI tools we used and how they contributed to our project:
 
 ## GitHub Copilot (Claude Sonnet 4.0)
+
 - Fixed navigation bugs in deck controller
 - Helped implement the login system with username handling
 - Updated fields in PlantUML diagrams to match project structure
 - Helped improve test coverage
 
-## **ChatGPT**: 
-- Project setup and Java syntax questions
-- Helped with Github related questions, for example scope in commit message 
+## **ChatGPT**
 
-## **Claude AI**: 
+- Project setup and Java syntax questions
+- Helped with Github related questions, for example scope in commit message
+
+## **Claude AI**
+
 - Architecture suggestions and code review
 - Generated javadoc documentation
 - Helped implementing login system
-
-
