@@ -61,11 +61,17 @@ All password handling uses secure practices including salt generation and SHA-25
 
 ## REST API Design
 
-The REST API follows established conventions with resource-based URLs and proper HTTP method usage.
-Endpoints are organized by functionality: `/api/v1/users` for user operations, `/api/v1/flashcards` for flashcard management.
-All responses use a standardized format that includes success status, descriptive messages, and typed data payloads.
-The API implements comprehensive input validation and error handling to ensure data integrity and security.
-Versioning through URL paths (`/api/v1/`) provides future compatibility and allows for gradual migration strategies.
+The REST API follows established conventions with resource-based URLs and proper HTTP method usage. All endpoints are versioned through the `/api/v1/` prefix for future compatibility. The API implements comprehensive input validation and error handling to ensure data integrity and security.
+
+Endpoints are organized by functionality:
+
+- `/api/v1/users` - User management, authentication, and registration
+- `/api/v1/decks` - Deck creation, deletion, and management
+- `/api/v1/flashcards` - Flashcard operations within decks
+
+All responses use a standardized `ApiResponse<T>` format that includes success status, descriptive messages, and typed data payloads. The API uses proper HTTP methods (GET, POST, PUT, DELETE) and implements comprehensive error handling with informative messages that don't leak sensitive information.
+
+For detailed documentation of all endpoints including request/response formats, parameters, and examples, see the [REST API Documentation](rest_api.md).
 
 ## Development Process
 

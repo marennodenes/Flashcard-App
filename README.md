@@ -7,6 +7,23 @@
 
 This repository contains a JavaFX application for creating and studying flashcards. Users can create profiles, organize flashcards into decks, and track their learning progress through an interactive study interface.
 
+## Architecture
+
+This application uses a **client-server architecture**:
+
+- **Server** (`flashcards/server`): Spring Boot REST API backend (runs on port 8080)
+- **Client** (`flashcards/fxui`): JavaFX desktop application
+
+**Why two terminals?**
+
+The server and client run as separate processes to demonstrate:
+
+- RESTful API design patterns
+- Separation of concerns (backend/frontend)
+- Modern distributed application architecture
+
+Both components must be running simultaneously for the application to work. The client communicates with the server via HTTP requests to the REST API.
+
 ## Quickstart
 
 To quickly test the application:
@@ -79,7 +96,7 @@ To quickly test the application:
     mvn javafx:run
     ```
 
-Alternatively, use the VS Code task "Run JavaFX App" which is configured in the workspace.
+**Note:** Both the server (step 5) and client (step 7) must be running simultaneously. The VS Code task "Run JavaFX App" only starts the client - you still need to run the server separately in another terminal.
 
 ## Building the project
 
@@ -171,9 +188,11 @@ To build all modules and run tests:
     mvn javafx:run
     ```
 
+**Note:** Both the server (step 5) and client (step 7) must be running simultaneously for the application to work.
+
 ### Method 2: VS Code
 
-Use the configured task "Run JavaFX App" from the VS Code command palette.
+Use the configured task "Run JavaFX App" from the VS Code command palette. **Important:** This task only starts the client - you must still run the server separately using `mvn spring-boot:run` in the `flashcards/server` directory.
 
 ## Code structure
 
@@ -272,7 +291,7 @@ For detailed project documentation, navigate to [docs](/docs/):
 
 - [Release 1](/docs/release_1/) - Initial implementation and basic functionality
 - [Release 2](/docs/release_2/) - Enhanced features, user authentication, and quality improvements
-- [Release 3](/docs/release_3/) - Enhances features, implemetation of API in server and shared module and improved user authentication
+- [Release 3](/docs/release_3/) - Enhanced features, implementation of API in server and shared module and improved user authentication
 
 ## Use of AI
 
