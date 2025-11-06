@@ -3,82 +3,71 @@
 skinparam monochrome true
 skinparam shadowing false
 
-
-
-/' 
-
-- user writes deck name and clicks on "New Deck" button
-- (FlashcardMainController) whenNewDeckButtonIsClicked(ActionEvent): 
-    - (ApiClient) performApiRequest(String, String, Object, TupeReference<T>): 
-        -sendRequest(): returnerer <--  validates, 
-        <--parseResponse(String, TypeReference): <-- OBJECT_MAPPER.readValue(json, typeReference)
-    - (ApiResponse) isSuccess() <-- boolean
-
-    - loadUserData()
-        (ApiEndpoints) getUserDecksUrl(String username)
-        (DeckController) createDeck(username, deck)
-        isSucess and getData hvis disse stemmer så
-            - 
-    - updateUi()
-        setText(String), setVisible(), 
-        hideAllDeckButtons
-
-
- '/
-
-
 actor "App User" as User
 participant "FlashcardMainController" as MainController
-participant "REST API Client" as APIClient
-participant "API Response" as ApiResponse
-participant "API Endpoints" as ApiEndpoints
+participant "ApiClient" as APIClient
 participant "DeckController" as DeckController
-participant "DeckController" as DeckController
-participant "FlashcardDeckMapper" as FlashcardDeckMapper
-participant "FlashcardDeckDto" as FlashcardDeckDto
+participant "DeckService" as DeckService
 
+participant "FlashcardPersistent" as FlashcardPersistent
+participant "Data storage" as DataStorage
 
-User -> MainController : clicks "Create New Deck"
+User -> MainController : clicks "New Deck"
 activate MainController
 
-/' MainController -> User : displays deck creation form
-User -> MainController : enters deck name and details '/
-/' MainController -> MainController : validates input '/
-
-MainController -> APIClient : whenNewDeckButtonIsClicked(ActionEvent)
+MainController -> APIClient : whenNewDeckButtonIsClicked()
 activate APIClient
+note right APIClient : sending deck object\ninto performApiRequest 
+APIClient -> APIClient : performApiRequest(url, "POST")
+APIClient -> DeckController : POST/api/v1/decks/{deckName}
+activate DeckController
+note right of DeckController : DTOs being used
+DeckController -> DeckService : createDeck(username, deckName)
+activate DeckService
 
-APIClient -> APIClient : performApiRequest()
+DeckService -> FlashcardPersistent : writeDeck(username, deckManager)
+activate FlashcardPersistent
+FlashcardPersistent -> DataStorage : writeUserDataInternal(userdata)
+activate DataStorage
 
-APIClient -> ApiResponse : 
-activate ServerUserController
 
-ServerUserController -> FlashcardService : whenNewDeckButtonIsClicked(ActionEvent)
-activate FlashcardService
+DataStorage --> FlashcardPersistent : void
+deactivate DataStorage
 
-FlashcardService -> Core : create FlashcardDeck object
-activate Core
-Core -> Core : validate deck data
-Core --> FlashcardService : return FlashcardDeck
-deactivate Core
-
-FlashcardService -> Storage : saveDeck(flashcardDeck)
-activate Storage
-Storage -> Storage : serialize to JSON
-Storage --> FlashcardService : confirmation
-deactivate Storage
-
-FlashcardService --> ServerUserController : return success response
-deactivate FlashcardService
-
-ServerUserController --> APIClient : HTTP 201 Created
-deactivate ServerUserController
-
-APIClient --> MainController : deck created successfully
+FlashcardPersistent --> DeckService : void
+deactivate FlashcardPersistent
+DeckService --> DeckController : FlashcardDeck
+deactivate DeckService
+DeckController --> APIClient : ApiResponse<FlashcardDeckDto>
+deactivate DeckController
+APIClient --> MainController : HTTP response 200
 deactivate APIClient
 
-MainController -> User : displays success message
-MainController -> User : navigates to deck view
+MainController -> APIClient : loadUserData()
+activate APIClient
+note right APIClient : sending deck object\ninto performApiRequest 
+APIClient -> APIClient : performApiRequest(url, "GET")
+/' APIClient -> APIClient : sendRequest() '/
+APIClient -> DeckController : GET/api/v1/decks
+activate DeckController
+DeckController -> DeckService : getAllDecks(username) 
+activate DeckService
+DeckService -> FlashcardPersistent : readDeck(username)
+activate FlashcardPersistent
+FlashcardPersistent -> DataStorage : readUserDataInternal(username)
+activate DataStorage
+DataStorage --> FlashcardPersistent : userData
+deactivate DataStorage
+FlashcardPersistent --> DeckService : FlashcardDeckManager
+deactivate FlashcardPersistent
+DeckService --> DeckController : FlashcardDeckManager
+deactivate DeckService
+DeckController --> APIClient : ApiResponse<FlashcardDeckManagerDto>
+deactivate DeckController
+APIClient --> MainController : HTTP response 200
+deactivate APIClient
+MainController -> MainController : updatesUi()
+MainController --> User : displays updated deck list
 deactivate MainController
 
 @enduml
