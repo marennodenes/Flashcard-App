@@ -36,11 +36,12 @@ public class ApiConstants {
   public static final String PASSWORD_VALIDATION_ERROR = "Error validating password: ";
 
   // Flashcard
+  public static final String FLASHCARD_FAILED = "Flashcard failed.";
   public static final String FLASHCARD_NOT_FOUND = "Flashcard not found.";
   public static final String FLASHCARD_CREATED = "Flashcard created successfully.";
   public static final String FLASHCARD_DELETED = "Flashcard deleted successfully.";
-  public static final String FLASHCARD_DELETED_FAILED = "Failed to delete flashcard: ";
-  public static final String FLASHCARD_FAILED = "Failed to create flashcard: ";
+  public static final String FLASHCARD_FAILED_TO_DELETE = "Failed to delete flashcard: ";
+  public static final String FLASHCARD_FAILED_TO_CREATE = "Failed to create flashcard: ";
   public static final String FLASHCARD_RETRIEVED = "Flashcard retrieved successfully";
   public static final String FLASHCARDS_RETRIEVED = "Flashcards retrieved successfully";
   public static final String FLASHCARD_RETRIEVED_FAILED = "Failed to retrieve flashcard: ";
@@ -51,17 +52,19 @@ public class ApiConstants {
   public static final String DECK_NOT_FOUND = "Deck not found.";
   public static final String DECK_CREATED = "Deck created successfully.";
   public static final String DECK_DELETED = "Deck deleted successfully.";
-  public static final String DECKS_UPDATED = "Decks updated successfully";
-  public static final String FAILED_TO_CREATE_DECK = "Failed to create deck";
-  public static final String FAILED_TO_DELETE_DECK = "Failed to delete deck";
+  public static final String DECK_FAILED_TO_CREATE = "Failed to create deck";
+  public static final String DECK_FAILED_TO_DELETE = "Failed to delete deck";
   public static final String DECK_DELETED_ERROR = "Error deleting deck: ";
   public static final String DECK_RETRIEVED = "Deck retrieved successfully";
   public static final String DECK_UPDATED = "Decks updated successfully";
   public static final String DECK_CREATED_ERROR = "Error creating deck: ";
   public static final String DECK_RETRIEVING_ERROR = "Error retrieving deck: ";
-  public static final String DECKS_RETRIEVING_ERROR = "Error retrieving decks: ";
   public static final String DECK_UPDATED_ERROR = "Error updating decks: ";
 
+  // Decks
+  public static final String DECKS_RETRIEVED = "Decks retrieved successfully";
+  public static final String DECKS_RETRIEVING_ERROR = "Error retrieving decks: ";
+  public static final String DECKS_UPDATED = "Decks updated successfully";
 
   // General messages
   public static final String INVALID_REQUEST = "Invalid request.";

@@ -260,7 +260,7 @@ public class FlashcardMainController {
       if (currentUsername == null || currentUsername.isEmpty()) {
         // Internal error - show popup and log to terminal
         System.err.println(ApiConstants.SERVER_ERROR + ": No user logged in when creating deck");
-        ApiClient.showAlert(ApiConstants.SERVER_ERROR, ApiConstants.FAILED_TO_CREATE_DECK);
+        ApiClient.showAlert(ApiConstants.SERVER_ERROR, ApiConstants.DECK_FAILED_TO_CREATE);
         return;
       }
 
@@ -294,7 +294,7 @@ public class FlashcardMainController {
         } else {
           // Server error - show popup and log to terminal
           System.err.println(ApiConstants.SERVER_ERROR + ": " + errorMsg);
-          ApiClient.showAlert(ApiConstants.SERVER_ERROR, ApiConstants.FAILED_TO_CREATE_DECK);
+          ApiClient.showAlert(ApiConstants.SERVER_ERROR, ApiConstants.DECK_FAILED_TO_CREATE);
         }
       }
     } catch (RuntimeException e) {
@@ -304,7 +304,7 @@ public class FlashcardMainController {
         errorMsg = e.getCause().getMessage();
       }
       System.err.println(ApiConstants.SERVER_ERROR + ": " + errorMsg);
-      ApiClient.showAlert(ApiConstants.SERVER_ERROR, ApiConstants.FAILED_TO_CREATE_DECK);
+      ApiClient.showAlert(ApiConstants.SERVER_ERROR, ApiConstants.DECK_FAILED_TO_CREATE);
     } catch (Exception e) {
       // General error - show popup and log to terminal
       System.err.println(ApiConstants.SERVER_ERROR + ": " + e.getMessage());
@@ -345,7 +345,7 @@ public class FlashcardMainController {
         String errorMsg = result != null ? result.getMessage() : ApiConstants.NO_RESPONSE_FROM_SERVER;
         // Server error - show popup and log to terminal
         System.err.println(ApiConstants.SERVER_ERROR + ": " + errorMsg);
-        ApiClient.showAlert(ApiConstants.SERVER_ERROR, ApiConstants.FAILED_TO_DELETE_DECK);
+        ApiClient.showAlert(ApiConstants.SERVER_ERROR, ApiConstants.DECK_FAILED_TO_DELETE);
       }
     } catch (Exception e) {
       // Network/API error - show popup and log to terminal

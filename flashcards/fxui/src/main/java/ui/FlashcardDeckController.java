@@ -213,7 +213,7 @@ public class FlashcardDeckController {
         } else {
           // Server error - log technical details, show popup to user
           System.err.println(ApiConstants.SERVER_ERROR + ": " + errorMsg);
-          ApiClient.showAlert(ApiConstants.SERVER_ERROR, ApiConstants.FAILED_TO_CREATE_FLASHCARD);
+          ApiClient.showAlert(ApiConstants.SERVER_ERROR, ApiConstants.FLASHCARD_FAILED_TO_CREATE);
         }
       }
     } catch (Exception e) {
@@ -254,7 +254,7 @@ public class FlashcardDeckController {
         // Server error - log technical details, show popup to user
         String errorMsg = result != null ? result.getMessage() : ApiConstants.NO_RESPONSE_FROM_SERVER;
         System.err.println(ApiConstants.SERVER_ERROR + ": " + errorMsg);
-        ApiClient.showAlert(ApiConstants.SERVER_ERROR, ApiConstants.FAILED_TO_DELETE_FLASHCARD);
+        ApiClient.showAlert(ApiConstants.SERVER_ERROR, ApiConstants.FLASHCARD_FAILED_TO_DELETE);
       }
     } catch (Exception e) {
       // Unknown error type - log technical details, show generic message to user

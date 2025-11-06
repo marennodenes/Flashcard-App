@@ -151,7 +151,7 @@ public class FlashcardController {
       return new ApiResponse<>(true, ApiConstants.FLASHCARD_DELETED, null);
     } catch (Exception e) {
       // Return server error if deletion fails
-      return new ApiResponse<>(false, ApiConstants.FLASHCARD_DELETED_FAILED + e.getMessage(), null);
+      return new ApiResponse<>(false, ApiConstants.FLASHCARD_FAILED_TO_DELETE + e.getMessage(), null);
     }
   }
 

@@ -1082,7 +1082,7 @@ class FlashcardDeckControllerTest {
             controller.whenDeleteCardButtonIsClicked();
 
             assertEquals(ApiConstants.SERVER_ERROR, title.get());
-            assertEquals(ApiConstants.FAILED_TO_DELETE_FLASHCARD, msg.get());
+            assertEquals(ApiConstants.FLASHCARD_FAILED_TO_DELETE, msg.get());
         }
     }
 
@@ -1201,7 +1201,7 @@ class FlashcardDeckControllerTest {
             controller.whenCreateButtonIsClicked();
 
             assertEquals(ApiConstants.SERVER_ERROR, title.get());
-            assertEquals(ApiConstants.FAILED_TO_CREATE_FLASHCARD, msg.get());
+            assertEquals(ApiConstants.FLASHCARD_FAILED_TO_CREATE, msg.get());
         }
     }
 
@@ -1230,7 +1230,7 @@ class FlashcardDeckControllerTest {
             controller.whenDeleteCardButtonIsClicked();
 
             assertEquals(ApiConstants.SERVER_ERROR, title.get());
-            assertEquals(ApiConstants.FAILED_TO_DELETE_FLASHCARD, msg.get());
+            assertEquals(ApiConstants.FLASHCARD_FAILED_TO_DELETE, msg.get());
         }
     }
 
