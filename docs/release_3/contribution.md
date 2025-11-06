@@ -36,9 +36,9 @@ Beyond her technical work, Maren contributed to project documentation for Releas
 
 ## Marie Kolstad Røed
 
-Marie took primary responsibility for the application's user interface, designing and implementing all FXML files and CSS stylesheets that define the visual appearance and layout of the application. Her work created a cohesive and user-friendly interface across all screens.
+Marie took primary responsibility for the application's user interface, designing and implementing all FXML files and CSS stylesheets that define the visual appearance and layout of the application. Her work created a cohesive and user-friendly interface.
 
-In the fxui module, Marie developed most of the controller logic, including FlashcardController, FlashcardMainController, FlashcardDeckController, and FlashcardLoginController. She was responsible for iterating on these controllers throughout development, continuously fixing bugs and improving functionality. Her attention to detail ensured smooth user interactions and reliable UI behavior.
+In the fxui module, Marie developed most of the controller logic, including FlashcardController, FlashcardMainController, FlashcardDeckController, and FlashcardLoginController. She was responsible for iterating on these controllers throughout development, continuously fixing bugs and improving functionality. Her attention to detail ensured smooth user interactions and reliable UI behavior. She also worked extensively on perfecting error messages and ensuring consistent use of ApiConstants across both the server and fxui modules.
 
 Marie also contributed to the shared module by developing all DTO classes (FlashcardDto, FlashcardDeckDto, FlashcardDeckManagerDto, UserDataDto, LoginRequestDto, and LoginResponseDto) along with key API utilities including ApiResponse, ApiEndpoints, and ApiConstants. Beyond her technical contributions, she played an important role in project documentation, helping maintain clear records of the team's progress and decisions.
 

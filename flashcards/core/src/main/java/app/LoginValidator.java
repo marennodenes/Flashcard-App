@@ -12,6 +12,7 @@ import java.util.Objects;
  * @author parts of class is generated with the help of claude.ai
  * @author sofietw
  * @author ailinat
+ * 
  */
 public class LoginValidator {
 
@@ -21,6 +22,7 @@ public class LoginValidator {
    * Creates a new LoginValidator with the specified persistence implementation.
    * 
    * @param persistence the persistence implementation to use
+   * 
    */
   public LoginValidator(UserPersistence persistence) {
     this.PERSISTENCE = Objects.requireNonNull(persistence, "persistence cannot be null");
@@ -33,6 +35,7 @@ public class LoginValidator {
    * @param username the username of the new user
    * @param password the password of the new user
    * @return true if user created, false if username exists or error occurred
+   * 
    */
   public boolean createUser(String username, String password) {
     if (!PERSISTENCE.userExists(username)) {
@@ -53,6 +56,7 @@ public class LoginValidator {
    * 
    * @param username the username to check
    * @return true if username is unique, false if it already exists
+   * 
    */
   public boolean isUsernameUnique(String username) {
     return !PERSISTENCE.userExists(username);
@@ -64,6 +68,7 @@ public class LoginValidator {
    * @param password the password to check
    * @param confirmedPassword the password confirmation to check
    * @return true if the passwords match, false otherwise
+   * 
    */
   public boolean equalPasswords(String password, String confirmedPassword) {
     return password.equals(confirmedPassword); 
@@ -78,6 +83,7 @@ public class LoginValidator {
    * @param password the password of the user
    * @return true if authentication is successful, false otherwise
    * @throws IllegalStateException if legacy plain text passwords are used
+   * 
    */
   public boolean authenticateUser(String username, String password) throws IllegalStateException {
     User user = findUserByUsername(username);
@@ -98,6 +104,7 @@ public class LoginValidator {
    * 
    * @param username the username to search for
    * @return the User if found, null otherwise
+   * 
    */
   public User findUserByUsername(String username) {
     if (PERSISTENCE.userExists(username)) {

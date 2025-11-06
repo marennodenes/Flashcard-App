@@ -10,8 +10,8 @@ import org.junit.jupiter.api.Test;
  * Tests flashcard operations including question/answer management and validation.
  * 
  * @author isamw
- * 
  * @see Flashcard
+ * 
  */
 public class FlashcardTest {
 
@@ -24,6 +24,7 @@ public class FlashcardTest {
    * Initializes sample Flashcard instances with different constructors for testing.
    * 
    * @author Generated with Claude Sonnet 4 via GitHub Copilot
+   * 
    */
   @BeforeAll
   static void setUp(){

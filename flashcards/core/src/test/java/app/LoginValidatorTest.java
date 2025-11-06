@@ -16,8 +16,8 @@ import org.mockito.Mockito;
  * 
  * @author isamw
  * @author chrsom
- * 
  * @see LoginValidator
+ * 
  */
 public class LoginValidatorTest {
 
@@ -28,6 +28,7 @@ public class LoginValidatorTest {
    * Sets up test fixtures before each test method.
    * Creates a mock {@link UserPersistence} instance and initializes
    * a {@link LoginValidator} with the mocked dependency.
+   * 
    */
   @BeforeEach
   void setUp(){
@@ -41,8 +42,8 @@ public class LoginValidatorTest {
    * - Creating a new user successfully
    * - Creating a user when username doesn't exist
    * - Preventing duplicate user creation when username already exists
-   *
    * @see LoginValidator#createUser(String, String)
+   * 
    */
   @Test
   void testCreateUser (){
@@ -67,6 +68,7 @@ public class LoginValidatorTest {
    * - Returns false for existing usernames
    * 
    * @see LoginValidator#isUsernameUnique(String)
+   * 
    */
   @Test
   void isUsernameUnique(){
@@ -84,8 +86,9 @@ public class LoginValidatorTest {
    * - Failed authentication with wrong password
    * - Failed authentication for non-existent users
    * - Proper handling of legacy plain text passwords
-   *
+   * 
    * @see LoginValidator#authenticateUser(String, String)
+   * 
    */
   @Test
   void authenticateUser (){
@@ -104,13 +107,14 @@ public class LoginValidatorTest {
   /**
    * Tests the {@link LoginValidator#authenticateUser(String, String)} method.
    * Validates user authentication scenarios including:
-   *   Successful authentication with correct credentials
-   *   Failed authentication with wrong password
-   *   Failed authentication for non-existent users
-   *   Proper handling of legacy plain text passwords
+   * - Successful authentication with correct credentials
+   * - Failed authentication with wrong password
+   * - Failed authentication for non-existent users
+   * - Proper handling of legacy plain text passwords
    * 
    * @throws IllegalStateException when legacy plain text passwords are encountered
    * @see LoginValidator#authenticateUser(String, String)
+   * 
    */
   @Test
   void equalPasswords (){
@@ -121,11 +125,12 @@ public class LoginValidatorTest {
 /**
  * Tests the {@link LoginValidator#findUserByUsername(String)} method.
  * Validates user retrieval functionality:
- *   Successfully finds existing users by username
- *   Returns null for non-existent users
- *   Proper integration with persistence layer
+ * - Successfully finds existing users by username
+ * - Returns null for non-existent users
+ * - Proper integration with persistence layer
  * 
  * @see LoginValidator#findUserByUsername(String)
+ * 
  */
   @Test
   void findUserByUsername(){

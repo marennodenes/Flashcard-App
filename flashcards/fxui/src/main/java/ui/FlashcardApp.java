@@ -28,6 +28,7 @@ public class FlashcardApp extends Application{
   @Override
   public void start(Stage primaryStage) throws IOException {
     primaryStage.setTitle("Flashcards App");
+    primaryStage.setResizable(false);
     Scene scene = SceneUtils.createScaledScene(loadLoginScene());
     scene.getStylesheets().add(getLoginStylesheet().toExternalForm());
     primaryStage.setScene(scene);

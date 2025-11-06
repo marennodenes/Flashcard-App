@@ -12,8 +12,8 @@ import org.junit.jupiter.api.Test;
  * 
  * @author isamw
  * @author chrsom
- * 
  * @see UserData
+ * 
  */
 public class UserDataTest {
 
@@ -23,17 +23,18 @@ public class UserDataTest {
    * - A new empty FlashcardDeckManager is created automatically
    * - The deck manager is properly initialized and accessible
    * - The deck manager starts with zero decks
-   *
+   * 
    * @see UserData#UserData(User, FlashcardDeckManager)
    * @see UserData#getDeckManager()
+   * 
    */
   @Test
   void constructor_withNullDeckManager_createsEmptyManager() {
-      User user = new User("alex", "mypassword");
-      UserData userData = new UserData(user, null);
+    User user = new User("alex", "mypassword");
+    UserData userData = new UserData(user, null);
 
-      assertNotNull(userData.getDeckManager());
-      assertEquals(0, userData.getDeckManager().getDecks().size());
+    assertNotNull(userData.getDeckManager());
+    assertEquals(0, userData.getDeckManager().getDecks().size());
   }
 
   /**
@@ -42,20 +43,21 @@ public class UserDataTest {
    * - Properly stores the provided user
    * - Creates a new empty FlashcardDeckManager automatically
    * - Initializes the deck manager with zero decks
-   *
+   * 
    * @see UserData#UserData(User)
    * @see UserData#getUser()
    * @see UserData#getDeckManager()
+   * 
    */
   @Test
   void constructor_withUserOnly() {
-      User user = new User("sofie", "pass123");
-      UserData userData = new UserData(user);
+    User user = new User("sofie", "pass123");
+    UserData userData = new UserData(user);
 
-      assertEquals(user, userData.getUser());
-      assertNotNull(userData.getDeckManager());
-      // This should pass since new FlashcardDeckManager() should be empty
-      assertEquals(0, userData.getDeckManager().getDecks().size());
+    assertEquals(user, userData.getUser());
+    assertNotNull(userData.getDeckManager());
+    // This should pass since new FlashcardDeckManager() should be empty
+    assertEquals(0, userData.getDeckManager().getDecks().size());
   }
 
   /**
@@ -65,10 +67,11 @@ public class UserDataTest {
    * - A defensive copy of the deck manager is created
    * - All decks from the original manager are copied to the new manager
    * - External modifications to the original manager don't affect the UserData
-   *
+   * 
    * @see UserData#UserData(User, FlashcardDeckManager)
    * @see UserData#getUser()
    * @see UserData#getDeckManager()
+   * 
    */
   @Test
   void constructor_userAndManager(){
@@ -91,28 +94,29 @@ public class UserDataTest {
    * - Empty deck manager setting
    * - Defensive copying behavior (external changes don't affect internal state)
    * - Populated deck manager with correct deck count
-   *
+   * 
    * @see UserData#setDeckManager(FlashcardDeckManager)
    * @see UserData#getDeckManager()
+   * 
    */
   @Test
   void setDeckManager() {
-      User user = new User("sofie", "pass123");
-      UserData userData = new UserData(user);
+    User user = new User("sofie", "pass123");
+    UserData userData = new UserData(user);
 
-      userData.setDeckManager(null);
-      assertNotNull(userData.getDeckManager());
-      assertEquals(0, userData.getDeckManager().getDecks().size());
+    userData.setDeckManager(null);
+    assertNotNull(userData.getDeckManager());
+    assertEquals(0, userData.getDeckManager().getDecks().size());
 
-      FlashcardDeckManager manager = new FlashcardDeckManager();
-      UserData userData2 = new UserData(user);
-      userData2.setDeckManager(manager);
-      assertEquals(0, userData2.getDeckManager().getDecks().size());
+    FlashcardDeckManager manager = new FlashcardDeckManager();
+    UserData userData2 = new UserData(user);
+    userData2.setDeckManager(manager);
+    assertEquals(0, userData2.getDeckManager().getDecks().size());
       
-      manager.addDeck(new FlashcardDeck("History"));
-      assertEquals(0, userData2.getDeckManager().getDecks().size());
-      userData2.setDeckManager(manager);
-      assertEquals(1, userData2.getDeckManager().getDecks().size());
+    manager.addDeck(new FlashcardDeck("History"));
+    assertEquals(0, userData2.getDeckManager().getDecks().size());
+    userData2.setDeckManager(manager);
+    assertEquals(1, userData2.getDeckManager().getDecks().size());
   }
 
   /**
@@ -127,22 +131,21 @@ public class UserDataTest {
    * the internal deck manager of the UserData instance.
    * 
    * @see UserData#getDeckManager()
+   * 
    */
   @Test
   void getDeckManager_returnsDefensiveCopy() {
-      User user = new User("alex", "mypassword");
-      FlashcardDeckManager manager = new FlashcardDeckManager();
-      FlashcardDeck deck = new FlashcardDeck("Java");
-      manager.addDeck(deck);
+    User user = new User("alex", "mypassword");
+    FlashcardDeckManager manager = new FlashcardDeckManager();
+    FlashcardDeck deck = new FlashcardDeck("Java");
+    manager.addDeck(deck);
 
-      UserData userData = new UserData(user, manager);
-      FlashcardDeckManager copy = userData.getDeckManager();
+    UserData userData = new UserData(user, manager);
+    FlashcardDeckManager copy = userData.getDeckManager();
 
-      // Legg til et deck i kopien
-      copy.addDeck(new FlashcardDeck("Python"));
+    copy.addDeck(new FlashcardDeck("Python"));
 
-      // Den interne deckManager i userData skal ikke endres
-      assertEquals(1, userData.getDeckManager().getDecks().size());
+    assertEquals(1, userData.getDeckManager().getDecks().size());
   }
 
   /**
@@ -152,9 +155,10 @@ public class UserDataTest {
    * - Preserves the username correctly
    * - Maintains the password data integrity
    * - Provides proper access to user credentials
-   *
+   * 
    * @see UserData#getUser()
    * @see UserData#UserData(User)
+   * 
    */
   @Test
   void getUser(){

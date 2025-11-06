@@ -13,6 +13,7 @@ import java.util.Base64;
  * @author parts of this class is generated with the help of claude.ai
  * @author @sofietw
  * @author @ailinat
+ * 
  */
 public class PasswordEncoder {
   
@@ -27,6 +28,7 @@ public class PasswordEncoder {
    * 
    * @param password the plain text password
    * @return encoded password in format "salt:hash"
+   * 
    */
   public static String encode(String password) {
     try {
@@ -57,6 +59,7 @@ public class PasswordEncoder {
    * @param encodedPassword the stored encoded password in format "salt:hash"
    * @return true if password matches, false otherwise
    * @throws IllegalArgumentException if encodedPassword format is invalid
+   * 
    */
   public static boolean matches(String password, String encodedPassword) throws IllegalArgumentException {
     try {

@@ -16,8 +16,8 @@ import org.junit.jupiter.api.Test;
  * Tests deck operations including adding flashcards, managing deck names, and validation.
  * 
  * @author isamw
- * 
  * @see FlashcardDeck
+ * 
  */
 public class FlashcardDeckTest {
 

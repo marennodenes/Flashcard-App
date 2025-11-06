@@ -12,8 +12,8 @@ import org.junit.jupiter.api.Test;
  * 
  * @author isamw
  * @author chrsom
- * 
  * @see PasswordEncoder
+ * 
  */
 public class PasswordEncoderTest {
   /**
@@ -32,6 +32,7 @@ public class PasswordEncoderTest {
    * 
    * @see PasswordEncoder#encode(String)
    * @see PasswordEncoder#matches(String, String)
+   * 
    */
   @Test
   void testEncodeAndVerify() {

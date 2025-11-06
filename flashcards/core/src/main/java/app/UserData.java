@@ -10,6 +10,7 @@ import com.fasterxml.jackson.annotation.JsonUnwrapped;
  * @author parts of this class is generated with the help of claude.ai
  * @author sofietw
  * @author ailinat
+ * 
  */
 public class UserData {
   @JsonUnwrapped private User user; 
@@ -25,6 +26,7 @@ public class UserData {
    * Constructor without deckManager, initializes with empty deck manager.
    * 
    * @param user the user object connected to the deck manager
+   * 
    */
   public UserData(User user) {
     this(user, new FlashcardDeckManager());
@@ -36,6 +38,7 @@ public class UserData {
    * 
    * @param user the user object connected to the deck manager
    * @param deckManager the flashcard deck manager for the user
+   * 
    */
   public UserData(User user, FlashcardDeckManager deckManager) {
     this.user = user;
@@ -60,6 +63,7 @@ public class UserData {
    * Gets the user.
    * 
    * @return the user
+   * 
    */
   public User getUser() {
     return user;
@@ -70,6 +74,7 @@ public class UserData {
    * Creates a defensive copy to avoid exposing internal representation.
    * 
    * @return a copy of the FlashcardDeckManager
+   * 
    */
   @JsonProperty("deckManager")
   public FlashcardDeckManager getDeckManager() {
@@ -90,6 +95,7 @@ public class UserData {
    * Creates a copy to avoid storing externally mutable objects.
    * 
    * @param deckManager the FlashcardDeckManager to set
+   * 
    */
   public void setDeckManager(FlashcardDeckManager deckManager) {
     if (deckManager == null) {

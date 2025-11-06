@@ -14,6 +14,7 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
  * 
  * @author isamw
  * @author chrsom
+ * 
  */
 @JsonPropertyOrder({"deckName", "flashcards"})
 public class FlashcardDeck {
@@ -36,6 +37,7 @@ public class FlashcardDeck {
    * Constructor that creates a deck with a specified name.
    * 
    * @param deckName the name of the deck
+   * 
    */
   public FlashcardDeck(String deckName){
     this.deckName = deckName;
@@ -44,8 +46,9 @@ public class FlashcardDeck {
 
   /**
    * Gets all flashcards as a list.
-   *
+   * 
    * @return list of flashcards
+   * 
    */
   public List<Flashcard> getDeck() {
     return new ArrayList<>(deck);
@@ -53,8 +56,9 @@ public class FlashcardDeck {
 
   /**
    * Sets the flashcards in the deck.
-   *
+   * 
    * @param deck list of flashcards to set
+   * 
    */
   public void setDeck(List<Flashcard> deck){
     this.deck = new ArrayList<>(deck);
@@ -64,6 +68,7 @@ public class FlashcardDeck {
    * Gets the name of the deck.
    * 
    * @return the deck name
+   * 
    */
   public String getDeckName() {
     return deckName;
@@ -73,6 +78,7 @@ public class FlashcardDeck {
    * Sets the name of the deck.
    * 
    * @param deckName the name to set for the deck
+   * 
    */
   public void setDeckName(String deckName) {
     this.deckName = deckName;
@@ -83,6 +89,7 @@ public class FlashcardDeck {
    * 
    * @param question the question text
    * @param answer the answer text
+   * 
    */
   public void addFlashcard(Flashcard flashcard) {
     if (flashcard != null) {
@@ -99,15 +106,16 @@ public class FlashcardDeck {
    * 
    * @param index the index of the flashcard to remove (0-based)
    * @return true if the flashcard was successfully removed, false if index is invalid
+   * 
    */
   public boolean removeFlashcardByIndex(int index) {
     if (index >= 0 && index < deck.size()) {
-        deck.remove(index);
-        //Updates numbers
-        for (int i = index; i < deck.size(); i++) {
-            deck.get(i).setNumber(i + 1);
-        }
-        return true;
+      deck.remove(index);
+      //Updates numbers
+      for (int i = index; i < deck.size(); i++) {
+        deck.get(i).setNumber(i + 1);
+      }
+      return true;
     }
     return false;
   }
@@ -117,12 +125,13 @@ public class FlashcardDeck {
    * 
    * @param current the question text to check
    * @return true if the question exists, false otherwise
+   * 
    */
   public boolean isQuestion(String current){
     for (Flashcard card : deck) {
-        if (card.getQuestion().equals(current)) {
-            return true;
-        }
+      if (card.getQuestion().equals(current)) {
+        return true;
+      }
     }
     return false;
   }

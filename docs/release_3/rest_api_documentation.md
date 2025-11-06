@@ -2,7 +2,7 @@
 
 ## Introduction
 
-Welcome to the **REST API Documentation** for the Flashcards Application. This documentation provides a comprehensive overview of all API endpoints, including detailed request formats, response structures, and error handling standards. The API serves as the primary communication interface between the JavaFX client and the backend server, enabling secure user authentication, flashcard management, and deck operations.
+This documentation provides a comprehensive overview of all API endpoints, including detailed request formats, response structures, and error handling standards. The API serves as the primary communication interface between the JavaFX client and the backend server, enabling secure user authentication, flashcard management, and deck operations.
 
 ### Purpose
 

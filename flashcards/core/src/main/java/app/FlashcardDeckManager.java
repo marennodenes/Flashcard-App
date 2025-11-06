@@ -10,6 +10,7 @@ import java.util.List;
  * 
  * @author isamw
  * @author chrsom
+ * 
  */
 public class FlashcardDeckManager {
   private List<FlashcardDeck> decks = new ArrayList<>();
@@ -21,6 +22,7 @@ public class FlashcardDeckManager {
    * Returns a copy of the list of all flashcard decks.
    * 
    * @return a new ArrayList containing all the flashcard decks
+   * 
    */
   public List<FlashcardDeck> getDecks() {
     return new ArrayList<>(decks);
@@ -33,6 +35,7 @@ public class FlashcardDeckManager {
    * @throws IllegalArgumentException if deck is null, deck name is null/empty,
    *                                  maximum number of decks is reached, or
    *                                  a deck with the same name already exists
+   * 
    */
   public void addDeck(FlashcardDeck deck) throws IllegalArgumentException {
     if (deck == null) {
@@ -56,6 +59,7 @@ public class FlashcardDeckManager {
    * Removes a flashcard deck from the manager.
    * 
    * @param deck the flashcard deck to remove
+   * 
    */
   public void removeDeck(FlashcardDeck deck) {
     decks.remove(deck);
@@ -63,7 +67,9 @@ public class FlashcardDeckManager {
 
   /**
    * Sets the list of decks in the manager, replacing any existing decks.
+   * 
    * @param decks the new list of decks
+   * 
    */
   public void setDecks(List<FlashcardDeck> decks) {
     this.decks = new ArrayList<>(decks);
