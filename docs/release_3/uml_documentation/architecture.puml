@@ -1,101 +1,48 @@
-@startuml architecture
-!theme plain
-skinparam monochrome true
-skinparam shadowing false
-!pragma layout smetana
+@startuml
+skinparam componentStyle rectangle
 
 actor "App User" as AppUser
 
-package "Flashcards Application" {
-    
-    
-    node "FXUI Module" as fxui {
-        component FlashcardLoginController
-        component FlashcardMainController
-        component FlashcardDeckController
-        component FlashcardController
-        component FlashcardSignUpController
-        component "FXML Files"
-        component "REST API Client"
-    }
-    
-    
-    
-    node "Server Module" as server {
-        component UserController
-        component FlashcardController as ServerFlashcardController
-        component UserService
-        component FlashcardService
-        component "Spring Boot Application"
-    }
-        
-       
-    
-
-     node "Storage Module" as storage {
-        component FlashcardPersistent
-        component "JSON File I/O"
-        component "User Data Files"
-    }
-
-    node "Core Module" as core {
-        component Flashcard
-        component FlashcardDeck
-        component FlashcardDeckManager
-        component User
-        component UserData
-        component LoginValidator
-    }
-    
-    node "Shared Module" as shared{
-        
-        package "dto"{
-            component LoginRequestDto
-            component LoginResponseDto
-            component FlashcardDto
-            component UserDataDto
-            component FlashcardDeckDto
-            component FlashcardDeckManagerDto
-
-            package "Mappers" {
-                component FlashcardMapper
-                component FlashcardDeckMapper
-                component UserMapper
-            }
-
-        }
-        
-        package "Shared" {
-            component ApiConstants
-            component ApiEndPoints
-            component ApiResponse
-        }
-        
-    }
+node "FXUI Module" as fxui {
+    component "JavaFX Controllers"
+    component "FXML Views" 
+    component "API Client"
+    component "Flashcard App"
 }
 
-AppUser --> fxui : Interacts with JavaFX GUI
-fxui --> shared : Uses DTOs for API communication
-shared --> core: Using buisness logic for DTOs
-fxui ..> server : HTTP/REST API calls
-server --> shared : Uses DTOs for requests/responses
-server --> core : Uses domain models and logic
-server --> storage : Persists user data
-storage --> core : Serializes core objects
+node "Shared Module" as shared {
+    component "DTOs"
+    component "API Classes"
+    component "Mappers"
+}
 
-note right of storage
-JSON files stored in
-storage/data/users/
-end note
+node "Core Module" as core {
+    component "Domain Models"
+    component "Business Logic"
+}
 
-note top of server
-Spring Boot REST API
-Port: 8080
-Endpoints:
-• /api/v1/users/login
-• /api/v1/users/register
-• /api/v1/flashcards/*
-• /api/v1/decks/*
-end note
+node "Server Module" as server {
+    component "REST API Controllers"
+    component "Services"
+    component "Spring Boot App"
+}
+
+node "Storage Module" as storage {
+    component "Persistence Layer"
+    component "JSON I/O"
+}
+
+AppUser --> fxui : Interacts with GUI
+fxui --> shared : Uses DTOs and API Classes
+shared --> server : Sends API Requests
+shared --> core : Uses domain models in mappers
+server --> core : Business logic processing
+server --> storage : Data persistence and retrieval
+core <-- storage : Stores core data
+
+fxui -[hidden]right- server
+server -[hidden]right- core
+shared -[hidden]down- server
+server -[hidden]down- storage
 
 @enduml
