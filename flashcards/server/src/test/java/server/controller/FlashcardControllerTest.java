@@ -71,7 +71,6 @@ public class FlashcardControllerTest {
     testFlashcardList.add(new Flashcard("What is Spring?", "A framework"));
   }
 
-
   /**
    * Tests successful retrieval of a specific flashcard by position.
    * Verifies that the endpoint returns HTTP 200 and the requested flashcard data.
@@ -221,6 +220,7 @@ public class FlashcardControllerTest {
   }
 
   // POST methods tests
+
   /**
    * Tests successful creation of a flashcard.
    * Verifies that a new flashcard can be created with question and answer,
@@ -315,7 +315,8 @@ public class FlashcardControllerTest {
       .andExpect(jsonPath("$.message").value(ApiConstants.FLASHCARD_OPERATION_FAILED));
   }
 
-  // DELETE methods tests last
+  // DELETE methods tests
+
   /**
    * Tests successful deletion of a flashcard by position.
    * Verifies that a flashcard can be successfully deleted and returns
@@ -355,7 +356,9 @@ public class FlashcardControllerTest {
       .andExpect(status().isOk())
       .andExpect(jsonPath("$.success").value(false))
       .andExpect(jsonPath("$.message").value(ApiConstants.FLASHCARD_OPERATION_FAILED));
-  }  /**
+  }
+
+  /**
    * Tests flashcard deletion when deck does not exist.
    * Verifies that the endpoint returns appropriate error response
    * when attempting to delete a flashcard from non-existent deck.
@@ -374,7 +377,9 @@ public class FlashcardControllerTest {
       .andExpect(status().isOk())
       .andExpect(jsonPath("$.success").value(false))
       .andExpect(jsonPath("$.message").value(ApiConstants.FLASHCARD_OPERATION_FAILED));
-  }  /**
+  }
+
+  /**
    * Tests flashcard deletion when user does not exist.
    * Verifies that the endpoint returns appropriate error response
    * when attempting to delete a flashcard for non-existent user.

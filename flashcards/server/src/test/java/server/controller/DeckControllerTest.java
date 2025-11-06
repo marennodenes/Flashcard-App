@@ -165,6 +165,36 @@ public class DeckControllerTest {
         .andExpect(jsonPath("$.message").value(ApiConstants.FAILED_TO_LOAD_DATA));
   }
 
+  /**
+   * Tests getAllDecks when IOException occurs.
+   */
+  @Test
+  void testGetAllDecks_IOException() throws Exception {
+    when(deckService.getAllDecks("testUser"))
+        .thenThrow(new RuntimeException("Storage error"));
+
+    mockMvc.perform(request(HttpMethod.valueOf("REQUEST"), ApiEndpoints.DECKS)
+        .param("username", "testUser"))
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$.success").value(false))
+        .andExpect(jsonPath("$.message").value(ApiConstants.FAILED_TO_LOAD_DATA));
+  }
+
+  /**
+   * Tests getDeckByName when IOException occurs.
+   */
+  @Test 
+  void testGetDeckByName_IOException() throws Exception {
+    when(deckService.getDeck("testUser", "TestDeck"))
+        .thenThrow(new RuntimeException("IO Error"));
+
+    mockMvc.perform(request(HttpMethod.valueOf("REQUEST"), ApiEndpoints.DECKS + "/TestDeck")
+        .param("username", "testUser"))
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$.success").value(false))
+        .andExpect(jsonPath("$.message").value(ApiConstants.FAILED_TO_LOAD_DATA));
+  }
+
   // POST methods tests
   /**
    * Tests successful creation of a new deck.
@@ -223,6 +253,172 @@ public class DeckControllerTest {
         .andExpect(jsonPath("$.message").value(ApiConstants.DECK_ALREADY_EXISTS));
   }
 
+  /**
+   * Tests deck creation when service throws IOException.
+   * Verifies that the endpoint returns appropriate error response
+   * when storage operations fail.
+   *
+   * @throws Exception if the MockMvc request fails
+   */
+  @Test
+  void testCreateDeck_ServiceThrowsIOException() throws Exception {
+    when(deckService.createDeck("testUser", "NewDeck"))
+        .thenThrow(new RuntimeException("Storage unavailable"));
+
+    mockMvc.perform(post(ApiEndpoints.DECKS + "/NewDeck")
+        .param("username", "testUser"))
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$.success").value(false))
+        .andExpect(jsonPath("$.message").value(ApiConstants.DECK_OPERATION_FAILED));
+  }
+
+  /**
+   * Tests deck creation when deck limit is reached.
+   * Verifies that the endpoint returns appropriate error response
+   * when attempting to create more than the maximum allowed decks.
+   *
+   * @throws Exception if the MockMvc request fails
+   */
+  @Test
+  void testCreateDeck_DeckLimitReached() throws Exception {
+    when(deckService.createDeck("testUser", "NewDeck"))
+        .thenThrow(new IllegalArgumentException("You can only have up to 8 decks"));
+
+    mockMvc.perform(post(ApiEndpoints.DECKS + "/NewDeck")
+        .param("username", "testUser"))
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$.success").value(false))
+        .andExpect(jsonPath("$.message").value(ApiConstants.DECK_LIMIT_REACHED));
+  }
+
+  /**
+   * Tests deck creation when deck name is empty.
+   * Verifies that the endpoint returns appropriate error response
+   * when attempting to create a deck with empty name.
+   *
+   * @throws Exception if the MockMvc request fails
+   */
+  @Test
+  void testCreateDeck_EmptyDeckName() throws Exception {
+    when(deckService.createDeck("testUser", "EmptyDeck"))
+        .thenThrow(new IllegalArgumentException("Deckname cannot be empty"));
+
+    mockMvc.perform(post(ApiEndpoints.DECKS + "/EmptyDeck")
+        .param("username", "testUser"))
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$.success").value(false))
+        .andExpect(jsonPath("$.message").value(ApiConstants.DECK_NAME_EMPTY));
+  }
+
+  /**
+   * Tests createDeck with technical exception message containing "User not found".
+   * This tests the specific branch in exception mapping logic.
+   * 
+   * @throws Exception if the MockMvc request fails
+   */
+  @Test
+  void testCreateDeck_UserNotFoundInMessage() throws Exception {
+    when(deckService.createDeck("testUser", "NewDeck"))
+        .thenThrow(new IllegalArgumentException("User not found in system"));
+
+    mockMvc.perform(post(ApiEndpoints.DECKS + "/NewDeck")
+        .param("username", "testUser"))
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$.success").value(false))
+        .andExpect(jsonPath("$.message").value(ApiConstants.USER_NOT_FOUND));
+  }
+
+  /**
+   * Tests createDeck with technical exception message containing "unique".
+   * This tests the specific branch for duplicate deck names.
+   * 
+   * @throws Exception if the MockMvc request fails
+   */
+  @Test
+  void testCreateDeck_UniqueConstraintViolation() throws Exception {
+    when(deckService.createDeck("testUser", "DuplicateDeck"))
+        .thenThrow(new IllegalArgumentException("Deck name must be unique for user"));
+
+    mockMvc.perform(post(ApiEndpoints.DECKS + "/DuplicateDeck")
+        .param("username", "testUser"))
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$.success").value(false))
+        .andExpect(jsonPath("$.message").value(ApiConstants.DECK_ALREADY_EXISTS));
+  }
+
+  /**
+   * Tests createDeck with unknown exception message.
+   * This tests the fallback branch in exception mapping.
+   * 
+   * @throws Exception if the MockMvc request fails
+   */
+  @Test
+  void testCreateDeck_UnknownError() throws Exception {
+    when(deckService.createDeck("testUser", "NewDeck"))
+        .thenThrow(new IllegalArgumentException("Some unexpected error"));
+
+    mockMvc.perform(post(ApiEndpoints.DECKS + "/NewDeck")
+        .param("username", "testUser"))
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$.success").value(false))
+        .andExpect(jsonPath("$.message").value(ApiConstants.DECK_OPERATION_FAILED));
+  }
+
+  /**
+   * Tests createDeck with null exception message.
+   * This tests the null check branch in exception mapping.
+   * 
+   * @throws Exception if the MockMvc request fails
+   */
+  @Test
+  void testCreateDeck_NullExceptionMessage() throws Exception {
+    // Create exception with null message
+    IllegalArgumentException exceptionWithNullMessage = new IllegalArgumentException((String)null);
+    when(deckService.createDeck("testUser", "NewDeck"))
+        .thenThrow(exceptionWithNullMessage);
+
+    mockMvc.perform(post(ApiEndpoints.DECKS + "/NewDeck")
+        .param("username", "testUser"))
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$.success").value(false))
+        .andExpect(jsonPath("$.message").value(ApiConstants.DECK_OPERATION_FAILED));
+  }
+
+  /**
+   * Tests createDeck with RuntimeException (non-IllegalArgumentException).
+   * This tests the catch (Exception e) branch.
+   * 
+   * @throws Exception if the MockMvc request fails
+   */
+  @Test
+  void testCreateDeck_RuntimeException() throws Exception {
+    when(deckService.createDeck("testUser", "NewDeck"))
+        .thenThrow(new RuntimeException("Unexpected runtime error"));
+
+    mockMvc.perform(post(ApiEndpoints.DECKS + "/NewDeck")
+        .param("username", "testUser"))
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$.success").value(false))
+        .andExpect(jsonPath("$.message").value(ApiConstants.DECK_OPERATION_FAILED));
+  }
+
+  /**
+   * Tests createDeck with IOException.
+   * This tests the catch (Exception e) branch for IO errors.
+   * 
+   * @throws Exception if the MockMvc request fails
+   */
+  @Test
+  void testCreateDeck_IOException() throws Exception {
+    when(deckService.createDeck("testUser", "NewDeck"))
+        .thenThrow(new java.io.IOException("File system error"));
+
+    mockMvc.perform(post(ApiEndpoints.DECKS + "/NewDeck")
+        .param("username", "testUser"))
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$.success").value(false))
+        .andExpect(jsonPath("$.message").value(ApiConstants.DECK_OPERATION_FAILED));
+  }
 
   /**
    * Tests successful update of all decks for a user.
