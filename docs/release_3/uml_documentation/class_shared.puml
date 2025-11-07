@@ -1,0 +1,229 @@
+@startuml class_shared
+title Shared Module - DTOs and Common Utilities
+
+package shared {
+    package dto {
+        class FlashcardDeckDto {
+            - String deckName
+            - List<FlashcardDto> deck
+
+            + FlashcardDeckDto()
+            + FlashcardDeckDto(String deckName, List<FlashcardDto> deck)
+            + String getDeckName()
+            + List<FlashcardDto> getDeck()
+        }
+
+        class FlashcardDeckManagerDto {
+            - List<FlashcardDeckDto> decks
+
+            + FlashcardDeckManagerDto()
+            + FlashcardDeckManagerDto(List<FlashcardDeckDto> decks)
+            + List<FlashcardDeckDto> getDecks()
+        }
+
+        class FlashcardDto {
+            - String question
+            - String answer
+            - int number
+
+            + FlashcardDto()
+            + FlashcardDto(String question, String answer, int number)
+            + String getQuestion()
+            + String getAnswer()
+            + int getNumber()
+            + String toString()
+        }
+
+        class LoginRequestDto {
+            - String username
+            - String password
+
+            + LoginRequestDto()
+            + LoginRequestDto(String username, String password)
+            + String getUsername()
+            + String getPassword()
+            + void setUsername(String username)
+            + void setPassword(String password)
+        }
+
+        class LoginResponseDto {
+            - boolean success
+            - String message
+            - UserDataDto userData
+
+            + LoginResponseDto(boolean success, String message, UserDataDto userData)
+            + boolean isSuccess()
+            + String getMessage()
+            + UserDataDto getUserData()
+        }
+
+        class UserDataDto {
+            - String username
+            - String password
+            - List<FlashcardDeckManagerDto> deckManager
+
+            + UserDataDto(String username, String password)
+            + UserDataDto(String username, String password, List<FlashcardDeckManagerDto> decks)
+            + String getUsername()
+            + String getPassword()
+            + List<FlashcardDeckManagerDto> getDeckManager()
+        }
+
+        package mappers {
+            class FlashcardDeckMapper {
+                + FlashcardDeckDto toDto(FlashcardDeck deck)
+                + FlashcardDeck fromDto(FlashcardDeckDto dto)
+                + List<FlashcardDeckDto> toDtoList(List<FlashcardDeck> decks)
+                + List<FlashcardDeck> fromDtoList(List<FlashcardDeckDto> dtoList)
+            }
+
+            class FlashcardMapper {
+                + FlashcardDto toDto(Flashcard flashcard)
+                + Flashcard fromDto(FlashcardDto dto)
+                + List<FlashcardDto> toDtoList(List<Flashcard> flashcards)
+                + List<Flashcard> fromDtoList(List<FlashcardDto> dtoList)
+            }
+
+            class UserMapper {
+                + UserDataDto toDto(User user)
+                + UserDataDto toDto(UserData userData)
+                + User fromDto(UserDataDto dto)
+                + User fromLoginrequestDto(LoginRequestDto dto)
+            }
+        }
+    }
+
+    package shared {
+        class ApiConstants {
+            + {static} final String USER_NOT_FOUND
+            + {static} final String USER_CREATED
+            + {static} final String USER_RETRIEVED
+            + {static} final String USER_ALREADY_EXISTS
+            + {static} final String USER_RETRIEVED_ERROR
+            + {static} final String USER_EXISTS
+            + {static} final String USER_EXISTS_ERROR
+            + {static} final String LOGIN_FAILED
+            + {static} final String LOGIN_SUCCESS
+            + {static} final String LOGIN_RESPONSE
+            + {static} final String LOGIN_RESPONSE_ERROR
+            + {static} final String INVALID_PASSWORD
+            + {static} final String PASSWORD_VALIDARION_SUCCESS
+            + {static} final String USER_EXISTENCE_CHECK_SUCCESS
+            + {static} final String EMPTY_FIELDS
+            + {static} final String EMPTY_SIGNUP_FIELDS
+            + {static} final String PASSWORDS_NOT_EQUAL
+            + {static} final String USERNAME_ALREADY_EXISTS
+            + {static} final String DECK_NAME_EMPTY
+            + {static} final String FLASHCARD_QUESTION_ANSWER_EMPTY
+            + {static} final String PASSWORD_TOO_SHORT
+            + {static} final String PASSWORD_MISSING_UPPERCASE
+            + {static} final String PASSWORD_MISSING_LOWERCASE
+            + {static} final String PASSWORD_MISSING_DIGIT
+            + {static} final String PASSWORD_MISSING_SPECIAL
+            + {static} final String PASSWORD_VALIDATION_SUCCESSFUL
+            + {static} final String PASSWORD_VALIDATION_ERROR
+            + {static} final String FLASHCARD_FAILED
+            + {static} final String FLASHCARD_NOT_FOUND
+            + {static} final String FLASHCARD_CREATED
+            + {static} final String FLASHCARD_DELETED
+            + {static} final String FLASHCARD_FAILED_TO_DELETE
+            + {static} final String FLASHCARD_FAILED_TO_CREATE
+            + {static} final String FLASHCARD_RETRIEVED
+            + {static} final String FLASHCARD_RETRIEVED_FAILED
+            + {static} final String DECK_NOT_FOUND
+            + {static} final String DECK_CREATED
+            + {static} final String DECK_DELETED
+            + {static} final String DECK_FAILED_TO_CREATE
+            + {static} final String DECK_FAILED_TO_DELETE
+            + {static} final String DECK_DELETED_ERROR
+            + {static} final String DECK_RETRIEVED
+            + {static} final String DECK_UPDATED
+            + {static} final String DECK_CREATED_ERROR
+            + {static} final String DECK_RETRIEVING_ERROR
+            + {static} final String DECK_UPDATED_ERROR
+            + {static} final String INVALID_REQUEST
+            + {static} final String SERVER_ERROR
+            + {static} final String VALIDATION_ERROR
+            + {static} final String LOAD_ERROR
+            + {static} final String FAILED_TO_LOAD_DECK_DATA
+            + {static} final String FAILED_TO_LOAD_USER_DATA
+            + {static} final String NO_RESPONSE_FROM_SERVER
+            + {static} final String SERVER_CONNECTION_ERROR
+            + {static} final String NO_VALID_BUTTON_FOR_SCENE_SWITCH
+            + {static} final String UNEXPECTED_ERROR
+        }
+
+        class ApiEndpoints {
+            + {static} final String SERVER_HOST
+            + {static} final String SERVER_PORT
+            + {static} final String SERVER_BASE_URL
+            + {static} final String BASE
+            + {static} final String USERS
+            + {static} final String LOGIN
+            + {static} final String REGISTER
+            + {static} final String FLASHCARDS
+            + {static} final String FLASHCARD_CREATE
+            + {static} final String FLASHCARD_GET
+            + {static} final String FLASHCARD_GET_ALL
+            + {static} final String FLASHCARD_DELETE
+            + {static} final String DECKS
+            + {static} final String DECK_CREATE
+            + {static} final String DECK_GET
+            + {static} final String DECK_GET_ALL
+            + {static} final String DECK_DELETE
+            + {static} final String USERS_V1
+            + {static} final String USER_REGISTER
+            + {static} final String USER_LOGIN
+            + {static} final String USER_LOGOUT
+            + {static} final String USER_VALIDATE_PASSWORD
+            + {static} final String USER_PROFILE
+            + {static} final String USER_FIND
+            + {static} final String LOGIN_URL
+            + {static} final String REGISTER_URL
+
+            + {static} String getUserDecksUrl(String username)
+        }
+
+        class ApiResponse<T> {
+            - boolean success
+            - String message
+            - T data
+
+            + ApiResponse()
+            + ApiResponse(boolean success, String message, T data)
+            + boolean isSuccess()
+            + void setSuccess(boolean success)
+            + String getMessage()
+            + void setMessage(String message)
+            + T getData()
+            + void setData(T data)
+        }   
+    }
+}
+
+package core <<external>> {
+    class FlashcardDeck
+    class Flashcard
+    class User
+    class UserData
+}
+
+' DTO relationships
+FlashcardDeckDto "1" *-- "0..*" FlashcardDto : contains
+FlashcardDeckManagerDto "1" *-- "0..*" FlashcardDeckDto : contains
+UserDataDto "1" *-- "0..*" FlashcardDeckManagerDto : contains
+LoginResponseDto "1" *-- "0..1" UserDataDto : contains
+
+' Mapper relationships to DTOs
+FlashcardDeckMapper ..> FlashcardDeckDto : converts to/from
+FlashcardMapper ..> FlashcardDto : converts to/from
+UserMapper ..> UserDataDto : converts to/from
+UserMapper ..> LoginRequestDto : uses
+
+' Mapper relationships to domain
+FlashcardDeckMapper ..> FlashcardDeck : converts to/from
+FlashcardMapper ..> Flashcard : converts to/from
+UserMapper ..> User : converts to/from
+UserMapper ..> UserData : converts to/from
+
+@enduml
