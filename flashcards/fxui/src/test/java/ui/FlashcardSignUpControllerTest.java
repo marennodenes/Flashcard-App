@@ -207,6 +207,15 @@ public class FlashcardSignUpControllerTest {
     void testCreateUserMethodExecution() throws Exception {
         controller = new FlashcardSignUpController();
         
+        // Set up required FXML fields to avoid NullPointerException
+        var alertMessageField = FlashcardSignUpController.class.getDeclaredField("alertMessage");
+        alertMessageField.setAccessible(true);
+        alertMessageField.set(controller, new Text());
+        
+        var exField = FlashcardSignUpController.class.getDeclaredField("ex");
+        exField.setAccessible(true);
+        exField.set(controller, new Text());
+        
         try {
             var method = FlashcardSignUpController.class.getDeclaredMethod("createUser", String.class, String.class);
             method.setAccessible(true);

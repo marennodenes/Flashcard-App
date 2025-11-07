@@ -21,15 +21,14 @@ import shared.ApiConstants;
 import shared.ApiEndpoints;
 import shared.ApiResponse;
 
-
-
 /**
  * Controller for managing decks of flashcards.
  * Handles HTTP requests related to flashcard deck operations.
  * Interacts with DeckService to perform business logic and data manipulation.
- * @see server.service.DeckService
+ * 
  * @author ailinat
  * @author sofietw
+ * @see server.service.DeckService
  */
 @RestController
 @RequestMapping(ApiEndpoints.DECKS)
@@ -39,6 +38,11 @@ public class DeckController {
   private final DeckService deckService; // Handles business logic for deck operations
   private final FlashcardDeckMapper mapper;
 
+  /**
+   * Constructor for DeckController.
+   * 
+   * @param deckService the DeckService to use for deck operations
+   */
   public DeckController(final DeckService deckService) {
     this.deckService = Objects.requireNonNull(deckService, "DeckService cannot be null");
     this.mapper = new FlashcardDeckMapper();
@@ -46,7 +50,8 @@ public class DeckController {
 
   /**
    * Gets all decks for a user.
-   * @param username
+   * 
+   * @param username the username of the user
    * @return an ApiResponse containing FlashcardDeckManagerDto if success or an error message
    */
   @RequestMapping
@@ -56,69 +61,79 @@ public class DeckController {
       FlashcardDeckManagerDto dto = new FlashcardDeckManagerDto(mapper.toDtoList(deckManager.getDecks()));
       return new ApiResponse<>(true, ApiConstants.DECKS_RETRIEVED, dto);
     } catch (Exception e) {
-      return new ApiResponse<>(false, e.getMessage(), null);
+      return new ApiResponse<>(false, ApiConstants.DECKS_RETRIEVING_ERROR + e.getMessage(), null);
     }
   }
 
   /**
    * Gets a specific deck by name for a user.
-   * @param username
-   * @param deckName
+   * 
+   * @param username the username of the user
+   * @param deckName the name of the deck to retrieve
    * @return an ApiResponse containing FlashcardDeckDto if success or an error message
    */
-  @RequestMapping ("/{deckName}")
+  @RequestMapping("/{deckName}")
   public ApiResponse<FlashcardDeckDto> getDeckByName(@RequestParam String username, @RequestParam String deckName) {
     try {
       FlashcardDeck deck = deckService.getDeck(username, deckName);
       FlashcardDeckDto dto = mapper.toDto(deck);
       return new ApiResponse<>(true, ApiConstants.DECK_RETRIEVED, dto);
     } catch (Exception e) {
-      return new ApiResponse<>(false, e.getMessage(), null);
+      return new ApiResponse<>(false, ApiConstants.DECK_RETRIEVING_ERROR + e.getMessage(), null);
     }
   }
 
   /**
    * Creates a new deck for a user.
-   * @param username
-   * @param deckName
+   * 
+   * @param username the username of the user
+   * @param deckName the name of the deck to create
    * @return an ApiResponse containing FlashcardDeckDto if success or an error message
    */
-  @PostMapping ("/{deckName}")
+  @PostMapping("/{deckName}")
   public ApiResponse<FlashcardDeckDto> createDeck(@RequestParam String username, @RequestParam String deckName) {
     try {
       FlashcardDeck deck = deckService.createDeck(username, deckName);
       FlashcardDeckDto dto = mapper.toDto(deck);
       return new ApiResponse<>(true, ApiConstants.DECK_CREATED, dto);
     } catch (Exception e) {
-      return new ApiResponse<>(false, e.getMessage(), null);
+      return new ApiResponse<>(false, ApiConstants.DECK_CREATED_ERROR + e.getMessage(), null);
+    }
+  }
+
+  /**
+   * Updates all decks for a user.
+   * 
+   * @param username the username of the user
+   * @param deckManager the FlashcardDeckManager containing updated decks
+   * @return an ApiResponse indicating success or failure
+   */
+  @PutMapping
+  public ApiResponse<Void> updateAllDecks(
+      @RequestParam String username,
+      @RequestBody FlashcardDeckManager deckManager) {
+    try {
+      deckService.updateAllDecks(username, deckManager);
+      return new ApiResponse<>(true, ApiConstants.DECK_UPDATED, null);
+    } catch (Exception e) {
+      return new ApiResponse<>(false, ApiConstants.DECK_UPDATED_ERROR + e.getMessage(), null);
     }
   }
 
   /**
    * Deletes a deck for a user.
-   * @param username
-   * @param deckName
+   * 
+   * @param username the username of the user
+   * @param deckName the name of the deck to delete
    * @return An ApiResponse indicating success or failure
    */
-  @DeleteMapping ("/{deckName}")
+  @DeleteMapping("/{deckName}")
   public ApiResponse<Void> deleteDeck(@RequestParam String username, @RequestParam String deckName) {
     try {
       deckService.deleteDeck(username, deckName);
       return new ApiResponse<>(true, ApiConstants.DECK_DELETED, null);
     } catch (Exception e) {
-      return new ApiResponse<>(false, e.getMessage(), null);
+      return new ApiResponse<>(false, ApiConstants.DECK_DELETED_ERROR + e.getMessage(), null);
     }
   }
-
-  @PutMapping
-    public ApiResponse<Void> updateAllDecks(
-        @RequestParam String username,
-        @RequestBody FlashcardDeckManager deckManager) {
-      try {
-        deckService.updateAllDecks(username, deckManager);
-        return new ApiResponse<>(true, ApiConstants.DECKS_UPDATED, null);
-      } catch (Exception e) {
-        return new ApiResponse<>(false, e.getMessage(), null);
-      }
-    }
 }

@@ -1,14 +1,17 @@
 package app;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 /**
- * Test class for Flashcard functionality.
+ * Test class for {@link Flashcard} functionality.
  * Tests flashcard operations including question/answer management and validation.
  * 
  * @author isamw
+ * 
+ * @see Flashcard
  */
 public class FlashcardTest {
 
@@ -55,7 +58,6 @@ public class FlashcardTest {
    * - Setting empty string does not change the answer (validation)
    * - Setting whitespace-only string does not change the answer (validation)
    * - Setting null value is allowed and properly stored
-   * 
    */
   @Test
   void testAnswer(){
@@ -74,7 +76,6 @@ public class FlashcardTest {
    * - Number can be successfully set and retrieved
    * - Constructor with number parameter correctly initializes the number
    * - Number property maintains its value correctly
-   * 
    */
   @Test
   void testGetNumber(){
@@ -89,7 +90,6 @@ public class FlashcardTest {
    * - The string representation follows the expected format "Q: [question]\nA: [answer]"
    * - Question and answer values are correctly included in the output
    * - String formatting is consistent and properly structured
-   * 
    */
   @Test
   void testToString(){

@@ -200,17 +200,17 @@ public class FlashcardController {
       // Null check for nextButton to prevent crash
       if (nextButton != null && nextButton.getScene() != null) {
         Stage stage = (Stage) nextButton.getScene().getWindow();
-        stage.setScene(new Scene(root));
+        stage.setScene(SceneUtils.createScaledScene(root));
         stage.show();
       } else {
         // Fallback: try to get stage from any available button
         if (backButton != null && backButton.getScene() != null) {
           Stage stage = (Stage) backButton.getScene().getWindow();
-          stage.setScene(new Scene(root));
+          stage.setScene(SceneUtils.createScaledScene(root));
           stage.show();
         } else if (card != null && card.getScene() != null) {
           Stage stage = (Stage) card.getScene().getWindow();
-          stage.setScene(new Scene(root));
+          stage.setScene(SceneUtils.createScaledScene(root));
           stage.show();
         } else {
           // Could not get stage, do nothing or log error
@@ -305,7 +305,7 @@ public class FlashcardController {
       
       // Switch to login scene
       Stage stage = (Stage) backButton.getScene().getWindow();
-      Scene scene = new Scene(root);
+      Scene scene = SceneUtils.createScaledScene(root);
       scene.getStylesheets().add(getClass().getResource("FlashcardLogin.css").toExternalForm());
       stage.setScene(scene);
       stage.show();

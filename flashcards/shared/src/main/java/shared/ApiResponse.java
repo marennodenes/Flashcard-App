@@ -53,7 +53,7 @@ package shared;
   }
 
   /**
-   * Returns the message associated with the API response.
+   * Gets the message associated with the API response.
    *
    * @return the descriptive message about the operation result
    */
