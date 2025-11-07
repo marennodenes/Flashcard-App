@@ -1,0 +1,130 @@
+@startuml class_server
+title Server Module - REST API
+
+package server {
+    class ServerApplication {
+        + {static} void main(String[] args)
+    }
+
+    package controller {
+        class DeckController {
+            - DeckService deckService
+            - FlashcardDeckMapper mapper
+            
+            + DeckController(DeckService deckService)
+            + ApiResponse<FlashcardDeckManagerDto> getAllDecks(String username)
+            + ApiResponse<FlashcardDeckDto> getDeckByName(String username, String deckName)
+            + ApiResponse<FlashcardDeckDto> createDeck(String username, String deckName)
+            + ApiResponse<Void> deleteDeck(String username, String deckName)
+            + ApiResponse<Void> updateAllDecks(String username, FlashcardDeckManager deckManager)
+        }
+
+        class FlashcardController {
+            - FlashcardService flashcardService
+            - FlashcardMapper mapper
+
+            + FlashcardController(FlashcardService flashcardService)
+            + ApiResponse<FlashcardDto> getFlashcard(String username, String deckname, int number)
+            + ApiResponse<List<FlashcardDto>> getAllFlashcards(String username, String deckname)  
+            + ApiResponse<FlashcardDto> createFlashcard(String username, String deckname, String question, String answer)
+            + ApiResponse<Void> deleteFlashcard(String username, String deckName, int flashcardNumber)
+        }
+
+        class UserController {
+            - UserService userService
+            - UserMapper mapper
+
+            + UserController(UserService userService)
+            + ApiResponse<UserDataDto> getUser(String username)
+            + ApiResponse<Boolean> findUser(String username)
+            + ApiResponse<UserDataDto> createUser(LoginRequestDto request)
+            + ApiResponse<LoginResponseDto> logInUser(LoginRequestDto request)
+            + ApiResponse<Boolean> validatePassword(String username, String password)
+            
+        }
+    }
+
+    package service {
+        class DeckService {
+            - FlashcardPersistent flashcardPersistent
+
+            + DeckService()
+            + DeckService(FlashcardPersistent flashcardPersistent)
+            + FlashcardDeckManager getAllDecks(String username)
+            + FlashcardDeck getDeck(String username, String deckName)
+            + FlashcardDeck createDeck(String username, String deckName)
+            + void deleteDeck(String username, String deckName)
+            + void updateAllDecks(String username, FlashcardDeckManager deckManager)
+        }
+
+        class FlashcardService {
+            - FlashcardPersistent persistent
+            - DeckService deckService
+
+            + FlashcardService()
+            + FlashcardService(FlashcardPersistent persistent, DeckService deckService)
+            + Flashcard getFlashcard(String username, String deckname, int number)
+            + List<Flashcard> getAllFlashcards(String username, String deckname)
+            + Flashcard createFlashcard(String username, String deckname, String answer, String question)
+            + void deleteFlashcard(String username, String deckName, int number)
+        }
+
+        class UserService {
+            - FlashcardPersistent persistent
+
+            + UserService()
+            + User getUser(String username)
+            + boolean userExists(String username)
+            + User createUser(String username, String password)
+            + User createUserWithValidation(String username, String password)
+            + boolean logInUser(String username, String password)
+            + boolean validatePassword(String username, String password)
+            + String validatePasswordDetailed(String password)
+            + boolean isValidPassword(String password)
+        }
+    }
+}
+
+package storage <<external>> {
+    class FlashcardPersistent
+}
+
+package core <<external>> {
+    class FlashcardDeckManager
+    class FlashcardDeck
+    class Flashcard
+    class User
+}
+
+package shared <<external>> {
+    class FlashcardDeckMapper
+    class FlashcardMapper
+    class UserMapper
+    class FlashcardDeckDto
+    class FlashcardDto
+    class LoginRequestDto
+    class LoginResponseDto
+    class ApiResponse
+}
+
+' Controller relationships
+DeckController --> DeckService : uses
+DeckController --> FlashcardDeckMapper : uses
+FlashcardController --> FlashcardService : uses
+FlashcardController --> FlashcardMapper : uses
+UserController --> UserService : uses
+UserController --> UserMapper : uses
+
+' Service relationships
+DeckService --> FlashcardPersistent : uses
+FlashcardService --> FlashcardPersistent : uses
+FlashcardService --> DeckService : uses
+UserService --> FlashcardPersistent : uses
+
+' Service to domain relationships
+DeckService ..> FlashcardDeckManager : works with
+DeckService ..> FlashcardDeck : works with
+FlashcardService ..> Flashcard : works with
+UserService ..> User : works with
+
+@enduml

@@ -1,0 +1,42 @@
+@startuml package
+!theme plain
+skinparam monochrome true
+skinparam shadowing false
+!pragma layout smetana
+title flashcards
+
+package "flashcards" {
+
+    package "config" {
+        [itp.config]
+    }
+
+    package "core" {
+        [itp.core]
+    }
+    
+    package "fxui" {
+        [itp.fxui]
+    }
+
+    package "storage" {
+        [itp.storage]
+    }
+
+    package "shared" {
+        [itp.shared]
+    }
+
+    package "server" {
+        [itp.server]
+    }
+}
+
+"itp.server" --> "itp.core" : "Depends on"
+"itp.server" --> "itp.storage" : "Depends on"
+"itp.server" --> "itp.shared" : "Depends on"
+"itp.fxui" --> "itp.shared" : "Depends on"
+"itp.shared" --> "itp.core" : "Depends on"
+"itp.storage" --> "itp.core" : "Depends on"
+
+@enduml
