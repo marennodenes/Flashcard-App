@@ -1,17 +1,14 @@
 package shared;
 
-/**
- * Generic API response wrapper class that encapsulates the result of API operations.
- * This class provides a standardized format for API responses including success status,
- * message, and optional data payload.
- *
- * @author isamw
- * @author marieroe
- * 
- * @param <T> the type of data contained in the response
- * 
- */
-
+ /**
+  * Generic API response wrapper class that encapsulates the result of API operations.
+  * This class provides a standardized format for API responses including success status,
+  * message, and optional data payload.
+  *
+  * @author isamw
+  * @author marieroe
+  * @param <T> the type of data contained in the response
+  */
  public class ApiResponse<T> {
   private boolean success;
   private String message;
@@ -89,7 +86,6 @@ package shared;
   public void setData(T data) {
     this.data = data;
   }
-
 }
 
 
