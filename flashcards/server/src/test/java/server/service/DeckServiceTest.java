@@ -1,5 +1,11 @@
 package server.service;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+
 import java.io.IOException;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -12,12 +18,6 @@ import app.FlashcardDeck;
 import app.FlashcardDeckManager;
 import itp.storage.FlashcardPersistent;
 import shared.ApiConstants;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
 
 /**
  * Unit tests for the {@link DeckService} class.
@@ -89,8 +89,7 @@ public class DeckServiceTest {
   /**
    * Tests retrieval of all decks for a user with various scenarios.
    * 
-   * This test verifies the {@link DeckService#getAllDecks(String)} method
-   * behavior in different situations:
+   * This test verifies:
    * - Exception thrown when user does not exist in the system
    * - Successful retrieval when user exists and has deck data
    * 
@@ -130,8 +129,7 @@ public class DeckServiceTest {
   /**
    * Tests retrieval of a specific deck by name for a user.
    * 
-   * This test verifies the {@link DeckService#getDeck(String, String)} method
-   * functionality including:
+   * This test verifies:
    * - User existence validation
    * - Deck retrieval from the user's deck collection
    * - Proper delegation to the deck manager
@@ -172,8 +170,7 @@ public class DeckServiceTest {
   /** 
    * Tests deck creation functionality.
    * 
-   * This test verifies the {@link DeckService#createDeck(String, String)} method
-   * workflow including:
+   * This test verifies:
    * - User existence validation
    * - New deck creation with the specified name
    * - Addition of the deck to the user's collection
@@ -208,8 +205,7 @@ public class DeckServiceTest {
   /** 
   * Tests deck deletion functionality.
   * 
-  * This test verifies the {@link DeckService#deleteDeck(String, String)} method
-  * workflow including:
+  * This test verifies:
   * - User existence validation
   * - Deck removal from the user's collection
   * - Persistence of the updated deck manager state

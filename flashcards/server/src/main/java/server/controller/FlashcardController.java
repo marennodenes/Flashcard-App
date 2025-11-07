@@ -29,6 +29,7 @@ import shared.ApiResponse;
  * @author marennod
  * 
  * @see server.service.FlashcardService
+ * 
  */
 
 @RestController
@@ -43,6 +44,7 @@ public class FlashcardController {
    * Constructor for FlashcardController.
    * 
    * @param flashcardService the flashcard service to use for business logic
+   * 
    */
   public FlashcardController(final FlashcardService flashcardService) {
     this.flashcardService = Objects.requireNonNull(flashcardService, "FlashcardService cannot be null");
@@ -57,6 +59,7 @@ public class FlashcardController {
    * @param number the position/index of the flashcard to retrieve
    * @return ApiResponse containing the FlashcardDto on success,
    *         or error message on failure
+   * 
    */
   @GetMapping(ApiEndpoints.FLASHCARD_GET)
   public ApiResponse<FlashcardDto> getFlashcard(
@@ -85,6 +88,7 @@ public class FlashcardController {
    * @param deckname the name of the deck to retrieve flashcards from
    * @return ApiResponse containing a list of all FlashcardDto objects on success,
    *         or error message on failure
+   * 
    */
   @GetMapping(ApiEndpoints.FLASHCARD_GET_ALL)
   public ApiResponse<List<FlashcardDto>> getAllFlashcards(
@@ -112,6 +116,7 @@ public class FlashcardController {
    * @param answer the answer text for the flashcard
    * @return ApiResponse containing the created FlashcardDto on success,
    *         or error message on failure
+   * 
    */
   @PostMapping(ApiEndpoints.FLASHCARD_CREATE)
   public ApiResponse<FlashcardDto> createFlashcard(
@@ -146,6 +151,7 @@ public class FlashcardController {
    * @param number the position/index of the flashcard to delete
    * @return ApiResponse with success message on successful deletion,
    *         or error message on failure
+   * 
    */
   @DeleteMapping(ApiEndpoints.FLASHCARD_DELETE)
   public ApiResponse<Void> deleteFlashcard(

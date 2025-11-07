@@ -844,6 +844,7 @@ public class FlashcardControllerTest {
    * Tests updateProgress method with empty deck.
    * 
    * @throws Exception when updating progress fails
+   * 
    */
   @Test
   public void testUpdateProgress_WithEmptyDeck() throws Exception {

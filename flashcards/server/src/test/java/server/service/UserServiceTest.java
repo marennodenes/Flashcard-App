@@ -65,11 +65,11 @@ class UserServiceTest {
       {
         // overstyrer konstruktøren slik at vi kan injisere mock
         try {
-        var field = UserService.class.getDeclaredField("persistent");
-        field.setAccessible(true);
-        field.set(this, persistent);
+          var field = UserService.class.getDeclaredField("persistent");
+          field.setAccessible(true);
+          field.set(this, persistent);
         } catch (Exception e) {
-                throw new RuntimeException(e);
+          throw new RuntimeException(e);
         }
       }
     };
@@ -100,7 +100,7 @@ class UserServiceTest {
     when(persistent.userExists("ghost")).thenReturn(false);
     
     var ex = assertThrows(IllegalArgumentException.class,
-      () -> userService.getUser("ghost"));
+        () -> userService.getUser("ghost"));
     assertEquals(ApiConstants.USER_NOT_FOUND, ex.getMessage());
         
     var ex2 = assertThrows(IllegalArgumentException.class,

@@ -56,7 +56,6 @@ class FlashcardServiceTest {
    * This method initializes the mock objects using Mockito and creates a new
    * FlashcardService instance with the mocked dependencies. This ensures that
    * each test runs with a clean state and isolated from external dependencies.
-   * 
    */
   @BeforeEach
   public void setUp() {

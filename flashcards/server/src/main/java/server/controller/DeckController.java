@@ -44,6 +44,7 @@ public class DeckController {
    * Constructor for DeckController.
    * 
    * @param deckService the DeckService to use for deck operations
+   * 
    */
   public DeckController(final DeckService deckService) {
     this.deckService = Objects.requireNonNull(deckService, "DeckService cannot be null");
@@ -55,6 +56,7 @@ public class DeckController {
    * 
    * @param username the username of the user
    * @return an ApiResponse containing FlashcardDeckManagerDto if success or an error message
+   * 
    */
   @RequestMapping
   public ApiResponse<FlashcardDeckManagerDto> getAllDecks(@RequestParam String username) {
@@ -76,6 +78,7 @@ public class DeckController {
    * @param username the username of the user
    * @param deckName the name of the deck to retrieve
    * @return an ApiResponse containing FlashcardDeckDto if success or an error message
+   * 
    */
   @RequestMapping("/{deckName}")
   public ApiResponse<FlashcardDeckDto> getDeckByName(@RequestParam String username, @PathVariable String deckName) {
@@ -97,6 +100,7 @@ public class DeckController {
    * @param username the username of the user
    * @param deckName the name of the deck to create
    * @return an ApiResponse containing FlashcardDeckDto if success or an error message
+   * 
    */
   @PostMapping("/{deckName}")
   public ApiResponse<FlashcardDeckDto> createDeck(@RequestParam String username, @PathVariable String deckName) {
@@ -136,6 +140,7 @@ public class DeckController {
    * @param username the username of the user
    * @param deckManager the FlashcardDeckManager containing updated decks
    * @return an ApiResponse indicating success or failure
+   * 
    */
   @PutMapping
   public ApiResponse<Void> updateAllDecks(
@@ -158,6 +163,7 @@ public class DeckController {
    * @param username the username of the user
    * @param deckName the name of the deck to delete
    * @return An ApiResponse indicating success or failure
+   * 
    */
   @DeleteMapping("/{deckName}")
   public ApiResponse<Void> deleteDeck(@RequestParam String username, @PathVariable String deckName) {

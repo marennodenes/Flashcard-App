@@ -1,8 +1,8 @@
 package server;
 
-import org.junit.jupiter.api.Test;
-
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+
+import org.junit.jupiter.api.Test;
 
 
 /**
@@ -14,7 +14,9 @@ import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
  * @author chrsom
  * @author isamw
  * @author parts of class is generated with the help of claude.ai
+ * 
  * @see ServerApplication
+ * 
  */
 public class ServerApplicationTest {
 

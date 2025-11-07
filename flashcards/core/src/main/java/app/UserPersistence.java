@@ -5,6 +5,7 @@ import java.io.IOException;
 /**
  * Interface for user data persistence operations.
  * This allows LoginValidator to use storage without direct dependencies.
+ * 
  * @author sofietw
  * @author ailinat
  * 

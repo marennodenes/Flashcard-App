@@ -420,7 +420,7 @@ public class FlashcardSignUpControllerTest {
       Thread.sleep(100);
     }
       
-      assertTrue(true);
+    assertTrue(true);
   }
 
   /**

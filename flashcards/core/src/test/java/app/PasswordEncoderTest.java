@@ -12,12 +12,12 @@ import org.junit.jupiter.api.Test;
  * 
  * @author isamw
  * @author chrsom
+ * 
  * @see PasswordEncoder
  * 
  */
 public class PasswordEncoderTest {
   /**
-   * Tests the {@link PasswordEncoder#encode(String)} and {@link PasswordEncoder#matches(String, String)} methods.
    * Validates password encoding and verification functionality including:
    * - Successful password encoding with salt generation
    * - Correct password verification with encoded password
@@ -29,13 +29,9 @@ public class PasswordEncoderTest {
    * - Encoded passwords can be successfully verified with the original password
    * - Wrong passwords are rejected during verification
    * - Invalid or malformed encoded passwords are handled gracefully
-   * 
-   * @see PasswordEncoder#encode(String)
-   * @see PasswordEncoder#matches(String, String)
-   * 
    */
   @Test
-  void testEncodeAndVerify() {
+  public void testEncodeAndVerify() {
     String password = "mySecurePassword";
     String encodedPassword = PasswordEncoder.encode(password);
 

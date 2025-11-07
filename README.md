@@ -14,14 +14,6 @@ This application uses a **client-server architecture**:
 - **Server** (`flashcards/server`): Spring Boot REST API backend (runs on port 8080)
 - **Client** (`flashcards/fxui`): JavaFX desktop application
 
-**Why two terminals?**
-
-The server and client run as separate processes to demonstrate:
-
-- RESTful API design patterns
-- Separation of concerns (backend/frontend)
-- Modern distributed application architecture
-
 Both components must be running simultaneously for the application to work. The client communicates with the server via HTTP requests to the REST API.
 
 ## Quickstart
@@ -96,7 +88,7 @@ To quickly test the application:
     mvn javafx:run
     ```
 
-**Note:** Both the server (step 5) and client (step 7) must be running simultaneously. The VS Code task "Run JavaFX App" only starts the client - you still need to run the server separately in another terminal.
+**Note:** Both the server (step 5) and client (step 7) must be running simultaneously.
 
 ## Building the project
 
@@ -118,7 +110,11 @@ To build all modules and run tests:
 
 ## Running the application
 
-### Method 1: Maven
+### Method 1: Creating a shippable product
+
+//TODO: oppdater denne basert på hvordan man kjører med jlink og jpackage
+
+### Method 2: Maven
 
 1. Open the project folder
 
@@ -190,9 +186,9 @@ To build all modules and run tests:
 
 **Note:** Both the server (step 5) and client (step 7) must be running simultaneously for the application to work.
 
-### Method 2: VS Code
+### Method 3: VS Code
 
-Use the configured task "Run JavaFX App" from the VS Code command palette. **Important:** This task only starts the client - you must still run the server separately using `mvn spring-boot:run` in the `flashcards/server` directory.
+Use the configured task "Run JavaFX App" from the VS Code command palette. **Important:** This task only starts the client, you must still run the server separately using `mvn spring-boot:run` in the `flashcards/server` directory.
 
 ## Code structure
 

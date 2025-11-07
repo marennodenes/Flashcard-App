@@ -11,26 +11,21 @@ import org.junit.jupiter.api.Test;
  * 
  * @author isamw
  * @author chrsom
+ * 
  * @see User
  * 
  */
 public class UserTest {
   
   /**
-   * Tests the {@link User#User(String, String)} constructor and getter methods.
    * Validates that:
    * - User object is created with correct username
-   * - Username is retrievable via {@link User#getUsername()}
-   * - Password is stored and accessible via {@link User#getPassword()}
+   * - Username is retrievable
+   * - Password is stored and accessible 
    * - Password is not null after creation
-   * 
-   * @see User#User(String, String)
-   * @see User#getUsername()
-   * @see User#getPassword()
-   * 
    */
   @Test
-  void testUser(){
+  public void testUser(){
     User user = new User("testuser", "testpass");
     assertEquals("testuser", user.getUsername());
     assertNotNull(user.getPassword());

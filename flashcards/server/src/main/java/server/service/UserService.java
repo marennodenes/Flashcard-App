@@ -14,7 +14,8 @@ import shared.ApiConstants;
  * Service class for managing user operations including retrieval,
  * creation, existence check, login, and password validation.
  * 
- * This service acts as an intermediary between the API layer and the persistence layer, handling business logic for user-related operations.
+ * This service acts as an intermediary between the API layer and the persistence layer, 
+ * handling business logic for user-related operations.
  * 
  * The service provides functionality to:
  * - Retrieve user information by username
@@ -29,8 +30,10 @@ import shared.ApiConstants;
  * 
  * @author chrsom
  * @author isamw
+ * 
  * @see FlashcardPersistent
  * @see ApiConstants
+ * 
  */
 @Service
 public class UserService {
@@ -50,6 +53,7 @@ public class UserService {
    * @param username the username of the user to retrieve
    * @return the User object associated with the given username
    * @throws IllegalArgumentException if the user does not exist
+   * 
    */
   public User getUser(String username) {
     if (!persistent.userExists(username) || username.isEmpty()) {
@@ -65,6 +69,7 @@ public class UserService {
    * @param username the username to check
    * @return true if the user exists, false otherwise
    * @throws IllegalArgumentException if the username is empty
+   * 
    */
   public boolean userExists(String username) {
     if (username.isEmpty()) {
@@ -83,6 +88,7 @@ public class UserService {
    * @throws IllegalArgumentException if the username or password is empty
    * @throws IllegalArgumentException if the user already exists
    * @throws IllegalArgumentException if the password is invalid
+   * 
    */
   public User createUser(String username, String password) throws IOException { 
     LoginValidator validator = new LoginValidator(persistent);
@@ -111,6 +117,7 @@ public class UserService {
    * @param password the password for the new user
    * @return the created User object if successful, null if failed
    * @throws IllegalArgumentException with detailed error message if validation fails
+   * 
    */
   public User createUserWithValidation(String username, String password) throws IllegalArgumentException {
     try {
@@ -146,6 +153,7 @@ public class UserService {
    * @param password the password provided for login
    * @return true if login is successful, false otherwise
    * @throws IllegalArgumentException if the username is empty during user existence check
+   * 
    */
   public boolean logInUser(String username, String password) {
     if (username.isEmpty() || password.isEmpty()) {
@@ -163,6 +171,7 @@ public class UserService {
    * @param username the username of the user
    * @param password the password to validate
    * @return true if the password is valid, false otherwise
+   * 
    */
   public boolean validatePassword(String username, String password) {
     if (username.isEmpty() || password.isEmpty()) {
@@ -176,6 +185,7 @@ public class UserService {
    * 
    * @param password the password to check
    * @return true if the password is valid, false otherwise
+   * 
    */
   public boolean isValidPassword(String password) {
     return validatePasswordDetailed(password) == null;
@@ -187,6 +197,7 @@ public class UserService {
    * 
    * @param password the password to validate
    * @return null if valid, or error message string if invalid
+   * 
    */
   public String validatePasswordDetailed(String password) {
     if (password == null) {

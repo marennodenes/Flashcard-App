@@ -21,7 +21,7 @@ public class User {
   public User() {}
 
   /**
-   * Private constructor to create a User with encoded password.
+   * Constructor to create a User with encoded password.
    * 
    * @param username
    * @param password

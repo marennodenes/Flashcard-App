@@ -32,6 +32,7 @@ import shared.ApiConstants;
  * @see FlashcardPersistent
  * @see DeckService
  * @see ApiConstants
+ * 
  */
 @Service
 public class FlashcardService {
@@ -52,6 +53,7 @@ public class FlashcardService {
    * 
    * @param persistent
    * @param deckService
+   * 
    */
   public FlashcardService(FlashcardPersistent persistent, DeckService deckService) {
     this.persistent = Objects.requireNonNull(persistent, "FlashcardPersistent cannot be null");
@@ -67,6 +69,7 @@ public class FlashcardService {
    * @return the Flashcard object at the specified index in the deck
    * @throws IOException if an error occurs while reading from persistent storage
    * @throws IllegalArgumentException if the specified deck or flashcard is not found
+   * 
    */
   public Flashcard getFlashcard(String username, String deckname, int number) throws IOException {
   
@@ -99,6 +102,7 @@ public class FlashcardService {
    * @return a list of all flashcards in the specified deck
    * @throws IOException if an error occurs while reading from persistent storage
    * @throws IllegalArgumentException if the specified deck is not found for the user
+   * 
    */
   public List<Flashcard> getAllFlashcards(String username, String deckname) throws IOException {
     return this.deckService.getDeck(username, deckname).getDeck();
@@ -116,6 +120,7 @@ public class FlashcardService {
    * @return the newly created Flashcard object
    * @throws IOException if an error occurs while writing the updated deck to persistent storage
    * @throws IllegalArgumentException if the specified deck is not found for the user
+   * 
    */
   public Flashcard createFlashcard(String username, String deckname, String answer, String question)
       throws IOException {
@@ -142,6 +147,7 @@ public class FlashcardService {
    * @param deckname the name of the deck containing the flashcard to delete
    * @param number the index of the flashcard to remove from the deck
    * @throws IOException if an error occurs while writing the updated deck to persistent storage
+   * 
    */
   public void deleteFlashcard(String username, String deckname, int number) throws IOException {
     // Get the manager once and reuse it

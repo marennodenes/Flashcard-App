@@ -21,7 +21,9 @@ import javafx.scene.layout.StackPane;
  * 
  * @author marennod
  * @author chrsom
+ * 
  * @see SceneUtils
+ * 
  */
 public class SceneUtilsTest extends ApplicationTest {
 
@@ -34,7 +36,7 @@ public class SceneUtilsTest extends ApplicationTest {
    */
   @BeforeAll
   public static void setUpClass() {
-      // Initialize JavaFX toolkit (handled by ApplicationTest)
+    // Initialize JavaFX toolkit (handled by ApplicationTest)
   }
 
   /**

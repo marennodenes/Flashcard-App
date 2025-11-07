@@ -117,21 +117,21 @@ public class FlashcardLoginControllerTest {
    */
   @BeforeEach
   public void setUp() throws Exception {
-      MockitoAnnotations.openMocks(this);
-      controller = new FlashcardLoginController();
+    MockitoAnnotations.openMocks(this);
+    controller = new FlashcardLoginController();
       
-      // Inject mocked FXML fields using reflection
-      injectMockField("alertMessage", alertMessage);
-      injectMockField("ex", ex);
-      injectMockField("loginButton", loginButton);
-      injectMockField("usernameField", usernameField);
-      injectMockField("passwordField", passwordField);
-      injectMockField("signUpButton", signUpButton);
+    // Inject mocked FXML fields using reflection
+    injectMockField("alertMessage", alertMessage);
+    injectMockField("ex", ex);
+    injectMockField("loginButton", loginButton);
+    injectMockField("usernameField", usernameField);
+    injectMockField("passwordField", passwordField);
+    injectMockField("signUpButton", signUpButton);
       
-      // Set up common mock behaviors
-      when(loginButton.getScene()).thenReturn(scene);
-      when(signUpButton.getScene()).thenReturn(scene);
-      when(scene.getWindow()).thenReturn(stage);
+    // Set up common mock behaviors
+    when(loginButton.getScene()).thenReturn(scene);
+    when(signUpButton.getScene()).thenReturn(scene);
+    when(scene.getWindow()).thenReturn(stage);
   }
   
   /**
@@ -143,9 +143,9 @@ public class FlashcardLoginControllerTest {
    * 
    */
   private void injectMockField(String fieldName, Object mockObject) throws Exception {
-      Field field = FlashcardLoginController.class.getDeclaredField(fieldName);
-      field.setAccessible(true);
-      field.set(controller, mockObject);
+    Field field = FlashcardLoginController.class.getDeclaredField(fieldName);
+    field.setAccessible(true);
+    field.set(controller, mockObject);
   }
 
   /**
@@ -424,38 +424,38 @@ public class FlashcardLoginControllerTest {
    */
   @Test
   public void testUpdateUiShowAlertTrue() throws Exception {
-      FlashcardLoginController controller = new FlashcardLoginController();
+    FlashcardLoginController controller = new FlashcardLoginController();
 
-      // Access private fields via reflection
-      Field showAlertField = FlashcardLoginController.class.getDeclaredField("showAlert");
-      Field errorField = FlashcardLoginController.class.getDeclaredField("error");
-      Field alertMessageField = FlashcardLoginController.class.getDeclaredField("alertMessage");
-      Field exField = FlashcardLoginController.class.getDeclaredField("ex");
+    // Access private fields via reflection
+    Field showAlertField = FlashcardLoginController.class.getDeclaredField("showAlert");
+    Field errorField = FlashcardLoginController.class.getDeclaredField("error");
+    Field alertMessageField = FlashcardLoginController.class.getDeclaredField("alertMessage");
+    Field exField = FlashcardLoginController.class.getDeclaredField("ex");
 
-      showAlertField.setAccessible(true);
-      errorField.setAccessible(true);
-      alertMessageField.setAccessible(true);
-      exField.setAccessible(true);
+    showAlertField.setAccessible(true);
+    errorField.setAccessible(true);
+    alertMessageField.setAccessible(true);
+    exField.setAccessible(true);
 
-      // Mock UI components
-      Text mockAlert = new Text();
-      Text mockEx = new Text();
+    // Mock UI components
+    Text mockAlert = new Text();
+    Text mockEx = new Text();
 
-      alertMessageField.set(controller, mockAlert);
-      exField.set(controller, mockEx);
+    alertMessageField.set(controller, mockAlert);
+    exField.set(controller, mockEx);
 
-      // Set up state for the 'true' branch
-      showAlertField.set(controller, true);
-      errorField.set(controller, "Invalid credentials");
+    // Set up state for the 'true' branch
+    showAlertField.set(controller, true);
+    errorField.set(controller, "Invalid credentials");
 
-      // Act
-      controller.updateUi();
+    // Act
+    controller.updateUi();
 
-      // Assert (verify side effects)
-      assertFalse((boolean) showAlertField.get(controller)); // should reset to false
-      assertEquals("Invalid credentials", mockAlert.getText());
-      assertTrue(mockAlert.isVisible());
-      assertTrue(mockEx.isVisible());
+    // Assert (verify side effects)
+    assertFalse((boolean) showAlertField.get(controller)); // should reset to false
+    assertEquals("Invalid credentials", mockAlert.getText());
+    assertTrue(mockAlert.isVisible());
+    assertTrue(mockEx.isVisible());
   }
 
   /**
@@ -466,34 +466,34 @@ public class FlashcardLoginControllerTest {
    */
   @Test
   public void testUpdateUiShowAlertFalse() throws Exception {
-      FlashcardLoginController controller = new FlashcardLoginController();
+    FlashcardLoginController controller = new FlashcardLoginController();
 
-      Field showAlertField = FlashcardLoginController.class.getDeclaredField("showAlert");
-      Field alertMessageField = FlashcardLoginController.class.getDeclaredField("alertMessage");
-      Field exField = FlashcardLoginController.class.getDeclaredField("ex");
+    Field showAlertField = FlashcardLoginController.class.getDeclaredField("showAlert");
+    Field alertMessageField = FlashcardLoginController.class.getDeclaredField("alertMessage");
+    Field exField = FlashcardLoginController.class.getDeclaredField("ex");
 
-      showAlertField.setAccessible(true);
-      alertMessageField.setAccessible(true);
-      exField.setAccessible(true);
+    showAlertField.setAccessible(true);
+    alertMessageField.setAccessible(true);
+    exField.setAccessible(true);
 
-      // Mock UI components
-      Text mockAlert = new Text();
-      Text mockEx = new Text();
+    // Mock UI components
+    Text mockAlert = new Text();
+    Text mockEx = new Text();
 
-      mockAlert.setVisible(true);
-      mockEx.setVisible(true);
+    mockAlert.setVisible(true);
+    mockEx.setVisible(true);
 
-      alertMessageField.set(controller, mockAlert);
-      exField.set(controller, mockEx);
+    alertMessageField.set(controller, mockAlert);
+    exField.set(controller, mockEx);
 
-      showAlertField.set(controller, false);
+    showAlertField.set(controller, false);
 
-      // Act
-      controller.updateUi();
+    // Act
+    controller.updateUi();
 
-      // Assert
-      assertFalse(mockAlert.isVisible());
-      assertFalse(mockEx.isVisible());
+    // Assert
+    assertFalse(mockAlert.isVisible());
+    assertFalse(mockEx.isVisible());
   }
 
 
@@ -571,29 +571,29 @@ public class FlashcardLoginControllerTest {
    */
   @Test
   public void testWhenSignUpButtonClicked_success() throws Exception {
-      // Mock successful FXMLLoader construction (same pattern as your other success tests)
-      Parent realRoot = new javafx.scene.layout.Pane();
-      Stage mockStage = mock(Stage.class);
-      Scene mockScene = mock(Scene.class);
+    // Mock successful FXMLLoader construction (same pattern as your other success tests)
+    Parent realRoot = new javafx.scene.layout.Pane();
+    Stage mockStage = mock(Stage.class);
+    Scene mockScene = mock(Scene.class);
 
-      try (MockedConstruction<FXMLLoader> mockedFXMLLoader = mockConstruction(FXMLLoader.class,
+    try (MockedConstruction<FXMLLoader> mockedFXMLLoader = mockConstruction(FXMLLoader.class,
        (loader, context) -> {
-           when(loader.load()).thenReturn(realRoot); // Make load() succeed
-       })) {
+          when(loader.load()).thenReturn(realRoot); // Make load() succeed
+      })) {
       
       // Set up mocks for the navigation
       injectMockField("signUpButton", signUpButton);
       when(signUpButton.getScene()).thenReturn(mockScene);
       when(mockScene.getWindow()).thenReturn(mockStage);
-      
+        
       // Act
       controller.whenSignUpButtonClicked();
-      
+        
       // Assert: no error should be shown and navigation should succeed
       verify(alertMessage, never()).setText("Failed to load signup page");
       verify(mockStage).setScene(any(Scene.class));
       verify(mockStage).show();
-      }
+    }
   }
 
   /**
@@ -605,22 +605,19 @@ public class FlashcardLoginControllerTest {
    */
   @Test
   public void testWhenSignUpButtonClicked_ioException() throws Exception {
-      // Use MockedConstruction to simulate IOException (same pattern as your other working tests)
-      try (MockedStatic<ApiClient> mockedApiClient = mockStatic(ApiClient.class);
-       MockedConstruction<FXMLLoader> mockedFXMLLoader = mockConstruction(FXMLLoader.class,
-       (loader, context) -> {
-           when(loader.load()).thenThrow(new IOException("Simulated navigation error"));
-       })) {
+    try (MockedStatic<ApiClient> mockedApiClient = mockStatic(ApiClient.class);
+      MockedConstruction<FXMLLoader> mockedFXMLLoader = mockConstruction(FXMLLoader.class,
+      (loader, context) -> {
+          when(loader.load()).thenThrow(new IOException("Simulated navigation error"));
+      })) {
       
-      // Act: Run directly - the showAlert call will be mocked
       controller.whenSignUpButtonClicked();
-      
-      // Assert: ApiClient.showAlert should be called for navigation errors
+        
       mockedApiClient.verify(() -> ApiClient.showAlert(
           ApiConstants.LOAD_ERROR, 
           ApiConstants.UNEXPECTED_ERROR
       ));
-      }
+    }
   }
 
   /**
@@ -631,15 +628,11 @@ public class FlashcardLoginControllerTest {
    * 
    */
   @Test
-  public void testInitialize() throws Exception {
-      // Since showAlert defaults to false, initialize should hide the alert elements
+  public void testInitialize() throws Exception {      
+    controller.initialize();
       
-      // Act
-      controller.initialize();
-      
-      // Assert: verify that alert elements are hidden (default state)
-      verify(alertMessage).setVisible(false);
-      verify(ex).setVisible(false);
+    verify(alertMessage).setVisible(false);
+    verify(ex).setVisible(false);
   }
 
   /**
@@ -648,7 +641,7 @@ public class FlashcardLoginControllerTest {
    */
   @Test
   public void testFlashcardLoginController() {
-      assertNotNull(controller);
+    assertNotNull(controller);
   }
 
   /**
@@ -661,16 +654,16 @@ public class FlashcardLoginControllerTest {
   @SuppressWarnings("unchecked")
   @Test
   public void testWhenLoginButtonClicked_successfulApiButNullData() throws Exception {
-      when(usernameField.getText()).thenReturn("user");
-      when(passwordField.getText()).thenReturn("pass");
+    when(usernameField.getText()).thenReturn("user");
+    when(passwordField.getText()).thenReturn("pass");
       
-      // Mock API response that is successful but returns null data
-      ApiResponse<LoginResponseDto> mockApiResponse = mock(ApiResponse.class);
-      when(mockApiResponse.isSuccess()).thenReturn(true);
-      when(mockApiResponse.getData()).thenReturn(null); // This is the key difference
-      when(mockApiResponse.getMessage()).thenReturn("No user data received");
+    // Mock API response that is successful but returns null data
+    ApiResponse<LoginResponseDto> mockApiResponse = mock(ApiResponse.class);
+    when(mockApiResponse.isSuccess()).thenReturn(true);
+    when(mockApiResponse.getData()).thenReturn(null); // This is the key difference
+    when(mockApiResponse.getMessage()).thenReturn("No user data received");
 
-      try (MockedStatic<ApiClient> mockedApiClient = mockStatic(ApiClient.class)) {
+    try (MockedStatic<ApiClient> mockedApiClient = mockStatic(ApiClient.class)) {
       mockedApiClient.when(() -> ApiClient.performApiRequest(
           anyString(), anyString(), any(LoginRequestDto.class), any(TypeReference.class)))
           .thenReturn(mockApiResponse);
@@ -681,6 +674,6 @@ public class FlashcardLoginControllerTest {
       verify(alertMessage).setText("No user data received");
       verify(alertMessage, atLeastOnce()).setVisible(true);
       verify(ex, atLeastOnce()).setVisible(true);
-      }
+    }
   }
 }

@@ -16,6 +16,7 @@ import org.mockito.Mockito;
  * 
  * @author isamw
  * @author chrsom
+ * 
  * @see LoginValidator
  * 
  */
@@ -31,22 +32,19 @@ public class LoginValidatorTest {
    * 
    */
   @BeforeEach
-  void setUp(){
+  public void setUp(){
     mockPersistence = Mockito.mock(UserPersistence.class);
     validator = new LoginValidator(mockPersistence);
   }
   
   /**
-   * Tests the {@link LoginValidator#createUser(String, String)} method.
    * Validates user creation scenarios including:
    * - Creating a new user successfully
    * - Creating a user when username doesn't exist
    * - Preventing duplicate user creation when username already exists
-   * @see LoginValidator#createUser(String, String)
-   * 
    */
   @Test
-  void testCreateUser (){
+  public void testCreateUser (){
     boolean newUser = validator.createUser("newUser", "password123");
     assertTrue(newUser);
 
@@ -71,7 +69,7 @@ public class LoginValidatorTest {
    * 
    */
   @Test
-  void isUsernameUnique(){
+  public void isUsernameUnique(){
     Mockito.when(mockPersistence.userExists("uniqueUser")).thenReturn(false);
     assertTrue(validator.isUsernameUnique("uniqueUser"));
 
@@ -91,7 +89,7 @@ public class LoginValidatorTest {
    * 
    */
   @Test
-  void authenticateUser (){
+  public void authenticateUser (){
     String encodedPassword = PasswordEncoder.encode("securePassword");
     User user = new User("testUser", encodedPassword);
     Mockito.when(mockPersistence.userExists("testUser")).thenReturn(true);
@@ -105,7 +103,6 @@ public class LoginValidatorTest {
   }
 
   /**
-   * Tests the {@link LoginValidator#authenticateUser(String, String)} method.
    * Validates user authentication scenarios including:
    * - Successful authentication with correct credentials
    * - Failed authentication with wrong password
@@ -113,27 +110,22 @@ public class LoginValidatorTest {
    * - Proper handling of legacy plain text passwords
    * 
    * @throws IllegalStateException when legacy plain text passwords are encountered
-   * @see LoginValidator#authenticateUser(String, String)
    * 
    */
   @Test
-  void equalPasswords (){
+  public void equalPasswords (){
     assertTrue(validator.equalPasswords("password123", "password123"));
     assertFalse(validator.equalPasswords("password123", "differentPassword"));
   }
 
 /**
- * Tests the {@link LoginValidator#findUserByUsername(String)} method.
  * Validates user retrieval functionality:
  * - Successfully finds existing users by username
  * - Returns null for non-existent users
  * - Proper integration with persistence layer
- * 
- * @see LoginValidator#findUserByUsername(String)
- * 
  */
   @Test
-  void findUserByUsername(){
+  public void findUserByUsername(){
     User user = new User("searchUser", "password123");
     Mockito.when(mockPersistence.userExists("searchUser")).thenReturn(true);
     Mockito.when(mockPersistence.readUserData("searchUser")).thenReturn(user);

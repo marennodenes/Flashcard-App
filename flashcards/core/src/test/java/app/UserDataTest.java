@@ -12,24 +12,20 @@ import org.junit.jupiter.api.Test;
  * 
  * @author isamw
  * @author chrsom
+ * 
  * @see UserData
  * 
  */
 public class UserDataTest {
 
   /**
-   * Tests the {@link UserData#UserData(User, FlashcardDeckManager)} constructor with null deck manager.
    * Validates that when a null deck manager is provided:
    * - A new empty FlashcardDeckManager is created automatically
    * - The deck manager is properly initialized and accessible
    * - The deck manager starts with zero decks
-   * 
-   * @see UserData#UserData(User, FlashcardDeckManager)
-   * @see UserData#getDeckManager()
-   * 
    */
   @Test
-  void constructor_withNullDeckManager_createsEmptyManager() {
+  public void constructor_withNullDeckManager_createsEmptyManager() {
     User user = new User("alex", "mypassword");
     UserData userData = new UserData(user, null);
 
@@ -38,19 +34,13 @@ public class UserDataTest {
   }
 
   /**
-   * Tests the {@link UserData#UserData(User)} constructor with user only.
    * Validates that the single-parameter constructor:
    * - Properly stores the provided user
    * - Creates a new empty FlashcardDeckManager automatically
    * - Initializes the deck manager with zero decks
-   * 
-   * @see UserData#UserData(User)
-   * @see UserData#getUser()
-   * @see UserData#getDeckManager()
-   * 
    */
   @Test
-  void constructor_withUserOnly() {
+  public void constructor_withUserOnly() {
     User user = new User("sofie", "pass123");
     UserData userData = new UserData(user);
 
@@ -61,20 +51,14 @@ public class UserDataTest {
   }
 
   /**
-   * Tests the {@link UserData#UserData(User, FlashcardDeckManager)} constructor with user and deck manager.
    * Validates that when both user and deck manager are provided:
    * - The user is properly stored
    * - A defensive copy of the deck manager is created
    * - All decks from the original manager are copied to the new manager
-   * - External modifications to the original manager don't affect the UserData
-   * 
-   * @see UserData#UserData(User, FlashcardDeckManager)
-   * @see UserData#getUser()
-   * @see UserData#getDeckManager()
-   * 
+   * - External modifications to the original manager don't affect the UserData's manager
    */
   @Test
-  void constructor_userAndManager(){
+  public void constructor_userAndManager(){
     User user = new User("alex", "mypassword");
     FlashcardDeckManager manager = new FlashcardDeckManager();
     FlashcardDeck deck = new FlashcardDeck("Java");
@@ -88,19 +72,14 @@ public class UserDataTest {
   } 
 
   /**
-   * Tests the {@link UserData#setDeckManager(FlashcardDeckManager)} method.
    * Validates proper handling of:
    * - Null deck manager parameter (creates empty manager)
    * - Empty deck manager setting
    * - Defensive copying behavior (external changes don't affect internal state)
    * - Populated deck manager with correct deck count
-   * 
-   * @see UserData#setDeckManager(FlashcardDeckManager)
-   * @see UserData#getDeckManager()
-   * 
    */
   @Test
-  void setDeckManager() {
+  public void setDeckManager() {
     User user = new User("sofie", "pass123");
     UserData userData = new UserData(user);
 
@@ -120,7 +99,6 @@ public class UserDataTest {
   }
 
   /**
-   * Tests the defensive copying behavior of {@link UserData#getDeckManager()}.
    * Validates that the getDeckManager method returns a defensive copy that:
    * - Prevents external modification of internal state
    * - Allows modifications to the returned copy without affecting the original
@@ -129,12 +107,9 @@ public class UserDataTest {
    *
    * This test ensures that adding decks to the returned copy does not modify
    * the internal deck manager of the UserData instance.
-   * 
-   * @see UserData#getDeckManager()
-   * 
    */
   @Test
-  void getDeckManager_returnsDefensiveCopy() {
+  public void getDeckManager_returnsDefensiveCopy() {
     User user = new User("alex", "mypassword");
     FlashcardDeckManager manager = new FlashcardDeckManager();
     FlashcardDeck deck = new FlashcardDeck("Java");
@@ -149,23 +124,17 @@ public class UserDataTest {
   }
 
   /**
-   * Tests the {@link UserData#getUser()} method.
    * Validates that the getUser method:
    * - Returns the correct user object that was provided during construction
    * - Preserves the username correctly
    * - Maintains the password data integrity
    * - Provides proper access to user credentials
-   * 
-   * @see UserData#getUser()
-   * @see UserData#UserData(User)
-   * 
    */
   @Test
-  void getUser(){
+  public void getUser(){
     User user = new User("alex", "mypassword");
     UserData userData = new UserData(user);
     assertEquals("alex", userData.getUser().getUsername());
     assertNotNull(userData.getUser().getPassword());
   }
-
 }

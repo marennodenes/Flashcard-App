@@ -413,11 +413,13 @@ class FlashcardMainControllerTest {
   public void testUpdateUi_ShowsCorrectNumberOfDecks() throws Exception {
     try (MockedStatic<ApiClient> apiClient = mockStatic(ApiClient.class)) {
       List<FlashcardDeckDto> decksForResponse = new ArrayList<>();
+
       for (int i = 0; i < 3; i++) {
         FlashcardDeck deck = new FlashcardDeck();
         deck.setDeckName("Deck " + (i + 1));
         decksForResponse.add(mapper.toDto(deck));
       }
+
       ApiResponse<FlashcardDeckManagerDto> responseWithDecks = createSuccessResponse(decksForResponse);
 
       apiClient.when(() -> ApiClient.performApiRequest(anyString(), eq("GET"), isNull(), any(TypeReference.class)))
@@ -472,6 +474,7 @@ class FlashcardMainControllerTest {
       ApiResponse<FlashcardDeckManagerDto> response = createSuccessResponse(new ArrayList<>());
       apiClient.when(() -> ApiClient.performApiRequest(anyString(), eq("GET"), isNull(), any(TypeReference.class)))
         .thenReturn(response);
+
       controller.setCurrentUsername("testuser");
       List<FlashcardDeckDto> decks = (List<FlashcardDeckDto>) getField("decks");
       FlashcardDeck deck = new FlashcardDeck();
@@ -497,6 +500,7 @@ class FlashcardMainControllerTest {
       ApiResponse<FlashcardDeckManagerDto> response = createSuccessResponse(new ArrayList<>());
       apiClient.when(() -> ApiClient.performApiRequest(anyString(), eq("GET"), isNull(), any(TypeReference.class)))
         .thenReturn(response);
+
       controller.setCurrentUsername("testuser");
 
       List<FlashcardDeckDto> decks = (List<FlashcardDeckDto>) getField("decks");
@@ -807,7 +811,7 @@ class FlashcardMainControllerTest {
    * 
    */
   @SuppressWarnings("unchecked")
-@Test
+  @Test
   public void testWhenDeleteDeckButtonIsClicked_NullApiResponse() throws Exception {
     FlashcardDeckDto deck = new FlashcardDeckDto("Deck1", new ArrayList<>());
     deleteDeck1.setUserData(deck);
@@ -1177,6 +1181,7 @@ class FlashcardMainControllerTest {
         || e.getCause() instanceof IllegalStateException,
           "Expected IOException or scene-related exception");
       }
+
       assertTrue(true, "whenLogOut method executed");
     }
   }
@@ -1243,6 +1248,7 @@ class FlashcardMainControllerTest {
     try (MockedStatic<ApiClient> apiClient = mockStatic(ApiClient.class)) {
       apiClient.when(() -> ApiClient.performApiRequest(anyString(), eq("GET"), isNull(), any(TypeReference.class)))
         .thenThrow(new RuntimeException("Network error"));
+
       controller.setCurrentUsername("testuser");
       List<FlashcardDeckDto> decks = (List<FlashcardDeckDto>) getField("decks");
       assertEquals(0, decks.size());
@@ -1262,6 +1268,7 @@ class FlashcardMainControllerTest {
       ApiResponse<FlashcardDeckManagerDto> response = new ApiResponse<>(true, "Success", null);
       apiClient.when(() -> ApiClient.performApiRequest(anyString(), eq("GET"), isNull(), any(TypeReference.class)))
           .thenReturn(response);
+          
       controller.setCurrentUsername("testuser");
 
       List<FlashcardDeckDto> decks = (List<FlashcardDeckDto>) getField("decks");

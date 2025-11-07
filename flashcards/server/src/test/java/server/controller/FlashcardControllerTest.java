@@ -1,5 +1,16 @@
 package server.controller;
 
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,16 +26,6 @@ import server.service.FlashcardService;
 import shared.ApiEndpoints;
 import shared.ApiConstants;
 
-import static org.mockito.ArgumentMatchers.anyInt;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 /**
  * Test class for FlashcardController REST endpoints.
@@ -43,9 +44,11 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  *
  * @author chrsom
  * @author isamw
- * @author parts of class is generated with the help of claude.ai
+ * @author parts of class is generated with the help of claude.ai@
+ * 
  * @see FlashcardController
  * @see FlashcardService
+ * 
  */
 @WebMvcTest(FlashcardController.class)
 public class FlashcardControllerTest {
@@ -64,7 +67,7 @@ public class FlashcardControllerTest {
    * Initializes test flashcards and flashcard lists for use in test cases.
    */
   @BeforeEach
-  void setUp() {
+  public void setUp() {
     testFlashcard = new Flashcard("What is Java?", "A programming language");
     testFlashcardList = new ArrayList<>();
     testFlashcardList.add(testFlashcard);
@@ -76,9 +79,10 @@ public class FlashcardControllerTest {
    * Verifies that the endpoint returns HTTP 200 and the requested flashcard data.
    *
    * @throws Exception if the MockMvc request fails
+   * 
    */
   @Test
-  void testGetFlashcard_Success() throws Exception {
+  public void testGetFlashcard_Success() throws Exception {
     when(flashcardService.getFlashcard("testUser", "TestDeck", 1))
       .thenReturn(testFlashcard);
 
@@ -99,9 +103,10 @@ public class FlashcardControllerTest {
    * when requesting a non-existent flashcard.
    *
    * @throws Exception if the MockMvc request fails
+   * 
    */
   @Test
-  void testGetFlashcard_FlashcardNotFound() throws Exception {
+  public void testGetFlashcard_FlashcardNotFound() throws Exception {
     when(flashcardService.getFlashcard("testUser", "TestDeck", 99))
       .thenThrow(new IllegalArgumentException("Flashcard not found"));
 
@@ -120,9 +125,10 @@ public class FlashcardControllerTest {
    * when attempting to retrieve a flashcard from non-existent deck.
    *
    * @throws Exception if the MockMvc request fails
+   * 
    */
   @Test
-  void testGetFlashcard_DeckNotFound() throws Exception {
+  public void testGetFlashcard_DeckNotFound() throws Exception {
     when(flashcardService.getFlashcard("testUser", "NonExistentDeck", 1))
       .thenThrow(new IllegalArgumentException("Deck not found"));
 
@@ -140,9 +146,10 @@ public class FlashcardControllerTest {
    * Verifies that the endpoint returns HTTP 200 and a list of all flashcards.
    *
    * @throws Exception if the MockMvc request fails
+   * 
    */
   @Test
-  void testGetAllFlashcards_Success() throws Exception {
+  public void testGetAllFlashcards_Success() throws Exception {
     when(flashcardService.getAllFlashcards("testUser", "TestDeck"))
       .thenReturn(testFlashcardList);
 
@@ -163,9 +170,10 @@ public class FlashcardControllerTest {
    * when attempting to retrieve flashcards from non-existent deck.
    *
    * @throws Exception if the MockMvc request fails
+   * 
    */
   @Test
-  void testGetAllFlashcards_DeckNotFound() throws Exception {
+  public void testGetAllFlashcards_DeckNotFound() throws Exception {
     when(flashcardService.getAllFlashcards("testUser", "NonExistentDeck"))
       .thenThrow(new IllegalArgumentException("Deck not found"));
 
@@ -183,9 +191,10 @@ public class FlashcardControllerTest {
    * when attempting to retrieve flashcards for non-existent user.
    *
    * @throws Exception if the MockMvc request fails
+   * 
    */
   @Test
-  void testGetAllFlashcards_UserNotFound() throws Exception {
+  public void testGetAllFlashcards_UserNotFound() throws Exception {
     when(flashcardService.getAllFlashcards("nonExistent", "TestDeck"))
       .thenThrow(new IllegalArgumentException("User not found"));
 
@@ -203,9 +212,10 @@ public class FlashcardControllerTest {
    * when the deck contains no flashcards.
    *
    * @throws Exception if the MockMvc request fails
+   * 
    */
   @Test
-  void testGetAllFlashcards_EmptyDeck() throws Exception {
+  public void testGetAllFlashcards_EmptyDeck() throws Exception {
     when(flashcardService.getAllFlashcards("testUser", "EmptyDeck"))
       .thenReturn(new ArrayList<>());
 
@@ -219,17 +229,16 @@ public class FlashcardControllerTest {
       .andExpect(jsonPath("$.data").isEmpty());
   }
 
-  // POST methods tests
-
   /**
    * Tests successful creation of a flashcard.
    * Verifies that a new flashcard can be created with question and answer,
    * and returns HTTP 200 with the created flashcard data.
    *
    * @throws Exception if the MockMvc request fails
+   * 
    */
   @Test
-  void testCreateFlashcard_Success() throws Exception {
+  public void testCreateFlashcard_Success() throws Exception {
     when(flashcardService.createFlashcard(anyString(), anyString(), anyString(), anyString()))
       .thenReturn(testFlashcard);
     when(flashcardService.getAllFlashcards(anyString(), anyString()))
@@ -255,9 +264,10 @@ public class FlashcardControllerTest {
    * when attempting to create a flashcard for non-existent user.
    *
    * @throws Exception if the MockMvc request fails
+   * 
    */
   @Test
-  void testCreateFlashcard_UserNotFound() throws Exception {
+  public void testCreateFlashcard_UserNotFound() throws Exception {
     when(flashcardService.createFlashcard(anyString(), anyString(), anyString(), anyString()))
       .thenThrow(new IllegalArgumentException("User not found"));
 
@@ -277,9 +287,10 @@ public class FlashcardControllerTest {
    * when attempting to create a flashcard in non-existent deck.
    *
    * @throws Exception if the MockMvc request fails
+   * 
    */
   @Test
-  void testCreateFlashcard_DeckNotFound() throws Exception {
+  public void testCreateFlashcard_DeckNotFound() throws Exception {
     when(flashcardService.createFlashcard(anyString(), anyString(), anyString(), anyString()))
       .thenThrow(new IllegalArgumentException("Deck not found"));
 
@@ -299,9 +310,10 @@ public class FlashcardControllerTest {
    * when provided with invalid flashcard data.
    *
    * @throws Exception if the MockMvc request fails
+   * 
    */
   @Test
-  void testCreateFlashcard_InvalidData() throws Exception {
+  public void testCreateFlashcard_InvalidData() throws Exception {
     when(flashcardService.createFlashcard(anyString(), anyString(), anyString(), anyString()))
       .thenThrow(new IllegalArgumentException("Invalid flashcard data"));
 
@@ -315,17 +327,16 @@ public class FlashcardControllerTest {
       .andExpect(jsonPath("$.message").value(ApiConstants.FLASHCARD_OPERATION_FAILED));
   }
 
-  // DELETE methods tests
-
   /**
    * Tests successful deletion of a flashcard by position.
    * Verifies that a flashcard can be successfully deleted and returns
    * HTTP 200 with success message.
    *
    * @throws Exception if the MockMvc request fails
+   * 
    */
   @Test
-  void testDeleteFlashcard_Success() throws Exception {
+  public void testDeleteFlashcard_Success() throws Exception {
     doNothing().when(flashcardService).deleteFlashcard("testUser", "TestDeck", 1);
 
     mockMvc.perform(delete(ApiEndpoints.FLASHCARDS + ApiEndpoints.FLASHCARD_DELETE)
@@ -343,9 +354,10 @@ public class FlashcardControllerTest {
    * when attempting to delete a non-existent flashcard.
    *
    * @throws Exception if the MockMvc request fails
+   * 
    */
   @Test
-  void testDeleteFlashcard_FlashcardNotFound() throws Exception {
+  public void testDeleteFlashcard_FlashcardNotFound() throws Exception {
     doThrow(new IllegalArgumentException("Flashcard not found"))
       .when(flashcardService).deleteFlashcard("testUser", "TestDeck", 99);
 
@@ -364,9 +376,10 @@ public class FlashcardControllerTest {
    * when attempting to delete a flashcard from non-existent deck.
    *
    * @throws Exception if the MockMvc request fails
+   * 
    */
   @Test
-  void testDeleteFlashcard_DeckNotFound() throws Exception {
+  public void testDeleteFlashcard_DeckNotFound() throws Exception {
     doThrow(new IllegalArgumentException("Deck not found"))
       .when(flashcardService).deleteFlashcard("testUser", "NonExistentDeck", 1);
 
@@ -385,9 +398,10 @@ public class FlashcardControllerTest {
    * when attempting to delete a flashcard for non-existent user.
    *
    * @throws Exception if the MockMvc request fails
+   * 
    */
   @Test
-  void testDeleteFlashcard_UserNotFound() throws Exception {
+  public void testDeleteFlashcard_UserNotFound() throws Exception {
     doThrow(new IllegalArgumentException("User not found"))
       .when(flashcardService).deleteFlashcard("nonExistent", "TestDeck", 1);
 
@@ -406,9 +420,10 @@ public class FlashcardControllerTest {
    * when provided with an invalid position.
    *
    * @throws Exception if the MockMvc request fails
+   * 
    */
   @Test
-  void testDeleteFlashcard_InvalidPosition() throws Exception {
+  public void testDeleteFlashcard_InvalidPosition() throws Exception {
     doThrow(new IllegalArgumentException("Invalid position"))
       .when(flashcardService).deleteFlashcard("testUser", "TestDeck", -1);
 

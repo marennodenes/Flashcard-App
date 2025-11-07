@@ -1,5 +1,12 @@
 package server.controller;
 
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,12 +23,6 @@ import server.service.UserService;
 import shared.ApiEndpoints;
 import shared.ApiConstants;
 
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 /**
  * Test class for UserController REST endpoints.
@@ -42,8 +43,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * @author chrsom 
  * @author isamw
  * @author parts of class is generated with the help of claude.ai
+ * 
  * @see UserController
  * @see UserService
+ * 
  */
 @WebMvcTest(UserController.class)
 public class UserControllerTest {
@@ -65,7 +68,7 @@ public class UserControllerTest {
    * Initializes a test user and login request DTO for use in test cases.
    */
   @BeforeEach
-  void setUp() {
+  public void setUp() {
     testUser = new User("testUser", "TestPassword123!");
     loginRequest = new LoginRequestDto("testUser", "TestPassword123!");
   }
@@ -75,9 +78,10 @@ public class UserControllerTest {
    * Verifies that the endpoint returns HTTP 200 and correct user data.
    *
    * @throws Exception if the MockMvc request fails
+   * 
    */
   @Test
-  void testGetUser_Success() throws Exception {
+  public void testGetUser_Success() throws Exception {
     when(userService.getUser("testUser")).thenReturn(testUser);
 
     mockMvc.perform(get(ApiEndpoints.USERS_V1)
@@ -94,9 +98,10 @@ public class UserControllerTest {
    * and an appropriate error message.
    *
    * @throws Exception if the MockMvc request fails
+   * 
    */
   @Test
-  void testGetUser_UserNotFound() throws Exception {
+  public void testGetUser_UserNotFound() throws Exception {
     when(userService.getUser("nonExistent")).thenThrow(new IllegalArgumentException("User not found"));
 
     mockMvc.perform(get(ApiEndpoints.USERS_V1)
@@ -112,10 +117,11 @@ public class UserControllerTest {
    * and that the response contains the created user data.
    *
    * @throws Exception if the MockMvc request fails
+   * 
    */
   @SuppressWarnings("null")
   @Test
-  void testCreateUser_Success() throws Exception {
+  public void testCreateUser_Success() throws Exception {
     when(userService.createUserWithValidation(anyString(), anyString())).thenReturn(testUser);
 
     mockMvc.perform(post(ApiEndpoints.USERS_V1 + ApiEndpoints.USER_REGISTER)
@@ -133,10 +139,11 @@ public class UserControllerTest {
    * results in an appropriate error response.
    *
    * @throws Exception if the MockMvc request fails
+   * 
    */
   @SuppressWarnings("null")
   @Test
-  void testCreateUser_InvalidCredentials() throws Exception {
+  public void testCreateUser_InvalidCredentials() throws Exception {
     when(userService.createUserWithValidation(anyString(), anyString()))
         .thenThrow(new IllegalArgumentException(ApiConstants.PASSWORD_TOO_SHORT));
 
@@ -153,10 +160,11 @@ public class UserControllerTest {
    * Verifies that duplicate username registration is properly rejected.
    *
    * @throws Exception if the MockMvc request fails
+   * 
    */
   @SuppressWarnings("null")
   @Test
-  void testCreateUser_UserAlreadyExists() throws Exception {
+  public void testCreateUser_UserAlreadyExists() throws Exception {
     when(userService.createUserWithValidation(anyString(), anyString()))
         .thenThrow(new IllegalArgumentException(ApiConstants.USER_ALREADY_EXISTS));
 
@@ -174,10 +182,11 @@ public class UserControllerTest {
    * and return the user's data.
    *
    * @throws Exception if the MockMvc request fails
+   * 
    */
   @SuppressWarnings("null")
   @Test
-  void testLogInUser_Success() throws Exception {
+  public void testLogInUser_Success() throws Exception {
     when(userService.logInUser("testUser", "TestPassword123!")).thenReturn(true);
     when(userService.getUser("testUser")).thenReturn(testUser);
 
@@ -196,10 +205,11 @@ public class UserControllerTest {
    * Verifies that invalid credentials are properly rejected.
    *
    * @throws Exception if the MockMvc request fails
+   * 
    */
   @SuppressWarnings("null")
   @Test
-  void testLogInUser_WrongPassword() throws Exception {
+  public void testLogInUser_WrongPassword() throws Exception {
     when(userService.logInUser("testUser", "WrongPassword"))
         .thenThrow(new IllegalArgumentException("Invalid password"));
 
@@ -218,10 +228,11 @@ public class UserControllerTest {
    * Verifies that login fails and returns user not found message.
    * 
    * @throws Exception if the MockMvc request fails
+   * 
    */
   @SuppressWarnings("null")
   @Test
-  void testLogInUser_UserNotFound() throws Exception {
+  public void testLogInUser_UserNotFound() throws Exception {
     when(userService.logInUser("ghost", "anyPassword")).thenReturn(false);
     when(userService.userExists("ghost")).thenReturn(false);
 
@@ -241,10 +252,11 @@ public class UserControllerTest {
    * Verifies that login fails and returns error message.
    * 
    * @throws Exception if the MockMvc request fails
+   * 
    */
   @SuppressWarnings("null")
   @Test
-  void testLogInUser_EmptyUsername() throws Exception {
+  public void testLogInUser_EmptyUsername() throws Exception {
     when(userService.logInUser("", "TestPassword123!")).thenThrow(new IllegalArgumentException("Username cannot be empty"));
 
     LoginRequestDto request = new LoginRequestDto("", "TestPassword123!");
@@ -262,10 +274,11 @@ public class UserControllerTest {
    * Verifies that login fails and returns error message.
    * 
    * @throws Exception if the MockMvc request fails
+   * 
    */
   @SuppressWarnings("null")
   @Test
-  void testLogInUser_EmptyPassword() throws Exception {
+  public void testLogInUser_EmptyPassword() throws Exception {
     when(userService.logInUser("testUser", "")).thenThrow(new IllegalArgumentException("Password cannot be empty"));
 
     LoginRequestDto request = new LoginRequestDto("testUser", "");
@@ -283,10 +296,11 @@ public class UserControllerTest {
    * Verifies that login fails and returns error message.
    * 
    * @throws Exception if the MockMvc request fails
+   * 
    */
   @SuppressWarnings("null")
   @Test
-  void testLogInUser_Exception() throws Exception {
+  public void testLogInUser_Exception() throws Exception {
     when(userService.logInUser(anyString(), anyString())).thenThrow(new RuntimeException("Unexpected error"));
 
     LoginRequestDto request = new LoginRequestDto("testUser", "TestPassword123!");
@@ -305,9 +319,10 @@ public class UserControllerTest {
    * and returns true for valid passwords.
    *
    * @throws Exception if the MockMvc request fails
+   * 
    */
   @Test
-  void testValidatePassword_Success() throws Exception {
+  public void testValidatePassword_Success() throws Exception {
     when(userService.validatePassword("testUser", "TestPassword123!")).thenReturn(true);
 
     mockMvc.perform(post(ApiEndpoints.USERS_V1 + ApiEndpoints.USER_VALIDATE_PASSWORD)
@@ -325,9 +340,10 @@ public class UserControllerTest {
    * and returns false.
    *
    * @throws Exception if the MockMvc request fails
+   * 
    */
   @Test
-  void testValidatePassword_InvalidPassword() throws Exception {
+  public void testValidatePassword_InvalidPassword() throws Exception {
     when(userService.validatePassword("testUser", "weak")).thenReturn(false);
 
     mockMvc.perform(post(ApiEndpoints.USERS_V1 + ApiEndpoints.USER_VALIDATE_PASSWORD)
@@ -344,9 +360,10 @@ public class UserControllerTest {
    * Verifies proper error handling when the service throws an exception.
    *
    * @throws Exception if the MockMvc request fails
+   * 
    */
   @Test
-  void testValidatePassword_Error() throws Exception {
+  public void testValidatePassword_Error() throws Exception {
     when(userService.validatePassword(anyString(), anyString()))
         .thenThrow(new RuntimeException("Validation error"));
 
@@ -363,9 +380,10 @@ public class UserControllerTest {
    * Verifies that the endpoint correctly returns true when the user exists.
    *
    * @throws Exception if the MockMvc request fails
+   * 
    */
   @Test
-  void testFindUser_UserExists() throws Exception {
+  public void testFindUser_UserExists() throws Exception {
     when(userService.userExists("testUser")).thenReturn(true);
 
     mockMvc.perform(get(ApiEndpoints.USERS_V1 + ApiEndpoints.USER_FIND)
@@ -381,9 +399,10 @@ public class UserControllerTest {
    * Verifies that the endpoint correctly returns false when the user doesn't exist.
    *
    * @throws Exception if the MockMvc request fails
+   * 
    */
   @Test
-  void testFindUser_UserDoesNotExist() throws Exception {
+  public void testFindUser_UserDoesNotExist() throws Exception {
     when(userService.userExists("nonExistent")).thenReturn(false);
 
     mockMvc.perform(get(ApiEndpoints.USERS_V1 + ApiEndpoints.USER_FIND)
@@ -399,9 +418,10 @@ public class UserControllerTest {
    * Verifies proper error handling when the service throws an exception.
    *
    * @throws Exception if the MockMvc request fails
+   * 
    */
   @Test
-  void testFindUser_Error() throws Exception {
+  public void testFindUser_Error() throws Exception {
     when(userService.userExists(anyString()))
         .thenThrow(new RuntimeException("Database error"));
 

@@ -28,6 +28,7 @@ import shared.ApiResponse;
  * @author @sofietw
  * 
  * @see server.service.UserService
+ * 
  */
 @RestController
 @RequestMapping (ApiEndpoints.USERS_V1)
@@ -39,7 +40,9 @@ public class UserController {
 
   /**
    * Constructor for UserController.
+   * 
    * @param userService the UserService to use for user operations
+   * 
    */
   public UserController (final UserService userService) {
     this.userService = userService;
@@ -51,7 +54,8 @@ public class UserController {
    * Uses the userService to retrieve user data
    * 
    * @param username the username of the user to retrieve
-   * @return ApiResponse<UserDataDto> with user data
+   * @return {@link ApiResponse<UserDataDto>} with user data
+   * 
    */
   @GetMapping 
   public ApiResponse<UserDataDto> getUser (@RequestParam String username) {
@@ -72,7 +76,7 @@ public class UserController {
    * Uses the userService to delete a user
    * 
    * @param username the username of the user to delete
-   * @return ApiResponse<Boolean> indicating if the user was deleted
+   * @return {@link ApiResponse<Boolean>} indicating if the user was deleted
    */
   @GetMapping(ApiEndpoints.USER_FIND)
   public ApiResponse<Boolean> findUser(@RequestParam String username) {
@@ -92,7 +96,8 @@ public class UserController {
    * Uses the userService to create a new user with detailed validation
    * 
    * @param request the login request containing username and password
-   * @return ApiResponse<UserDataDto> with created user data
+   * @return {@link ApiResponse<UserDataDto>} with created user data
+   * 
    */
   @PostMapping (ApiEndpoints.USER_REGISTER)
   public ApiResponse <UserDataDto> createUser(@RequestBody LoginRequestDto request) {
@@ -112,8 +117,9 @@ public class UserController {
    * Login a user.
    * Uses the userService to login a user
    * 
-   * @param loginRequest the login request containing username and password
-   * @return ApiResponse<LoginResponseDto> with login result and user data
+   * @param request the login request containing username and password
+   * @return {@link ApiResponse<LoginResponseDto>} with login result and user data
+   * 
    */
   @PostMapping (ApiEndpoints.USER_LOGIN)
   public ApiResponse <LoginResponseDto> logInUser(@RequestBody LoginRequestDto request) { 
@@ -147,8 +153,10 @@ public class UserController {
    * Validate password for a user.
    * Uses the userService to validate a user's password
    * 
-   * @param request the login request containing username and password
-   * @return ApiResponse<Boolean> indicating if the password is valid
+   * @param username the username of the user
+   * @param password the password to validate
+   * @return {@link ApiResponse<Boolean>} indicating if the password is valid
+   * 
    */
   @PostMapping (ApiEndpoints.USER_VALIDATE_PASSWORD)
   public ApiResponse <Boolean> validatePassword(@RequestParam String username, @RequestParam String password) {

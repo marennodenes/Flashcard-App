@@ -31,6 +31,7 @@ import shared.ApiConstants;
  * @see FlashcardDeckManager
  * @see FlashcardDeck
  * @see ApiConstants
+ * 
  */
 @Service
 public class DeckService {
@@ -48,6 +49,7 @@ public class DeckService {
    *
    * @param flashcardPersistent the FlashcardPersistent instance to use for
    *                            storage operations
+   * 
    */
   public DeckService(FlashcardPersistent flashcardPersistent) {
     this.flashcardPersistent = Objects.requireNonNull(flashcardPersistent, "FlashcardPersistent cannot be null");
@@ -61,6 +63,7 @@ public class DeckService {
    * @throws IOException              if an error occurs while reading from
    *                                  persistent storage
    * @throws IllegalArgumentException if the specified user does not exist
+   * 
    */
   public FlashcardDeckManager getAllDecks(String username) throws IOException {
     if (flashcardPersistent.userExists(username) == false) {
@@ -78,6 +81,7 @@ public class DeckService {
    * @return the FlashcardDeck with the specified name
    * @throws IOException if an error occurs while reading from persistent storage
    * @throws IllegalArgumentException if the user does not exist or the deck is not found
+   * 
    */
   public FlashcardDeck getDeck(String username, String deckname) throws IOException {
     return getAllDecks(username).getDecks().stream().filter(deck -> deck.getDeckName().equals(deckname)).findFirst()
@@ -91,6 +95,7 @@ public class DeckService {
    * @param deck the FlashcardDeck to create and add to the user's collection
    * @throws IOException if an error occurs while writing to persistent storage
    * @throws IllegalArgumentException if the user does not exist
+   * 
    */
   public FlashcardDeck createDeck(String username, String deckName) throws IOException {
     FlashcardDeck deck = new FlashcardDeck(deckName);
@@ -107,6 +112,7 @@ public class DeckService {
    * @param deckname the name of the deck to delete
    * @throws IOException if an error occurs while writing to persistent storage
    * @throws IllegalArgumentException if the user does not exist or the deck is not found
+   * 
    */
   public void deleteDeck(String username, String deckname) throws IOException {
     FlashcardDeckManager manager = getAllDecks(username);
@@ -125,6 +131,7 @@ public class DeckService {
    * @param deckManagerDto the DTO containing all decks to save
    * @throws IOException if an error occurs while writing to persistent storage
    * @throws IllegalArgumentException if the user does not exist
+   * 
    */
   public void updateAllDecks(String username, FlashcardDeckManager deckManager) throws IOException {
     if (!flashcardPersistent.userExists(username)) {
