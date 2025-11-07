@@ -112,7 +112,27 @@ To build all modules and run tests:
 
 ### Method 1: Creating a shippable product
 
-//TODO: oppdater denne basert på hvordan man kjører med jlink og jpackage
+To create an executable file that runs locally on your computer:
+1. If not already done, make sure to build the project
+     ```bash
+    mvn clean install
+    ```
+2. Open `fxui` module
+    ```bash
+        cd fxui
+    ```
+3. When in `fxui`, run this command to run and create a executable application 
+    ```bash
+        mvn clean package javafx:jlink jpackage:jpackage
+    ```
+4. To be able to use the app, you must run the REST-API `server` in our app 
+    ```bash
+        cd server
+        mvn spring-boot:run
+    ```
+5. Now there has been created a Flashcards-1.0.0.dmg in `fxui/target/dist`. Locate this file and run that file.
+6. You can now use the application on your computer 
+
 
 ### Method 2: Maven
 
@@ -257,9 +277,9 @@ After running `mvn test`, you can generate test coverage reports via JaCoCo:
 **Current test coverage:**
 
 - **core**: Instruction Coverage: 88% | Branch Coverage: 92%
-- **fxui**: Instruction Coverage: XX% | Branch Coverage: XX%
+- **fxui**: Instruction Coverage: 90% | Branch Coverage: 85%
 - **shared**: Instruction Coverage: 98% | Branch Coverage: 87%
-- **server**: Instruction Coverage: XX% | Branch Coverage: XX%
+- **server**: Instruction Coverage: 92% | Branch Coverage: 92%
 - **storage**: Instruction Coverage: 98% | Branch Coverage: 87%
 
 ![core JaCoCo coverage](images/jaCoCo/release_3/coreJaCoCo_release3.png)
