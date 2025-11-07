@@ -6,6 +6,8 @@ import java.util.List;
 
 import dto.FlashcardDto;
 import dto.FlashcardDeckDto;
+import shared.ApiConstants;
+
 import javafx.animation.RotateTransition;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -18,7 +20,6 @@ import javafx.scene.text.Text;
 import javafx.scene.transform.Rotate;
 import javafx.stage.Stage;
 import javafx.util.Duration;
-import shared.ApiConstants;
 
 /**
  * Controller for the flashcard learning interface.
@@ -78,67 +79,48 @@ public class FlashcardController {
    * Only updates if the card button exists, the deck is not empty, and the current card index is valid.
    */
   public void updateUi() {
-        if (decknameField != null) {
-            String deckName = "";
-            if (originalDeck != null && originalDeck.getDeckName() != null) {
-                deckName = originalDeck.getDeckName();
-            }
-            decknameField.setText(deckName == null ? "" : deckName);
-        }
-        if (usernameField != null) {
-            usernameField.setText(currentUsername == null || currentUsername.isEmpty() ? "" : currentUsername);
-        }
-        FlashcardDto current = getCurrentCard();
-        if (card != null) {
-            if (current == null) {
-                card.setText("");
-                card.setStyle(questionStyle.trim()); // Always set style for empty card
-                isShowingAnswer = false; // Reset to question state
-            } else {
-                String text = isShowingAnswer ? current.getAnswer() : current.getQuestion();
-                card.setText(text == null ? "" : text);
-                String style = isShowingAnswer ? answerStyle.trim() : questionStyle.trim();
-                card.setStyle(style);
-            }
-        }
-        updateProgress();
+    if (decknameField != null) {
+      String deckName = "";
+      if (originalDeck != null && originalDeck.getDeckName() != null) {
+        deckName = originalDeck.getDeckName();
+      }
+      decknameField.setText(deckName == null ? "" : deckName);
     }
+    if (usernameField != null) {
+      usernameField.setText(currentUsername == null || currentUsername.isEmpty() ? "" : currentUsername);
+    }
+    FlashcardDto current = getCurrentCard();
+    if (card != null) {
+      if (current == null) {
+        card.setText("");
+        card.setStyle(questionStyle.trim()); // Always set style for empty card
+        isShowingAnswer = false; // Reset to question state
+      } else {
+        String text = isShowingAnswer ? current.getAnswer() : current.getQuestion();
+        card.setText(text == null ? "" : text);
+        String style = isShowingAnswer ? answerStyle.trim() : questionStyle.trim();
+        card.setStyle(style);
+      }
+    }
+    updateProgress();
+  }
 
-    public void updateProgress() {
-        int deckSize = deck == null ? 0 : deck.size();
-        int cardNum = (deckSize == 0 || currentCardI < 0) ? 0 : currentCardI + 1;
-        if (cardNumber != null) {
-            cardNumber.setText(String.valueOf(cardNum));
-        }
-        if (progressBar != null) {
-            double progress = (deckSize == 0) ? 0.0 : ((double) cardNum / deckSize);
-            progressBar.setProgress(progress);
-        }
+  /**
+   * Updates the progress bar and card number display.
+   * Calculates the current position in the deck and updates the UI elements accordingly.
+   * Handles null checks and edge cases like empty decks or invalid card indices.
+   */
+  public void updateProgress() {
+    int deckSize = deck == null ? 0 : deck.size();
+    int cardNum = (deckSize == 0 || currentCardI < 0) ? 0 : currentCardI + 1;
+    if (cardNumber != null) {
+      cardNumber.setText(String.valueOf(cardNum));
     }
-
-    FlashcardDto getCurrentCard() {
-        if (deck == null || deck.isEmpty() || currentCardI < 0 || currentCardI >= deck.size()) {
-            return null;
-        }
-        FlashcardDto cardObj = deck.get(currentCardI);
-        return cardObj == null ? null : cardObj;
+    if (progressBar != null) {
+      double progress = (deckSize == 0) ? 0.0 : ((double) cardNum / deckSize);
+      progressBar.setProgress(progress);
     }
-
-    private void goToNextCard() {
-        if (deck == null || deck.isEmpty()) return;
-        currentCardI = (currentCardI + 1) % deck.size();
-        isShowingAnswer = false; // Reset to question when navigating to new card
-        updateUi();
-        updateProgress();
-    }
-
-    private void goToPreviousCard() {
-        if (deck == null || deck.isEmpty()) return;
-        currentCardI = (currentCardI - 1 + deck.size()) % deck.size();
-        isShowingAnswer = false; // Reset to question when navigating to new card
-        updateUi();
-        updateProgress();
-    }
+  }
 
   /**
    * Sets the deck for the controller and updates UI/progress.
@@ -162,19 +144,55 @@ public class FlashcardController {
 
   /**
    * Sets the current username for display in the UI.
-   * 
+   *
    * @param username the username to set
    */
   public void setCurrentUsername(String username) {
-        if (username == null || username.trim().isEmpty()) {
-            this.currentUsername = "";
-        } else {
-            this.currentUsername = username.trim();
-        }
-        if (usernameField != null) {
-            usernameField.setText(this.currentUsername);
-        }
-    }  
+    if (username == null || username.trim().isEmpty()) {
+      this.currentUsername = "";
+    } else {
+      this.currentUsername = username.trim();
+    }
+    if (usernameField != null) {
+      usernameField.setText(this.currentUsername);
+    }
+  }
+
+  /**
+   * Performs the card flip animation and toggles between question and answer.
+   * Uses JavaFX rotation transitions to create a smooth flip effect.
+   */
+  public void flipCard() {
+    if (card == null) return;
+    RotateTransition rotateOut = new RotateTransition(Duration.millis(150), card);
+    rotateOut.setAxis(Rotate.X_AXIS);
+    rotateOut.setFromAngle(0);
+    rotateOut.setToAngle(90);
+
+    RotateTransition rotateIn = new RotateTransition(Duration.millis(150), card);
+    rotateIn.setAxis(Rotate.X_AXIS);
+    rotateIn.setFromAngle(270);
+    rotateIn.setToAngle(360);
+
+    rotateOut.setOnFinished(e -> {
+      FlashcardDto current = getCurrentCard();
+      if (!isShowingAnswer) {
+        String answer = (current != null && current.getAnswer() != null) ? current.getAnswer() : "";
+        card.setText(answer);
+        card.setWrapText(true);
+        card.setStyle(answerStyle.trim());
+      } else {
+        String question = (current != null && current.getQuestion() != null) ? current.getQuestion() : "";
+        card.setText(question);
+        card.setWrapText(true);
+        card.setStyle(questionStyle.trim());
+      }
+      isShowingAnswer = !isShowingAnswer;
+      rotateIn.play();
+    });
+
+    rotateOut.play();
+  }
 
   /**
    * Handles the event when the "Back" button is clicked.
@@ -223,73 +241,6 @@ public class FlashcardController {
     }
   }
 
-
-
-  /**
-   * Handles next card button click.
-   * Advances to the next card in the deck with looping behavior.
-   */
-  @FXML
-  private void whenNextCardButtonClicked() {
-        goToNextCard();
-  }
-
-  /** 
-   * Handles previous card button click.
-   * Moves to the previous card in the deck with looping behavior.
-   */
-  @FXML
-  private void whenPreviousCardButtonClicked() {
-        goToPreviousCard();
-  }
-
-  /**
-   * Handles card button click to flip between question and answer.
-   * Triggers the card flip animation if deck is not empty.
-   */
-  @FXML
-  private void whenCardButtonClicked(){
-    if (!deck.isEmpty()) {
-      flipCard();
-    }
-  }
-
-  /**
-   * Performs the card flip animation and toggles between question and answer.
-   * Uses JavaFX rotation transitions to create a smooth flip effect.
-   */
-  void flipCard() {
-        if (card == null) return;
-        RotateTransition rotateOut = new RotateTransition(Duration.millis(150), card);
-        rotateOut.setAxis(Rotate.X_AXIS);
-        rotateOut.setFromAngle(0);
-        rotateOut.setToAngle(90);
-
-        RotateTransition rotateIn = new RotateTransition(Duration.millis(150), card);
-        rotateIn.setAxis(Rotate.X_AXIS);
-        rotateIn.setFromAngle(270);
-        rotateIn.setToAngle(360);
-
-        rotateOut.setOnFinished(e -> {
-            FlashcardDto current = getCurrentCard();
-            if (!isShowingAnswer) {
-                String answer = (current != null && current.getAnswer() != null) ? current.getAnswer() : "";
-                card.setText(answer);
-                card.setWrapText(true);
-                card.setStyle(answerStyle.trim());
-            } else {
-                String question = (current != null && current.getQuestion() != null) ? current.getQuestion() : "";
-                card.setText(question);
-                card.setWrapText(true);
-                card.setStyle(questionStyle.trim());
-            }
-            isShowingAnswer = !isShowingAnswer;
-            rotateIn.play();
-        });
-
-        rotateOut.play();
-  }
-
   /**
    * Handles log out button click event.
    * Navigates back to the login screen.
@@ -315,7 +266,73 @@ public class FlashcardController {
     }
   }
 
+  /**
+   * Retrieves the current flashcard from the deck.
+   * Performs boundary and null checks to ensure safe access.
+   *
+   * @return the current flashcard, or null if the deck is empty, null, or the index is invalid
+   */
+  private FlashcardDto getCurrentCard() {
+    if (deck == null || deck.isEmpty() || currentCardI < 0 || currentCardI >= deck.size()) {
+      return null;
+    }
+    FlashcardDto cardObj = deck.get(currentCardI);
+    return cardObj == null ? null : cardObj;
+  }
 
-  
+  /**
+   * Navigates to the next card in the deck.
+   * Uses modulo arithmetic to wrap around to the first card after reaching the end.
+   * Resets the card to show the question side and updates the UI and progress.
+   */
+  private void goToNextCard() {
+    if (deck == null || deck.isEmpty()) return;
+    currentCardI = (currentCardI + 1) % deck.size();
+    isShowingAnswer = false; // Reset to question when navigating to new card
+    updateUi();
+    updateProgress();
+  }
+
+  /**
+   * Navigates to the previous card in the deck.
+   * Uses modulo arithmetic to wrap around to the last card when going before the first card.
+   * Resets the card to show the question side and updates the UI and progress.
+   */
+  private void goToPreviousCard() {
+    if (deck == null || deck.isEmpty()) return;
+    currentCardI = (currentCardI - 1 + deck.size()) % deck.size();
+    isShowingAnswer = false; // Reset to question when navigating to new card
+    updateUi();
+    updateProgress();
+  }
+
+  /**
+   * Handles next card button click.
+   * Advances to the next card in the deck with looping behavior.
+   */
+  @FXML
+  private void whenNextCardButtonClicked() {
+    goToNextCard();
+  }
+
+  /**
+   * Handles previous card button click.
+   * Moves to the previous card in the deck with looping behavior.
+   */
+  @FXML
+  private void whenPreviousCardButtonClicked() {
+    goToPreviousCard();
+  }
+
+  /**
+   * Handles card button click to flip between question and answer.
+   * Triggers the card flip animation if deck is not empty.
+   */
+  @FXML
+  private void whenCardButtonClicked(){
+    if (!deck.isEmpty()) {
+      flipCard();
+    }
+  }
   
 }

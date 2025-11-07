@@ -57,7 +57,10 @@ public class UserController {
       UserDataDto dto = mapper.toDto(user);
       return new ApiResponse<>(true, ApiConstants.USER_RETRIEVED, dto);
     } catch (Exception e) {
-      return new ApiResponse<>(false, ApiConstants.USER_RETRIEVED_ERROR + e.getMessage(), null);
+      // Log technical details for developers
+      System.err.println(ApiConstants.USER_RETRIEVED_ERROR + " for username: '" + username + "' - " + e.getMessage());
+      // Return user-friendly message
+      return new ApiResponse<>(false, ApiConstants.USER_OPERATION_FAILED, null);
     }
   }
 
@@ -71,9 +74,12 @@ public class UserController {
   public ApiResponse<Boolean> findUser(@RequestParam String username) {
     try {
       Boolean exists = userService.userExists(username);
-      return new ApiResponse<>(true, ApiConstants.USER_EXSISTS, exists);
+      return new ApiResponse<>(true, ApiConstants.USER_EXISTS, exists);
     } catch (Exception e) {
-      return new ApiResponse<>(false, ApiConstants.USER_EXSISTS_ERROR + e.getMessage(), null);
+      // Log technical details for developers
+      System.err.println(ApiConstants.USER_EXISTS_ERROR + " for username: '" + username + "' - " + e.getMessage());
+      // Return user-friendly message
+      return new ApiResponse<>(false, ApiConstants.USER_OPERATION_FAILED, null);
     }
   }
 
@@ -90,7 +96,10 @@ public class UserController {
       UserDataDto dto = mapper.toDto(user);
       return new ApiResponse<>(true, ApiConstants.USER_CREATED, dto);
     } catch (IllegalArgumentException e) {
-      return new ApiResponse<>(false, e.getMessage(), null); //TODO: legge inn api constants error her
+      // Log technical details for developers
+      System.err.println(ApiConstants.USER_CREATION_ERROR + "for username: '" + request.getUsername() + "' - " + e.getMessage());
+      // Return user-friendly error message directly (service already provides clean messages)
+      return new ApiResponse<>(false, e.getMessage(), null);
     }
   }
 
@@ -110,7 +119,7 @@ public class UserController {
         User user = userService.getUser(request.getUsername());
         UserDataDto userDto = mapper.toDto(user);
         
-        LoginResponseDto responseDto = new LoginResponseDto(login, ApiConstants.LOGIN_SUCCESS + ": " + request.getUsername(), userDto);
+        LoginResponseDto responseDto = new LoginResponseDto(login, ApiConstants.LOGIN_SUCCESS + " for username: '" + request.getUsername() + "'", userDto);
         return new ApiResponse<>(true, ApiConstants.LOGIN_SUCCESS, responseDto);
       } else {
         // Login failed - check if user exists to provide specific error message
@@ -121,7 +130,10 @@ public class UserController {
         return new ApiResponse<>(true, ApiConstants.LOGIN_RESPONSE, responseDto);
       }
     } catch (Exception e) {
-      return new ApiResponse<>(false, ApiConstants.LOGIN_RESPONSE_ERROR + e.getMessage(), null);
+      // Log technical details for developers
+      System.err.println(ApiConstants.LOGIN_RESPONSE_ERROR + " for username: '" + request.getUsername() + "' - " + e.getMessage());
+      // Return user-friendly message
+      return new ApiResponse<>(false, ApiConstants.LOGIN_OPERATION_FAILED, null);
     }
   }
 
@@ -137,7 +149,10 @@ public class UserController {
       Boolean isValid = userService.validatePassword(username, password);
       return new ApiResponse<>(true, ApiConstants.PASSWORD_VALIDATION_SUCCESSFUL, isValid);
     } catch (Exception e) {
-      return new ApiResponse<>(false, ApiConstants.PASSWORD_VALIDATION_ERROR + e.getMessage(), null);
+      // Log technical details for developers
+      System.err.println(ApiConstants.PASSWORD_VALIDATION_ERROR + " for username: '" + username + "' - " + e.getMessage());
+      // Return user-friendly message
+      return new ApiResponse<>(false, ApiConstants.USER_OPERATION_FAILED, null);
     }
   }
 }

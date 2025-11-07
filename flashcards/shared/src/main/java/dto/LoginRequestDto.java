@@ -11,9 +11,6 @@ import com.fasterxml.jackson.annotation.JsonCreator;
  * @author isamw
  */
 public class LoginRequestDto {
-
-  public LoginRequestDto() {}
-  
   /**
    * The username of the user attempting to log in.
    * This field cannot be null or blank.
@@ -27,6 +24,12 @@ public class LoginRequestDto {
    */
   @JsonProperty("password")
   private String password;
+
+  /**
+   * Default constructor for LoginRequestDto.
+   * Required for JSON deserialization.
+   */
+  public LoginRequestDto() {}
   
   /**
    * Constructs a new LoginRequestDto with the specified username and password.

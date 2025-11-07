@@ -10,9 +10,10 @@ import com.fasterxml.jackson.core.type.TypeReference;
 
 import dto.FlashcardDto;
 import dto.FlashcardDeckDto;
+import shared.ApiConstants;
 import shared.ApiEndpoints;
 import shared.ApiResponse;
-import shared.ApiConstants;
+
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -102,44 +103,6 @@ public class FlashcardDeckController {
   }
 
   /**
-   * Loads the current deck from the REST API.
-   */
-  private void loadDeckData() {
-    if (currentUsername == null || currentUsername.isEmpty()) {
-      currentDeck = null;
-      return;
-    }
-    
-    if (currentDeck == null || currentDeck.getDeckName() == null || currentDeck.getDeckName().isEmpty()) {
-      return;
-    }
-    
-    try {
-      String url = ApiEndpoints.SERVER_BASE_URL + ApiEndpoints.DECKS + "/" 
-          + URLEncoder.encode(currentDeck.getDeckName(), StandardCharsets.UTF_8)
-          + "?username=" + URLEncoder.encode(currentUsername, StandardCharsets.UTF_8)
-          + "&deckName=" + URLEncoder.encode(currentDeck.getDeckName(), StandardCharsets.UTF_8);
-      
-      ApiResponse<FlashcardDeckDto> result = ApiClient.performApiRequest(
-        url,
-        "GET",
-        null,
-        new TypeReference<ApiResponse<FlashcardDeckDto>>() {}
-      );
-
-      if (result != null && result.isSuccess() && result.getData() != null) {
-        currentDeck = result.getData();
-      } else if (result != null && !result.isSuccess()) {
-        System.err.println(ApiConstants.SERVER_ERROR + ": " + result.getMessage());
-        ApiClient.showAlert(ApiConstants.LOAD_ERROR, ApiConstants.FAILED_TO_LOAD_DECK_DATA);
-      }
-    } catch (Exception e) {
-      System.err.println("Unexpected error: " + e.getMessage());
-      ApiClient.showAlert("Error", ApiConstants.UNEXPECTED_ERROR);
-    }
-  }
-
-  /**
    * Sets the deck to work with.
    * 
    * @param deck the deck DTO to work with
@@ -166,7 +129,6 @@ public class FlashcardDeckController {
       this.currentUsername = username.trim();
     }
   }
-
 
   /**
    * Adds a new flashcard when button is clicked.
@@ -218,8 +180,8 @@ public class FlashcardDeckController {
       }
     } catch (Exception e) {
       // Unknown error type - log technical details, show generic message to user
-      System.err.println("Unexpected error: " + e.getMessage());
-      ApiClient.showAlert("Error", ApiConstants.UNEXPECTED_ERROR);
+      System.err.println(ApiConstants.LOG_UNEXPECTED_ERROR + ": " + e.getMessage());
+      ApiClient.showAlert(ApiConstants.SERVER_ERROR, ApiConstants.UNEXPECTED_ERROR);
     }
   }
 
@@ -258,44 +220,8 @@ public class FlashcardDeckController {
       }
     } catch (Exception e) {
       // Unknown error type - log technical details, show generic message to user
-      System.err.println("Unexpected error: " + e.getMessage());
-      ApiClient.showAlert("Error", ApiConstants.UNEXPECTED_ERROR);
-    }
-  }
-  
-  /**
-   * Clears the input fields.
-   * Resets both question and answer text fields to empty.
-   */
-  private void clearInputFields() {
-    questionField.clear();
-    answerField.clear();
-  } 
-
-  /**
-   * Handles the back button click event.
-   * Navigates back to the main flashcard UI.
-   * Refreshes the deck list in the main controller.
-   * 
-   * @throws IOException if the FXML file cannot be loaded
-   */
-  @FXML
-  public void whenBackButtonIsClicked() throws IOException {
-    try{
-      FXMLLoader loader = new FXMLLoader(getClass().getResource("FlashcardMain.fxml"));
-      Parent root = loader.load();
-
-      // Send current username and updated deck manager back to main controller
-      FlashcardMainController mainController = loader.getController();
-    mainController.setCurrentUsername(currentUsername);
-    mainController.refreshDecks();
-
-    Stage stage = (Stage) questionField.getScene().getWindow();
-    stage.setScene(SceneUtils.createScaledScene(root));
-    stage.show();
-    } catch (IOException e) {
-      System.err.println(ApiConstants.LOAD_ERROR + ": " + e.getMessage());
-      ApiClient.showAlert(ApiConstants.LOAD_ERROR, ApiConstants.UNEXPECTED_ERROR);
+      System.err.println(ApiConstants.LOG_UNEXPECTED_ERROR + ": " + e.getMessage());
+      ApiClient.showAlert(ApiConstants.SERVER_ERROR, ApiConstants.UNEXPECTED_ERROR);
     }
   }
 
@@ -330,6 +256,33 @@ public class FlashcardDeckController {
   }
 
   /**
+   * Handles the back button click event.
+   * Navigates back to the main flashcard UI.
+   * Refreshes the deck list in the main controller.
+   * 
+   * @throws IOException if the FXML file cannot be loaded
+   */
+  @FXML
+  public void whenBackButtonIsClicked() throws IOException {
+    try{
+      FXMLLoader loader = new FXMLLoader(getClass().getResource("FlashcardMain.fxml"));
+      Parent root = loader.load();
+
+      // Send current username and updated deck manager back to main controller
+      FlashcardMainController mainController = loader.getController();
+      mainController.setCurrentUsername(currentUsername);
+      mainController.refreshDecks();
+
+      Stage stage = (Stage) questionField.getScene().getWindow();
+      stage.setScene(SceneUtils.createScaledScene(root));
+      stage.show();
+    } catch (IOException e) {
+      System.err.println(ApiConstants.LOAD_ERROR + ": " + e.getMessage());
+      ApiClient.showAlert(ApiConstants.LOAD_ERROR, ApiConstants.UNEXPECTED_ERROR);
+    }
+  }
+
+  /**
    * Handles log out button click event.
    * Navigates back to the login screen and applies appropriate CSS styling.
    */
@@ -351,4 +304,51 @@ public class FlashcardDeckController {
       ApiClient.showAlert(ApiConstants.LOAD_ERROR, ApiConstants.UNEXPECTED_ERROR);
     }
   }
+  
+  /**
+   * Loads the current deck from the REST API.
+   */
+  private void loadDeckData() {
+    if (currentUsername == null || currentUsername.isEmpty()) {
+      currentDeck = null;
+      return;
+    }
+    
+    if (currentDeck == null || currentDeck.getDeckName() == null || currentDeck.getDeckName().isEmpty()) {
+      return;
+    }
+    
+    try {
+      String url = ApiEndpoints.SERVER_BASE_URL + ApiEndpoints.DECKS + "/" 
+          + URLEncoder.encode(currentDeck.getDeckName(), StandardCharsets.UTF_8)
+          + "?username=" + URLEncoder.encode(currentUsername, StandardCharsets.UTF_8)
+          + "&deckName=" + URLEncoder.encode(currentDeck.getDeckName(), StandardCharsets.UTF_8);
+      
+      ApiResponse<FlashcardDeckDto> result = ApiClient.performApiRequest(
+        url,
+        "GET",
+        null,
+        new TypeReference<ApiResponse<FlashcardDeckDto>>() {}
+      );
+
+      if (result != null && result.isSuccess() && result.getData() != null) {
+        currentDeck = result.getData();
+      } else if (result != null && !result.isSuccess()) {
+        System.err.println(ApiConstants.SERVER_ERROR + ": " + result.getMessage());
+        ApiClient.showAlert(ApiConstants.LOAD_ERROR, ApiConstants.FAILED_TO_LOAD_DATA);
+      }
+    } catch (Exception e) {
+      System.err.println(ApiConstants.LOG_UNEXPECTED_ERROR + ": " + e.getMessage());
+      ApiClient.showAlert(ApiConstants.LOAD_ERROR, ApiConstants.UNEXPECTED_ERROR);
+    }
+  }
+
+  /**
+   * Clears the input fields.
+   * Resets both question and answer text fields to empty.
+   */
+  private void clearInputFields() {
+    questionField.clear();
+    answerField.clear();
+  } 
 }
