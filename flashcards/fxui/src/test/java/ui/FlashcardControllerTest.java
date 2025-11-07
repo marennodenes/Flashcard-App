@@ -6,14 +6,12 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.CountDownLatch;
 
-
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.testfx.framework.junit5.ApplicationExtension;
-import org.testfx.framework.junit5.Start;
-import org.testfx.util.WaitForAsyncUtils;
 
 import app.Flashcard;
 import app.FlashcardDeck;
@@ -21,17 +19,12 @@ import dto.FlashcardDeckDto;
 import dto.FlashcardDto;
 import dto.mappers.FlashcardDeckMapper;
 import javafx.application.Platform;
-import javafx.scene.Scene;
 import javafx.scene.control.Button;
-import javafx.scene.layout.VBox;
-import javafx.stage.Stage;
 
 
 /**
  * Test class for {@link FlashcardController}.
- * Uses TestFX with JavaFX ApplicationExtension for testing.
  * Tests core functionality including internal state management and navigation logic.
- * Tests core functionality without JavaFX components to avoid toolkit initialization issues. 
  * 
  * @author parts of this code is generated with AI assistance for comprehensive test coverage
  * @author marennod
@@ -40,7 +33,6 @@ import javafx.stage.Stage;
  * @see FlashcardController
  * 
  */
-@ExtendWith(ApplicationExtension.class)
 public class FlashcardControllerTest {
 
   private FlashcardController controller;
@@ -49,63 +41,62 @@ public class FlashcardControllerTest {
   private Button nextButton;
   private Button cardButton;
 
-  /**
-   * Initializes the JavaFX application for testing.
-   * 
-   * @param stage the primary stage for the application
-   * 
-   */
-  @Start
-  public void start(Stage stage) {
-    // Initialize controller
-    controller = new FlashcardController();
-    
-    // Create minimal UI components for testing
-    backButton = new Button("Back");
-    nextButton = new Button("Next");
-    cardButton = new Button("Card");
-    
-    VBox root = new VBox(backButton, nextButton, cardButton);
-    Scene scene = new Scene(root, 1, 1); // Minimal size
-    stage.setScene(scene);
-  }
+    /**
+     * Initializes JavaFX toolkit before running tests.
+     */
+    @BeforeAll
+    public static void initJavaFX() throws InterruptedException {
+        if (!Platform.isFxApplicationThread()) {
+            try {
+                CountDownLatch latch = new CountDownLatch(1);
+                Platform.startup(() -> latch.countDown());
+                latch.await();
+            } catch (IllegalStateException e) {
+                // Toolkit already initialized
+            }
+        }
+    }
 
-  /**
-   * Sets up the test environment before each test.
-   * 
-   * @throws Exception when reflection access fails
-   * 
-   */
-  @BeforeEach
-  public void setUp() throws Exception {
-    // Re-initialize controller if needed
-    if (controller == null) {
-      controller = new FlashcardController();
+    /**
+     * Tears down JavaFX platform after all tests complete.
+     */
+    @AfterAll
+    public static void tearDown() {
+        // Don't exit platform as other tests may need it
     }
-    
-    // Set test data directly to the internal deck field
-    FlashcardDeck deck = new FlashcardDeck("Test Deck");
-    deck.addFlashcard(new Flashcard("Q1", "A1"));
-    deck.addFlashcard(new Flashcard("Q2", "A2"));
-    deck.addFlashcard(new Flashcard("Q3", "A3"));
-    
-    // Set the deck directly to the internal field to avoid UI updates
-    FlashcardDeckDto deckDto = mapper.toDto(deck);
-    setField("deck", deckDto.getDeck());
-    setField("currentCardI", 0);
-    setField("currentUsername", "testUser");
-    
-    // Set UI components if they were created in @Start
-    if (backButton != null) {
-      setField("backButton", backButton);
+
+    /**
+     * Sets up the test environment before each test.
+     * 
+     * @throws Exception when reflection access fails
+     */
+    @BeforeEach
+    public void setUp() throws Exception {
+        // Initialize controller
+        controller = new FlashcardController();
+        
+        // Create minimal UI components for testing
+        backButton = new Button("Back");
+        nextButton = new Button("Next");
+        cardButton = new Button("Card");
+        
+        // Set test data directly to the internal deck field
+        FlashcardDeck deck = new FlashcardDeck("Test Deck");
+        deck.addFlashcard(new Flashcard("Q1", "A1"));
+        deck.addFlashcard(new Flashcard("Q2", "A2"));
+        deck.addFlashcard(new Flashcard("Q3", "A3"));
+        
+        // Set the deck directly to the internal field to avoid UI updates
+        FlashcardDeckDto deckDto = mapper.toDto(deck);
+        setField("deck", deckDto.getDeck());
+        setField("currentCardI", 0);
+        setField("currentUsername", "testUser");
+        
+        // Set UI components
+        setField("backButton", backButton);
+        setField("nextButton", nextButton);
+        setField("card", cardButton);
     }
-    if (nextButton != null) {
-      setField("nextButton", nextButton);
-    }
-    if (cardButton != null) {
-      setField("card", cardButton);
-    }
-  }
 
   /**
    * Tests that the controller initializes correctly.
@@ -670,23 +661,19 @@ public class FlashcardControllerTest {
     assertDoesNotThrow(() -> controller.updateUi());
   }
 
-  /**
-   * Tests updateUi method when showing answer.
-   * 
-   * @throws Exception when updating UI fails
-   * 
-   */
-  @Test
-  public void testUpdateUi_WithShowingAnswerTrue() throws Exception {
-    setField("isShowingAnswer", true);
-    
-    WaitForAsyncUtils.waitForFxEvents();
-    Platform.runLater(() -> {
-      assertDoesNotThrow(() -> controller.updateUi());
-    });
-
-    WaitForAsyncUtils.waitForFxEvents();
-  }
+    /**
+     * Tests updateUi method when showing answer.
+     * 
+     * @throws Exception when updating UI fails
+     */
+    @Test
+    public void testUpdateUi_WithShowingAnswerTrue() throws Exception {
+        setField("isShowingAnswer", true);
+        
+        Platform.runLater(() -> {
+            assertDoesNotThrow(() -> controller.updateUi());
+        });
+    }
 
   /**
    * Tests updateUi method when current card index is invalid.
@@ -700,31 +687,27 @@ public class FlashcardControllerTest {
     assertDoesNotThrow(() -> controller.updateUi());
   }
 
-  /**
-   * Tests updateUi method when current card has null question/answer.
-   * 
-   * @throws Exception when updating UI fails
-   * 
-   */
-  @Test
-  public void testUpdateUi_WithNullTextInCard() throws Exception {
-    FlashcardDeck deck = new FlashcardDeck("Test");
-    Flashcard card = new Flashcard("Question", "Answer");
-    deck.addFlashcard(card);
-    FlashcardDeckDto deckDto = mapper.toDto(deck);
-    
-    setField("deck", deckDto.getDeck());
-    setField("originalDeck", deckDto);
-    
-    setField("card", null);
-    
-    WaitForAsyncUtils.waitForFxEvents();
-    Platform.runLater(() -> {
-      assertDoesNotThrow(() -> controller.updateUi());
-    });
-
-    WaitForAsyncUtils.waitForFxEvents();
-  }
+    /**
+     * Tests updateUi method when current card has null question/answer.
+     * 
+     * @throws Exception when updating UI fails
+     */
+    @Test
+    public void testUpdateUi_WithNullTextInCard() throws Exception {
+        FlashcardDeck deck = new FlashcardDeck("Test");
+        Flashcard card = new Flashcard("Question", "Answer");
+        deck.addFlashcard(card);
+        FlashcardDeckDto deckDto = mapper.toDto(deck);
+        
+        setField("deck", deckDto.getDeck());
+        setField("originalDeck", deckDto);
+        
+        setField("card", null);
+        
+        Platform.runLater(() -> {
+            assertDoesNotThrow(() -> controller.updateUi());
+        });
+    }
 
   /**
    * Tests whenCardButtonClicked method with empty deck.
@@ -804,28 +787,29 @@ public class FlashcardControllerTest {
     assertEquals(1, getField("currentCardI"));
   }
 
-  /**
-   * Tests whenPreviousCardButtonClicked method goes back to the previous card.
-   * 
-   * @throws Exception when clicking the previous button fails
-   * 
-   */
-  @Test
-  public void testWhenPreviousCardButtonClicked() throws Exception {
-    setField("currentCardI", 1);
-    
-    WaitForAsyncUtils.waitForFxEvents();
-    Platform.runLater(() -> {
-      try {
-        callPrivateMethod("whenPreviousCardButtonClicked");
-      } catch (Exception e) {
-        throw new RuntimeException(e);
-      }
-    });
-    WaitForAsyncUtils.waitForFxEvents();
-    
-    assertEquals(0, getField("currentCardI"));
-  }
+    /**
+     * Tests whenPreviousCardButtonClicked method goes back to the previous card.
+     * 
+     * @throws Exception when clicking the previous button fails
+     */
+    @Test
+    public void testWhenPreviousCardButtonClicked() throws Exception {
+        setField("currentCardI", 1);
+        
+        CountDownLatch latch = new CountDownLatch(1);
+        Platform.runLater(() -> {
+            try {
+                callPrivateMethod("whenPreviousCardButtonClicked");
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            } finally {
+                latch.countDown();
+            }
+        });
+        latch.await();
+        
+        assertEquals(0, getField("currentCardI"));
+    }
 
   /**
    * Tests updateProgress method calculates progress correctly.
@@ -988,44 +972,38 @@ public class FlashcardControllerTest {
     }
   }
 
-  /**
-   * Tests whenBackButtonIsClicked method with real back button.
-   * 
-   * @throws Exception when clicking back button fails
-   * 
-   */
-  @Test
-  public void testWhenBackButtonIsClicked_WithRealButton() throws Exception {
-    if (backButton != null) {
-      setField("backButton", backButton);
-      setField("originalDeck", new FlashcardDeckDto("Test", mapper.toDto(new FlashcardDeck("Test")).getDeck()));
-      
-      WaitForAsyncUtils.waitForFxEvents();
-      Platform.runLater(() -> {
-        assertDoesNotThrow(() -> controller.whenBackButtonIsClicked());
-      });
-      WaitForAsyncUtils.waitForFxEvents();
+    /**
+     * Tests whenBackButtonIsClicked method with real back button.
+     * 
+     * @throws Exception when clicking back button fails
+     */
+    @Test
+    public void testWhenBackButtonIsClicked_WithRealButton() throws Exception {
+        if (backButton != null) {
+            setField("backButton", backButton);
+            setField("originalDeck", new FlashcardDeckDto("Test", mapper.toDto(new FlashcardDeck("Test")).getDeck()));
+            
+            Platform.runLater(() -> {
+                assertDoesNotThrow(() -> controller.whenBackButtonIsClicked());
+            });
+        }
     }
-  }
 
-  /**
-   * Tests whenLogOut method with real back button.
-   * 
-   * @throws Exception when logging out fails
-   * 
-   */
-  @Test
-  public void testWhenLogOut_WithRealButton() throws Exception {
-    if (backButton != null) {
-      setField("backButton", backButton);
-      
-      WaitForAsyncUtils.waitForFxEvents();
-      Platform.runLater(() -> {
-        assertDoesNotThrow(() -> controller.whenLogOut(null));
-      });
-      WaitForAsyncUtils.waitForFxEvents();
+    /**
+     * Tests whenLogOut method with real back button.
+     * 
+     * @throws Exception when logging out fails
+     */
+    @Test
+    public void testWhenLogOut_WithRealButton() throws Exception {
+        if (backButton != null) {
+            setField("backButton", backButton);
+            
+            Platform.runLater(() -> {
+                assertDoesNotThrow(() -> controller.whenLogOut(null));
+            });
+        }
     }
-  }
 
   /**
    * Tests updateUi method with real card button.
@@ -1120,17 +1098,16 @@ public class FlashcardControllerTest {
     method.invoke(controller);
   }
 
-  /**
-   * Helper method for calling private methods with return values
-   * 
-   * @param methodName the name of the method to call
-   * @return the return value of the method
-   * @throws Exception if calling the method fails
-   * 
-   */
-  private Object callPrivateMethodWithReturn(String methodName) throws Exception {
-    Method method = FlashcardController.class.getDeclaredMethod(methodName);
-    method.setAccessible(true);
-    return method.invoke(controller);
-  }
+    /**
+     * Helper method for calling private methods with return values
+     * 
+     * @param methodName the name of the method to call
+     * @return the return value of the method
+     * @throws Exception if calling the method fails
+     */
+    private Object callPrivateMethodWithReturn(String methodName) throws Exception {
+        Method method = FlashcardController.class.getDeclaredMethod(methodName);
+        method.setAccessible(true);
+        return method.invoke(controller);
+    }
 }

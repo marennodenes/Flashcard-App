@@ -12,12 +12,12 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
 
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
-import org.testfx.framework.junit5.ApplicationExtension;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 
@@ -57,17 +57,40 @@ import javafx.stage.Stage;
  * @see FlashcardDeckDto
  * 
  */
-@ExtendWith(ApplicationExtension.class)
 class FlashcardDeckControllerTest {
 
-  private FlashcardDeckController controller;
-  private FlashcardDeckMapper mapper = new FlashcardDeckMapper();
-  private TextField questionField;
-  private TextField answerField;
-  private ListView<FlashcardDto> listView;
-  private Text username;
-  private Button startLearning;
-  private Button deleteCardButton;
+    private FlashcardDeckController controller;
+    private FlashcardDeckMapper mapper = new FlashcardDeckMapper();
+    private TextField questionField;
+    private TextField answerField;
+    private ListView<FlashcardDto> listView;
+    private Text username;
+    private Button startLearning;
+    private Button deleteCardButton;
+
+    /**
+     * Initializes JavaFX toolkit before running tests.
+     */
+    @BeforeAll
+    public static void initJavaFX() throws InterruptedException {
+        if (!Platform.isFxApplicationThread()) {
+            try {
+                CountDownLatch latch = new CountDownLatch(1);
+                Platform.startup(() -> latch.countDown());
+                latch.await();
+            } catch (IllegalStateException e) {
+                // Toolkit already initialized
+            }
+        }
+    }
+
+    /**
+     * Tears down JavaFX platform after all tests complete.
+     */
+    @AfterAll
+    public static void tearDown() {
+        // Don't exit platform as other tests may need it
+    }
 
   /**
    * Sets up a fresh controller and injects mock UI components before each test.

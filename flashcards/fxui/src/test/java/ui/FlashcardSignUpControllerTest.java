@@ -45,17 +45,14 @@ public class FlashcardSignUpControllerTest {
 
   /**
    * Configures JavaFX to run in headless mode for CI/CD environments.
-   * Sets up Monocle as the glass platform to enable testing without a display.
    */
   @BeforeAll
   public static void setupHeadless() {
-    System.setProperty("java.awt.headless", "true");
-    System.setProperty("testfx.robot", "glass");
-    System.setProperty("testfx.headless", "true");
-    System.setProperty("prism.order", "sw");
-    System.setProperty("prism.text", "t2k");
-    System.setProperty("glass.platform", "Monocle");
-    System.setProperty("monocle.platform", "Headless");
+      System.setProperty("java.awt.headless", "true");
+      System.setProperty("testfx.robot", "glass");
+      System.setProperty("testfx.headless", "true");
+      System.setProperty("prism.order", "sw");
+      System.setProperty("prism.text", "t2k");
   }
 
   /**

@@ -10,12 +10,15 @@ import java.util.List;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.MockedConstruction;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
+import org.mockito.MockedConstruction;
 import org.testfx.framework.junit5.ApplicationExtension;
 import org.testfx.framework.junit5.Start;
 
@@ -28,6 +31,7 @@ import app.Flashcard;
 import app.FlashcardDeck;
 import app.FlashcardDeckManager;
 import dto.FlashcardDeckDto;
+import dto.FlashcardDto;
 import dto.FlashcardDeckManagerDto;
 import dto.FlashcardDto;
 import dto.mappers.FlashcardDeckMapper;
@@ -56,30 +60,60 @@ import javafx.stage.Stage;
  * @author ailinat
  * @author marennod
  * @author sofietw
- * @author Generated with AI assistance for comprehensive test coverage
- * 
- * @see FlashcardMainController
- * @see FlashcardDeckDto
- * @see ApiClient
- * 
- */
+ * @author Generated with AI assistance for comprehensive test coverage 
+*/
+
 @ExtendWith(ApplicationExtension.class)
 class FlashcardMainControllerTest {
 
-  private FlashcardMainController controller;
-  private FlashcardDeckMapper mapper = new FlashcardDeckMapper();
-  private Stage stage;
-  private Button deck1, deck2, deck3, deck4, deck5, deck6, deck7, deck8;
-  private Button deleteDeck1, deleteDeck2, deleteDeck3, deleteDeck4;
-  private Button deleteDeck5, deleteDeck6, deleteDeck7, deleteDeck8;
-  private TextField deckNameInput;
-  private Button newDeckButton;
-  private Button logOutButton;  
-  private Text usernameField;
-  private Text alertMessage;
-  private Text ex; 
-  private Text noDecks;
+    private FlashcardMainController controller;
+    private FlashcardDeckMapper mapper = new FlashcardDeckMapper();
+    private Stage stage;
 
+    // FXML components
+
+    private Button deck1, deck2, deck3, deck4, deck5, deck6, deck7, deck8;
+
+    private Button deleteDeck1, deleteDeck2, deleteDeck3, deleteDeck4;
+
+    private Button deleteDeck5, deleteDeck6, deleteDeck7, deleteDeck8;
+
+    private TextField deckNameInput;
+
+    private Button newDeckButton;
+
+    private Button logOutButton;
+
+    private Text usernameField;
+
+    private Text alertMessage;
+    private Text ex; 
+    private Text noDecks;
+
+
+    /**
+     * Initializes JavaFX toolkit before running tests.
+     */
+    @BeforeAll
+    public static void initJavaFX() throws InterruptedException {
+        if (!Platform.isFxApplicationThread()) {
+            try {
+                CountDownLatch latch = new CountDownLatch(1);
+                Platform.startup(() -> latch.countDown());
+                latch.await();
+            } catch (IllegalStateException e) {
+                // Toolkit already initialized
+            }
+        }
+    }
+
+    /**
+     * Tears down JavaFX platform after all tests complete.
+     */
+    @AfterAll
+    public static void tearDown() {
+        // Don't exit platform as other tests may need it
+    }
   /**
    * Initializes the test stage.
    * 
