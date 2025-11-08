@@ -9,11 +9,10 @@ import java.util.Base64;
 /**
  * Handles password encoding and verification using SHA-256 with salt.
  * Provides secure password storage instead of plain text.
- * 
+ *
  * @author parts of this class is generated with the help of claude.ai
  * @author @sofietw
  * @author @ailinat
- * 
  */
 public class PasswordEncoder {
   
@@ -25,10 +24,9 @@ public class PasswordEncoder {
 
   /**
    * Encodes a plain text password with a random salt.
-   * 
+   *
    * @param password the plain text password
    * @return encoded password in format "salt:hash"
-   * 
    */
   public static String encode(String password) {
     try {
@@ -54,21 +52,20 @@ public class PasswordEncoder {
 
   /**
    * Verifies if a plain text password matches the encoded password.
-   * 
+   *
    * @param password the plain text password to check
    * @param encodedPassword the stored encoded password in format "salt:hash"
    * @return true if password matches, false otherwise
    * @throws IllegalArgumentException if encodedPassword format is invalid
-   * 
    */
-  public static boolean matches(String password, String encodedPassword) throws IllegalArgumentException {
+  public static boolean matches(String password, String encodedPassword) 
+      throws IllegalArgumentException {
     try {
       // Split salt and hash
       String[] parts = encodedPassword.split(":", 2);
       if (parts.length != 2) {
         throw new IllegalArgumentException("Invalid encoded password format");
       }
-      
       
       byte[] salt = Base64.getDecoder().decode(parts[0]);
       String storedHash = parts[1];
