@@ -24,9 +24,9 @@ import org.junit.jupiter.api.Test;
  * @author chrsom 
  * @author isamw
  * @author sofietw
- * 
+ *
  * @see FlashcardPersistent
- * 
+ *
  */
 @Tag("storage")
 public class FlashcardPersistentTest {

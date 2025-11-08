@@ -1,5 +1,10 @@
 package server.controller;
 
+import app.User;
+import dto.LoginRequestDto;
+import dto.LoginResponseDto;
+import dto.UserDataDto;
+import dto.mappers.UserMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -7,12 +12,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
-import app.User;
-import dto.LoginRequestDto;
-import dto.LoginResponseDto;
-import dto.UserDataDto;
-import dto.mappers.UserMapper;
 import server.service.UserService;
 import shared.ApiConstants;
 import shared.ApiEndpoints;
