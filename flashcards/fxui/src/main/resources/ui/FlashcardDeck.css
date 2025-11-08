@@ -1,14 +1,4 @@
-@font-face {
-    font-family: 'Noto Sans';
-    src: url('fonts/NotoSans-Regular.ttf');
-    font-weight: normal;
-}
-
-@font-face {
-    font-family: 'Noto Sans';
-    src: url('fonts/NotoSans-Bold.ttf');
-    font-weight: bold;
-}
+/* Ubuntu font - system-installed on Mac, bundled for Eclipse Che Linux */
 
 #anchorPane {
     background-color: #bee7ed;
@@ -19,12 +9,12 @@
     color: white;
     font-weight: bold;
     font-size: 11px;
-    font-family: "Noto Sans", sans-serif;
+    font-family: "Ubuntu", sans-serif;
     -fx-background-color: #5c7b80;
     -fx-text-fill: white;
     -fx-font-weight: bold;
     -fx-font-size: 11;
-    -fx-font-family: "Noto Sans", sans-serif;
+    -fx-font-family: "Ubuntu", sans-serif;
 }
 
 #logOutButton {
@@ -43,9 +33,9 @@
 
 .list-view .list-cell {
     color: #5c7b80;
-    font-family: "Noto Sans", sans-serif;
+    font-family: "Ubuntu", sans-serif;
     -fx-text-fill: #5c7b80;
-    -fx-font-family: "Noto Sans", sans-serif;
+    -fx-font-family: "Ubuntu", sans-serif;
 }
 
 .text-field {
@@ -53,56 +43,56 @@
     border-color: #5c7b80;
     border-width: 2px;
     border-radius: 3px;
-    font-family: "Noto Sans", sans-serif;
+    font-family: "Ubuntu", sans-serif;
     -fx-background-color: white;
     -fx-border-color: #5c7b80;
     -fx-border-width: 2;
     -fx-background-radius: 3;
     -fx-border-radius: 3;
-    -fx-font-family: "Noto Sans", sans-serif;
+    -fx-font-family: "Ubuntu", sans-serif;
 }
 
 .textForTitles {
     fill: #5c7b80;
     font-weight: bold;
-    font-family: "Noto Sans", sans-serif;
+    font-family: "Ubuntu", sans-serif;
     -fx-fill: #5c7b80;
     -fx-font-weight: bold;
-    -fx-font-family: "Noto Sans", sans-serif;
+    -fx-font-family: "Ubuntu", sans-serif;
 }
 
 .nameTag {
     fill: #5c7b80;
     font-size: 12px;
     font-weight: bold;
-    font-family: "Noto Sans", sans-serif;
+    font-family: "Ubuntu", sans-serif;
     -fx-fill: #5c7b80;
     -fx-font-size: 12;
     -fx-font-weight: bold;
-    -fx-font-family: "Noto Sans", sans-serif;
+    -fx-font-family: "Ubuntu", sans-serif;
 }
 
 .nameField {
     fill: #5c7b80;
     font-size: 9.5px;
-    font-family: "Noto Sans", sans-serif;
+    font-family: "Ubuntu", sans-serif;
     -fx-fill: #5c7b80;
     -fx-font-size: 9.5;
-    -fx-font-family: "Noto Sans", sans-serif;
+    -fx-font-family: "Ubuntu", sans-serif;
 }
 
 #startLearning {
     font-size: 14px;
-    font-family: "Noto Sans", sans-serif;
+    font-family: "Ubuntu", sans-serif;
     -fx-font-size: 14;
-    -fx-font-family: "Noto Sans", sans-serif;
+    -fx-font-family: "Ubuntu", sans-serif;
 }
 
 #back {
     font-size: 15px;
-    font-family: "Noto Sans", sans-serif;
+    font-family: "Ubuntu", sans-serif;
     -fx-font-size: 15;
-    -fx-font-family: "Noto Sans", sans-serif;
+    -fx-font-family: "Ubuntu", sans-serif;
 }
 
 .logo {
