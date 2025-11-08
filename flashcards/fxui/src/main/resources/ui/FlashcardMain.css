@@ -1,3 +1,15 @@
+@font-face {
+    font-family: 'Noto Sans';
+    src: url('fonts/NotoSans-Regular.ttf');
+    font-weight: normal;
+}
+
+@font-face {
+    font-family: 'Noto Sans';
+    src: url('fonts/NotoSans-Bold.ttf');
+    font-weight: bold;
+}
+
 #anchorPane {
     background-color: #bee7ed;
     -fx-background-color: #bee7ed;
@@ -7,11 +19,13 @@
     background-color: #5c7b80;
     color: white;
     font-weight: bold;
-    font-family: "DejaVu Sans";
+    font-family: "Noto Sans", sans-serif;
+    font-size: 12px;
     -fx-background-color: #5c7b80;
     -fx-text-fill: white;
     -fx-font-weight: bold;
-    -fx-font-family: "DejaVu Sans";
+    -fx-font-family: "Noto Sans", sans-serif;
+    -fx-font-size: 12;
 }
 
 .deck {
@@ -19,13 +33,13 @@
     border-width: 2px;
     color: white;
     font-weight: bold;
-    font-family: "DejaVu Sans";
+    font-family: "Noto Sans", sans-serif;
     -fx-effect: dropshadow(gaussian, #5c7b80, 0, 1, 5, 5);
     -fx-background-color: #89b9bf;
     -fx-border-width: 2;
     -fx-text-fill: white;
     -fx-font-weight: bold;
-    -fx-font-family: "DejaVu Sans";
+    -fx-font-family: "Noto Sans", sans-serif;
 }
 
 .deck:hover {
@@ -41,7 +55,7 @@
     border-radius: 3px;
     border-width: 1.3px;
     font-size: 7px;
-    font-family: "DejaVu Sans";
+    font-family: "Noto Sans", sans-serif;
     -fx-background-color: #f4a261;
     -fx-text-fill: white;
     -fx-font-weight: bold;
@@ -51,7 +65,7 @@
     -fx-border-width: 1.3;
     -fx-background-insets: 0;
     -fx-font-size: 7;
-    -fx-font-family: "DejaVu Sans";
+    -fx-font-family: "Noto Sans", sans-serif;
 }
 
 .delete:hover {
@@ -63,21 +77,21 @@
     fill: #5c7b80;
     font-size: 12px;
     font-weight: bold;
-    font-family: "DejaVu Sans";
+    font-family: "Noto Sans", sans-serif;
     -fx-fill: #5c7b80;
     -fx-font-size: 12;
     -fx-font-weight: bold;
-    -fx-font-family: "DejaVu Sans";
+    -fx-font-family: "Noto Sans", sans-serif;
 
 }
 
 .nameField {
     fill: #5c7b80;
     font-size: 9.5px;
-    font-family: "DejaVu Sans";
+    font-family: "Noto Sans", sans-serif;
     -fx-fill: #5c7b80;
     -fx-font-size: 9.5;
-    -fx-font-family: "DejaVu Sans";
+    -fx-font-family: "Noto Sans", sans-serif;
 }
 
 .text-field {
@@ -85,32 +99,32 @@
     border-color: #5c7b80;
     border-radius: 3px;
     border-width: 2px;
-    font-family: "DejaVu Sans";
+    font-family: "Noto Sans", sans-serif;
     -fx-background-color: white;
     -fx-border-color: #5c7b80;
     -fx-border-radius: 3;
     -fx-border-width: 2;
     -fx-background-radius: 3;
-    -fx-font-family: "DejaVu Sans";
+    -fx-font-family: "Noto Sans", sans-serif;
 }
 
 .textForTitles {
     fill: #5c7b80;
     font-weight: bold;
-    font-family: "DejaVu Sans";
+    font-family: "Noto Sans", sans-serif;
     -fx-fill: #5c7b80;
     -fx-font-weight: bold;
-    -fx-font-family: "DejaVu Sans";
+    -fx-font-family: "Noto Sans", sans-serif;
 }
 
 .alerts {
     fill: #5c7b80;
     font-size: 14px;
-    font-family: "DejaVu Sans";
+    font-family: "Noto Sans", sans-serif;
     font-weight: bold;
     -fx-fill: #5c7b80;
     -fx-font-size: 14px;
-    -fx-font-family: "DejaVu Sans";
+    -fx-font-family: "Noto Sans", sans-serif;
     -fx-font-weight: bold;
 }
 
@@ -119,13 +133,13 @@
     stroke-width: 2px;
     fill: #f4a261;
     font-size: 22px;
-    font-family: "DejaVu Sans";
+    font-family: "Noto Sans", sans-serif;
     font-weight: bold;
     -fx-stroke: #ffffff;
     -fx-stroke-width: 2;
     -fx-fill: #f4a261;
     -fx-font-size: 22px;
-    -fx-font-family: "DejaVu Sans";
+    -fx-font-family: "Noto Sans", sans-serif;
     -fx-font-weight: bold;
 }
 

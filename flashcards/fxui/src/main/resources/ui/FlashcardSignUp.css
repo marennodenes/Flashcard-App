@@ -1,3 +1,15 @@
+@font-face {
+    font-family: 'Noto Sans';
+    src: url('fonts/NotoSans-Regular.ttf');
+    font-weight: normal;
+}
+
+@font-face {
+    font-family: 'Noto Sans';
+    src: url('fonts/NotoSans-Bold.ttf');
+    font-weight: bold;
+}
+
 #anchorPane {
   background-color: #bee7ed;
   -fx-background-color: #bee7ed;
@@ -6,10 +18,10 @@
 .textForTitles {
   fill: #5c7b80;
   font-weight: bold;
-  font-family: "DejaVu Sans";
+  font-family: "Noto Sans", sans-serif;
   -fx-fill: #5c7b80;
   -fx-font-weight: bold;
-  -fx-font-family: "DejaVu Sans";
+  -fx-font-family: "Noto Sans", sans-serif;
 }
 
 .text-field {
@@ -17,13 +29,13 @@
   border-color: #5c7b80;
   border-width: 2px;
   border-radius: 3px;
-  font-family: "DejaVu Sans";
+  font-family: "Noto Sans", sans-serif;
   -fx-background-color: white;
   -fx-border-color: #5c7b80;
   -fx-border-width: 2;
   -fx-background-radius: 3;
   -fx-border-radius: 3;
-  -fx-font-family: "DejaVu Sans";
+  -fx-font-family: "Noto Sans", sans-serif;
 }
 
 .button {
@@ -31,29 +43,29 @@
   color: white;
   font-weight: bold;
   font-size: 14px;
-  font-family: "DejaVu Sans";
+  font-family: "Noto Sans", sans-serif;
   -fx-background-color: #5c7b80;
   -fx-text-fill: white;
   -fx-font-weight: bold;
   -fx-font-size: 14;
-  -fx-font-family: "DejaVu Sans";
+  -fx-font-family: "Noto Sans", sans-serif;
 }
 
 #signUpButton {
   font-size: 18px;
-  font-family: "DejaVu Sans";
+  font-family: "Noto Sans", sans-serif;
   -fx-font-size: 18;
-  -fx-font-family: "DejaVu Sans";
+  -fx-font-family: "Noto Sans", sans-serif;
 }
 
 .alerts {
   fill: #5c7b80;
   font-size: 14px;
-  font-family: "DejaVu Sans";
+  font-family: "Noto Sans", sans-serif;
   font-weight: bold;
   -fx-fill: #5c7b80;
   -fx-font-size: 14px;
-  -fx-font-family: "DejaVu Sans";
+  -fx-font-family: "Noto Sans", sans-serif;
   -fx-font-weight: bold;
 }
 
@@ -62,13 +74,13 @@
   stroke-width: 2px;
   fill: #f4a261;
   font-size: 22px;
-  font-family: "DejaVu Sans";
+  font-family: "Noto Sans", sans-serif;
   font-weight: bold;
   -fx-stroke: #ffffff;
   -fx-stroke-width: 2;
   -fx-fill: #f4a261;
   -fx-font-size: 22px;
-  -fx-font-family: "DejaVu Sans";
+  -fx-font-family: "Noto Sans", sans-serif;
   -fx-font-weight: bold;
 }
 
@@ -76,18 +88,18 @@
   fill: #5c7b80;
   font-size: 14px;
   font-weight: bold;
-  font-family: "DejaVu Sans";
+  font-family: "Noto Sans", sans-serif;
   -fx-fill: #5c7b80;
   -fx-font-size: 14;
   -fx-font-weight: bold;
-  -fx-font-family: "DejaVu Sans";
+  -fx-font-family: "Noto Sans", sans-serif;
 }
 
 .password-field {
   font-size: 7pt;
-  font-family: "DejaVu Sans";
+  font-family: "Noto Sans", sans-serif;
   -fx-font-size: 7pt;
-  -fx-font-family: "DejaVu Sans";
+  -fx-font-family: "Noto Sans", sans-serif;
 }
 
 .logo {

@@ -1,3 +1,15 @@
+@font-face {
+    font-family: 'Noto Sans';
+    src: url('fonts/NotoSans-Regular.ttf');
+    font-weight: normal;
+}
+
+@font-face {
+    font-family: 'Noto Sans';
+    src: url('fonts/NotoSans-Bold.ttf');
+    font-weight: bold;
+}
+
 #anchorPane {
     background-color: #bee7ed;
     -fx-background-color: #bee7ed;
@@ -7,12 +19,12 @@
     color: white;
     font-weight: bold;
     font-size: 12px;
-    font-family: "DejaVu Sans";
+    font-family: "Noto Sans", sans-serif;
     -fx-background-color: #5c7b80;
     -fx-text-fill: white;
     -fx-font-weight: bold;
     -fx-font-size: 12;
-    -fx-font-family: "DejaVu Sans";
+    -fx-font-family: "Noto Sans", sans-serif;
 }
 
 #listView {
@@ -26,9 +38,9 @@
 
 .list-view .list-cell {
     color: #5c7b80;
-    font-family: "DejaVu Sans";
+    font-family: "Noto Sans", sans-serif;
     -fx-text-fill: #5c7b80;
-    -fx-font-family: "DejaVu Sans";
+    -fx-font-family: "Noto Sans", sans-serif;
 }
 
 .text-field {

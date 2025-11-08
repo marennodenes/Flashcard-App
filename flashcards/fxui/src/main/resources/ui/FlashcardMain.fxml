@@ -6,10 +6,9 @@
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane fx:id="anchorPane" prefHeight="264.0" prefWidth="416.0" stylesheets="@FlashcardMain.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ui.FlashcardMainController">
+<AnchorPane fx:id="anchorPane" prefHeight="264.0" prefWidth="416.0" stylesheets="@FlashcardMain.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ui.FlashcardMainController">
     <children>
       <ImageView fitHeight="59.0" fitWidth="64.0" layoutX="16.0" layoutY="15.0" pickOnBounds="true" preserveRatio="true">
          <image>
@@ -67,7 +66,7 @@
       <Button fx:id="deleteDeck_8" layoutX="314.0" layoutY="190.0" mnemonicParsing="false" onAction="#whenDeleteDeckButtonIsClicked" prefHeight="7.0" prefWidth="6.0" styleClass="delete" text="X" />
       
       <Text layoutX="185.0" layoutY="27.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="nameTag" text="username: " />
-      <Text fx:id="usernameField" layoutX="247.0" layoutY="27.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="nameField" text="..." wrappingWidth="70.63699340820312" />
+      <Text fx:id="usernameField" layoutX="251.0" layoutY="27.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="nameField" text="..." wrappingWidth="70.63699340820312" />
       <Button fx:id="logOutButton" layoutX="324.0" layoutY="10.0" mnemonicParsing="false" onAction="#whenLogOut" prefHeight="27.0" prefWidth="79.0" styleClass="create" text="Log out" />
       <Text fx:id="alertMessage" layoutX="203.0" layoutY="105.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="alerts" text="Alert" />
       <Text fx:id="noDecks" layoutX="150.0" layoutY="177.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="alerts" text="You have no decks" />
