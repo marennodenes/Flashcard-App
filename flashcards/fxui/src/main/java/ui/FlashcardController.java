@@ -1,5 +1,6 @@
 package ui;
 
+import dto.FlashcardDto;
 import dto.FlashcardDeckDto;
 import java.io.IOException;
 import java.util.ArrayList;
