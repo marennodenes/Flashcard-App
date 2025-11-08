@@ -7,7 +7,7 @@ import org.junit.jupiter.api.Test;
  * Setup test class that configures JavaFX headless environment.
  * This test runs first to ensure proper headless configuration
  * is applied before other JavaFX tests run.
- * 
+ *
  * @author marennod
  */
 public class AaSetupFxuiTest {

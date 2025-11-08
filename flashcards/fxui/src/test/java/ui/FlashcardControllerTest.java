@@ -30,7 +30,6 @@ import org.junit.jupiter.api.Test;
  * Test class for {@link FlashcardController}.
  * Tests core functionality including internal state management and navigation logic.
  *
- * @author parts of this code is generated with AI assistance for comprehensive test coverage
  * @author marennod
  * @author ailinat
  * 

@@ -1,10 +1,5 @@
 package server.controller;
 
-import app.User;
-import dto.LoginRequestDto;
-import dto.LoginResponseDto;
-import dto.UserDataDto;
-import dto.mappers.UserMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -12,6 +7,12 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import app.User;
+import dto.LoginRequestDto;
+import dto.LoginResponseDto;
+import dto.UserDataDto;
+import dto.mappers.UserMapper;
 import server.service.UserService;
 import shared.ApiConstants;
 import shared.ApiEndpoints;
@@ -23,9 +24,8 @@ import shared.ApiResponse;
  * It interacts with the UserService to perform business logic 
  * and data operations.
  *
- * @author parts of class is generated with the help of claude.ai
- * @author @ailinat
- * @author @sofietw
+ * @author ailinat
+ * @author sofietw
  * @see server.service.UserService
  */
 @RestController

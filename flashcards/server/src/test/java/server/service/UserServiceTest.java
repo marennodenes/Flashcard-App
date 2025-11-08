@@ -37,7 +37,6 @@ import shared.ApiConstants;
  *
  * @author chrsom
  * @author isamw
- * @author parts of class is generated with the help of claude.ai
  * @see UserService
  * @see FlashcardPersistent
  * @see ApiConstants

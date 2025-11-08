@@ -131,7 +131,7 @@ public class FlashcardDeckController {
   /**
    * Adds a new flashcard when button is clicked.
    * Creates a flashcard via REST API and reloads the deck data.
-   * 
+   *
    * @see "docs/release_3/ai_tools.md"
    */
   @FXML
@@ -193,7 +193,7 @@ public class FlashcardDeckController {
   /**
    * Deletes the selected flashcard when delete button is clicked.
    * Deletes the flashcard via REST API and reloads the deck data.
-   * 
+   *
    * @see "docs/release_3/ai_tools.md"
    */
   @FXML
@@ -316,7 +316,7 @@ public class FlashcardDeckController {
   
   /**
    * Loads the current deck from the REST API.
-   * 
+   *
    * @see "docs/release_3/ai_tools.md"
    */
   private void loadDeckData() {
