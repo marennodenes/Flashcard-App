@@ -1,31 +1,29 @@
 package ui;
 
-import java.io.IOException;
-
 import com.fasterxml.jackson.core.type.TypeReference;
-
 import dto.LoginRequestDto;
 import dto.LoginResponseDto;
-import shared.ApiConstants;
-import shared.ApiEndpoints;
-import shared.ApiResponse;
-
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.scene.text.Text;
+import java.io.IOException;
 import javafx.stage.Stage;
+import shared.ApiConstants;
+import shared.ApiEndpoints;
+import shared.ApiResponse;
+
 /**
  * Controller for the Flashcard Login UI. Handles user login.
- * 
+ *
  * @author marieroe
  * @author sofietw
  * @author ailinat
- * 
  */
 public class FlashcardLoginController {
+
   @FXML private Text alertMessage;
   @FXML private Text ex;
   @FXML private Button loginButton;
@@ -85,14 +83,16 @@ public class FlashcardLoginController {
             new LoginRequestDto(username, password),
             new TypeReference<ApiResponse<LoginResponseDto>>() {}
           );
-      } catch (RuntimeException e) {
-        // Network / server error - show popup to the user
-        System.err.println(ApiConstants.SERVER_ERROR + ": " + e.getMessage());
-        ApiClient.showAlert(ApiConstants.SERVER_ERROR, ApiConstants.SERVER_CONNECTION_ERROR);
-        return;
-      } if (result.isSuccess() && result.getData() != null) {
+        } catch (RuntimeException e) {
+          // Network / server error - show popup to the user
+          System.err.println(ApiConstants.SERVER_ERROR + ": " + e.getMessage());
+          ApiClient.showAlert(ApiConstants.SERVER_ERROR, ApiConstants.SERVER_CONNECTION_ERROR);
+          return;
+        } 
+        
+        if (result.isSuccess() && result.getData() != null) {
           LoginResponseDto loginResponse = result.getData();
-          
+            
           // Check if server confirmed login success
           if (loginResponse.isSuccess()) {
             navigateToMainApp(username);
@@ -138,9 +138,8 @@ public class FlashcardLoginController {
   /**
    * Navigates to the sign-up page. Loads the FlashcardSignUpUI FXML file and
    * switches to the sign-up scene.
-   * 
+   *
    * @throws IOException if the FXML file cannot be loaded
-   * 
    */
   private void navigateToSignUpPage() throws IOException {
     FXMLLoader loader = new FXMLLoader(getClass().getResource("/ui/FlashcardSignUp.fxml"));
@@ -154,10 +153,9 @@ public class FlashcardLoginController {
   /**
    * Navigates to the main flashcard application. Loads the FlashcardMainUI and
    * passes the username to the controller.
-   * 
+   *
    * @param username the logged-in username to pass to the main controller
    * @throws IOException if the FXML file cannot be loaded
-   * 
    */
   private void navigateToMainApp(String username) {
     try {
@@ -177,9 +175,8 @@ public class FlashcardLoginController {
   /**
    * Shows an inline error message without popup.
    * Used for validation errors that should only appear as text.
-   * 
+   *
    * @param message the error message to display inline
-   * 
    */
   private void showInlineError(String message) {
     error = message;

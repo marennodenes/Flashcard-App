@@ -2,7 +2,6 @@ package ui;
 
 import java.io.IOException;
 import java.net.URL;
-
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -12,11 +11,11 @@ import javafx.stage.Stage;
 /**
  * Main JavaFX application class for the Flashcards application.
  * Handles application startup and initial scene configuration.
- * 
+ *
  * @author marennod
  * @author marieroe
  */
-public class FlashcardApp extends Application{
+public class FlashcardApp extends Application {
   
   /**
    * Starts the JavaFX application and sets up the primary stage.
@@ -24,7 +23,6 @@ public class FlashcardApp extends Application{
    *
    * @param primaryStage the primary stage for this application
    * @throws IOException if the FXML file cannot be loaded
-   * 
    */
   @Override
   public void start(Stage primaryStage) throws IOException {
@@ -40,7 +38,6 @@ public class FlashcardApp extends Application{
    *
    * @return the loaded Parent node
    * @throws IOException if the FXML file cannot be loaded
-   * 
    */
   protected Parent loadLoginScene() throws IOException {
     return FXMLLoader.load(getClass().getResource("/ui/FlashcardLogin.fxml"));
@@ -50,7 +47,6 @@ public class FlashcardApp extends Application{
    * Gets the URL for the login CSS stylesheet. Protected to allow testing.
    *
    * @return the URL to the CSS file
-   * 
    */
   protected URL getLoginStylesheet() {
     return getClass().getResource("/ui/FlashcardLogin.css");
@@ -59,9 +55,8 @@ public class FlashcardApp extends Application{
   /**
    * Main entry point for the application.
    * Launches the JavaFX application.
-   * 
+   *
    * @param args command line arguments
-   * 
    */
   public static void main(String[] args) {
     Application.launch(args);

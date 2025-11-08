@@ -8,19 +8,22 @@ import javafx.scene.layout.StackPane;
 /**
  * Utility class for creating and configuring JavaFX scenes with consistent scaling.
  *
- * This class provides helper methods to create scenes with 2x scaling applied
+ * <p>This class provides helper methods to create scenes with 2x scaling applied
  * to all UI elements, making the application twice as large while maintaining
  * the same layout proportions.
  *
  * @author marennod
  * @author chrsom
- * 
  */
 public final class SceneUtils {
 
-  /** The scaling factor applied to all scenes */
+  /** The scaling factor applied to all scenes. */
   private static final double SCALE_FACTOR = 2.0;
-  /** How much of the extra scaled size to offset the content (0-1). Increase to move content more down/right. */
+
+  /** 
+   * How much of the extra scaled size to offset the content (0-1). 
+   * Increase to move content more down/right. 
+   */
   private static final double OFFSET_FACTOR = 1.0;
 
   /**
@@ -37,7 +40,6 @@ public final class SceneUtils {
    *
    * @param root the root node of the scene
    * @return a new Scene with scaling applied and appropriate size
-   * 
    */
   public static Scene createScaledScene(Parent root) {
     // Get the preferred size from the root
@@ -45,8 +47,13 @@ public final class SceneUtils {
     double height = root.prefHeight(-1);
 
     // If no preferred size is set, use default
-    if (width <= 0) width = 416.0;  // Default from FXML
-    if (height <= 0) height = 264.0; // Default from FXML
+    if (width <= 0) {
+      width = 416.0;  // Default from FXML
+    }
+
+    if (height <= 0) {
+      height = 264.0; // Default from FXML
+    }
 
     // Apply scaling to root
     applyScaling(root);
@@ -55,7 +62,8 @@ public final class SceneUtils {
     StackPane container = new StackPane(root);
     StackPane.setAlignment(root, Pos.TOP_LEFT);
 
-    // Compute offset based on extra space created by scaling and apply a factor to move further right/down
+    // Compute offset based on extra space created by scaling and apply
+    // a factor to move further right/down
     double extraWidth = width * (SCALE_FACTOR - 1);
     double extraHeight = height * (SCALE_FACTOR - 1);
     root.setTranslateX(extraWidth * OFFSET_FACTOR);
@@ -72,7 +80,6 @@ public final class SceneUtils {
    * This method can be used to scale existing scenes or scene roots.
    *
    * @param root the parent node to scale
-   * 
    */
   public static void applyScaling(Parent root) {
     root.setScaleX(SCALE_FACTOR);

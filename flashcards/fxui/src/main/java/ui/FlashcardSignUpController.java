@@ -1,15 +1,8 @@
 package ui;
 
-import java.io.IOException;
-
 import com.fasterxml.jackson.core.type.TypeReference;
-
 import dto.LoginRequestDto;
 import dto.UserDataDto;
-import shared.ApiConstants;
-import shared.ApiEndpoints;
-import shared.ApiResponse;
-
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -17,15 +10,18 @@ import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.scene.text.Text;
+import java.io.IOException;
 import javafx.stage.Stage;
+import shared.ApiConstants;
+import shared.ApiEndpoints;
+import shared.ApiResponse;
 
 /**
  * Controller for the flashcard sign-up page.
  * Handles user registration with validation and navigation to the main application.
- * 
+ *
  * @author sofietw
  * @author ailinat
- * 
  */
 public class FlashcardSignUpController {
   @FXML private Text alertMessage;
@@ -51,7 +47,7 @@ public class FlashcardSignUpController {
    * Updates the UI elements based on the current state.
    * Shows or hides alert messages as needed.
    */
-  public void updateUi(){
+  public void updateUi() {
     if (showAlert) {
       alertMessage.setText(error);
       alertMessage.setVisible(true);
@@ -90,7 +86,6 @@ public class FlashcardSignUpController {
    * to display the login interface.
    *
    * @throws IOException if the FXML file cannot be loaded.
-   * 
    */
   @FXML
   public void whenBackButtonIsClicked() {
@@ -108,12 +103,11 @@ public class FlashcardSignUpController {
 
   /**
    * Validates user input fields.
-   * 
+   *
    * @param username the entered username
    * @param password the entered password
    * @param confirmedPassword the confirmed password
    * @return true if all validation passes, false otherwise
-   * 
    */
   private boolean validateInput(String username, String password, String confirmedPassword) {
     // Check for empty fields
@@ -134,10 +128,9 @@ public class FlashcardSignUpController {
   /**
    * Attempts to create a new user via REST API.
    * Shows popup error if server connection fails, inline error for other server responses.
-   * 
+   *
    * @param username the username to create
    * @param password the password for the user
-   * 
    */
   private void createUser(String username, String password) {
     ApiResponse<UserDataDto> result = null;
@@ -172,10 +165,9 @@ public class FlashcardSignUpController {
   /**
    * Navigates to the main flashcard application.
    * Loads the FlashcardMainUI and passes the username to the controller.
-   * 
+   *
    * @param username the logged-in username to pass to the main controller
    * @throws IOException if the FXML file cannot be loaded
-   * 
    */
   private void navigateToMainApp(String username) {
     try {
@@ -199,9 +191,8 @@ public class FlashcardSignUpController {
   /**
    * Shows an inline error message without popup.
    * Used for validation errors that should only appear as text.
-   * 
+   *
    * @param message the error message to display inline
-   * 
    */
   private void showInlineError(String message) {
     // Update state and ensure the UI refresh runs on the JavaFX Application Thread.

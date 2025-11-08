@@ -31,35 +31,35 @@
             <Font size="16.0" />
          </font>
       </Text>
-      <Button fx:id="deck_1" layoutX="16.0" layoutY="126.0" mnemonicParsing="false" onAction="#whenADeckIsClicked" prefHeight="53.0" prefWidth="82.0" styleClass="deck">
+      <Button fx:id="deck_1" layoutX="16.0" layoutY="126.0" mnemonicParsing="false" onAction="#whenDeckIsClicked" prefHeight="53.0" prefWidth="82.0" styleClass="deck">
          <font>
             <Font size="11.0" />
          </font></Button>
-      <Button fx:id="deck_5" layoutX="16.0" layoutY="197.0" mnemonicParsing="false" onAction="#whenADeckIsClicked" prefHeight="53.0" prefWidth="82.0" styleClass="deck">
+      <Button fx:id="deck_5" layoutX="16.0" layoutY="197.0" mnemonicParsing="false" onAction="#whenDeckIsClicked" prefHeight="53.0" prefWidth="82.0" styleClass="deck">
          <font>
             <Font size="11.0" />
          </font></Button>
-      <Button fx:id="deck_2" layoutX="116.0" layoutY="126.0" mnemonicParsing="false" onAction="#whenADeckIsClicked" prefHeight="53.0" prefWidth="82.0" styleClass="deck">
+      <Button fx:id="deck_2" layoutX="116.0" layoutY="126.0" mnemonicParsing="false" onAction="#whenDeckIsClicked" prefHeight="53.0" prefWidth="82.0" styleClass="deck">
          <font>
             <Font size="11.0" />
          </font></Button>
-      <Button fx:id="deck_6" layoutX="116.0" layoutY="197.0" mnemonicParsing="false" onAction="#whenADeckIsClicked" prefHeight="53.0" prefWidth="82.0" styleClass="deck">
+      <Button fx:id="deck_6" layoutX="116.0" layoutY="197.0" mnemonicParsing="false" onAction="#whenDeckIsClicked" prefHeight="53.0" prefWidth="82.0" styleClass="deck">
          <font>
             <Font size="11.0" />
          </font></Button>
-      <Button fx:id="deck_3" layoutX="221.0" layoutY="126.0" mnemonicParsing="false" onAction="#whenADeckIsClicked" prefHeight="53.0" prefWidth="82.0" styleClass="deck">
+      <Button fx:id="deck_3" layoutX="221.0" layoutY="126.0" mnemonicParsing="false" onAction="#whenDeckIsClicked" prefHeight="53.0" prefWidth="82.0" styleClass="deck">
          <font>
             <Font size="11.0" />
          </font></Button>
-      <Button fx:id="deck_7" layoutX="221.0" layoutY="197.0" mnemonicParsing="false" onAction="#whenADeckIsClicked" prefHeight="53.0" prefWidth="82.0" styleClass="deck">
+      <Button fx:id="deck_7" layoutX="221.0" layoutY="197.0" mnemonicParsing="false" onAction="#whenDeckIsClicked" prefHeight="53.0" prefWidth="82.0" styleClass="deck">
          <font>
             <Font size="11.0" />
          </font></Button>
-      <Button fx:id="deck_4" layoutX="321.0" layoutY="126.0" mnemonicParsing="false" onAction="#whenADeckIsClicked" prefHeight="53.0" prefWidth="82.0" styleClass="deck">
+      <Button fx:id="deck_4" layoutX="321.0" layoutY="126.0" mnemonicParsing="false" onAction="#whenDeckIsClicked" prefHeight="53.0" prefWidth="82.0" styleClass="deck">
          <font>
             <Font size="11.0" />
          </font></Button>
-      <Button fx:id="deck_8" layoutX="321.0" layoutY="197.0" mnemonicParsing="false" onAction="#whenADeckIsClicked" prefHeight="53.0" prefWidth="82.0" styleClass="deck">
+      <Button fx:id="deck_8" layoutX="321.0" layoutY="197.0" mnemonicParsing="false" onAction="#whenDeckIsClicked" prefHeight="53.0" prefWidth="82.0" styleClass="deck">
          <font>
             <Font size="11.0" />
          </font></Button>

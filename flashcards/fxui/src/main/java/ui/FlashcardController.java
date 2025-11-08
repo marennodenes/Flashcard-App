@@ -1,13 +1,10 @@
 package ui;
 
+import dto.FlashcardDeckDto;
+import dto.FlashcardDto;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-
-import dto.FlashcardDto;
-import dto.FlashcardDeckDto;
-import shared.ApiConstants;
-
 import javafx.animation.RotateTransition;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -20,13 +17,13 @@ import javafx.scene.text.Text;
 import javafx.scene.transform.Rotate;
 import javafx.stage.Stage;
 import javafx.util.Duration;
+import shared.ApiConstants;
 
 /**
  * Controller for the flashcard learning interface.
  * Handles navigation between cards, flipping animations, and progress tracking.
- * 
+ *
  * @author marieroe
- * 
  */
 public class FlashcardController {
 
@@ -68,7 +65,7 @@ public class FlashcardController {
    * Sets up the initial card index and updates the UI if deck is not empty.
    */
   @FXML
-  public void initialize(){
+  public void initialize() {
     currentCardI = 0;
     if (!deck.isEmpty()) {
       updateUi();
@@ -78,7 +75,8 @@ public class FlashcardController {
   /**
    * Updates the UI by setting the card text to display the current flashcard's question.
    * Resets the card to show the question side and updates deck name and username displays.
-   * Only updates if the card button exists, the deck is not empty, and the current card index is valid.
+   * Only updates if the card button exists, the deck is not empty, and the 
+   * current card index is valid.
    */
   public void updateUi() {
     if (decknameField != null) {
@@ -89,7 +87,8 @@ public class FlashcardController {
       decknameField.setText(deckName == null ? "" : deckName);
     }
     if (usernameField != null) {
-      usernameField.setText(currentUsername == null || currentUsername.isEmpty() ? "" : currentUsername);
+      usernameField.setText(currentUsername == null || currentUsername.isEmpty() 
+          ? "" : currentUsername);
     }
     FlashcardDto current = getCurrentCard();
     if (card != null) {
@@ -126,9 +125,9 @@ public class FlashcardController {
 
   /**
    * Sets the deck for the controller and updates UI/progress.
-   * 
+   * Creates a defensive copy of the provided deck to avoid external mutations.
+   *
    * @param deck the deck DTO to set (can be null)
-   * 
    */
   public void setDeck(FlashcardDeckDto deck) {
     if (deck == null) {
@@ -148,9 +147,9 @@ public class FlashcardController {
 
   /**
    * Sets the current username for display in the UI.
+   * Trims whitespace and handles null or empty inputs.
    *
    * @param username the username to set
-   * 
    */
   public void setCurrentUsername(String username) {
     if (username == null || username.trim().isEmpty()) {
@@ -168,7 +167,10 @@ public class FlashcardController {
    * Uses JavaFX rotation transitions to create a smooth flip effect.
    */
   public void flipCard() {
-    if (card == null) return;
+    if (card == null) {
+      return;
+    }
+
     RotateTransition rotateOut = new RotateTransition(Duration.millis(150), card);
     rotateOut.setAxis(Rotate.X_AXIS);
     rotateOut.setFromAngle(0);
@@ -187,7 +189,8 @@ public class FlashcardController {
         card.setWrapText(true);
         card.setStyle(answerStyle.trim());
       } else {
-        String question = (current != null && current.getQuestion() != null) ? current.getQuestion() : "";
+        String question = (current != null && current.getQuestion() != null) 
+            ? current.getQuestion() : "";
         card.setText(question);
         card.setWrapText(true);
         card.setStyle(questionStyle.trim());
@@ -204,9 +207,8 @@ public class FlashcardController {
    * Navigates from the current scene to the flashcard deck list page by loading
    * the FlashcardListUI.fxml file and switching the scene.
    * Passes the current username and deck manager to maintain data consistency.
-   * 
+   *
    * @throws IOException if the FXML file cannot be loaded or found
-   * 
    */
   @FXML
   public void whenBackButtonIsClicked() {
@@ -250,12 +252,11 @@ public class FlashcardController {
   /**
    * Handles log out button click event.
    * Navigates back to the login screen.
-   * 
+   *
    * @param event the action event from clicking the log out button
-   * 
    */
   @FXML
-  public void whenLogOut(ActionEvent event){
+  public void whenLogOut(ActionEvent event) {
     try {
       // Load login screen
       FXMLLoader loader = new FXMLLoader(getClass().getResource("FlashcardLogin.fxml"));
@@ -278,7 +279,6 @@ public class FlashcardController {
    * Performs boundary and null checks to ensure safe access.
    *
    * @return the current flashcard, or null if the deck is empty, null, or the index is invalid
-   * 
    */
   private FlashcardDto getCurrentCard() {
     if (deck == null || deck.isEmpty() || currentCardI < 0 || currentCardI >= deck.size()) {
@@ -294,7 +294,10 @@ public class FlashcardController {
    * Resets the card to show the question side and updates the UI and progress.
    */
   private void goToNextCard() {
-    if (deck == null || deck.isEmpty()) return;
+    if (deck == null || deck.isEmpty()) {
+      return;
+    }
+
     currentCardI = (currentCardI + 1) % deck.size();
     isShowingAnswer = false; // Reset to question when navigating to new card
     updateUi();
@@ -307,7 +310,10 @@ public class FlashcardController {
    * Resets the card to show the question side and updates the UI and progress.
    */
   private void goToPreviousCard() {
-    if (deck == null || deck.isEmpty()) return;
+    if (deck == null || deck.isEmpty()) {
+      return;
+    }
+    
     currentCardI = (currentCardI - 1 + deck.size()) % deck.size();
     isShowingAnswer = false; // Reset to question when navigating to new card
     updateUi();
@@ -337,7 +343,7 @@ public class FlashcardController {
    * Triggers the card flip animation if deck is not empty.
    */
   @FXML
-  private void whenCardButtonClicked(){
+  private void whenCardButtonClicked() {
     if (!deck.isEmpty()) {
       flipCard();
     }
