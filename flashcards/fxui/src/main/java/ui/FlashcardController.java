@@ -1,12 +1,9 @@
 package ui;
 
+import dto.FlashcardDeckDto;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-
-import dto.FlashcardDeckDto;
-import shared.ApiConstants;
-
 import javafx.animation.FadeTransition;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -176,8 +173,9 @@ public class FlashcardController {
    * @see "docs/release_3/ai_tools.md"
    */
   public void flipCard() {
-    if (card == null) return;
-
+    if (card == null) {
+      return;
+    }
     Duration animationDuration = Duration.millis(200);
 
     FadeTransition fadeOut = new FadeTransition(animationDuration, card);

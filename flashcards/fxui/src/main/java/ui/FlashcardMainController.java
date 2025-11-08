@@ -80,8 +80,8 @@ public class FlashcardMainController {
   public void initialize() {
     // Initialize button arrays for easier iteration
     deckButtons = new Button[] { deck1, deck2, deck3, deck4, deck5, deck6, deck7, deck8 };
-    deleteButtons = new Button[] { deleteDeck1, deleteDeck2, deleteDeck3, deleteDeck4, deleteDeck5, deleteDeck6,
-        deleteDeck7, deleteDeck8 };
+    deleteButtons = new Button[] { deleteDeck1, deleteDeck2, deleteDeck3, deleteDeck4, deleteDeck5,
+        deleteDeck6, deleteDeck7, deleteDeck8 };
 
     hideAllDeckButtons();
     // Don't load user data here - wait for setCurrentUsername to be called
