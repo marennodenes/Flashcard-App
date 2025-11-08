@@ -1,48 +1,84 @@
+@font-face {
+    font-family: 'Ubuntu';
+    src: url('../fonts/Ubuntu-Regular.ttf');
+    font-weight: normal;
+}
+
+@font-face {
+    font-family: 'Ubuntu';
+    src: url('../fonts/Ubuntu-Bold.ttf');
+    font-weight: bold;
+}
+
 #anchorPane {
+    background-color: #bee7ed;
     -fx-background-color: #bee7ed;
 }
 
 #card {
+    background-color: #89b9bf;
+    border-width: 2px;
+    font-weight: bold;
+    font-family: "Ubuntu", sans-serif;
     -fx-background-color: #89b9bf;
     -fx-effect: dropshadow(gaussian, #5c7b80, 0, 1, 5, 5);
     -fx-border-width: 2;
     -fx-background-radius: 3;
     -fx-font-weight: bold;
-    -fx-font-family: "Arial";
+    -fx-font-family: "Ubuntu", sans-serif;
 }
 
 .textForTitles {
+    fill: #5c7b80;
+    font-weight: bold;
+    font-family: "Ubuntu", sans-serif;
     -fx-fill: #5c7b80;
     -fx-font-weight: bold;
-    -fx-font-family: "Arial";
+    -fx-font-family: "Ubuntu", sans-serif;
 }
 
 .button {
+    background-color: #5c7b80;
+    color: white;
+    font-weight: bold;
+    font-family: "Ubuntu", sans-serif;
     -fx-background-color: #5c7b80;
     -fx-text-fill: white;
     -fx-font-weight: bold;
-    -fx-font-family: "Arial";
+    -fx-font-family: "Ubuntu", sans-serif;
 }
 
 #nextButton, #previousButton {
+    background-color: transparent;
     -fx-background-color: transparent;
 }
 
 .nameTag {
+    fill: #5c7b80;
+    font-size: 12px;
+    font-weight: bold;
+    font-family: "Ubuntu", sans-serif;
     -fx-fill: #5c7b80;
     -fx-font-size: 12;
     -fx-font-weight: bold;
-    -fx-font-family: "Arial";
+    -fx-font-family: "Ubuntu", sans-serif;
 
 }
 
 .nameField {
+    fill: #5c7b80;
+    font-size: 9.5px;
+    font-family: "Ubuntu", sans-serif;
     -fx-fill: #5c7b80;
     -fx-font-size: 9.5;
-    -fx-font-family: "Arial";
+    -fx-font-family: "Ubuntu", sans-serif;
 }
 
 #progressBar {
+    background-color: transparent;
+    border-color: #5c7b80;
+    border-width: 2px;
+    border-radius: 3px;
     -fx-background-color: transparent;
     -fx-border-color: #5c7b80;
     -fx-border-width: 2;
@@ -50,18 +86,28 @@
 }
 
 #progressBar .track {
+    background-color: white;
     -fx-background-color: white;
     -fx-background-radius: 3;
 }
 
 #progressBar .bar {
+    background-color: #f4a261;
     -fx-background-color: #f4a261;
     -fx-background-radius: 3;
     -fx-background-insets: 1.5;
 }
 
 #nextText, #previousText {
+    fill: white;
+    font-size: 9px;
+    font-family: "Ubuntu", sans-serif;
     -fx-fill: white;
     -fx-font-size: 9;
-    -fx-font-family: "Arial";
+    -fx-font-family: "Ubuntu", sans-serif;
+}
+
+.logo {
+  font-size: 20px;
+  -fx-font-size: 20px;
 }

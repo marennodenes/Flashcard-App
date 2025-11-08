@@ -28,6 +28,13 @@
         <maven.compiler.target>21</maven.compiler.target>
         <maven.compiler.release>21</maven.compiler.release>
         
+        <!-- Application properties for packaging -->
+        <app.name>Flashcards</app.name>
+        <app.version>1.0.0</app.version>
+        <app.vendor>Group 16 IT1901</app.vendor>
+        <app.description>A flashcard application for learning</app.description>
+        <main.class>ui.FlashcardApp</main.class>
+        
         <!-- Dependency versions -->
         <javafx.version>21</javafx.version>
         <junit.version>5.10.1</junit.version>

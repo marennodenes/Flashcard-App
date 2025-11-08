@@ -1,62 +1,115 @@
+@font-face {
+    font-family: 'Ubuntu';
+    src: url('../fonts/Ubuntu-Regular.ttf');
+    font-weight: normal;
+}
+
+@font-face {
+    font-family: 'Ubuntu';
+    src: url('../fonts/Ubuntu-Bold.ttf');
+    font-weight: bold;
+}
+
 #anchorPane {
+  background-color: #bee7ed;
   -fx-background-color: #bee7ed;
 }
 
 .textForTitles {
+  fill: #5c7b80;
+  font-weight: bold;
+  font-family: "Ubuntu", sans-serif;
   -fx-fill: #5c7b80;
   -fx-font-weight: bold;
-  -fx-font-family: "Arial";
+  -fx-font-family: "Ubuntu", sans-serif;
 }
 
 .text-field {
+  background-color: white;
+  border-color: #5c7b80;
+  border-width: 2px;
+  border-radius: 3px;
+  font-family: "Ubuntu", sans-serif;
   -fx-background-color: white;
   -fx-border-color: #5c7b80;
   -fx-border-width: 2;
   -fx-background-radius: 3;
   -fx-border-radius: 3;
-  -fx-font-family: "Arial";
+  -fx-font-family: "Ubuntu", sans-serif;
 }
 
 .button {
+  background-color: #5c7b80;
+  color: white;
+  font-weight: bold;
+  font-size: 18px;
+  font-family: "Ubuntu", sans-serif;
   -fx-background-color: #5c7b80;
   -fx-text-fill: white;
   -fx-font-weight: bold;
   -fx-font-size: 18;
-  -fx-font-family: "Arial";
+  -fx-font-family: "Ubuntu", sans-serif;
 }
 
 #signUpButton {
+  font-size: 10px;
+  font-family: "Ubuntu", sans-serif;
   -fx-font-size: 10;
+  -fx-font-family: "Ubuntu", sans-serif;
 }
 
 #newUserText {
+  font-size: 12px;
+  font-family: "Ubuntu", sans-serif;
   -fx-font-size: 12;
+  -fx-font-family: "Ubuntu", sans-serif;
 }
 
 .alerts {
+  fill: #5c7b80;
+  font-size: 14px;
+  font-family: "Ubuntu", sans-serif;
+  font-weight: bold;
   -fx-fill: #5c7b80;
   -fx-font-size: 14px;
-  -fx-font-family: "Arial";
+  -fx-font-family: "Ubuntu", sans-serif;
   -fx-font-weight: bold;
 }
 
 #ex {
+  stroke: #ffffff;
+  stroke-width: 2px;
+  fill: #f4a261;
+  font-size: 22px;
+  font-family: "Ubuntu", sans-serif;
+  font-weight: bold;
   -fx-stroke: #ffffff;
   -fx-stroke-width: 2;
   -fx-fill: #f4a261;
   -fx-font-size: 22px;
-  -fx-font-family: "Arial";
+  -fx-font-family: "Ubuntu", sans-serif;
   -fx-font-weight: bold;
 }
 
 .nameTag {
+  fill: #5c7b80;
+  font-size: 14px;
+  font-weight: bold;
+  font-family: "Ubuntu", sans-serif;
   -fx-fill: #5c7b80;
   -fx-font-size: 14;
   -fx-font-weight: bold;
-  -fx-font-family: "Arial";
+  -fx-font-family: "Ubuntu", sans-serif;
 }
 
 .password-field {
+  font-size: 7pt;
+  font-family: "Ubuntu", sans-serif;
   -fx-font-size: 7pt;
-  -fx-font-family: "Arial";
+  -fx-font-family: "Ubuntu", sans-serif;
+}
+
+.logo {
+  font-size: 20px;
+  -fx-font-size: 20px;
 }

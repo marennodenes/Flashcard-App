@@ -5,8 +5,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import dto.FlashcardDeckDto;
-import dto.FlashcardDto;
-import javafx.animation.RotateTransition;
+import shared.ApiConstants;
+
+import javafx.animation.FadeTransition;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -15,7 +16,6 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.text.Text;
-import javafx.scene.transform.Rotate;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 import shared.ApiConstants;
@@ -176,21 +176,19 @@ public class FlashcardController {
    * @see "docs/release_3/ai_tools.md"
    */
   public void flipCard() {
-    if (card == null) {
-      return;
-    }
+    if (card == null) return;
 
-    RotateTransition rotateOut = new RotateTransition(Duration.millis(150), card);
-    rotateOut.setAxis(Rotate.X_AXIS);
-    rotateOut.setFromAngle(0);
-    rotateOut.setToAngle(90);
+    Duration animationDuration = Duration.millis(200);
 
-    RotateTransition rotateIn = new RotateTransition(Duration.millis(150), card);
-    rotateIn.setAxis(Rotate.X_AXIS);
-    rotateIn.setFromAngle(270);
-    rotateIn.setToAngle(360);
+    FadeTransition fadeOut = new FadeTransition(animationDuration, card);
+    fadeOut.setFromValue(1.0);
+    fadeOut.setToValue(0.0);
 
-    rotateOut.setOnFinished(e -> {
+    FadeTransition fadeIn = new FadeTransition(animationDuration, card);
+    fadeIn.setFromValue(0.0);
+    fadeIn.setToValue(1.0);
+
+    fadeOut.setOnFinished(e -> {
       FlashcardDto current = getCurrentCard();
       if (!isShowingAnswer) {
         String answer = (current != null && current.getAnswer() != null) ? current.getAnswer() : "";
@@ -205,10 +203,11 @@ public class FlashcardController {
         card.setStyle(questionStyle.trim());
       }
       isShowingAnswer = !isShowingAnswer;
-      rotateIn.play();
+      fadeIn.play();
     });
 
-    rotateOut.play();
+    // Play the first half of the animation
+    fadeOut.play();
   }
 
   /**
