@@ -36,23 +36,23 @@ import javafx.stage.Stage;
  * 
  */
 public class FlashcardMainController {
-  @FXML private Button deck_1;
-  @FXML private Button deck_2;
-  @FXML private Button deck_3;
-  @FXML private Button deck_4;
-  @FXML private Button deck_5;
-  @FXML private Button deck_6;
-  @FXML private Button deck_7;
-  @FXML private Button deck_8;
+  @FXML private Button deck1;
+  @FXML private Button deck2;
+  @FXML private Button deck3;
+  @FXML private Button deck4;
+  @FXML private Button deck5;
+  @FXML private Button deck6;
+  @FXML private Button deck7;
+  @FXML private Button deck8;
 
-  @FXML private Button deleteDeck_1;
-  @FXML private Button deleteDeck_2;
-  @FXML private Button deleteDeck_3;
-  @FXML private Button deleteDeck_4;
-  @FXML private Button deleteDeck_5;
-  @FXML private Button deleteDeck_6;
-  @FXML private Button deleteDeck_7;
-  @FXML private Button deleteDeck_8;
+  @FXML private Button deleteDeck1;
+  @FXML private Button deleteDeck2;
+  @FXML private Button deleteDeck3;
+  @FXML private Button deleteDeck4;
+  @FXML private Button deleteDeck5;
+  @FXML private Button deleteDeck6;
+  @FXML private Button deleteDeck7;
+  @FXML private Button deleteDeck8;
 
   @FXML private TextField deckNameInput;
 
@@ -83,9 +83,9 @@ public class FlashcardMainController {
   @FXML
   public void initialize() {
     // Initialize button arrays for easier iteration
-    deckButtons = new Button[] { deck_1, deck_2, deck_3, deck_4, deck_5, deck_6, deck_7, deck_8 };
-    deleteButtons = new Button[] { deleteDeck_1, deleteDeck_2, deleteDeck_3, deleteDeck_4, deleteDeck_5, deleteDeck_6,
-        deleteDeck_7, deleteDeck_8 };
+    deckButtons = new Button[] { deck1, deck2, deck3, deck4, deck5, deck6, deck7, deck8 };
+    deleteButtons = new Button[] { deleteDeck1, deleteDeck2, deleteDeck3, deleteDeck4, deleteDeck5, deleteDeck6,
+        deleteDeck7, deleteDeck8 };
 
     hideAllDeckButtons();
     // Don't load user data here - wait for setCurrentUsername to be called

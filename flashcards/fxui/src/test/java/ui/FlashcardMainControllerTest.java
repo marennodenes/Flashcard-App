@@ -175,22 +175,22 @@ class FlashcardMainControllerTest {
    * 
    */
   private void injectFxmlComponents() throws Exception {
-    setField("deck_1", deck1);
-    setField("deck_2", deck2);
-    setField("deck_3", deck3);
-    setField("deck_4", deck4);
-    setField("deck_5", deck5);
-    setField("deck_6", deck6);
-    setField("deck_7", deck7);
-    setField("deck_8", deck8);
-    setField("deleteDeck_1", deleteDeck1);
-    setField("deleteDeck_2", deleteDeck2);
-    setField("deleteDeck_3", deleteDeck3);
-    setField("deleteDeck_4", deleteDeck4);
-    setField("deleteDeck_5", deleteDeck5);
-    setField("deleteDeck_6", deleteDeck6);
-    setField("deleteDeck_7", deleteDeck7);
-    setField("deleteDeck_8", deleteDeck8);
+    setField("deck1", deck1);
+    setField("deck2", deck2);
+    setField("deck3", deck3);
+    setField("deck4", deck4);
+    setField("deck5", deck5);
+    setField("deck6", deck6);
+    setField("deck7", deck7);
+    setField("deck8", deck8);
+    setField("deleteDeck1", deleteDeck1);
+    setField("deleteDeck2", deleteDeck2);
+    setField("deleteDeck3", deleteDeck3);
+    setField("deleteDeck4", deleteDeck4);
+    setField("deleteDeck5", deleteDeck5);
+    setField("deleteDeck6", deleteDeck6);
+    setField("deleteDeck7", deleteDeck7);
+    setField("deleteDeck8", deleteDeck8);
     setField("deckNameInput", deckNameInput);
     setField("newDeckButton", newDeckButton);
     setField("logOutButton", logOutButton);

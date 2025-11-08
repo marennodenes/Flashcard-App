@@ -8,7 +8,7 @@ import dto.FlashcardDto;
 import dto.FlashcardDeckDto;
 import shared.ApiConstants;
 
-import javafx.animation.RotateTransition;
+import javafx.animation.FadeTransition;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -17,7 +17,6 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.text.Text;
-import javafx.scene.transform.Rotate;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
@@ -165,21 +164,22 @@ public class FlashcardController {
 
   /**
    * Performs the card flip animation and toggles between question and answer.
-   * Uses JavaFX rotation transitions to create a smooth flip effect.
+   * Simplified to use fade transitions for better compatibility in limited environments.
    */
   public void flipCard() {
     if (card == null) return;
-    RotateTransition rotateOut = new RotateTransition(Duration.millis(150), card);
-    rotateOut.setAxis(Rotate.X_AXIS);
-    rotateOut.setFromAngle(0);
-    rotateOut.setToAngle(90);
 
-    RotateTransition rotateIn = new RotateTransition(Duration.millis(150), card);
-    rotateIn.setAxis(Rotate.X_AXIS);
-    rotateIn.setFromAngle(270);
-    rotateIn.setToAngle(360);
+    Duration animationDuration = Duration.millis(200);
 
-    rotateOut.setOnFinished(e -> {
+    FadeTransition fadeOut = new FadeTransition(animationDuration, card);
+    fadeOut.setFromValue(1.0);
+    fadeOut.setToValue(0.0);
+
+    FadeTransition fadeIn = new FadeTransition(animationDuration, card);
+    fadeIn.setFromValue(0.0);
+    fadeIn.setToValue(1.0);
+
+    fadeOut.setOnFinished(e -> {
       FlashcardDto current = getCurrentCard();
       if (!isShowingAnswer) {
         String answer = (current != null && current.getAnswer() != null) ? current.getAnswer() : "";
@@ -193,10 +193,11 @@ public class FlashcardController {
         card.setStyle(questionStyle.trim());
       }
       isShowingAnswer = !isShowingAnswer;
-      rotateIn.play();
+      fadeIn.play();
     });
 
-    rotateOut.play();
+    // Play the first half of the animation
+    fadeOut.play();
   }
 
   /**
