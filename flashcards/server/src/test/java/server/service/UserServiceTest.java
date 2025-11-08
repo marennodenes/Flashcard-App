@@ -298,6 +298,7 @@ class UserServiceTest {
    * - IOException from persistence layer is properly handled
    *
    * @throws IOException if an I/O error occurs during user creation
+   * @see "docs/release_3/ai_tools.md"
    */
   @Test
   public void testCreateUserWithValidation() throws IOException {

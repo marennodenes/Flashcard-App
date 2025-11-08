@@ -17,9 +17,10 @@ import org.junit.jupiter.api.Test;
  * Unit tests for the {@link FlashcardDeckMapper} class.
  * This test class verifies the correct mapping between FlashcardDeck and FlashcardDeckDto.
  *
- * @author parts of this code is generated with claude.ai
  * @author marennod
  * @author ailinat
+ * 
+ * @see "docs/release_3/ai_tools.md"
  */
 public class FlashcardDeckMapperTest {
 

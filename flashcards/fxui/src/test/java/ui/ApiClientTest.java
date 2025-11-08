@@ -34,6 +34,7 @@ import org.mockito.Mockito;
  * @author sofietw
  *
  * @see ApiClient
+ * @see "docs/release_3/ai_tools.md"
  */
 public class ApiClientTest {
 

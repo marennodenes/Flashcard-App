@@ -159,7 +159,7 @@ public class FlashcardPersistent implements UserPersistence {
    *
    * @param username the username to read data for
    * @return UserData object if found and valid, null otherwise
-   * 
+   * @see "docs/release_3/ai_tools.md"
    */
   private UserData readUserDataInternal(String username) {        
     File file = getUserFile(username);
@@ -185,7 +185,7 @@ public class FlashcardPersistent implements UserPersistence {
    *
    * @param userData the UserData object to write
    * @throws IOException if file writing fails
-   * 
+   * @see "docs/release_3/ai_tools.md"
    */
   private void writeUserDataInternal(UserData userData) throws IOException {
     File dataDir = new File(System.getProperty("user.dir") + "/../storage/data/users");

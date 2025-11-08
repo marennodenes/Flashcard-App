@@ -59,12 +59,10 @@ import shared.ApiResponse;
  * in a single-threaded test environment.
  *
  * @author ailinat
- *
  * @author marennod
- *
  * @author sofietw
  *
- * @author Generated with AI assistance for comprehensive test coverage
+ * @see "docs/release_3/ai_tools.md"
  */
 
 @ExtendWith(ApplicationExtension.class)

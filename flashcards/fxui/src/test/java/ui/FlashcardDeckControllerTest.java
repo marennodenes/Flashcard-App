@@ -57,13 +57,11 @@ import shared.ApiResponse;
  * @author marennod
  * @author sofietw
  * @author ailinat
- * @author parts of this code is generated with AI assistance for comprehensive
- *     test coverage
  *
  * @see FlashcardDeckController
  * @see FlashcardDto
  * @see FlashcardDeckDto
- *
+ * @see "docs/release_3/ai_tools.md"
  */
 class FlashcardDeckControllerTest {
 

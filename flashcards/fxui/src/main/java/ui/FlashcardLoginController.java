@@ -105,7 +105,7 @@ public class FlashcardLoginController {
           error = result.getMessage();
         }
         
-        // Show error as text (validation error - user credentials invalid)
+        // Show error as text (validation error, user credentials invalid)
         showInlineError(error);
         
       } catch (RuntimeException e) {

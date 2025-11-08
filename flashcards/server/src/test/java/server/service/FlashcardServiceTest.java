@@ -39,10 +39,10 @@ import shared.ApiConstants;
  *
  * @author chrsom
  * @author isamw
- * @author parts of class is generated with the help of claude.ai
  * @see FlashcardService
  * @see FlashcardPersistent
  * @see DeckService
+ * 
  */
 class FlashcardServiceTest {
 
@@ -76,6 +76,7 @@ class FlashcardServiceTest {
    * when attempting to retrieve flashcards from an empty deck collection.
    *
    * @throws IOException if persistence operations fail during test execution
+   * @see "docs/release_3/ai_tools.md"
    */
   @Test
   public void testGetFlashcard() throws IOException {
@@ -125,6 +126,7 @@ class FlashcardServiceTest {
    * - The requested flashcard index exceeds the number of flashcards in the deck
    *
    * @throws IOException if persistence operations fail during test execution
+   * @see "docs/release_3/ai_tools.md"
    */
   @Test
   public void testGetFlashcardThrows() throws IOException {

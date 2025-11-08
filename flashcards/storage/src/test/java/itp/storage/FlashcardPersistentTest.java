@@ -24,8 +24,7 @@ import org.junit.jupiter.api.Test;
  * @author chrsom 
  * @author isamw
  * @author sofietw
- * @author methods in this test class is generated with help from claude.ai
- *
+ * 
  * @see FlashcardPersistent
  * 
  */
@@ -43,6 +42,8 @@ public class FlashcardPersistentTest {
    * This method is automatically called after each test method execution.
    * Removes all test user JSON files and any blocking files created during
    * directory failure tests to maintain a clean test environment.
+   * 
+   * @see "docs/release_3/ai_tools.md"
    */
   @AfterEach
   public void cleanup() {

@@ -6,6 +6,8 @@ We apply selected practices from the Agile Scrum methodology. In particular, we 
 
 - User stories as the basis for defining work.
 - Keeping user stories as small as possible, to prevent issues from becoming too large or complex.
+- Daily standup at the start of our meetings, to udpate the rest of the group about work done since last meeting. 
+- Pairprogramming on majority of programmingtasks to improve code quality share knowledge, and reduce errors early in the process.
 - Regular discussions during team meetings to refine and prioritize tasks.
 
 This lightweight approach allows us to maintain a good development flow, avoid bottlenecks, and ensure that progress is trackable throughout the release cycle.

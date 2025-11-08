@@ -121,6 +121,7 @@ public class UserController {
    * @param request the login request containing username and password
    * @return {@link ApiResponse} with 
    *            login result and user data
+   * @see "docs/release_3/ai_tools.md"
    */
   @PostMapping (ApiEndpoints.USER_LOGIN)
   public ApiResponse<LoginResponseDto> logInUser(@RequestBody LoginRequestDto request) { 

@@ -10,9 +10,9 @@ import java.util.Base64;
  * Handles password encoding and verification using SHA-256 with salt.
  * Provides secure password storage instead of plain text.
  *
- * @author parts of this class is generated with the help of claude.ai
- * @author @sofietw
- * @author @ailinat
+ * @author sofietw
+ * @author ailinat
+ * @see "docs/release_3/ai_tools.md"
  */
 public class PasswordEncoder {
   

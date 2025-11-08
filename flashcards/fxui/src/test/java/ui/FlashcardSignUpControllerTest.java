@@ -30,10 +30,9 @@ import shared.ApiResponse;
  *
  * @author ailinat
  * @author marennod
- * @author AI-assisted with Claude Sonnet 4.5
  *
  * @see FlashcardSignUpController
- *
+ * @see "docs/release_3/ai_tools.md"
  */
 @ExtendWith(ApplicationExtension.class)
 public class FlashcardSignUpControllerTest {

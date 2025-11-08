@@ -234,16 +234,16 @@ public class FlashcardMainController {
         if (errorMsg != null && (errorMsg.equals(ApiConstants.DECK_ALREADY_EXISTS) 
             || errorMsg.equals(ApiConstants.DECK_LIMIT_REACHED) 
             || errorMsg.equals(ApiConstants.DECK_NAME_EMPTY))) {
-          // Validation error - show as inline text only, no popup
+          // Validation error, show as inline text only, no popup
           showInlineError(errorMsg);
         } else {
-          // Server error - show popup and log to terminal
+          // Server error, show popup and log to terminal
           System.err.println(ApiConstants.SERVER_ERROR + ": " + errorMsg);
           ApiClient.showAlert(ApiConstants.SERVER_ERROR, ApiConstants.DECK_FAILED_TO_CREATE);
         }
       }
     } catch (RuntimeException e) {
-      // Network/API error - show popup and log to terminal
+      // Network/API error, show popup and log to terminal
       String errorMsg = e.getMessage();
       if (e.getCause() != null) {
         errorMsg = e.getCause().getMessage();

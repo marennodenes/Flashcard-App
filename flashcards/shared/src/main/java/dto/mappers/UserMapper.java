@@ -17,10 +17,11 @@ import java.util.List;
  * Mapper for converting between User/UserData and UserDataDto or LoginRequestDto.
  * Also handles mapping of deckManager
  *
- * @author parts of this code is generated with the help of Claude Sonnet 4.
  * @author ailinat
  * @author sofietw
  * @author marennod
+ * 
+ * @see "docs/release_3/ai_tools.md"
  */
 public class UserMapper {
 

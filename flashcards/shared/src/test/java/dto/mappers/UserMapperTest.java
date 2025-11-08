@@ -26,6 +26,8 @@ import org.junit.jupiter.api.Test;
  *
  * @author marennod
  * @author ailinat
+ * 
+ * @see "docs/release_3/ai_tools.md"
  */
 public class UserMapperTest {
 

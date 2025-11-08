@@ -13,8 +13,8 @@ import org.junit.jupiter.api.Test;
  *
  * @author chrsom
  * @author isamw
- * @author parts of class is generated with the help of claude.ai
  * @see ServerApplication
+ * 
  */
 public class ServerApplicationTest {
 

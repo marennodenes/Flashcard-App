@@ -52,9 +52,9 @@ import shared.ApiResponse;
  *
  * @author ailinat
  * @author marennod
- * @author AI-assisted with Claude Sonnet 4.5
  *
  * @see FlashcardLoginController
+ * @see "docs/release_3/ai_tools.md"
  */
 public class FlashcardLoginControllerTest {
   

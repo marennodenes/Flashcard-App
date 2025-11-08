@@ -24,6 +24,8 @@ import shared.ApiConstants;
  * Handles navigation between cards, flipping animations, and progress tracking.
  *
  * @author marieroe
+ * @author isamw
+ * 
  */
 public class FlashcardController {
 
@@ -77,6 +79,8 @@ public class FlashcardController {
    * Resets the card to show the question side and updates deck name and username displays.
    * Only updates if the card button exists, the deck is not empty, and the 
    * current card index is valid.
+   * 
+   * @see "docs/release_3/ai_tools.md"
    */
   public void updateUi() {
     if (decknameField != null) {
@@ -110,6 +114,8 @@ public class FlashcardController {
    * Updates the progress bar and card number display.
    * Calculates the current position in the deck and updates the UI elements accordingly.
    * Handles null checks and edge cases like empty decks or invalid card indices.
+   * 
+   * @see "docs/release_3/ai_tools.md"
    */
   public void updateProgress() {
     int deckSize = deck == null ? 0 : deck.size();
@@ -165,6 +171,8 @@ public class FlashcardController {
   /**
    * Performs the card flip animation and toggles between question and answer.
    * Uses JavaFX rotation transitions to create a smooth flip effect.
+   * 
+   * @see "docs/release_3/ai_tools.md"
    */
   public void flipCard() {
     if (card == null) {
