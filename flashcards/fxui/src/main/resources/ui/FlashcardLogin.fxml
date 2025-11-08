@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import java.lang.String?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.PasswordField?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane fx:id="anchorPane" prefHeight="264.0" prefWidth="416.0" stylesheets="@FlashcardLogin.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ui.FlashcardLoginController">
+<AnchorPane fx:id="anchorPane" prefHeight="264.0" prefWidth="416.0" stylesheets="@FlashcardLogin.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ui.FlashcardLoginController">
    <children>
       <Text layoutX="195.0" layoutY="79.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="textForTitles" />
       <ImageView fitHeight="59.0" fitWidth="64.0" layoutX="16.0" layoutY="15.0" pickOnBounds="true" preserveRatio="true">
@@ -17,16 +17,20 @@
             <Image url="@quiz-submissions-svgrepo-com.png" />
          </image>
       </ImageView>
-      <Text layoutX="75.0" layoutY="50.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="textForTitles" text="FLASH">
-         <font>
-            <Font size="23.0" />
-         </font>
+      <Text layoutX="75.0" layoutY="50.0" strokeType="OUTSIDE" strokeWidth="0.0" text="FLASH">
+         <styleClass>
+            <String fx:value="textForTitles" />
+            <String fx:value="logo" />
+         </styleClass>
       </Text>
-      <Text layoutX="91.0" layoutY="79.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="textForTitles" text="CARDS">
-         <font>
-            <Font size="23.0" />
-         </font>
+      
+      <Text layoutX="91.0" layoutY="79.0" strokeType="OUTSIDE" strokeWidth="0.0" text="CARDS">
+         <styleClass>
+            <String fx:value="textForTitles" />
+            <String fx:value="logo" />
+         </styleClass>
       </Text>
+      
       <TextField fx:id="usernameField" layoutX="113.0" layoutY="120.0" prefHeight="30.0" prefWidth="176.0" />
       <Text layoutX="31.0" layoutY="141.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="nameTag" text="Username: " />
       <Text layoutX="33.0" layoutY="192.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="nameTag" text="Password: " />

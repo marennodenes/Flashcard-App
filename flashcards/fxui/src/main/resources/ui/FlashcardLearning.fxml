@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import java.lang.String?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.ProgressBar?>
 <?import javafx.scene.image.Image?>
@@ -18,16 +19,20 @@
             <Image url="@quiz-submissions-svgrepo-com.png" />
          </image>
       </ImageView>
-      <Text layoutX="75.0" layoutY="50.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="textForTitles" text="FLASH">
-         <font>
-            <Font size="23.0" />
-         </font>
+      <Text layoutX="75.0" layoutY="50.0" strokeType="OUTSIDE" strokeWidth="0.0" text="FLASH">
+         <styleClass>
+            <String fx:value="textForTitles" />
+            <String fx:value="logo" />
+         </styleClass>
       </Text>
-      <Text layoutX="91.0" layoutY="79.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="textForTitles" text="CARDS">
-         <font>
-            <Font size="23.0" />
-         </font>
+      
+      <Text layoutX="91.0" layoutY="79.0" strokeType="OUTSIDE" strokeWidth="0.0" text="CARDS">
+         <styleClass>
+            <String fx:value="textForTitles" />
+            <String fx:value="logo" />
+         </styleClass>
       </Text>
+      
       <Button fx:id="nextButton" layoutX="306.0" layoutY="95.0" mnemonicParsing="false" onAction="#whenNextCardButtonClicked" prefHeight="65.0" prefWidth="77.0">
          <graphic>
             <StackPane prefHeight="150.0" prefWidth="200.0">

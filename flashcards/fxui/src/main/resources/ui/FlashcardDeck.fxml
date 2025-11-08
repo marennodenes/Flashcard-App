@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import java.lang.String?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.ListView?>
 <?import javafx.scene.control.TextField?>
@@ -15,43 +16,35 @@
         <Text layoutX="14.0" layoutY="106.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="textForTitles" text="Question" />
         <Text layoutX="14.0" layoutY="168.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="textForTitles" text="Answer" />
         <TextField fx:id="answerField" layoutX="14.0" layoutY="175.0" prefHeight="30.0" prefWidth="170.0" />
-        <Button fx:id="createButton" layoutX="14.0" layoutY="216.0" mnemonicParsing="false" onAction="#whenCreateButtonIsClicked" prefHeight="23.0" prefWidth="80.0" text="Create card">
-         <font>
-            <Font size="11.0" />
-         </font></Button>
+        <Button fx:id="createButton" layoutX="14.0" layoutY="216.0" mnemonicParsing="false" onAction="#whenCreateButtonIsClicked" prefHeight="23.0" prefWidth="80.0" text="Create card"></Button>
         <ListView fx:id="listView" layoutX="201.0" layoutY="46.0" prefHeight="159.0" prefWidth="198.0" />
       <ImageView fitHeight="59.0" fitWidth="64.0" layoutX="16.0" layoutY="15.0" pickOnBounds="true" preserveRatio="true">
          <image>
             <Image url="@quiz-submissions-svgrepo-com.png" />
          </image>
       </ImageView>
-      <Text layoutX="75.0" layoutY="50.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="textForTitles" text="FLASH">
-         <font>
-            <Font size="23.0" />
-         </font>
+      <Text layoutX="75.0" layoutY="50.0" strokeType="OUTSIDE" strokeWidth="0.0" text="FLASH">
+         <styleClass>
+            <String fx:value="textForTitles" />
+            <String fx:value="logo" />
+         </styleClass>
       </Text>
-      <Text layoutX="91.0" layoutY="79.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="textForTitles" text="CARDS">
-         <font>
-            <Font size="23.0" />
-         </font>
+
+      <Text layoutX="91.0" layoutY="79.0" strokeType="OUTSIDE" strokeWidth="0.0" text="CARDS">
+         <styleClass>
+            <String fx:value="textForTitles" />
+            <String fx:value="logo" />
+         </styleClass>
       </Text>
-      <Button id="startLearning" fx:id="startLearning" layoutX="201.0" layoutY="216.0" mnemonicParsing="false" onAction="#whenStartLearningButtonIsClicked" prefHeight="39.0" prefWidth="117.0" text="Start learning">
-         <font>
-            <Font size="16.0" />
-         </font>
-      </Button>
+
+      <Button id="startLearning" fx:id="startLearning" layoutX="201.0" layoutY="216.0" mnemonicParsing="false" onAction="#whenStartLearningButtonIsClicked" prefHeight="39.0" prefWidth="117.0" text="Start learning" />
+      
       <Text layoutX="185.0" layoutY="27.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="nameTag" text="username: " />
       <Text fx:id="username" layoutX="247.0" layoutY="27.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="nameField" text="..." wrappingWidth="80.57280347321964" />
       <Button id="logOutButton" fx:id="logOutButton" layoutX="324.0" layoutY="10.0" mnemonicParsing="false" onAction="#whenLogOut" prefHeight="27.0" prefWidth="73.0" text="Log out" />
-      <Button id="back" fx:id="backButton" layoutX="332.0" layoutY="216.0" mnemonicParsing="false" onAction="#whenBackButtonIsClicked" prefHeight="39.0" prefWidth="66.0" text="Back">
-         <font>
-            <Font size="16.0" />
-         </font>
-      </Button>
-      <Button fx:id="deleteCardButton" layoutX="99.0" layoutY="216.0" mnemonicParsing="false" onAction="#whenDeleteCardButtonIsClicked" prefHeight="23.0" prefWidth="84.0" text="Delete card">
-         <font>
-            <Font size="9.0" />
-         </font>
-      </Button>
+      <Button id="back" fx:id="backButton" layoutX="332.0" layoutY="216.0" mnemonicParsing="false" onAction="#whenBackButtonIsClicked" prefHeight="39.0" prefWidth="66.0" text="Back" />
+      
+      <Button fx:id="deleteCardButton" layoutX="99.0" layoutY="216.0" mnemonicParsing="false" onAction="#whenDeleteCardButtonIsClicked" prefHeight="23.0" prefWidth="84.0" text="Delete card" />
+      
     </children>
 </AnchorPane>
