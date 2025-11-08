@@ -1,13 +1,13 @@
 @startuml class_fxui
 title FXUI Module - JavaFX User Interface
 
-left to right direction
 
 package ui {
     class ApiClient {
         - {static} HttpClient HTTP_CLIENT
         - {static} ObjectMapper OBJECT_MAPPER
 
+        # ApiClient()
         + {static} HttpResponse<String> sendRequest(String uri, String httpMethod, String json)
         + {static} <T> T parseResponse(String responseBody, TypeReference<T> responseType)
         + {static} String convertObjectToJson(Object data)
@@ -42,19 +42,17 @@ package ui {
         + void initialize()
         + void updateUi()
         + void updateProgress()
-        + FlashcardDto getCurrentCart()
         + void setDeck(FlashcardDeckDto deck)
         + void setCurrentUsername(String username)
-        + void setCurrentDeckName(String deckName)
+        + void flipCard()
         + void whenBackButtonIsClicked()
-        + void whenNextButtonIsClicked()
-        + void whenPreviousButtonIsClicked()
-        + void whenCardButtonIsClicked()
         + void whenLogOut(ActionEvent event)
+        - FlashcardDto getCurrentCard()
         - void goToNextCard()
         - void goToPreviousCard()
-        - void flipCard()
-
+        - void whenNextCardButtonIsClicked()
+        - void whenPreviousCardButtonIsClicked()
+        - void whenCardButtonClicked()
     }
 
     class FlashcardDeckController {
@@ -71,10 +69,10 @@ package ui {
         + void updateUi()
         + void setDeck(FlashcardDeckDto deck)
         + void setCurrentUsername(String username)
-        + void whenCreateCardButtonIsClicked()
-        + void whenDeleteButtonIsClicked()
-        + void whenBackButtonIsClicked()
+        + void whenCreateButtonIsClicked()
+        + void whenDeleteCardButtonIsClicked()
         + void whenStartLearningButtonIsClicked()
+        + void whenBackButtonIsClicked()
         + void whenLogOut()
         - void loadDeckData()
         - void cleanInputFields()
@@ -96,26 +94,26 @@ package ui {
         + void whenSignUpButtonClicked()
         - void navigateToSignUpPage()
         - void navigateToMainApp(String username)
-        - void showInLineError(String message)
+        - void showInlineError(String message)
     }
 
     class FlashcardMainController {
-        - Button deck_1
-        - Button deck_2
-        - Button deck_3
-        - Button deck_4
-        - Button deck_5
-        - Button deck_6
-        - Button deck_7
-        - Button deck_8
-        - Button deleteDeck_1
-        - Button deleteDeck_2
-        - Button deleteDeck_3
-        - Button deleteDeck_4
-        - Button deleteDeck_5
-        - Button deleteDeck_6
-        - Button deleteDeck_7
-        - Button deleteDeck_8
+        - Button deck1
+        - Button deck2
+        - Button deck3
+        - Button deck4
+        - Button deck5
+        - Button deck6
+        - Button deck7
+        - Button deck8
+        - Button deleteDeck1
+        - Button deleteDeck2
+        - Button deleteDeck3
+        - Button deleteDeck4
+        - Button deleteDeck5
+        - Button deleteDeck6
+        - Button deleteDeck7
+        - Button deleteDeck8
         - TextField deckNameInput
         - Button newDeckButton
         - Button logOutButton
@@ -132,15 +130,15 @@ package ui {
         
         + void initialize()
         + void updateUi()
+        + void refreshDecks()
         + void setCurrentUsername(String username)
         + void whenNewDeckButtonIsClicked()
         + void whenDeleteDeckButtonIsClicked()
-        + void whenADeckIsClicked(ActionEvent event)
+        + void whenDeckIsClicked(ActionEvent event)
         + void whenLogout(ActionEvent event)
-        + void refreshDecks()
-        - void loadUserData()
         - void hideAllDeckButtons()
-        - void showInLineError(String message)
+        - void loadUserData()
+        - void showInlineError(String message)
     }
 
     class FlashcardSignUpController {
@@ -156,23 +154,21 @@ package ui {
         
         + void initialize()
         + void updateUi()
-        + void whenSignInButtonIsClicked()
+        + void whenSignInButtonClicked()
         + void whenBackButtonIsClicked()
         - boolean validateInput(String username, String password, String confirmPassword)
         - void createUser(String username, String password)
         - void navigateToMainApp(String username)
-        - void showInLineError(String message)
-        
-
+        - void showInlineError(String message)
     }
 
     class SceneUtils {
         - {static} double SCALE_FACTOR = 2.0
         - {static} double OFFSET_FACTOR = 1.0
          
-        + {static} Scene createScaledScene(Parent root)
-        + {static} void applyScaling(Parent root)
         - SceneUtils()
+        + {static} Scene createScaledScene(Parent root)
+        + {static} void applyScaling(Parent root)  
     }
 }
 

@@ -43,7 +43,7 @@ public final class ApiClient {
    * Package-private constructor to allow JaCoCo coverage.
    * This class uses only static methods and should not be instantiated.
    */
-  public ApiClient() {
+  protected ApiClient() {
     // No-op for coverage
   }
 
