@@ -161,7 +161,6 @@ The architecture diagram provides a high-level overview of the system's structur
 The sequence diagram illustrates the process that occurs when a user creates a new deck in the application. It shows the chronological order of method calls between objects across different layers of the system:
 The JavaFX controller initiates a request through the ApiClient, which communicates with the REST API (DeckController). The API then uses the DeckService and FlashcardPersistent components to store the new deck in the underlying data storage. Finally, the updated list of decks is retrieved and returned to the client so the user interface can be refreshed.
 
-
 ### Package diagram
 
 ![package diagram](uml_documentation/screenshots/package.png)

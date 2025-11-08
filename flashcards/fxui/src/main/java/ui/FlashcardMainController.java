@@ -33,25 +33,26 @@ import javafx.stage.Stage;
  * @author chrsom
  * @author marennod
  * @author marieroe
+ * 
  */
 public class FlashcardMainController {
-  @FXML private Button deck_1;
-  @FXML private Button deck_2;
-  @FXML private Button deck_3;
-  @FXML private Button deck_4;
-  @FXML private Button deck_5;
-  @FXML private Button deck_6;
-  @FXML private Button deck_7;
-  @FXML private Button deck_8;
+  @FXML private Button deck1;
+  @FXML private Button deck2;
+  @FXML private Button deck3;
+  @FXML private Button deck4;
+  @FXML private Button deck5;
+  @FXML private Button deck6;
+  @FXML private Button deck7;
+  @FXML private Button deck8;
 
-  @FXML private Button deleteDeck_1;
-  @FXML private Button deleteDeck_2;
-  @FXML private Button deleteDeck_3;
-  @FXML private Button deleteDeck_4;
-  @FXML private Button deleteDeck_5;
-  @FXML private Button deleteDeck_6;
-  @FXML private Button deleteDeck_7;
-  @FXML private Button deleteDeck_8;
+  @FXML private Button deleteDeck1;
+  @FXML private Button deleteDeck2;
+  @FXML private Button deleteDeck3;
+  @FXML private Button deleteDeck4;
+  @FXML private Button deleteDeck5;
+  @FXML private Button deleteDeck6;
+  @FXML private Button deleteDeck7;
+  @FXML private Button deleteDeck8;
 
   @FXML private TextField deckNameInput;
 
@@ -82,9 +83,9 @@ public class FlashcardMainController {
   @FXML
   public void initialize() {
     // Initialize button arrays for easier iteration
-    deckButtons = new Button[] { deck_1, deck_2, deck_3, deck_4, deck_5, deck_6, deck_7, deck_8 };
-    deleteButtons = new Button[] { deleteDeck_1, deleteDeck_2, deleteDeck_3, deleteDeck_4, deleteDeck_5, deleteDeck_6,
-        deleteDeck_7, deleteDeck_8 };
+    deckButtons = new Button[] { deck1, deck2, deck3, deck4, deck5, deck6, deck7, deck8 };
+    deleteButtons = new Button[] { deleteDeck1, deleteDeck2, deleteDeck3, deleteDeck4, deleteDeck5, deleteDeck6,
+        deleteDeck7, deleteDeck8 };
 
     hideAllDeckButtons();
     // Don't load user data here - wait for setCurrentUsername to be called
@@ -171,6 +172,7 @@ public class FlashcardMainController {
    * the login controller to set the logged-in user.
    * 
    * @param username the username to set as current user
+   * 
    */
   public void setCurrentUsername(String username) {
     if (username != null && !username.trim().isEmpty()) {
@@ -186,6 +188,7 @@ public class FlashcardMainController {
    * the UI. Shows an error message if deck creation fails.
    * 
    * @param event the action event from clicking the new deck button
+   * 
    */
   @FXML
   public void whenNewDeckButtonIsClicked(ActionEvent event) {
@@ -258,6 +261,7 @@ public class FlashcardMainController {
    * refreshes the UI.
    * 
    * @param event the action event from clicking a delete button
+   * 
    */
   @FXML
   public void whenDeleteDeckButtonIsClicked(ActionEvent event) {
@@ -300,6 +304,7 @@ public class FlashcardMainController {
    * scenes.
    * 
    * @param event the action event from clicking a deck button
+   * 
    */
   @FXML
   public void whenADeckIsClicked(ActionEvent event) {
@@ -333,6 +338,7 @@ public class FlashcardMainController {
    * appropriate CSS styling, and switches to the login scene.
    * 
    * @param event the action event from clicking the log out button
+   * 
    */
   @FXML
   public void whenLogOut(ActionEvent event) {
@@ -358,13 +364,10 @@ public class FlashcardMainController {
   /**
    * Shows an inline error message without popup.
    * Used for validation errors that should only appear as text.
+   * Hides and disables all deck and delete byttons. Used to reset the UI state before showing onlu the relevant buttons
    * 
    * @param message the error message to display inline
-   */
-
-  /**
-   * Hides and disables all deck and delete buttons. Used to reset the UI state
-   * before showing only the relevant buttons.
+   * 
    */
   private void hideAllDeckButtons() {
     for (Button b : deckButtons) {
@@ -404,6 +407,12 @@ public class FlashcardMainController {
     }
   }
   
+  /**
+   * Private method to show error messages on the UI
+   * 
+   * @param message the error message to show
+   * 
+   */
   private void showInlineError(String message) {
     error = message;
     showAlert = true;

@@ -14,14 +14,6 @@ This application uses a **client-server architecture**:
 - **Server** (`flashcards/server`): Spring Boot REST API backend (runs on port 8080)
 - **Client** (`flashcards/fxui`): JavaFX desktop application
 
-**Why two terminals?**
-
-The server and client run as separate processes to demonstrate:
-
-- RESTful API design patterns
-- Separation of concerns (backend/frontend)
-- Modern distributed application architecture
-
 Both components must be running simultaneously for the application to work. The client communicates with the server via HTTP requests to the REST API.
 
 ## Quickstart
@@ -96,7 +88,7 @@ To quickly test the application:
     mvn javafx:run
     ```
 
-**Note:** Both the server (step 5) and client (step 7) must be running simultaneously. The VS Code task "Run JavaFX App" only starts the client - you still need to run the server separately in another terminal.
+**Note:** Both the server (step 5) and client (step 7) must be running simultaneously.
 
 ## Building the project
 
@@ -118,7 +110,39 @@ To build all modules and run tests:
 
 ## Running the application
 
-### Method 1: Maven
+### Method 1: Creating a shippable product
+
+To create an executable file that runs locally on your computer:
+
+1. If not already done, make sure to build the project
+
+     ```bash
+    mvn clean install
+    ```
+
+2. Open `fxui` module
+
+    ```bash
+        cd fxui
+    ```
+
+3. When in `fxui`, run this command to run and create a executable application
+
+    ```bash
+        mvn clean package javafx:jlink jpackage:jpackage
+    ```
+
+4. To be able to use the app, you must run the REST-API `server` in our app
+
+    ```bash
+        cd server
+        mvn spring-boot:run
+    ```
+
+5. Now there has been created a Flashcards-1.0.0.dmg in `fxui/target/dist`. Locate this file and run that file.
+6. You can now use the application on your computer
+
+### Method 2: Maven
 
 1. Open the project folder
 
@@ -190,9 +214,9 @@ To build all modules and run tests:
 
 **Note:** Both the server (step 5) and client (step 7) must be running simultaneously for the application to work.
 
-### Method 2: VS Code
+### Method 3: VS Code
 
-Use the configured task "Run JavaFX App" from the VS Code command palette. **Important:** This task only starts the client - you must still run the server separately using `mvn spring-boot:run` in the `flashcards/server` directory.
+Use the configured task "Run JavaFX App" from the VS Code command palette. **Important:** This task only starts the client, you must still run the server separately using `mvn spring-boot:run` in the `flashcards/server` directory.
 
 ## Code structure
 
@@ -261,9 +285,9 @@ After running `mvn test`, you can generate test coverage reports via JaCoCo:
 **Current test coverage:**
 
 - **core**: Instruction Coverage: 88% | Branch Coverage: 92%
-- **fxui**: Instruction Coverage: XX% | Branch Coverage: XX%
+- **fxui**: Instruction Coverage: 90% | Branch Coverage: 85%
 - **shared**: Instruction Coverage: 98% | Branch Coverage: 87%
-- **server**: Instruction Coverage: XX% | Branch Coverage: XX%
+- **server**: Instruction Coverage: 92% | Branch Coverage: 92%
 - **storage**: Instruction Coverage: 98% | Branch Coverage: 87%
 
 ![core JaCoCo coverage](images/jaCoCo/release_3/coreJaCoCo_release3.png)

@@ -8,13 +8,11 @@ import org.junit.jupiter.api.Test;
 /**
  * Test class for {@link Flashcard} functionality.
  * Tests flashcard operations including question/answer management and validation.
- * 
+ *
  * @author isamw
- * 
  * @see Flashcard
  */
 public class FlashcardTest {
-
   private static Flashcard flashcard;
   private static Flashcard flashcard2;
   private static Flashcard flashcard3;
@@ -22,15 +20,14 @@ public class FlashcardTest {
   /**
    * Sets up test fixtures before all tests.
    * Initializes sample Flashcard instances with different constructors for testing.
-   * 
+   *
    * @author Generated with Claude Sonnet 4 via GitHub Copilot
    */
   @BeforeAll
-  static void setUp(){
+  static void setUp() {
     flashcard = new Flashcard("Question", "Answer");
     flashcard2 = new Flashcard();
     flashcard3 = new Flashcard(5, "Hi", "Bye");
-
   }
 
   /**
@@ -41,7 +38,7 @@ public class FlashcardTest {
    * - Updated question value is properly stored and retrieved
    */
   @Test
-  void testQuestion(){
+  void testQuestion() {
     assertEquals("Question", flashcard.getQuestion());
     flashcard.setQuestion("Hei");
     assertEquals("Hei", flashcard.getQuestion());
@@ -60,7 +57,7 @@ public class FlashcardTest {
    * - Setting null value is allowed and properly stored
    */
   @Test
-  void testAnswer(){
+  void testAnswer() {
     assertEquals("Answer", flashcard.getAnswer());
     flashcard.setAnswer("");
     assertEquals("Answer", flashcard.getAnswer());
@@ -78,7 +75,7 @@ public class FlashcardTest {
    * - Number property maintains its value correctly
    */
   @Test
-  void testGetNumber(){
+  void testGetNumber() {
     flashcard2.setNumber(3);
     assertEquals(3, flashcard2.getNumber());
     assertEquals(5, flashcard3.getNumber());
@@ -92,7 +89,7 @@ public class FlashcardTest {
    * - String formatting is consistent and properly structured
    */
   @Test
-  void testToString(){
+  void testToString() {
     assertEquals("Q: Question\nA: Answer", flashcard.toString());
   }
 }

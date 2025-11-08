@@ -6,7 +6,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
@@ -14,9 +13,8 @@ import org.junit.jupiter.api.Test;
 /**
  * Test class for {@link FlashcardDeck} functionality.
  * Tests deck operations including adding flashcards, managing deck names, and validation.
- * 
+ *
  * @author isamw
- * 
  * @see FlashcardDeck
  */
 public class FlashcardDeckTest {
@@ -29,7 +27,7 @@ public class FlashcardDeckTest {
    * Initializes a sample Flashcard and FlashcardDeck for testing.
    */
   @BeforeAll
-  static void setUp(){
+  static void setUp() {
     flashcard = new Flashcard("question", "answer");
     flashcardDeck = new FlashcardDeck();
   }
@@ -57,7 +55,7 @@ public class FlashcardDeckTest {
    * - Name persistence works correctly
    */
   @Test
-  void testGetDeckName(){
+  void testGetDeckName() {
     flashcardDeck.setDeckName("test");
     assertEquals("test", flashcardDeck.getDeckName());
   }
@@ -69,7 +67,7 @@ public class FlashcardDeckTest {
    * - Question validation logic works as expected
    */
   @Test
-  void testIsQuestion(){
+  void testIsQuestion() {
     assertFalse(flashcardDeck.isQuestion("wrong"));
     Flashcard flashcard2 = new Flashcard("Q1", "A1");
     flashcardDeck.addFlashcard(flashcard2);
@@ -85,7 +83,7 @@ public class FlashcardDeckTest {
    * - Remaining flashcards maintain their correct positions
    */
   @Test
-  void testRemoveFlashcardByIndex(){
+  void testRemoveFlashcardByIndex() {
     flashcardDeck.addFlashcard(flashcard);
     Flashcard flashcard2 = new Flashcard("question2", "answer2");
     flashcardDeck.addFlashcard(flashcard2);
@@ -99,7 +97,7 @@ public class FlashcardDeckTest {
    * Tests the setDeck method of FlashcardDeck.
    */
   @Test
-  void testSetDeck(){
+  void testSetDeck() {
     List<Flashcard> deck = new ArrayList<>();
     Flashcard flashcard2 = new Flashcard("question2", "answer2");
     deck.add(flashcard2);

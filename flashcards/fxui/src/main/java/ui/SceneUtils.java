@@ -14,6 +14,7 @@ import javafx.scene.layout.StackPane;
  *
  * @author marennod
  * @author chrsom
+ * 
  */
 public final class SceneUtils {
 
@@ -36,6 +37,7 @@ public final class SceneUtils {
    *
    * @param root the root node of the scene
    * @return a new Scene with scaling applied and appropriate size
+   * 
    */
   public static Scene createScaledScene(Parent root) {
     // Get the preferred size from the root
@@ -70,6 +72,7 @@ public final class SceneUtils {
    * This method can be used to scale existing scenes or scene roots.
    *
    * @param root the parent node to scale
+   * 
    */
   public static void applyScaling(Parent root) {
     root.setScaleX(SCALE_FACTOR);

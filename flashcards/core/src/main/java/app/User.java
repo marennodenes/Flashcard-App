@@ -5,7 +5,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 /**
  * Represents a user with a username and password.
  * Handles password encoding upon creation.
- * 
+ *
  * @author ailinat
  * @author sofietw
  */
@@ -20,9 +20,10 @@ public class User {
   public User() {}
 
   /**
-   * Private constructor to create a User with encoded password.
-   * @param username
-   * @param password
+   * Constructor to create a User with encoded password.
+   *
+   * @param username the username
+   * @param password the password
    */
   public User(String username, String password) {
     this.username = username;
@@ -33,6 +34,7 @@ public class User {
 
   /**
    * Gets the username of the user.
+   *
    * @return the username
    */
   public String getUsername() {
@@ -41,6 +43,7 @@ public class User {
 
   /**
    * Gets the password of the user.
+   *
    * @return the password
    */
   public String getPassword() {

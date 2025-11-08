@@ -8,37 +8,37 @@ import java.util.Objects;
  * Uses dependency injection for persistence to avoid circular dependencies.
  * Handles user creation, authentication, and uniqueness checks.
  * Also manages password security and migration from plain text to hashed passwords.
- * 
+ *
  * @author parts of class is generated with the help of claude.ai
  * @author sofietw
  * @author ailinat
  */
 public class LoginValidator {
 
-  private final UserPersistence PERSISTENCE;
+  private final UserPersistence persistence;
 
   /**
    * Creates a new LoginValidator with the specified persistence implementation.
-   * 
+   *
    * @param persistence the persistence implementation to use
    */
   public LoginValidator(UserPersistence persistence) {
-    this.PERSISTENCE = Objects.requireNonNull(persistence, "persistence cannot be null");
+    this.persistence = Objects.requireNonNull(persistence, "persistence cannot be null");
   }
 
   /**
    * Creates a new user if the username is unique.
    * Returns true if the user was created successfully, false otherwise.
-   * 
+   *
    * @param username the username of the new user
    * @param password the password of the new user
    * @return true if user created, false if username exists or error occurred
    */
   public boolean createUser(String username, String password) {
-    if (!PERSISTENCE.userExists(username)) {
+    if (!persistence.userExists(username)) {
       User newUser = new User(username, password);
       try {
-        PERSISTENCE.writeUserData(newUser);
+        persistence.writeUserData(newUser);
         return true;
       } catch (IOException e) {
         e.printStackTrace();
@@ -50,17 +50,17 @@ public class LoginValidator {
 
   /** 
    * Checks if the given username is unique (not already taken).
-   * 
+   *
    * @param username the username to check
    * @return true if username is unique, false if it already exists
    */
   public boolean isUsernameUnique(String username) {
-    return !PERSISTENCE.userExists(username);
+    return !persistence.userExists(username);
   }
 
   /**
-   * Checks if the provided passwords match when a new user signs up
-   * 
+   * Checks if the provided passwords match when a new user signs up.
+   *
    * @param password the password to check
    * @param confirmedPassword the password confirmation to check
    * @return true if the passwords match, false otherwise
@@ -72,8 +72,8 @@ public class LoginValidator {
   /**
    * Authenticates a user by username and password.
    * If the stored password is in plain text (legacy), an exception is thrown.
-   * Otherwise, the password is verified using the matches() method from PasswordEncoder
-   * 
+   * Otherwise, the password is verified using the matches() method from PasswordEncoder.
+   *
    * @param username the username of the user
    * @param password the password of the user
    * @return true if authentication is successful, false otherwise
@@ -95,13 +95,13 @@ public class LoginValidator {
 
   /**
    * Finds and returns a User by username.
-   * 
+   *
    * @param username the username to search for
    * @return the User if found, null otherwise
    */
   public User findUserByUsername(String username) {
-    if (PERSISTENCE.userExists(username)) {
-      return PERSISTENCE.readUserData(username);
+    if (persistence.userExists(username)) {
+      return persistence.readUserData(username);
     }
     return null;
   }

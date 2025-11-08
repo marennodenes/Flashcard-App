@@ -1,29 +1,28 @@
 package server.service;
 
-import java.io.IOException;
-import java.util.Objects;
-
-import org.springframework.stereotype.Service;
-
 import app.FlashcardDeck;
 import app.FlashcardDeckManager;
 import itp.storage.FlashcardPersistent;
+import java.io.IOException;
+import java.util.Objects;
+import org.springframework.stereotype.Service;
 import shared.ApiConstants;
 
 /**
  * Service class responsible for managing flashcard deck operations.
- * 
- * Provides high-level CRUD operations for flashcard decks, handling validation
+ *
+ * <p>Provides high-level CRUD operations for flashcard decks, handling validation
  * and persistence through the FlashcardPersistent storage layer. Acts as an
  * intermediary between business logic and data storage.
- * 
- * Operations:
- *   Retrieve all decks or specific decks by name
- *   Create and delete flashcard decks
- *   Validate user existence and deck operations
- * 
- * Throws IllegalArgumentException for business logic violations and IOException for storage errors.
- * 
+ *
+ * <p>Operations:
+ * - Retrieve all decks or specific decks by name
+ * - Create and delete flashcard decks
+ * - Validate user existence and deck operations
+ *
+ * <p>Throws IllegalArgumentException for business 
+ * logic violations and IOException for storage errors.
+ *
  * @author chrsom
  * @author isamw
  * @see FlashcardPersistent
@@ -35,12 +34,22 @@ import shared.ApiConstants;
 public class DeckService {
   private final FlashcardPersistent flashcardPersistent;
 
+  /**
+   * Constructs a DeckService with a default FlashcardPersistent instance.
+   */
   public DeckService() {
     this.flashcardPersistent = new FlashcardPersistent();
   }
 
+  /**
+   * Constructs a DeckService with the specified FlashcardPersistent instance.
+   *
+   * @param flashcardPersistent the FlashcardPersistent instance to use for
+   *                            storage operations
+   */
   public DeckService(FlashcardPersistent flashcardPersistent) {
-    this.flashcardPersistent = Objects.requireNonNull(flashcardPersistent, "FlashcardPersistent cannot be null");
+    this.flashcardPersistent = Objects.requireNonNull(
+        flashcardPersistent, "FlashcardPersistent cannot be null");
   }
 
   /**
@@ -70,19 +79,22 @@ public class DeckService {
    * @throws IllegalArgumentException if the user does not exist or the deck is not found
    */
   public FlashcardDeck getDeck(String username, String deckname) throws IOException {
-    return getAllDecks(username).getDecks().stream().filter(deck -> deck.getDeckName().equals(deckname)).findFirst()
-        .orElseThrow(() -> new IllegalArgumentException(ApiConstants.DECK_NOT_FOUND));
+    return getAllDecks(username).getDecks()
+          .stream()
+          .filter(deck -> deck.getDeckName().equals(deckname)).findFirst()
+          .orElseThrow(() -> new IllegalArgumentException(ApiConstants.DECK_NOT_FOUND));
   }
 
   /**
    * Creates a new flashcard deck for a user and persists it to storage.
    *
    * @param username the username of the user to create the deck for
-   * @param deck the FlashcardDeck to create and add to the user's collection
+   * @param deckName the name of the deck to create and add to the user's collection
    * @throws IOException if an error occurs while writing to persistent storage
    * @throws IllegalArgumentException if the user does not exist
    */
-  public FlashcardDeck createDeck(String username, String deckName) throws IOException {
+  public FlashcardDeck createDeck(String username, String deckName) 
+      throws IOException {
     FlashcardDeck deck = new FlashcardDeck(deckName);
     FlashcardDeckManager deckManager = getAllDecks(username);
     deckManager.addDeck(deck);
@@ -112,11 +124,12 @@ public class DeckService {
    * Updates all decks for a user and persists them to storage.
    *
    * @param username the username of the user
-   * @param deckManagerDto the DTO containing all decks to save
+   * @param deckManager the FlashcardDeckManager containing all decks to save
    * @throws IOException if an error occurs while writing to persistent storage
    * @throws IllegalArgumentException if the user does not exist
    */
-  public void updateAllDecks(String username, FlashcardDeckManager deckManager) throws IOException {
+  public void updateAllDecks(String username, FlashcardDeckManager deckManager) 
+      throws IOException {
     if (!flashcardPersistent.userExists(username)) {
       throw new IllegalArgumentException(ApiConstants.USER_NOT_FOUND);
     }

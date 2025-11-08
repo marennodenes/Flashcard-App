@@ -1,12 +1,13 @@
 package itp.storage;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
@@ -26,8 +27,10 @@ import app.User;
  * @author chrsom 
  * @author isamw
  * @author sofietw
- * @author claude.ai, methods in this test class is generated with help from ai-tools.
+ * @author methods in this test class is generated with help from claude.ai
+ * 
  * @see FlashcardPersistent
+ * 
  */
 @Tag("storage")
 public class FlashcardPersistentTest {
@@ -65,7 +68,7 @@ public class FlashcardPersistentTest {
     }
   }
 
-   /**
+  /**
    * Tests the functionality of writing a {@link FlashcardDeck} to persistent storage.
    * 
    * This test creates two sample decks with flashcards, adds them to a deck manager,
@@ -73,6 +76,7 @@ public class FlashcardPersistentTest {
    * It also validates that the JSON file is created correctly and contains the expected data.
    * 
    * @throws IOException if an I/O error occurs during the write operation
+   * 
    */
   @Test
   public void testWriteDeck() throws IOException {
@@ -115,6 +119,7 @@ public class FlashcardPersistentTest {
    * It ensures data integrity during the serialization/deserialization process.
    * 
    * @throws IOException if an I/O error occurs during the read or write operation
+   * 
    */
   @Test
   public void testReadDeck() throws IOException {
@@ -155,6 +160,7 @@ public class FlashcardPersistentTest {
    * This ensures proper file existence checking in the persistence layer.
    * 
    * @throws IOException if an error occurs during file operations
+   * 
    */
   @Test
   public void testDataExists() throws IOException {
@@ -186,6 +192,7 @@ public class FlashcardPersistentTest {
    * which is important for supporting diverse username formats.
    * 
    * @throws IOException if an error occurs during file operations
+   * 
    */
   @Test
   public void testFilenameWithSpecialCharacters() throws IOException {
@@ -220,6 +227,7 @@ public class FlashcardPersistentTest {
    * allowing the application to handle new users properly.
    * 
    * @throws IOException if an unexpected error occurs during the read operation
+   * 
    */
   @Test
   public void testReadNonExistingDeck() throws IOException {
@@ -237,6 +245,7 @@ public class FlashcardPersistentTest {
    * and user management operations.
    * 
    * @throws IOException if an error occurs during user creation
+   * 
    */
   @Test
   public void testUserExists() throws IOException {
@@ -268,6 +277,7 @@ public class FlashcardPersistentTest {
    * - Proper JSON format handling with @JsonUnwrapped annotations
    * 
    * @throws IOException if an error occurs during file operations
+   * 
    */
   @Test
   public void testUserExistsWithIncompleteData() throws IOException {
@@ -312,6 +322,7 @@ public class FlashcardPersistentTest {
    * for non-existing users.
    * 
    * @throws IOException if an error occurs during user operations
+   * 
    */
   @Test
   public void testReadUserData() throws IOException {
@@ -352,6 +363,7 @@ public class FlashcardPersistentTest {
    * JSON parsing errors.
    * 
    * @throws IOException if an error occurs during file operations
+   * 
    */
   @Test
   public void testReadUserDataInternalWithMalformedJson() throws IOException {
@@ -398,6 +410,7 @@ public class FlashcardPersistentTest {
    * 2. Directory creation failure - tests the error path where mkdirs() fails
    * 
    * @throws IOException if an error occurs during test setup or execution
+   * 
    */
   @Test
   public void testWriteUserDataInternalDirectoryCreationFailure() throws IOException {
@@ -446,10 +459,6 @@ public class FlashcardPersistentTest {
     }
   }
 
-
-
-
-
   /**
    * Tests that writeUserData throws an IOException when trying to create a duplicate user.
    * 
@@ -459,6 +468,7 @@ public class FlashcardPersistentTest {
    * important for data integrity and preventing accidental user data loss.
    * 
    * @throws IOException if an error occurs during user operations (expected for duplicate user)
+   * 
    */
   @Test
   public void testWriteUserDataDuplicateUser() throws IOException {
@@ -487,6 +497,7 @@ public class FlashcardPersistentTest {
    * 100% branch coverage for the directory creation logic.
    * 
    * @throws IOException if an error occurs during user creation
+   * 
    */
   @Test
   public void testWriteUserDataWithExistingDirectory() throws IOException {
@@ -520,6 +531,7 @@ public class FlashcardPersistentTest {
    * ensuring that deck data is only written for valid, existing users.
    * 
    * @throws IOException expected when attempting to write deck for non-existing user
+   * 
    */
   @Test
   public void testWriteDeckNonExistingUser() {

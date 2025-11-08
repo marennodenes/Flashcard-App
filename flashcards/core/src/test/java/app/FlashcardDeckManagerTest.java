@@ -9,13 +9,11 @@ import org.junit.jupiter.api.Test;
 /**
  * Test class for {@link FlashcardDeckManager} functionality.
  * Tests deck management operations including adding and removing decks.
- * 
+ *
  * @author isamw
- * 
  * @see FlashcardDeckManager
  */
 public class FlashcardDeckManagerTest {
-
   private static FlashcardDeckManager manager;
   private static FlashcardDeck flashcardDeck;
   private static Flashcard flashcard;
@@ -25,7 +23,7 @@ public class FlashcardDeckManagerTest {
    * Initializes a FlashcardDeckManager, FlashcardDeck, and sample Flashcard.
    */
   @BeforeAll
-  static void setUp(){
+  static void setUp() {
     flashcard = new Flashcard("question", "answer");
     flashcardDeck = new FlashcardDeck();
     manager = new FlashcardDeckManager();
@@ -43,8 +41,8 @@ public class FlashcardDeckManagerTest {
    * - Multiple valid decks can be added successfully
    */
   @Test
-  void testAddDeck(){
-    assertThrows(IllegalArgumentException.class,() -> manager.addDeck(flashcardDeck));
+  void testAddDeck() {
+    assertThrows(IllegalArgumentException.class, () -> manager.addDeck(flashcardDeck));
 
     flashcardDeck.addFlashcard(flashcard);
     assertThrows(IllegalArgumentException.class, () -> manager.addDeck(flashcardDeck));
@@ -53,8 +51,8 @@ public class FlashcardDeckManagerTest {
     manager.addDeck(flashcardDeck);
     assertEquals(1, manager.getDecks().size());
 
-    FlashcardDeck nDeck = new FlashcardDeck("test");
-    assertThrows(IllegalArgumentException.class, () ->  manager.addDeck(nDeck));
+    FlashcardDeck deckn = new FlashcardDeck("test");
+    assertThrows(IllegalArgumentException.class, () ->  manager.addDeck(deckn));
 
     FlashcardDeck deck = new FlashcardDeck(" ");
     assertThrows(IllegalArgumentException.class, () ->  manager.addDeck(deck));
@@ -96,7 +94,7 @@ public class FlashcardDeckManagerTest {
    * - Manager correctly updates its internal collection after removal
    */
   @Test
-  void testRemoveDeck(){
+  void testRemoveDeck() {
     manager.removeDeck(flashcardDeck);
     assertEquals(7, manager.getDecks().size());
   }

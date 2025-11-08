@@ -6,7 +6,7 @@ import com.fasterxml.jackson.annotation.JsonUnwrapped;
 /**
  * Combined data structure that holds both user credentials and flashcard data.
  * This prevents user credentials from being overwritten when flashcards are saved.
- * 
+ *
  * @author parts of this class is generated with the help of claude.ai
  * @author sofietw
  * @author ailinat
@@ -23,7 +23,7 @@ public class UserData {
 
   /**
    * Constructor without deckManager, initializes with empty deck manager.
-   * 
+   *
    * @param user the user object connected to the deck manager
    */
   public UserData(User user) {
@@ -33,7 +33,7 @@ public class UserData {
   /**
    * Constructor with User object and deck manager.
    * Used for programmatic creation (not JSON deserialization).
-   * 
+   *
    * @param user the user object connected to the deck manager
    * @param deckManager the flashcard deck manager for the user
    */
@@ -50,7 +50,8 @@ public class UserData {
         } catch (IllegalArgumentException e) {
           // Skip invalid decks to prevent partial initialization
           // This ensures constructor completes successfully
-          System.err.println("Skipping invalid deck during UserData construction: " + e.getMessage());
+          System.err.println("Skipping invalid deck during UserData construction: " 
+              + e.getMessage());
         }
       }
     }
@@ -58,7 +59,7 @@ public class UserData {
 
   /** 
    * Gets the user.
-   * 
+   *
    * @return the user
    */
   public User getUser() {
@@ -68,7 +69,7 @@ public class UserData {
   /**
    * Returns a copy of the deck manager to prevent external modification.
    * Creates a defensive copy to avoid exposing internal representation.
-   * 
+   *
    * @return a copy of the FlashcardDeckManager
    */
   @JsonProperty("deckManager")
@@ -88,7 +89,7 @@ public class UserData {
   /**
    * Sets the deck manager using a defensive copy.
    * Creates a copy to avoid storing externally mutable objects.
-   * 
+   *
    * @param deckManager the FlashcardDeckManager to set
    */
   public void setDeckManager(FlashcardDeckManager deckManager) {

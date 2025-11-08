@@ -1,7 +1,6 @@
 package dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 
@@ -9,7 +8,7 @@ import jakarta.validation.constraints.NotBlank;
  * A Data Transfer Object (DTO) representing a single flashcard.
  * This class is used to transfer data between different layers of the application.
  * It includes the question, answer, and a unique number for the flashcard.
- * 
+ *
  * @author marieroe
  * @author isamw
  */
@@ -51,7 +50,9 @@ public class FlashcardDto {
    * Constructs a new FlashcardDto with the specified question, answer, and number.
    *
    * @param question the question on the flashcard; must not be null or blank
+   * 
    * @param answer the answer on the flashcard; must not be null or blank
+   *
    * @param number the unique number of the flashcard; must be at least 1
    */
   public FlashcardDto(String question, String answer, int number) {

@@ -100,22 +100,22 @@ package ui {
     }
 
     class FlashcardMainController {
-        - Button deck_1
-        - Button deck_2
-        - Button deck_3
-        - Button deck_4
-        - Button deck_5
-        - Button deck_6
-        - Button deck_7
-        - Button deck_8
-        - Button deleteDeck_1
-        - Button deleteDeck_2
-        - Button deleteDeck_3
-        - Button deleteDeck_4
-        - Button deleteDeck_5
-        - Button deleteDeck_6
-        - Button deleteDeck_7
-        - Button deleteDeck_8
+        - Button deck1
+        - Button deck2
+        - Button deck3
+        - Button deck4
+        - Button deck5
+        - Button deck6
+        - Button deck7
+        - Button deck8
+        - Button deleteDeck1
+        - Button deleteDeck2
+        - Button deleteDeck3
+        - Button deleteDeck4
+        - Button deleteDeck5
+        - Button deleteDeck6
+        - Button deleteDeck7
+        - Button deleteDeck8
         - TextField deckNameInput
         - Button newDeckButton
         - Button logOutButton

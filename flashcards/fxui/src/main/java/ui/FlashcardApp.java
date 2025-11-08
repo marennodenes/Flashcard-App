@@ -24,6 +24,7 @@ public class FlashcardApp extends Application{
    *
    * @param primaryStage the primary stage for this application
    * @throws IOException if the FXML file cannot be loaded
+   * 
    */
   @Override
   public void start(Stage primaryStage) throws IOException {
@@ -39,6 +40,7 @@ public class FlashcardApp extends Application{
    *
    * @return the loaded Parent node
    * @throws IOException if the FXML file cannot be loaded
+   * 
    */
   protected Parent loadLoginScene() throws IOException {
     return FXMLLoader.load(getClass().getResource("/ui/FlashcardLogin.fxml"));
@@ -48,6 +50,7 @@ public class FlashcardApp extends Application{
    * Gets the URL for the login CSS stylesheet. Protected to allow testing.
    *
    * @return the URL to the CSS file
+   * 
    */
   protected URL getLoginStylesheet() {
     return getClass().getResource("/ui/FlashcardLogin.css");
@@ -58,6 +61,7 @@ public class FlashcardApp extends Application{
    * Launches the JavaFX application.
    * 
    * @param args command line arguments
+   * 
    */
   public static void main(String[] args) {
     Application.launch(args);

@@ -1,8 +1,5 @@
 package dto.mappers;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import app.Flashcard;
 import app.FlashcardDeck;
 import app.FlashcardDeckManager;
@@ -13,9 +10,11 @@ import dto.FlashcardDeckManagerDto;
 import dto.FlashcardDto;
 import dto.LoginRequestDto;
 import dto.UserDataDto;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
- * Mapper for converting between User/UserData and UserDataDto or LoginRequestDto
+ * Mapper for converting between User/UserData and UserDataDto or LoginRequestDto.
  * Also handles mapping of deckManager
  *
  * @author parts of this code is generated with the help of Claude Sonnet 4.
@@ -26,8 +25,8 @@ import dto.UserDataDto;
 public class UserMapper {
 
   /**
-   * Converts a User to a UserDataDto
-   * 
+   * Converts a User to a UserDataDto.
+   *
    * @param user User-object
    * @return UserDataDto with username and password
    */
@@ -39,8 +38,8 @@ public class UserMapper {
   }
 
   /**
-   * Converts a UserData object to a UserDataDto object
-   * 
+   * Converts a UserData object to a UserDataDto object.
+   *
    * @param userData UserData-object
    * @return UserDataDto with username, password and deck manager
    */
@@ -65,8 +64,8 @@ public class UserMapper {
   }
 
   /**
-   * Converts a UserDataDto to a UserData object, including a deckManager
-   * 
+   * Converts a UserDataDto to a UserData object, including a deckManager.
+   *
    * @param dto UserDataDto-object
    * @return UserData with User and DeckManager
    */
@@ -91,8 +90,8 @@ public class UserMapper {
   }
 
   /**
-   * Converts a LoginRequestDto to a User object
-   * 
+   * Converts a LoginRequestDto to a User object.
+   *
    * @param dto LoginRequestDto object with username and password
    * @return User object after logging in
    */

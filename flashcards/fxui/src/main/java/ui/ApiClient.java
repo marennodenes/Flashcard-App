@@ -18,15 +18,15 @@ import javafx.stage.Modality;
  * Utility class for handling HTTP requests and JSON serialization/deserialization.
  *
  * This class provides static methods for:
- *   Sending HTTP requests (GET, POST, PUT) with JSON payloads
- *   Parsing JSON responses into Java objects
- *   Converting Java objects to JSON strings
+ * - Sending HTTP requests (GET, POST, PUT) with JSON payloads
+ * - Parsing JSON responses into Java objects
+ * - Converting Java objects to JSON strings
  *
  * All methods are static and the class cannot be instantiated.
  *
  * Some class structure and ideas were inspired by
  * https://github.com/Oddvar112/ITP-Prosjekt/blob/master/flightradar/fxui/src/main/java/itp/fxui/APIClient.java
- * APIClient in Oddvar112’s ITP-Prosjekt/flightradar
+ * APIClient in Oddvar112's ITP-Prosjekt/flightradar
  *
  * @author marennod
  * @author marieroe
@@ -112,6 +112,7 @@ public final class ApiClient {
    * @return The deserialized object of type T.
    * @throws JsonProcessingException If an error occurs during JSON deserialization,
    *                                such as malformed JSON or type mismatch.
+   * 
    */
   public static <T> T parseResponse(final String json, final TypeReference<T> typeReference) throws JsonProcessingException {
     return OBJECT_MAPPER.readValue(json, typeReference);
@@ -130,6 +131,7 @@ public final class ApiClient {
    * @return The JSON string representation of the object.
    * @throws JsonProcessingException If an error occurs during JSON serialization,
    *                                such as circular references or non-serializable fields.
+   * 
    */
   public static String convertObjectToJson(final Object object) throws JsonProcessingException {
     return OBJECT_MAPPER.writeValueAsString(object);
@@ -141,6 +143,7 @@ public final class ApiClient {
    *
    * @param title   the title of the alert dialog
    * @param content the content message to display in the alert
+   * 
    */
   public static void showAlert(final String title, final String content) {
     Alert alert = new Alert(Alert.AlertType.ERROR);
@@ -161,6 +164,7 @@ public final class ApiClient {
    * @param data The data to send with the request
    * @param responseType TypeReference for the expected response data type
    * @return The parsed response object of type T
+   * 
    */
   public static <T> T performApiRequest(final String url, final String method,
                                         final Object data, final TypeReference<T> responseType) {

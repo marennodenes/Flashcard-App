@@ -1,17 +1,15 @@
 package app;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
-
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Manages flashcards for the application.
  * A flashcard deck contains a name and a list of flashcards.
  * Each flashcard has a question and an answer.
- * 
+ *
  * @author isamw
  * @author chrsom
  */
@@ -28,16 +26,16 @@ public class FlashcardDeck {
   /**
    * Default constructor that creates an empty deck.
    */
-  public FlashcardDeck(){
+  public FlashcardDeck() {
     this.deck = new ArrayList<>();
   }
 
   /**
    * Constructor that creates a deck with a specified name.
-   * 
+   *
    * @param deckName the name of the deck
    */
-  public FlashcardDeck(String deckName){
+  public FlashcardDeck(String deckName) {
     this.deckName = deckName;
     this.deck = new ArrayList<>();
   }
@@ -56,13 +54,13 @@ public class FlashcardDeck {
    *
    * @param deck list of flashcards to set
    */
-  public void setDeck(List<Flashcard> deck){
+  public void setDeck(List<Flashcard> deck) {
     this.deck = new ArrayList<>(deck);
   }
 
   /**
    * Gets the name of the deck.
-   * 
+   *
    * @return the deck name
    */
   public String getDeckName() {
@@ -71,7 +69,7 @@ public class FlashcardDeck {
 
   /**
    * Sets the name of the deck.
-   * 
+   *
    * @param deckName the name to set for the deck
    */
   public void setDeckName(String deckName) {
@@ -79,10 +77,9 @@ public class FlashcardDeck {
   }
 
   /**
-   * Adds a new flashcard to the deck
-   * 
-   * @param question the question text
-   * @param answer the answer text
+   * Adds a new flashcard to the deck.
+   *
+   * @param flashcard the flashcard to add
    */
   public void addFlashcard(Flashcard flashcard) {
     if (flashcard != null) {
@@ -96,35 +93,34 @@ public class FlashcardDeck {
    * Removes a flashcard from the deck at the specified index.
    * After removal, all subsequent flashcards have their numbers updated
    * to maintain sequential numbering.
-   * 
+   *
    * @param index the index of the flashcard to remove (0-based)
    * @return true if the flashcard was successfully removed, false if index is invalid
    */
   public boolean removeFlashcardByIndex(int index) {
     if (index >= 0 && index < deck.size()) {
-        deck.remove(index);
-        //Updates numbers
-        for (int i = index; i < deck.size(); i++) {
-            deck.get(i).setNumber(i + 1);
-        }
-        return true;
+      deck.remove(index);
+      //Updates numbers
+      for (int i = index; i < deck.size(); i++) {
+        deck.get(i).setNumber(i + 1);
+      }
+      return true;
     }
     return false;
   }
 
   /**
-   * Checks if the text displayed on the card is a question or answer
-   * 
+   * Checks if the text displayed on the card is a question or answer.
+   *
    * @param current the question text to check
    * @return true if the question exists, false otherwise
    */
-  public boolean isQuestion(String current){
+  public boolean isQuestion(String current) {
     for (Flashcard card : deck) {
-        if (card.getQuestion().equals(current)) {
-            return true;
-        }
+      if (card.getQuestion().equals(current)) {
+        return true;
+      }
     }
     return false;
   }
-  
 }

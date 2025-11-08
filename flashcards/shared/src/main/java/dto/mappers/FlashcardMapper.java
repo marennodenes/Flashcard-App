@@ -1,13 +1,12 @@
 package dto.mappers;
 
-import java.util.List;
-
 import app.Flashcard;
 import dto.FlashcardDto;
+import java.util.List;
 
 /**
  * Mapper class for converting between Flashcard and FlashcardDto.
- * 
+ *
  * @author ailinat
  * @author sofietw
  */
@@ -15,7 +14,7 @@ public class FlashcardMapper {
 
   /**
    * Converts a Flashcard to a FlashcardDto.
-   * 
+   *
    * @param flashcard the Flashcard to convert
    * @return the corresponding FlashcardDto
    */
@@ -29,7 +28,7 @@ public class FlashcardMapper {
 
   /**
    * Converts a FlashcardDto to a Flashcard.
-   * 
+   *
    * @param flashcardDto the FlashcardDto to convert
    * @return the corresponding Flashcard
    */
@@ -38,12 +37,14 @@ public class FlashcardMapper {
       throw new IllegalArgumentException("FlashcardDto cannot be null");
     }
 
-    return new Flashcard(flashcardDto.getNumber(), flashcardDto.getQuestion(), flashcardDto.getAnswer());
+    return new Flashcard(flashcardDto.getNumber(), 
+      flashcardDto.getQuestion(), 
+      flashcardDto.getAnswer());
   }
 
   /**
    * Converts a list of Flashcards to a list of FlashcardDtos.
-   * 
+   *
    * @param flashcards the list of Flashcards to convert
    * @return the corresponding list of FlashcardDtos
    */
@@ -57,7 +58,7 @@ public class FlashcardMapper {
 
   /**
    * Converts a list of FlashcardDtos to a list of Flashcards.
-   * 
+   *
    * @param flashcardDtos the list of FlashcardDtos to convert
    * @return the corresponding list of Flashcards
    */
@@ -68,5 +69,4 @@ public class FlashcardMapper {
     }
     return flashcardList;
   }
-
 }

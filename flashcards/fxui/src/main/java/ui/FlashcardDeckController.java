@@ -36,6 +36,7 @@ import javafx.stage.Stage;
  * @author marennod
  * @author marieroe
  * @author chrsom
+ * 
  */
 public class FlashcardDeckController {
   @FXML private TextField questionField;
@@ -106,6 +107,7 @@ public class FlashcardDeckController {
    * Sets the deck to work with.
    * 
    * @param deck the deck DTO to work with
+   * 
    */
   public void setDeck(FlashcardDeckDto deck) {
     if (deck != null) {
@@ -123,6 +125,7 @@ public class FlashcardDeckController {
    * Sets the current username for loading user data.
    * 
    * @param username the username to set
+   * 
    */
   public void setCurrentUsername(String username) {
     if (username != null && !username.trim().isEmpty()) {
@@ -231,6 +234,7 @@ public class FlashcardDeckController {
    * the FlashcardLearning.fxml file and switching the scene.
    * 
    * @throws IOException if the FXML file cannot be loaded or found
+   * 
    */
   @FXML
   public void whenStartLearningButtonIsClicked() {
@@ -261,6 +265,7 @@ public class FlashcardDeckController {
    * Refreshes the deck list in the main controller.
    * 
    * @throws IOException if the FXML file cannot be loaded
+   * 
    */
   @FXML
   public void whenBackButtonIsClicked() throws IOException {

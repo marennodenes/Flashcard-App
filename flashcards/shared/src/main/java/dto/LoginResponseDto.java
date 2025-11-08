@@ -7,7 +7,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  * A Data Transfer Object (DTO) representing a login response.
  * This class is used to transfer login results between different layers of the application.
  * It includes success status, a message, and user data if login was successful.
- * 
+ *
  * @author marieroe
  * @author isamw
  */
@@ -42,7 +42,9 @@ public class LoginResponseDto {
    * @param userData the user data if login was successful, null otherwise
    */
   @JsonCreator
-  public LoginResponseDto(@JsonProperty("success") boolean success, @JsonProperty("message") String message, @JsonProperty("userData") UserDataDto userData) {
+  public LoginResponseDto(@JsonProperty("success") boolean success,
+                          @JsonProperty("message") String message,
+                          @JsonProperty("userData") UserDataDto userData) {
     this.success = success;
     this.message = message;
     this.userData = userData;
