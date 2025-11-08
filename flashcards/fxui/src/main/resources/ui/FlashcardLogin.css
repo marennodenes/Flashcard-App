@@ -1,4 +1,14 @@
-/* JavaFX does not support @font-face - fonts must be system-installed or loaded via Java code */
+@font-face {
+    font-family: 'Ubuntu';
+    src: url('../fonts/Ubuntu-Regular.ttf');
+    font-weight: normal;
+}
+
+@font-face {
+    font-family: 'Ubuntu';
+    src: url('../fonts/Ubuntu-Bold.ttf');
+    font-weight: bold;
+}
 
 #anchorPane {
   background-color: #bee7ed;

@@ -1,4 +1,14 @@
-/* Ubuntu font - system-installed on Mac, bundled for Eclipse Che Linux */
+@font-face {
+    font-family: 'Ubuntu';
+    src: url('../fonts/Ubuntu-Regular.ttf');
+    font-weight: normal;
+}
+
+@font-face {
+    font-family: 'Ubuntu';
+    src: url('../fonts/Ubuntu-Bold.ttf');
+    font-weight: bold;
+}
 
 #anchorPane {
     background-color: #bee7ed;
