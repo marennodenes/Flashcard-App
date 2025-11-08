@@ -1,43 +1,46 @@
 package server.service;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
+import app.User;
+import itp.storage.FlashcardPersistent;
 import java.io.IOException;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-
-import app.User;
-import itp.storage.FlashcardPersistent;
 import shared.ApiConstants;
 
 /**
  * Unit tests for the {@link UserService} class.
  * 
- * This test class verifies the functionality of user-related operations including
+ * <p>This test class verifies the functionality of user-related operations including
  * user retrieval, creation, authentication, and error handling. The tests use Mockito
  * to mock the {@link FlashcardPersistent} dependency and isolate the service logic
  * from the persistence layer.
  * 
- * Key testing scenarios covered:
+ * <p>Key testing scenarios covered:
  * - Successful user retrieval and creation
  * - User authentication with valid and invalid credentials
  * - Error handling for non-existent users
  * - Exception handling for persistence layer failures
- * 
+ *
  * @author chrsom
  * @author isamw
  * @author parts of class is generated with the help of claude.ai
- * 
  * @see UserService
  * @see FlashcardPersistent
  * @see ApiConstants
- * 
  */
 @ExtendWith(MockitoExtension.class)
 class UserServiceTest {
@@ -52,12 +55,11 @@ class UserServiceTest {
   /**
    * Sets up the test environment before each test method execution.
    * 
-   * This method creates a UserService instance and injects the mocked
+   * <p>This method creates a UserService instance and injects the mocked
    * FlashcardPersistent dependency using reflection. This approach allows
    * testing without modifying the production constructor to accept dependencies.
-   * 
+   *
    * @throws RuntimeException if reflection fails to inject the mock dependency
-   * 
    */
   @BeforeEach
   public void setUp() {
@@ -79,7 +81,7 @@ class UserServiceTest {
   /**
    * Tests the getUser method of UserService.
    * 
-   * Verifies that:
+   * <p>Verifies that:
    * - A valid existing user can be retrieved successfully
    * - The returned user has the correct username
    * - An IllegalArgumentException is thrown when attempting to get a non-existing user
@@ -111,15 +113,16 @@ class UserServiceTest {
   /**
    * Tests the createUser method of UserService.
    * 
-   * Verifies that:
+   * <p>Verifies that:
    * - A new user can be created successfully with valid username and password
-   * - An IllegalArgumentException is thrown when attempting to create a user with an existing username
+   * - An IllegalArgumentException is thrown when 
+   * attempting to create a user with an existing username
    * - An IllegalArgumentException is thrown when attempting to create a user with invalid password
-   * - An IllegalArgumentException is thrown when attempting to create a user with empty username or password
+   * - An IllegalArgumentException is thrown when 
+   * attempting to create a user with empty username or password
    * - The exception messages match the expected API constants
-   * 
+   *
    * @throws IOException if an I/O error occurs during user creation
-   * 
    */
   @Test
   public void testCreateUser() throws IOException {
@@ -158,13 +161,10 @@ class UserServiceTest {
     assertEquals(ApiConstants.INVALID_PASSWORD, ex3.getMessage());
   }
 
-
-
- 
   /**
    * Tests the userExists method of UserService.
    * 
-   * Verifies that:
+   * <p>Verifies that:
    * - The method returns true for an existing user
    * - An IllegalArgumentException is thrown when checking for an empty username
    * - The exception message matches the expected API constant
@@ -180,11 +180,10 @@ class UserServiceTest {
     assertEquals(ApiConstants.INVALID_REQUEST, ex.getMessage());
   }
 
-
   /**
    * Tests the logInUser method of UserService.
    * 
-   * Verifies that:
+   * <p>Verifies that:
    * - A user can log in successfully with valid credentials
    * - The method returns false for empty username or password
    * - The method returns false for non-existing users
@@ -216,7 +215,7 @@ class UserServiceTest {
   /**
    * Tests the validatePassword method of UserService.
    * 
-   * Verifies that:
+   * <p>Verifies that:
    * - The method returns true for valid username and password
    * - The method returns false for empty username or password
    */
@@ -234,7 +233,7 @@ class UserServiceTest {
   /**
    * Tests the isValidPassword method of UserService.
    * 
-   * Verifies that:
+   * <p>Verifies that:
    * - The method returns false for null password
    * - The method returns false for passwords that are too short
    * - The method returns false for passwords missing uppercase letters
@@ -257,7 +256,7 @@ class UserServiceTest {
   /**
    * Tests the validatePasswordDetailed method of UserService.
    * 
-   * Verifies that:
+   * <p>Verifies that:
    * - The method returns correct error messages for invalid passwords
    * - The method returns null for valid passwords
    * - All password validation rules are properly tested
@@ -271,16 +270,20 @@ class UserServiceTest {
     assertEquals(ApiConstants.PASSWORD_TOO_SHORT, userService.validatePasswordDetailed("aA1!"));
         
     // no uppercase
-    assertEquals(ApiConstants.PASSWORD_MISSING_UPPERCASE, userService.validatePasswordDetailed("password1!"));
+    assertEquals(ApiConstants.PASSWORD_MISSING_UPPERCASE, 
+        userService.validatePasswordDetailed("password1!"));
         
     // no lowercase
-    assertEquals(ApiConstants.PASSWORD_MISSING_LOWERCASE, userService.validatePasswordDetailed("PASSWORD1!"));
+    assertEquals(ApiConstants.PASSWORD_MISSING_LOWERCASE, 
+        userService.validatePasswordDetailed("PASSWORD1!"));
         
     // no digit
-    assertEquals(ApiConstants.PASSWORD_MISSING_DIGIT, userService.validatePasswordDetailed("Password!"));
+    assertEquals(ApiConstants.PASSWORD_MISSING_DIGIT, 
+        userService.validatePasswordDetailed("Password!"));
         
     // no special character
-    assertEquals(ApiConstants.PASSWORD_MISSING_SPECIAL, userService.validatePasswordDetailed("Password1"));
+    assertEquals(ApiConstants.PASSWORD_MISSING_SPECIAL, 
+        userService.validatePasswordDetailed("Password1"));
         
     // valid password
     assertNull(userService.validatePasswordDetailed("Password1!"));
@@ -289,13 +292,12 @@ class UserServiceTest {
   /**
    * Tests the createUserWithValidation method of UserService.
    * 
-   * Verifies that:
+   * <p>Verifies that:
    * - A new user can be created successfully with valid credentials
    * - Proper exceptions are thrown for various validation failures
    * - IOException from persistence layer is properly handled
-   * 
+   *
    * @throws IOException if an I/O error occurs during user creation
-   * 
    */
   @Test
   public void testCreateUserWithValidation() throws IOException {

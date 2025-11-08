@@ -1,22 +1,19 @@
 package dto;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
-
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * A Data Transfer Object (DTO) representing user data.
  * This class is used to transfer user-related data, including username, password,
  * and the user's flashcard deck manager, between different layers of the application.
- * 
+ *
  * @author marieroe
  * @author isamw
- * 
  */
 public class UserDataDto {
 
@@ -53,7 +50,6 @@ public class UserDataDto {
    *
    * @param username the username of the user; must not be null or blank
    * @param password the password of the user; must not be null or blank
-   * 
    */
   public UserDataDto(String username, String password) {
     this.username = username;
@@ -67,7 +63,6 @@ public class UserDataDto {
    * @param username the username of the user; must not be null or blank
    * @param password the password of the user; must not be null or blank
    * @param decks the list of flashcard decks associated with the user
-   * 
    */
   @JsonCreator
   public UserDataDto(@JsonProperty("username") String username, 
@@ -91,7 +86,6 @@ public class UserDataDto {
    * Gets the username of the user.
    *
    * @return the username of the user
-   * 
    */
   public String getUsername() {
     return username;
@@ -102,7 +96,6 @@ public class UserDataDto {
    * Gets the password of the user.
    *
    * @return the password of the user
-   * 
    */
   public String getPassword() {
     return password;
@@ -111,8 +104,7 @@ public class UserDataDto {
   /**
    * Gets the flashcard deck manager associated with the user.
    *
-   * @return the list of flashcard deck managers
-   * 
+   * @return the list of flashcard deck managers associated with the user
    */
   public List<FlashcardDeckManagerDto> getDeckManager() {
     List<FlashcardDeckManagerDto> copy = new ArrayList<>();

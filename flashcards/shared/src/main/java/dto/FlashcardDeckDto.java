@@ -1,20 +1,17 @@
 package dto;
 
-import java.util.List;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
-
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
+import java.util.List;
 
 /**
  * A Data Transfer Object (DTO) representing a deck of flashcards.
  * This class is used to transfer data between different layers of the application.
  * It includes the name of the deck and a list of flashcards in the deck.
- * 
- * @author marieroe
+ *
+ * @author marieroe 
  * @author isamw
- * 
  */
 public class FlashcardDeckDto {
 
@@ -48,7 +45,6 @@ public class FlashcardDeckDto {
    *
    * @param deckName the name of the flashcard deck; must not be null or blank
    * @param deck the list of flashcards in the deck; must contain at least one flashcard
-   * 
    */
   public FlashcardDeckDto(String deckName, List<FlashcardDto> deck) {
     this.deckName = deckName;
@@ -59,7 +55,6 @@ public class FlashcardDeckDto {
    * Gets the name of the flashcard deck.
    *
    * @return the name of the flashcard deck
-   * 
    */
   public String getDeckName() {
     return deckName;
@@ -70,7 +65,6 @@ public class FlashcardDeckDto {
    * Gets the list of flashcards in the deck.
    *
    * @return the list of flashcards in the deck
-   * 
    */
   public List<FlashcardDto> getDeck() {
     return deck;

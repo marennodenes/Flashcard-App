@@ -12,9 +12,14 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import app.FlashcardDeck;
+import app.FlashcardDeckManager;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import dto.FlashcardDeckDto;
+import dto.FlashcardDeckManagerDto;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,16 +28,9 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
-
-import app.FlashcardDeck;
-import app.FlashcardDeckManager;
-import dto.FlashcardDeckDto;
-import dto.FlashcardDeckManagerDto;
 import server.service.DeckService;
-import shared.ApiEndpoints;
 import shared.ApiConstants;
+import shared.ApiEndpoints;
 
 
 /**
@@ -40,7 +38,7 @@ import shared.ApiConstants;
  * Tests flashcard deck-related HTTP operations including retrieval,
  * creation, deletion, and updates using MockMvc and mocked services.
  *
- * This test suite validates:
+ * <p>This test suite validates:
  * - Retrieval of all decks for a user
  * - Retrieval of a specific deck by name
  * - Creation of new decks
@@ -48,7 +46,7 @@ import shared.ApiConstants;
  * - Updating all decks for a user
  * - Error handling for various edge cases (user not found, deck not found, etc.)
  *
- * Uses @WebMvcTest to test only the web layer and @MockBean to mock
+ * <p>Uses @WebMvcTest to test only the web layer and @MockBean to mock
  * the DeckService dependency for isolated controller testing.
  *
  * @author chrsom
@@ -56,7 +54,6 @@ import shared.ApiConstants;
  * @author parts of class is generated with the help of claude.ai
  * @see DeckController
  * @see DeckService
- * 
  */
 @WebMvcTest(DeckController.class)
 public class DeckControllerTest {
@@ -94,19 +91,18 @@ public class DeckControllerTest {
    * Verifies that the endpoint returns HTTP 200 and a list of all user's decks.
    *
    * @throws Exception if the MockMvc request fails
-   * 
    */
   @Test
-  public void testGetAllDecks_Success() throws Exception {
+  public void testGetAllDecksSuccess() throws Exception {
     when(deckService.getAllDecks("testUser")).thenReturn(testDeckManager);
 
     mockMvc.perform(request(HttpMethod.valueOf("REQUEST"), ApiEndpoints.DECKS)
-      .param("username", "testUser"))
-      .andExpect(status().isOk())
-      .andExpect(jsonPath("$.success").value(true))
-      .andExpect(jsonPath("$.message").value(ApiConstants.DECKS_RETRIEVED))
-      .andExpect(jsonPath("$.data.decks").isArray())
-      .andExpect(jsonPath("$.data.decks[0].deckName").value("TestDeck"));
+        .param("username", "testUser"))
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$.success").value(true))
+        .andExpect(jsonPath("$.message").value(ApiConstants.DECKS_RETRIEVED))
+        .andExpect(jsonPath("$.data.decks").isArray())
+        .andExpect(jsonPath("$.data.decks[0].deckName").value("TestDeck"));
   }
 
   /**
@@ -115,12 +111,11 @@ public class DeckControllerTest {
    * when attempting to retrieve decks for non-existent user.
    *
    * @throws Exception if the MockMvc request fails
-   * 
    */
   @Test
-  public void testGetAllDecks_UserNotFound() throws Exception {
+  public void testGetAllDecksUserNotFound() throws Exception {
     when(deckService.getAllDecks("nonExistent"))
-      .thenThrow(new IllegalArgumentException("User not found"));
+        .thenThrow(new IllegalArgumentException("User not found"));
 
     mockMvc.perform(request(HttpMethod.valueOf("REQUEST"), ApiEndpoints.DECKS)
         .param("username", "nonExistent"))
@@ -134,19 +129,18 @@ public class DeckControllerTest {
    * Verifies that the endpoint returns HTTP 200 and the requested deck data.
    *
    * @throws Exception if the MockMvc request fails
-   * 
    */
   @Test
-  public void testGetDeckByName_Success() throws Exception {
+  public void testGetDeckByNameSuccess() throws Exception {
     when(deckService.getDeck("testUser", "TestDeck")).thenReturn(testDeck);
 
     mockMvc.perform(request(HttpMethod.valueOf("REQUEST"), ApiEndpoints.DECKS + "/TestDeck")
-      .param("username", "testUser")
-      .param("deckName", "TestDeck"))
-      .andExpect(status().isOk())
-      .andExpect(jsonPath("$.success").value(true))
-      .andExpect(jsonPath("$.message").value(ApiConstants.DECK_RETRIEVED))
-      .andExpect(jsonPath("$.data.deckName").value("TestDeck"));
+        .param("username", "testUser")
+        .param("deckName", "TestDeck"))
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$.success").value(true))
+        .andExpect(jsonPath("$.message").value(ApiConstants.DECK_RETRIEVED))
+        .andExpect(jsonPath("$.data.deckName").value("TestDeck"));
   }
 
   /**
@@ -155,12 +149,11 @@ public class DeckControllerTest {
    * when requesting a non-existent deck.
    *
    * @throws Exception if the MockMvc request fails
-   * 
    */
   @Test
-  public void testGetDeckByName_DeckNotFound() throws Exception {
+  public void testGetDeckByNameDeckNotFound() throws Exception {
     when(deckService.getDeck("testUser", "NonExistentDeck"))
-      .thenThrow(new IllegalArgumentException("Deck not found"));
+        .thenThrow(new IllegalArgumentException("Deck not found"));
 
     mockMvc.perform(request(HttpMethod.valueOf("REQUEST"), ApiEndpoints.DECKS + "/NonExistentDeck")
         .param("username", "testUser")
@@ -174,7 +167,7 @@ public class DeckControllerTest {
    * Tests getAllDecks when IOException occurs.
    */
   @Test
-  public void testGetAllDecks_IOException() throws Exception {
+  public void testGetAllDecksIoException() throws Exception {
     when(deckService.getAllDecks("testUser"))
         .thenThrow(new RuntimeException("Storage error"));
 
@@ -189,7 +182,7 @@ public class DeckControllerTest {
    * Tests getDeckByName when IOException occurs.
    */
   @Test 
-  public void testGetDeckByName_IOException() throws Exception {
+  public void testGetDeckByNameIoException() throws Exception {
     when(deckService.getDeck("testUser", "TestDeck"))
         .thenThrow(new RuntimeException("IO Error"));
 
@@ -206,18 +199,17 @@ public class DeckControllerTest {
    * with the created deck data.
    *
    * @throws Exception if the MockMvc request fails
-   * 
    */
   @Test
-  public void testCreateDeck_Success() throws Exception {
+  public void testCreateDeckSuccess() throws Exception {
     when(deckService.createDeck("testUser", "NewDeck")).thenReturn(new FlashcardDeck("NewDeck"));
 
     mockMvc.perform(post(ApiEndpoints.DECKS + "/NewDeck")
-      .param("username", "testUser"))
-      .andExpect(status().isOk())
-      .andExpect(jsonPath("$.success").value(true))
-      .andExpect(jsonPath("$.message").value(ApiConstants.DECK_CREATED))
-      .andExpect(jsonPath("$.data.deckName").value("NewDeck"));
+        .param("username", "testUser"))
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$.success").value(true))
+        .andExpect(jsonPath("$.message").value(ApiConstants.DECK_CREATED))
+        .andExpect(jsonPath("$.data.deckName").value("NewDeck"));
   }
 
   /**
@@ -226,12 +218,11 @@ public class DeckControllerTest {
    * when attempting to create a deck for non-existent user.
    *
    * @throws Exception if the MockMvc request fails
-   * 
    */
   @Test
-  public void testCreateDeck_UserNotFound() throws Exception {
+  public void testCreateDeckUserNotFound() throws Exception {
     when(deckService.createDeck("nonExistent", "NewDeck"))
-      .thenThrow(new IllegalArgumentException(ApiConstants.USER_NOT_FOUND));
+        .thenThrow(new IllegalArgumentException(ApiConstants.USER_NOT_FOUND));
 
     mockMvc.perform(post(ApiEndpoints.DECKS + "/NewDeck")
         .param("username", "nonExistent"))
@@ -246,12 +237,11 @@ public class DeckControllerTest {
    * when attempting to create a duplicate deck.
    *
    * @throws Exception if the MockMvc request fails
-   * 
    */
   @Test
-  public void testCreateDeck_DeckAlreadyExists() throws Exception {
+  public void testCreateDeckDeckAlreadyExists() throws Exception {
     when(deckService.createDeck("testUser", "TestDeck"))
-      .thenThrow(new IllegalArgumentException("Deckname must be unique"));
+        .thenThrow(new IllegalArgumentException("Deckname must be unique"));
 
     mockMvc.perform(post(ApiEndpoints.DECKS + "/TestDeck")
         .param("username", "testUser"))
@@ -266,10 +256,9 @@ public class DeckControllerTest {
    * when storage operations fail.
    *
    * @throws Exception if the MockMvc request fails
-   * 
    */
   @Test
-  public void testCreateDeck_ServiceThrowsIOException() throws Exception {
+  public void testCreateDeckServiceThrowsIoException() throws Exception {
     when(deckService.createDeck("testUser", "NewDeck"))
         .thenThrow(new RuntimeException("Storage unavailable"));
 
@@ -286,10 +275,9 @@ public class DeckControllerTest {
    * when attempting to create more than the maximum allowed decks.
    *
    * @throws Exception if the MockMvc request fails
-   * 
    */
   @Test
-  public void testCreateDeck_DeckLimitReached() throws Exception {
+  public void testCreateDeckDeckLimitReached() throws Exception {
     when(deckService.createDeck("testUser", "NewDeck"))
         .thenThrow(new IllegalArgumentException("You can only have up to 8 decks"));
 
@@ -306,10 +294,9 @@ public class DeckControllerTest {
    * when attempting to create a deck with empty name.
    *
    * @throws Exception if the MockMvc request fails
-   * 
    */
   @Test
-  public void testCreateDeck_EmptyDeckName() throws Exception {
+  public void testCreateDeckEmptyDeckName() throws Exception {
     when(deckService.createDeck("testUser", "EmptyDeck"))
         .thenThrow(new IllegalArgumentException("Deckname cannot be empty"));
 
@@ -323,12 +310,11 @@ public class DeckControllerTest {
   /**
    * Tests createDeck with technical exception message containing "User not found".
    * This tests the specific branch in exception mapping logic.
-   * 
+   *
    * @throws Exception if the MockMvc request fails
-   * 
    */
   @Test
-  public void testCreateDeck_UserNotFoundInMessage() throws Exception {
+  public void testCreateDeckUserNotFoundInMessage() throws Exception {
     when(deckService.createDeck("testUser", "NewDeck"))
         .thenThrow(new IllegalArgumentException("User not found in system"));
 
@@ -342,12 +328,11 @@ public class DeckControllerTest {
   /**
    * Tests createDeck with technical exception message containing "unique".
    * This tests the specific branch for duplicate deck names.
-   * 
+   *
    * @throws Exception if the MockMvc request fails
-   * 
    */
   @Test
-  public void testCreateDeck_UniqueConstraintViolation() throws Exception {
+  public void testCreateDeckUniqueConstraintViolation() throws Exception {
     when(deckService.createDeck("testUser", "DuplicateDeck"))
         .thenThrow(new IllegalArgumentException("Deck name must be unique for user"));
 
@@ -361,12 +346,12 @@ public class DeckControllerTest {
   /**
    * Tests createDeck with unknown exception message.
    * This tests the fallback branch in exception mapping.
-   * 
+   *
    * @throws Exception if the MockMvc request fails
    * 
    */
   @Test
-  public void testCreateDeck_UnknownError() throws Exception {
+  public void testCreateDeckUnknownError() throws Exception {
     when(deckService.createDeck("testUser", "NewDeck"))
         .thenThrow(new IllegalArgumentException("Some unexpected error"));
 
@@ -380,14 +365,13 @@ public class DeckControllerTest {
   /**
    * Tests createDeck with null exception message.
    * This tests the null check branch in exception mapping.
-   * 
+   *
    * @throws Exception if the MockMvc request fails
-   * 
    */
   @Test
-  public void testCreateDeck_NullExceptionMessage() throws Exception {
+  public void testCreateDeckNullExceptionMessage() throws Exception {
     // Create exception with null message
-    IllegalArgumentException exceptionWithNullMessage = new IllegalArgumentException((String)null);
+    IllegalArgumentException exceptionWithNullMessage = new IllegalArgumentException((String) null);
     when(deckService.createDeck("testUser", "NewDeck"))
         .thenThrow(exceptionWithNullMessage);
 
@@ -401,11 +385,11 @@ public class DeckControllerTest {
   /**
    * Tests createDeck with RuntimeException (non-IllegalArgumentException).
    * This tests the catch (Exception e) branch.
-   * 
+   *
    * @throws Exception if the MockMvc request fails
    */
   @Test
-  public void testCreateDeck_RuntimeException() throws Exception {
+  public void testCreateDeckRuntimeException() throws Exception {
     when(deckService.createDeck("testUser", "NewDeck"))
         .thenThrow(new RuntimeException("Unexpected runtime error"));
 
@@ -419,12 +403,12 @@ public class DeckControllerTest {
   /**
    * Tests createDeck with IOException.
    * This tests the catch (Exception e) branch for IO errors.
-   * 
+   *
    * @throws Exception if the MockMvc request fails
-   * 
+   * @throws IOException if createDeck throws IOException
    */
   @Test
-  public void testCreateDeck_IOException() throws Exception {
+  public void testCreateDeckIoException() throws Exception, IOException {
     when(deckService.createDeck("testUser", "NewDeck"))
         .thenThrow(new java.io.IOException("File system error"));
 
@@ -441,20 +425,19 @@ public class DeckControllerTest {
    * and returns HTTP 200 with success message.
    *
    * @throws Exception if the MockMvc request fails
-   * 
    */
   @SuppressWarnings("null")
   @Test
-  public void testUpdateAllDecks_Success() throws Exception {
+  public void testUpdateAllDecksSuccess() throws Exception {
     doNothing().when(deckService).updateAllDecks(anyString(), any(FlashcardDeckManager.class));
 
     mockMvc.perform(put(ApiEndpoints.DECKS)
-      .param("username", "testUser")
-      .contentType(MediaType.APPLICATION_JSON)
-      .content(objectMapper.writeValueAsString(testDeckManagerDto)))
-      .andExpect(status().isOk())
-      .andExpect(jsonPath("$.success").value(true))
-      .andExpect(jsonPath("$.message").value(ApiConstants.DECK_UPDATED));
+        .param("username", "testUser")
+        .contentType(MediaType.APPLICATION_JSON)
+        .content(objectMapper.writeValueAsString(testDeckManagerDto)))
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$.success").value(true))
+        .andExpect(jsonPath("$.message").value(ApiConstants.DECK_UPDATED));
   }
 
   /**
@@ -463,11 +446,10 @@ public class DeckControllerTest {
    * when attempting to update decks for non-existent user.
    *
    * @throws Exception if the MockMvc request fails
-   * 
    */
   @SuppressWarnings("null")
   @Test
-  public void testUpdateAllDecks_UserNotFound() throws Exception {
+  public void testUpdateAllDecksUserNotFound() throws Exception {
     doThrow(new IllegalArgumentException("User not found"))
       .when(deckService).updateAllDecks(anyString(), any(FlashcardDeckManager.class));
 
@@ -486,11 +468,10 @@ public class DeckControllerTest {
    * when provided with invalid deck data.
    *
    * @throws Exception if the MockMvc request fails
-   * 
    */
   @SuppressWarnings("null")
   @Test
-  public void testUpdateAllDecks_InvalidData() throws Exception {
+  public void testUpdateAllDecksInvalidData() throws Exception {
     doThrow(new IllegalArgumentException("Invalid deck data"))
       .when(deckService).updateAllDecks(anyString(), any(FlashcardDeckManager.class));
 
@@ -509,17 +490,16 @@ public class DeckControllerTest {
    * HTTP 200 with success message.
    *
    * @throws Exception if the MockMvc request fails
-   * 
    */
   @Test
-  public void testDeleteDeck_Success() throws Exception {
+  public void testDeleteDeckSuccess() throws Exception {
     doNothing().when(deckService).deleteDeck("testUser", "TestDeck");
 
     mockMvc.perform(delete(ApiEndpoints.DECKS + "/TestDeck")
-      .param("username", "testUser"))
-      .andExpect(status().isOk())
-      .andExpect(jsonPath("$.success").value(true))
-      .andExpect(jsonPath("$.message").value(ApiConstants.DECK_DELETED));
+        .param("username", "testUser"))
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$.success").value(true))
+        .andExpect(jsonPath("$.message").value(ApiConstants.DECK_DELETED));
   }
 
   /**
@@ -528,18 +508,17 @@ public class DeckControllerTest {
    * when attempting to delete a non-existent deck.
    *
    * @throws Exception if the MockMvc request fails
-   * 
    */
   @Test
-  public void testDeleteDeck_DeckNotFound() throws Exception {
+  public void testDeleteDeckDeckNotFound() throws Exception {
     doThrow(new IllegalArgumentException("Deck not found"))
-      .when(deckService).deleteDeck("testUser", "NonExistentDeck");
+        .when(deckService).deleteDeck("testUser", "NonExistentDeck");
 
     mockMvc.perform(delete(ApiEndpoints.DECKS + "/NonExistentDeck")
-      .param("username", "testUser"))
-      .andExpect(status().isOk())
-      .andExpect(jsonPath("$.success").value(false))
-      .andExpect(jsonPath("$.message").value(ApiConstants.DECK_OPERATION_FAILED));
+        .param("username", "testUser"))
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$.success").value(false))
+        .andExpect(jsonPath("$.message").value(ApiConstants.DECK_OPERATION_FAILED));
   }
 
   /**
@@ -548,17 +527,16 @@ public class DeckControllerTest {
    * when attempting to delete a deck for non-existent user.
    *
    * @throws Exception if the MockMvc request fails
-   * 
    */
   @Test
-  public void testDeleteDeck_UserNotFound() throws Exception {
+  public void testDeleteDeckUserNotFound() throws Exception {
     doThrow(new IllegalArgumentException("User not found"))
-      .when(deckService).deleteDeck("nonExistent", "TestDeck");
+        .when(deckService).deleteDeck("nonExistent", "TestDeck");
 
     mockMvc.perform(delete(ApiEndpoints.DECKS + "/TestDeck")
-      .param("username", "nonExistent"))
-      .andExpect(status().isOk())
-      .andExpect(jsonPath("$.success").value(false))
-      .andExpect(jsonPath("$.message").value(ApiConstants.DECK_OPERATION_FAILED));
+        .param("username", "nonExistent"))
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$.success").value(false))
+        .andExpect(jsonPath("$.message").value(ApiConstants.DECK_OPERATION_FAILED));
   }
 }

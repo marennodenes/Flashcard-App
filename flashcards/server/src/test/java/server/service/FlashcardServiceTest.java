@@ -1,18 +1,21 @@
 package server.service;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
 
-import java.io.IOException;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import app.Flashcard;
 import app.FlashcardDeck;
 import app.FlashcardDeckManager;
 import itp.storage.FlashcardPersistent;
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
@@ -22,26 +25,24 @@ import shared.ApiConstants;
 /**
  * Unit tests for the FlashcardService class.
  * 
- * This test class verifies the functionality of flashcard-related operations including
+ * <p>This test class verifies the functionality of flashcard-related operations including
  * retrieval, creation, and deletion of flashcards within decks. The tests use Mockito
  * to mock the FlashcardPersistent and DeckService dependencies, isolating the service logic
  * from the persistence and deck management layers.
  * 
- * Key testing scenarios covered:
+ * <p>Key testing scenarios covered:
  * - Successful flashcard retrieval by index
  * - Retrieval of all flashcards from a deck
  * - Creation of new flashcards within a deck
  * - Deletion of flashcards by index
  * - Error handling for non-existent decks and invalid flashcard indices
- * 
+ *
  * @author chrsom
  * @author isamw
  * @author parts of class is generated with the help of claude.ai
- * 
  * @see FlashcardService
  * @see FlashcardPersistent
  * @see DeckService
- * 
  */
 class FlashcardServiceTest {
 
@@ -53,7 +54,7 @@ class FlashcardServiceTest {
   /**
    * Sets up the test environment before each test method execution.
    * 
-   * This method initializes the mock objects using Mockito and creates a new
+   * <p>This method initializes the mock objects using Mockito and creates a new
    * FlashcardService instance with the mocked dependencies. This ensures that
    * each test runs with a clean state and isolated from external dependencies.
    */
@@ -66,16 +67,15 @@ class FlashcardServiceTest {
   /**
    * Tests successful flashcard retrieval by index from an existing deck.
    * 
-   * This test verifies that the service can correctly retrieve a specific flashcard
+   * <p>This test verifies that the service can correctly retrieve a specific flashcard
    * from a deck when provided with valid parameters. It tests the complete workflow
    * including deck existence verification, flashcard index validation, and proper
    * flashcard data retrieval.
    *  
-   * The test also includes a negative case to verify proper exception handling
+   * <p>The test also includes a negative case to verify proper exception handling
    * when attempting to retrieve flashcards from an empty deck collection.
-   * 
+   *
    * @throws IOException if persistence operations fail during test execution
-   * 
    */
   @Test
   public void testGetFlashcard() throws IOException {
@@ -118,17 +118,16 @@ class FlashcardServiceTest {
   /**
    * Tests flashcard retrieval with invalid parameters that should trigger exceptions.
    * 
-   * This test verifies that the service correctly handles error scenarios when attempting
+   * <p>This test verifies that the service correctly handles error scenarios when attempting
    * to retrieve flashcards. It checks for proper exception throwing and messages when:
    * - The specified deck does not exist for the user
    * - The requested flashcard index is invalid (less than 1)
    * - The requested flashcard index exceeds the number of flashcards in the deck
-   * 
+   *
    * @throws IOException if persistence operations fail during test execution
-   * 
    */
   @Test
-  public void testGetFlashcard_Throws() throws IOException {
+  public void testGetFlashcardThrows() throws IOException {
     FlashcardDeckManager manager = mock(FlashcardDeckManager.class);
     FlashcardDeck deck = mock(FlashcardDeck.class);
     when(deck.getDeckName()).thenReturn("anotherDeck");
@@ -175,12 +174,11 @@ class FlashcardServiceTest {
   /**
    * Tests retrieval of all flashcards from a specific deck.
    * 
-   * This test verifies that the service can successfully retrieve all flashcards
+   * <p>This test verifies that the service can successfully retrieve all flashcards
    * from a given deck for a user. It checks that the returned list of flashcards
    * matches the expected size and content.
-   * 
+   *
    * @throws IOException if persistence operations fail during test execution
-   * 
    */
   @Test
   public void testGetAllFlashcards() throws IOException {
@@ -201,13 +199,12 @@ class FlashcardServiceTest {
   /**
    * Tests the creation of a new flashcard within a specified deck.
    * 
-   * This test verifies that the service can successfully create a new flashcard
+   * <p>This test verifies that the service can successfully create a new flashcard
    * with the given question and answer, add it to the specified deck, and persist
    * the changes. It checks that the created flashcard has the correct properties
    * and that the appropriate methods on the deck and persistence layers are invoked.
-   * 
+   *
    * @throws IOException if persistence operations fail during test execution
-   * 
    */
   @Test
   public void testCreateFlashcard() throws IOException {
@@ -229,13 +226,12 @@ class FlashcardServiceTest {
   /**
    * Tests the deletion of a flashcard by index from a specified deck.
    * 
-   * This test verifies that the service can successfully delete a flashcard
+   * <p>This test verifies that the service can successfully delete a flashcard
    * from a deck based on the provided index. It checks that the appropriate
    * methods on the deck and persistence layers are invoked to remove the
    * flashcard and persist the changes.
-   * 
+   *
    * @throws IOException if persistence operations fail during test execution
-   * 
    */
   @Test
   public void testDeleteFlashcard() throws IOException {

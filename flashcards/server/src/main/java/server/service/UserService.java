@@ -1,12 +1,10 @@
 package server.service;
 
-import java.io.IOException;
-
-import org.springframework.stereotype.Service;
-
 import app.LoginValidator;
 import app.User;
 import itp.storage.FlashcardPersistent;
+import java.io.IOException;
+import org.springframework.stereotype.Service;
 import shared.ApiConstants;
 
 
@@ -14,26 +12,24 @@ import shared.ApiConstants;
  * Service class for managing user operations including retrieval,
  * creation, existence check, login, and password validation.
  * 
- * This service acts as an intermediary between the API layer and the persistence layer, 
- * handling business logic for user-related operations.
+ * <p>This service acts as an intermediary between the API layer and 
+ * the persistence layer, handling business logic for user-related operations.
  * 
- * The service provides functionality to:
+ * <p>The service provides functionality to:
  * - Retrieve user information by username
  * - Create new users with validation
  * 
- * Check if a user exists
+ * <p>Check if a user exists
  * - Log in users by validating credentials
  * 
- * Validate user passwords
+ * <p>Validate user passwords
  * 
- * All operations utilize FlashcardPersistent for data storage.
- * 
+ * <p>All operations utilize FlashcardPersistent for data storage.
+ *
  * @author chrsom
  * @author isamw
- * 
  * @see FlashcardPersistent
  * @see ApiConstants
- * 
  */
 @Service
 public class UserService {
@@ -49,7 +45,7 @@ public class UserService {
 
   /**
    * Retrieves user information for the specified username.
-   * 
+   *
    * @param username the username of the user to retrieve
    * @return the User object associated with the given username
    * @throws IllegalArgumentException if the user does not exist
@@ -65,7 +61,7 @@ public class UserService {
 
   /**
    * Checks if a user exists with the given username.
-   * 
+   *
    * @param username the username to check
    * @return true if the user exists, false otherwise
    * @throws IllegalArgumentException if the username is empty
@@ -80,15 +76,14 @@ public class UserService {
 
   /**
    * Creates a new user with the specified username and password.
-   * 
-   * @param username
-   * @param password
+   *
+   * @param username the username for the new user
+   * @param password the password for the new user
    * @return the newly created User object
    * @throws IOException if an error occurs while writing user data
    * @throws IllegalArgumentException if the username or password is empty
    * @throws IllegalArgumentException if the user already exists
    * @throws IllegalArgumentException if the password is invalid
-   * 
    */
   public User createUser(String username, String password) throws IOException { 
     LoginValidator validator = new LoginValidator(persistent);
@@ -112,14 +107,14 @@ public class UserService {
 
   /**
    * Creates a new user with detailed validation and error handling.
-   * 
+   *
    * @param username the username for the new user
    * @param password the password for the new user
    * @return the created User object if successful, null if failed
    * @throws IllegalArgumentException with detailed error message if validation fails
-   * 
    */
-  public User createUserWithValidation(String username, String password) throws IllegalArgumentException {
+  public User createUserWithValidation(String username, String password) 
+      throws IllegalArgumentException {
     try {
       LoginValidator validator = new LoginValidator(persistent);
 
@@ -148,12 +143,11 @@ public class UserService {
   /**
    * Used to log in a user with the specified username and password.
    * Checks for empty fields and user existence before validating the password.
-   * 
+   *
    * @param username the username of the user attempting to log in
    * @param password the password provided for login
    * @return true if login is successful, false otherwise
    * @throws IllegalArgumentException if the username is empty during user existence check
-   * 
    */
   public boolean logInUser(String username, String password) {
     if (username.isEmpty() || password.isEmpty()) {
@@ -167,11 +161,10 @@ public class UserService {
 
   /**
    * Validates the password for the given username.
-   * 
+   *
    * @param username the username of the user
    * @param password the password to validate
    * @return true if the password is valid, false otherwise
-   * 
    */
   public boolean validatePassword(String username, String password) {
     if (username.isEmpty() || password.isEmpty()) {
@@ -182,10 +175,9 @@ public class UserService {
 
   /**
    * Checks if the given password meets the security requirements.
-   * 
+   *
    * @param password the password to check
    * @return true if the password is valid, false otherwise
-   * 
    */
   public boolean isValidPassword(String password) {
     return validatePasswordDetailed(password) == null;
@@ -194,10 +186,9 @@ public class UserService {
   /**
    * Validates a password and returns an error message if invalid.
    * Returns the first validation error found.
-   * 
+   *
    * @param password the password to validate
    * @return null if valid, or error message string if invalid
-   * 
    */
   public String validatePasswordDetailed(String password) {
     if (password == null) {
