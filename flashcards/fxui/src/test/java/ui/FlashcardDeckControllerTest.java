@@ -1,34 +1,31 @@
 package ui;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.ArgumentMatchers.isNull;
-import static org.mockito.Mockito.*;
-
-import java.util.List;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicReference;
-
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.mockito.MockedStatic;
-import org.mockito.Mockito;
-
-import com.fasterxml.jackson.core.type.TypeReference;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.when;
 
 import app.Flashcard;
 import app.FlashcardDeck;
 import app.FlashcardDeckManager;
-import dto.FlashcardDto;
+import com.fasterxml.jackson.core.type.TypeReference;
 import dto.FlashcardDeckDto;
+import dto.FlashcardDto;
 import dto.mappers.FlashcardDeckMapper;
-import shared.ApiConstants;
-import shared.ApiResponse;
+import java.lang.reflect.Method;
+import java.util.List;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicReference;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.scene.Scene;
@@ -37,66 +34,78 @@ import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.mockito.MockedStatic;
+import org.mockito.Mockito;
+import shared.ApiConstants;
+import shared.ApiResponse;
 
 /**
  * Unit tests for {@link FlashcardDeckController}.
- * 
- * Covers all major branches, edge cases, and error handling for deck management,
+ *
+ * <p>Covers all major branches, edge cases, and error handling for deck
+ * management,
  * UI updates, card creation/deletion, user data saving, and navigation logic.
- * Uses reflection to inject private fields and Mockito for mocking JavaFX and API interactions.
- * 
- * Thread-safety: Not thread-safe. Tests must be run sequentially.
- * 
+ * Uses reflection to inject private fields and Mockito for mocking JavaFX and
+ * API interactions.
+ *
+ * <p>Thread-safety: Not thread-safe. Tests must be run sequentially.
+ *
  * @author marennod
  * @author sofietw
  * @author ailinat
- * @author parts of this code is generated with AI assistance for comprehensive test coverage
- * 
+ * @author parts of this code is generated with AI assistance for comprehensive
+ *     test coverage
+ *
  * @see FlashcardDeckController
  * @see FlashcardDto
  * @see FlashcardDeckDto
- * 
+ *
  */
 class FlashcardDeckControllerTest {
 
-    private FlashcardDeckController controller;
-    private FlashcardDeckMapper mapper = new FlashcardDeckMapper();
-    private TextField questionField;
-    private TextField answerField;
-    private ListView<FlashcardDto> listView;
-    private Text username;
-    private Button startLearning;
-    private Button deleteCardButton;
+  private FlashcardDeckController controller;
+  private FlashcardDeckMapper mapper = new FlashcardDeckMapper();
+  private TextField questionField;
+  private TextField answerField;
+  private ListView<FlashcardDto> listView;
+  private Text username;
+  private Button startLearning;
+  private Button deleteCardButton;
 
-    /**
-     * Initializes JavaFX toolkit before running tests.
-     */
-    @BeforeAll
-    public static void initJavaFX() throws InterruptedException {
-        if (!Platform.isFxApplicationThread()) {
-            try {
-                CountDownLatch latch = new CountDownLatch(1);
-                Platform.startup(() -> latch.countDown());
-                latch.await();
-            } catch (IllegalStateException e) {
-                // Toolkit already initialized
-            }
-        }
+  /**
+   * Initializes JavaFX toolkit before running tests.
+   *
+   * @throws InterruptedException if thread is interrupted
+   */
+  @BeforeAll
+  public static void initJavaFx() throws InterruptedException {
+    if (!Platform.isFxApplicationThread()) {
+      try {
+        CountDownLatch latch = new CountDownLatch(1);
+        Platform.startup(() -> latch.countDown());
+        latch.await();
+      } catch (IllegalStateException e) {
+        // Toolkit already initialized
+      }
     }
+  }
 
-    /**
-     * Tears down JavaFX platform after all tests complete.
-     */
-    @AfterAll
-    public static void tearDown() {
-        // Don't exit platform as other tests may need it
-    }
+  /**
+   * Tears down JavaFX platform after all tests complete.
+   */
+  @AfterAll
+  public static void tearDown() {
+    // Don't exit platform as other tests may need it
+  }
 
   /**
    * Sets up a fresh controller and injects mock UI components before each test.
-   * 
+   *
    * @throws RuntimeException if reflection fails to inject fields
-   * 
    */
   @BeforeEach
   public void setUp() {
@@ -123,13 +132,16 @@ class FlashcardDeckControllerTest {
 
   /**
    * Tests setting the current username.
-   * Verifies that the username is correctly set via the setCurrentUsername method.
+   *
+   * <p>Verifies that the username is correctly set via the setCurrentUsername
+   * method.
    */
   @SuppressWarnings("unchecked")
   @Test
   public void testSetCurrentUsername() {
     try (MockedStatic<ApiClient> apiClient = Mockito.mockStatic(ApiClient.class)) {
-      apiClient.when(() -> ApiClient.performApiRequest(anyString(), eq("GET"), isNull(), any(TypeReference.class)))
+      apiClient.when(() -> ApiClient.performApiRequest(anyString(), eq("GET"),
+              isNull(), any(TypeReference.class)))
           .thenReturn(new ApiResponse<>(true, "", null));
       
       controller.setCurrentUsername("newuser");
@@ -166,7 +178,8 @@ class FlashcardDeckControllerTest {
       setField(controller, "currentUsername", "testuser");
       
       // Mock API call for loadDeckData() to return the same deck (so it doesn't overwrite)
-      apiClient.when(() -> ApiClient.performApiRequest(anyString(), eq("GET"), isNull(), any(TypeReference.class)))
+      apiClient.when(() -> ApiClient.performApiRequest(anyString(), eq("GET"),
+              isNull(), any(TypeReference.class)))
           .thenReturn(new ApiResponse<>(true, "", deckDto));
       
       runOnFxThread(() -> {
@@ -237,7 +250,8 @@ class FlashcardDeckControllerTest {
     FlashcardDeck deck1 = new FlashcardDeck("Deck1");
     setField(controller, "currentDeck", mapper.toDto(deck1));
     try (MockedStatic<ApiClient> apiClientMock = Mockito.mockStatic(ApiClient.class)) {
-      apiClientMock.when(() -> ApiClient.performApiRequest(any(), any(), any(), any())).thenReturn(new ApiResponse<>(true, "", null));
+      apiClientMock.when(() -> ApiClient.performApiRequest(any(), any(), any(), any()))
+          .thenReturn(new ApiResponse<>(true, "", null));
       controller.whenCreateButtonIsClicked();
     }
   }
@@ -257,7 +271,9 @@ class FlashcardDeckControllerTest {
     setField(controller, "currentDeck", mapper.toDto(deck1));
     
     try (MockedStatic<ApiClient> apiClientMock = Mockito.mockStatic(ApiClient.class)) {
-      apiClientMock.when(() -> ApiClient.performApiRequest(any(), any(), any(), any())).thenReturn(new ApiResponse<>(false, ApiConstants.FLASHCARD_OPERATION_FAILED, null));
+      apiClientMock.when(() -> ApiClient.performApiRequest(any(), any(), any(), any()))
+          .thenReturn(new ApiResponse<>(false,
+              ApiConstants.FLASHCARD_OPERATION_FAILED, null));
       assertDoesNotThrow(() -> controller.whenCreateButtonIsClicked());
     }
   }
@@ -281,7 +297,8 @@ class FlashcardDeckControllerTest {
     setField(controller, "currentDeck", mapper.toDto(deck1));
 
     try (MockedStatic<ApiClient> apiClientMock = Mockito.mockStatic(ApiClient.class)) {
-      apiClientMock.when(() -> ApiClient.performApiRequest(any(), any(), any(), any())).thenReturn(new ApiResponse<>(true, "", null));
+      apiClientMock.when(() -> ApiClient.performApiRequest(any(), any(), any(), any()))
+          .thenReturn(new ApiResponse<>(true, "", null));
       controller.whenDeleteCardButtonIsClicked();
     }
   }
@@ -305,7 +322,9 @@ class FlashcardDeckControllerTest {
     setField(controller, "currentDeck", mapper.toDto(deck1));
     
     try (MockedStatic<ApiClient> apiClientMock = Mockito.mockStatic(ApiClient.class)) {
-      apiClientMock.when(() -> ApiClient.performApiRequest(any(), any(), any(), any())).thenReturn(new ApiResponse<>(false, ApiConstants.FLASHCARD_OPERATION_FAILED, null));
+      apiClientMock.when(() -> ApiClient.performApiRequest(any(), any(), any(), any()))
+          .thenReturn(new ApiResponse<>(false,
+              ApiConstants.FLASHCARD_OPERATION_FAILED, null));
       assertDoesNotThrow(() -> controller.whenDeleteCardButtonIsClicked());
     }    
   }
@@ -365,7 +384,8 @@ class FlashcardDeckControllerTest {
     setField(controller, "questionField", mockField);
     
     try (MockedStatic<ApiClient> apiClientMock = Mockito.mockStatic(ApiClient.class)) {
-      apiClientMock.when(() -> ApiClient.performApiRequest(any(), any(), any(), any())).thenReturn(new ApiResponse<>(true, "", null));
+      apiClientMock.when(() -> ApiClient.performApiRequest(any(), any(), any(), any()))
+          .thenReturn(new ApiResponse<>(true, "", null));
       assertDoesNotThrow(() -> controller.whenLogOut());
     }
   }
@@ -389,7 +409,8 @@ class FlashcardDeckControllerTest {
     setField(controller, "questionField", mockField);
 
     try (MockedStatic<ApiClient> apiClientMock = Mockito.mockStatic(ApiClient.class)) {
-      apiClientMock.when(() -> ApiClient.showAlert(anyString(), anyString())).thenAnswer(inv -> null);
+      apiClientMock.when(() -> ApiClient.showAlert(anyString(), anyString()))
+          .thenAnswer(inv -> null);
       assertDoesNotThrow(() -> controller.whenBackButtonIsClicked());
     }
   }
@@ -399,7 +420,8 @@ class FlashcardDeckControllerTest {
    */
   @Test
   public void testInitialize() {
-    runOnFxThread(() -> assertDoesNotThrow(() -> controller.initialize()));
+    runOnFxThread(() -> assertDoesNotThrow(
+        () -> controller.initialize()));
   }
 
   /**
@@ -417,7 +439,8 @@ class FlashcardDeckControllerTest {
         
     try (MockedStatic<ApiClient> apiClientMock = Mockito.mockStatic(ApiClient.class)) {
       apiClientMock.when(() -> ApiClient.performApiRequest(any(), any(), any(), any()))
-          .thenReturn(new ApiResponse<>(false, ApiConstants.USER_OPERATION_FAILED, null));
+          .thenReturn(new ApiResponse<>(false,
+              ApiConstants.USER_OPERATION_FAILED, null));
       assertDoesNotThrow(() -> controller.whenLogOut());
     }
   }
@@ -427,7 +450,8 @@ class FlashcardDeckControllerTest {
    */
   @Test
   public void testSetDeckManagerWithNoDecks() {
-    runOnFxThread(() -> assertDoesNotThrow(() -> controller.setDeck(mapper.toDto(new FlashcardDeck("DeckX")))));
+    runOnFxThread(() -> assertDoesNotThrow(
+        () -> controller.setDeck(mapper.toDto(new FlashcardDeck("DeckX")))));
   }
 
   /**
@@ -490,7 +514,8 @@ class FlashcardDeckControllerTest {
     setField(controller, "currentDeck", mapper.toDto(deck1));
     
     try (MockedStatic<ApiClient> apiClientMock = Mockito.mockStatic(ApiClient.class)) {
-      apiClientMock.when(() -> ApiClient.performApiRequest(any(), any(), any(), any())).thenReturn(new ApiResponse<>(true, "", null));
+      apiClientMock.when(() -> ApiClient.performApiRequest(any(), any(), any(), any()))
+          .thenReturn(new ApiResponse<>(true, "", null));
       assertDoesNotThrow(() -> controller.whenDeleteCardButtonIsClicked());
     }
   }
@@ -503,7 +528,8 @@ class FlashcardDeckControllerTest {
   @Test
   public void testSetCurrentUsernameCases() {
     try (MockedStatic<ApiClient> apiClient = Mockito.mockStatic(ApiClient.class)) {
-      apiClient.when(() -> ApiClient.performApiRequest(anyString(), eq("GET"), isNull(), any(TypeReference.class)))
+      apiClient.when(() -> ApiClient.performApiRequest(anyString(), eq("GET"),
+              isNull(), any(TypeReference.class)))
           .thenReturn(new ApiResponse<>(true, "", null));
       
       controller.setCurrentUsername("newuser");
@@ -525,7 +551,8 @@ class FlashcardDeckControllerTest {
   @Test
   public void testSetDeckManagerCases() {
     try (MockedStatic<ApiClient> apiClient = Mockito.mockStatic(ApiClient.class)) {
-      apiClient.when(() -> ApiClient.performApiRequest(anyString(), eq("GET"), isNull(), any(TypeReference.class)))
+      apiClient.when(() -> ApiClient.performApiRequest(anyString(), eq("GET"),
+              isNull(), any(TypeReference.class)))
           .thenReturn(new ApiResponse<>(true, "", null));
       
       FlashcardDeckManager mgr = new FlashcardDeckManager();
@@ -540,14 +567,19 @@ class FlashcardDeckControllerTest {
       FlashcardDeckDto actualDeck = (FlashcardDeckDto) getField(controller, "currentDeck");
       assertNotNull(actualDeck);
       assertEquals("Deck1", actualDeck.getDeckName());
-      runOnFxThread(() -> assertDoesNotThrow(() -> controller.setDeck(null)));
-      runOnFxThread(() -> assertDoesNotThrow(() -> controller.setDeck(null)));
+      runOnFxThread(() -> assertDoesNotThrow(
+          () -> controller.setDeck(null)));
+      runOnFxThread(() -> assertDoesNotThrow(
+          () -> controller.setDeck(null)));
       FlashcardDeckManager mgr2 = new FlashcardDeckManager();
       FlashcardDeck deck2 = new FlashcardDeck("Deck2");
-      runOnFxThread(() -> assertDoesNotThrow(() -> controller.setDeck(mapper.toDto(deck2))));
+      runOnFxThread(() -> assertDoesNotThrow(
+          () -> controller.setDeck(mapper.toDto(deck2))));
       mgr2.addDeck(deck2);
-      runOnFxThread(() -> assertDoesNotThrow(() -> controller.setDeck(mapper.toDto(deck2))));
-      runOnFxThread(() -> assertDoesNotThrow(() -> controller.setDeck(mapper.toDto(new FlashcardDeck("DeckX")))));
+      runOnFxThread(() -> assertDoesNotThrow(
+          () -> controller.setDeck(mapper.toDto(deck2))));
+      runOnFxThread(() -> assertDoesNotThrow(
+          () -> controller.setDeck(mapper.toDto(new FlashcardDeck("DeckX")))));
     }
   }
 
@@ -567,7 +599,8 @@ class FlashcardDeckControllerTest {
     answerField.setText("A2");
     
     try (MockedStatic<ApiClient> apiClientMock = Mockito.mockStatic(ApiClient.class)) {
-      apiClientMock.when(() -> ApiClient.performApiRequest(any(), any(), any(), any())).thenReturn(new ApiResponse<>(true, "", null));
+      apiClientMock.when(() -> ApiClient.performApiRequest(any(), any(), any(), any()))
+          .thenReturn(new ApiResponse<>(true, "", null));
       controller.whenCreateButtonIsClicked();
     }
 
@@ -575,7 +608,8 @@ class FlashcardDeckControllerTest {
     answerField.setText("");
     
     try (MockedStatic<ApiClient> apiClientMock = Mockito.mockStatic(ApiClient.class)) {
-      apiClientMock.when(() -> ApiClient.performApiRequest(any(), any(), any(), any())).thenReturn(new ApiResponse<>(true, "", null));
+      apiClientMock.when(() -> ApiClient.performApiRequest(any(), any(), any(), any()))
+          .thenReturn(new ApiResponse<>(true, "", null));
       assertDoesNotThrow(() -> controller.whenCreateButtonIsClicked());
     }
 
@@ -583,7 +617,8 @@ class FlashcardDeckControllerTest {
     answerField.setText("   ");
 
     try (MockedStatic<ApiClient> apiClientMock = Mockito.mockStatic(ApiClient.class)) {
-      apiClientMock.when(() -> ApiClient.performApiRequest(any(), any(), any(), any())).thenReturn(new ApiResponse<>(true, "", null));
+      apiClientMock.when(() -> ApiClient.performApiRequest(any(), any(), any(), any()))
+          .thenReturn(new ApiResponse<>(true, "", null));
       assertDoesNotThrow(() -> controller.whenCreateButtonIsClicked());
     }
 
@@ -591,7 +626,9 @@ class FlashcardDeckControllerTest {
     answerField.setText("A3");
 
     try (MockedStatic<ApiClient> apiClientMock = Mockito.mockStatic(ApiClient.class)) {
-      apiClientMock.when(() -> ApiClient.performApiRequest(any(), any(), any(), any())).thenReturn(new ApiResponse<>(false, ApiConstants.FLASHCARD_FAILED_TO_CREATE, null));
+      apiClientMock.when(() -> ApiClient.performApiRequest(any(), any(), any(), any()))
+          .thenReturn(new ApiResponse<>(false,
+              ApiConstants.FLASHCARD_FAILED_TO_CREATE, null));
       assertDoesNotThrow(() -> controller.whenCreateButtonIsClicked());
     }
   }
@@ -613,21 +650,25 @@ class FlashcardDeckControllerTest {
     listView.getSelectionModel().select(0);
 
     try (MockedStatic<ApiClient> apiClientMock = Mockito.mockStatic(ApiClient.class)) {
-      apiClientMock.when(() -> ApiClient.performApiRequest(any(), any(), any(), any())).thenReturn(new ApiResponse<>(true, "", null));
+      apiClientMock.when(() -> ApiClient.performApiRequest(any(), any(), any(), any()))
+          .thenReturn(new ApiResponse<>(true, "", null));
       controller.whenDeleteCardButtonIsClicked();
     }
 
     listView.getSelectionModel().clearSelection();
 
     try (MockedStatic<ApiClient> apiClientMock = Mockito.mockStatic(ApiClient.class)) {
-      apiClientMock.when(() -> ApiClient.performApiRequest(any(), any(), any(), any())).thenReturn(new ApiResponse<>(true, "", null));
+      apiClientMock.when(() -> ApiClient.performApiRequest(any(), any(), any(), any()))
+          .thenReturn(new ApiResponse<>(true, "", null));
       assertDoesNotThrow(() -> controller.whenDeleteCardButtonIsClicked());
     }
 
     listView.getSelectionModel().select(0);
 
     try (MockedStatic<ApiClient> apiClientMock = Mockito.mockStatic(ApiClient.class)) {
-      apiClientMock.when(() -> ApiClient.performApiRequest(any(), any(), any(), any())).thenReturn(new ApiResponse<>(false, ApiConstants.FLASHCARD_FAILED_TO_DELETE, null));
+      apiClientMock.when(() -> ApiClient.performApiRequest(any(), any(), any(), any()))
+          .thenReturn(new ApiResponse<>(false,
+              ApiConstants.FLASHCARD_FAILED_TO_DELETE, null));
       assertDoesNotThrow(() -> controller.whenDeleteCardButtonIsClicked());
     }
 
@@ -637,7 +678,8 @@ class FlashcardDeckControllerTest {
     listView.getSelectionModel().select(0);
 
     try (MockedStatic<ApiClient> apiClientMock = Mockito.mockStatic(ApiClient.class)) {
-      apiClientMock.when(() -> ApiClient.performApiRequest(any(), any(), any(), any())).thenReturn(new ApiResponse<>(true, "", null));
+      apiClientMock.when(() -> ApiClient.performApiRequest(any(), any(), any(), any()))
+          .thenReturn(new ApiResponse<>(true, "", null));
       assertDoesNotThrow(() -> controller.whenDeleteCardButtonIsClicked());
     }
   }
@@ -668,8 +710,10 @@ class FlashcardDeckControllerTest {
   @Test
   public void testUpdateUiBranches() {
     try (MockedStatic<ApiClient> apiClient = Mockito.mockStatic(ApiClient.class)) {
-      apiClient.when(() -> ApiClient.performApiRequest(anyString(), eq("GET"), isNull(), any(TypeReference.class)))
-          .thenReturn(new ApiResponse<>(true, "", null));
+      apiClient.when(() -> ApiClient
+        .performApiRequest(anyString(), eq("GET"),
+         isNull(), any(TypeReference.class)))
+                .thenReturn(new ApiResponse<>(true, "", null));
       
       setField(controller, "currentDeck", null);
       runOnFxThread(() -> controller.updateUi());
@@ -694,8 +738,9 @@ class FlashcardDeckControllerTest {
       
       setField(controller, "currentUsername", "testuser");
       
-      apiClient.when(() -> ApiClient.performApiRequest(anyString(), eq("GET"), isNull(), any(TypeReference.class)))
-          .thenReturn(new ApiResponse<>(true, "", deckDtoWithCards));
+      apiClient.when(() -> ApiClient
+        .performApiRequest(anyString(), eq("GET"), isNull(), any(TypeReference.class)))
+            .thenReturn(new ApiResponse<>(true, "", deckDtoWithCards));
       
       runOnFxThread(() -> {
         controller.setDeck(deckDtoWithCards);
@@ -715,14 +760,19 @@ class FlashcardDeckControllerTest {
     FlashcardDeck deck1 = new FlashcardDeck("Deck1");
     setField(controller, "currentDeck", mapper.toDto(deck1));
     try (MockedStatic<ApiClient> apiClientMock = Mockito.mockStatic(ApiClient.class)) {
-      apiClientMock.when(() -> ApiClient.performApiRequest(any(), any(), any(), any())).thenReturn(new ApiResponse<>(true, "", null));
+      apiClientMock.when(() -> ApiClient
+      .performApiRequest(any(), any(), any(), any()))
+            .thenReturn(new ApiResponse<>(true, "", null));
     }
 
     setField(controller, "currentUsername", "testuser");
     setField(controller, "currentDeck", null);
 
-    try (MockedStatic<ApiClient> apiClientMock = Mockito.mockStatic(ApiClient.class)) {
-      apiClientMock.when(() -> ApiClient.performApiRequest(any(), any(), any(), any())).thenReturn(new ApiResponse<>(true, "", null));
+    try (MockedStatic<ApiClient> apiClientMock = Mockito
+        .mockStatic(ApiClient.class)) {
+      apiClientMock.when(() -> ApiClient
+      .performApiRequest(any(), any(), any(), any()))
+            .thenReturn(new ApiResponse<>(true, "", null));
     }
   }
 
@@ -762,13 +812,16 @@ class FlashcardDeckControllerTest {
     setField(controller, "currentDeck", null);
     questionField.setText("Q");
     answerField.setText("A");
-    assertDoesNotThrow(() -> controller.whenCreateButtonIsClicked());
+    assertDoesNotThrow(() -> controller
+        .whenCreateButtonIsClicked());
     setField(controller, "currentDeck", null);
     questionField.setText("Q");
     answerField.setText("A");
 
     try (MockedStatic<ApiClient> apiClientMock = Mockito.mockStatic(ApiClient.class)) {
-      apiClientMock.when(() -> ApiClient.performApiRequest(any(), any(), any(), any())).thenReturn(new ApiResponse<>(true, "", null));
+      apiClientMock.when(() -> ApiClient
+      .performApiRequest(any(), any(), any(), any()))
+            .thenReturn(new ApiResponse<>(true, "", null));
       assertDoesNotThrow(() -> controller.whenCreateButtonIsClicked());
     }
 
@@ -778,7 +831,9 @@ class FlashcardDeckControllerTest {
     answerField.setText("");
 
     try (MockedStatic<ApiClient> apiClientMock = Mockito.mockStatic(ApiClient.class)) {
-      apiClientMock.when(() -> ApiClient.performApiRequest(any(), any(), any(), any())).thenReturn(new ApiResponse<>(true, "", null));
+      apiClientMock.when(() -> ApiClient
+      .performApiRequest(any(), any(), any(), any()))
+            .thenReturn(new ApiResponse<>(true, "", null));
       assertDoesNotThrow(() -> controller.whenCreateButtonIsClicked());
     }
 
@@ -786,7 +841,9 @@ class FlashcardDeckControllerTest {
     answerField.setText("   ");
 
     try (MockedStatic<ApiClient> apiClientMock = Mockito.mockStatic(ApiClient.class)) {
-      apiClientMock.when(() -> ApiClient.performApiRequest(any(), any(), any(), any())).thenReturn(new ApiResponse<>(true, "", null));
+      apiClientMock.when(() -> ApiClient
+      .performApiRequest(any(), any(), any(), any()))
+            .thenReturn(new ApiResponse<>(true, "", null));
       assertDoesNotThrow(() -> controller.whenCreateButtonIsClicked());
     }
 
@@ -794,7 +851,9 @@ class FlashcardDeckControllerTest {
     answerField.setText("A");
 
     try (MockedStatic<ApiClient> apiClientMock = Mockito.mockStatic(ApiClient.class)) {
-      apiClientMock.when(() -> ApiClient.performApiRequest(any(), any(), any(), any())).thenReturn(new ApiResponse<>(false, ApiConstants.FLASHCARD_OPERATION_FAILED, null));
+      apiClientMock.when(() -> ApiClient
+      .performApiRequest(any(), any(), any(), any()))
+            .thenReturn(new ApiResponse<>(false, ApiConstants.FLASHCARD_OPERATION_FAILED, null));
       assertDoesNotThrow(() -> controller.whenCreateButtonIsClicked());
     }
   }
@@ -814,14 +873,15 @@ class FlashcardDeckControllerTest {
     listView.getSelectionModel().clearSelection();
     assertDoesNotThrow(() -> controller.whenDeleteCardButtonIsClicked());
 
-    FlashcardDeckManager mgr = new FlashcardDeckManager();
+    final FlashcardDeckManager mgr = new FlashcardDeckManager();
     setField(controller, "currentDeck", null);
 
     listView.setItems(FXCollections.observableArrayList());
     listView.getSelectionModel().clearSelection();
 
     try (MockedStatic<ApiClient> apiClientMock = Mockito.mockStatic(ApiClient.class)) {
-      apiClientMock.when(() -> ApiClient.performApiRequest(any(), any(), any(), any())).thenReturn(new ApiResponse<>(true, "", null));
+      apiClientMock.when(() -> ApiClient.performApiRequest(any(), any(), any(), any()))
+          .thenReturn(new ApiResponse<>(true, "", null));
       assertDoesNotThrow(() -> controller.whenDeleteCardButtonIsClicked());
     }
 
@@ -831,7 +891,8 @@ class FlashcardDeckControllerTest {
     listView.getSelectionModel().clearSelection();
 
     try (MockedStatic<ApiClient> apiClientMock = Mockito.mockStatic(ApiClient.class)) {
-      apiClientMock.when(() -> ApiClient.performApiRequest(any(), any(), any(), any())).thenReturn(new ApiResponse<>(true, "", null));
+      apiClientMock.when(() -> ApiClient.performApiRequest(any(), any(), any(), any()))
+          .thenReturn(new ApiResponse<>(true, "", null));
       assertDoesNotThrow(() -> controller.whenDeleteCardButtonIsClicked());
     }
 
@@ -843,7 +904,9 @@ class FlashcardDeckControllerTest {
     listView.getSelectionModel().select(0);
 
     try (MockedStatic<ApiClient> apiClientMock = Mockito.mockStatic(ApiClient.class)) {
-      apiClientMock.when(() -> ApiClient.performApiRequest(any(), any(), any(), any())).thenReturn(new ApiResponse<>(false, ApiConstants.FLASHCARD_OPERATION_FAILED, null));
+      apiClientMock.when(() -> ApiClient.performApiRequest(any(), any(), any(), any()))
+          .thenReturn(new ApiResponse<>(false,
+              ApiConstants.FLASHCARD_OPERATION_FAILED, null));
       assertDoesNotThrow(() -> controller.whenDeleteCardButtonIsClicked());
     }
   }
@@ -853,7 +916,7 @@ class FlashcardDeckControllerTest {
    */
   @SuppressWarnings("unchecked")
   @Test
-  public void testLoadDeckData_success_failure_exception() {
+  public void testLoadDeckDataSuccessFailureException() {
     // Prepare a deck dto with a name
     FlashcardDeck deck = new FlashcardDeck("DeckLoad");
     deck.addFlashcard(new Flashcard("Q", "A"));
@@ -864,8 +927,9 @@ class FlashcardDeckControllerTest {
 
     // success
     try (MockedStatic<ApiClient> api = Mockito.mockStatic(ApiClient.class)) {
-      api.when(() -> ApiClient.performApiRequest(anyString(), eq("GET"), isNull(), any(TypeReference.class)))
-      .thenReturn(new ApiResponse<>(true, "", dtoWithCard));
+      api.when(() -> ApiClient.performApiRequest(anyString(), eq("GET"),
+              isNull(), any(TypeReference.class)))
+          .thenReturn(new ApiResponse<>(true, "", dtoWithCard));
       invokePrivate(controller, "loadDeckData");
       FlashcardDeckDto after = (FlashcardDeckDto) getField(controller, "currentDeck");
       assertEquals(1, after.getDeck().size());
@@ -875,22 +939,29 @@ class FlashcardDeckControllerTest {
     setField(controller, "currentDeck", new FlashcardDeckDto("DeckLoad", List.of()));
 
     try (MockedStatic<ApiClient> api = Mockito.mockStatic(ApiClient.class)) {
-      api.when(() -> ApiClient.performApiRequest(anyString(), eq("GET"), isNull(), any(TypeReference.class)))
-      .thenReturn(new ApiResponse<>(false, ApiConstants.DECK_RETRIEVING_ERROR, null));
-      api.when(() -> ApiClient.showAlert(anyString(), anyString())).thenAnswer(inv -> null);
+      api.when(() -> ApiClient.performApiRequest(anyString(), eq("GET"),
+              isNull(), any(TypeReference.class)))
+          .thenReturn(new ApiResponse<>(false,
+              ApiConstants.DECK_RETRIEVING_ERROR, null));
+      api.when(() -> ApiClient.showAlert(anyString(), anyString()))
+          .thenAnswer(inv -> null);
       invokePrivate(controller, "loadDeckData");
-      api.verify(() -> ApiClient.showAlert(ApiConstants.LOAD_ERROR, ApiConstants.FAILED_TO_LOAD_DATA));
+      api.verify(() -> ApiClient.showAlert(ApiConstants.LOAD_ERROR,
+          ApiConstants.FAILED_TO_LOAD_DATA));
     }
 
     // exception: alert shown
     setField(controller, "currentDeck", new FlashcardDeckDto("DeckLoad", List.of()));
 
     try (MockedStatic<ApiClient> api = Mockito.mockStatic(ApiClient.class)) {
-      api.when(() -> ApiClient.performApiRequest(anyString(), eq("GET"), isNull(), any(TypeReference.class)))
-      .thenThrow(new RuntimeException(ApiConstants.SERVER_CONNECTION_ERROR));
-      api.when(() -> ApiClient.showAlert(anyString(), anyString())).thenAnswer(inv -> null);
+      api.when(() -> ApiClient.performApiRequest(anyString(), eq("GET"),
+              isNull(), any(TypeReference.class)))
+          .thenThrow(new RuntimeException(ApiConstants.SERVER_CONNECTION_ERROR));
+      api.when(() -> ApiClient.showAlert(anyString(), anyString()))
+          .thenAnswer(inv -> null);
       invokePrivate(controller, "loadDeckData");
-      api.verify(() -> ApiClient.showAlert(ApiConstants.LOAD_ERROR, ApiConstants.UNEXPECTED_ERROR));
+      api.verify(() -> ApiClient.showAlert(ApiConstants.LOAD_ERROR,
+          ApiConstants.UNEXPECTED_ERROR));
     }
   }
 
@@ -898,12 +969,12 @@ class FlashcardDeckControllerTest {
    * Tests selection listener enabling and disabling delete button.
    */
   @Test
-  public void testSelectionListener_enablesAndDisablesDelete() {
+  public void testSelectionListenerEnablesAndDisablesDelete() {
     runOnFxThread(() -> controller.initialize());
     assertTrue(deleteCardButton.isDisabled());
 
     FlashcardDeck d = new FlashcardDeck("D");
-    d.addFlashcard(new Flashcard("Q","A"));
+    d.addFlashcard(new Flashcard("Q", "A"));
     FlashcardDto item = mapper.toDto(d).getDeck().get(0);
 
     runOnFxThread(() -> {
@@ -921,7 +992,7 @@ class FlashcardDeckControllerTest {
    * Tests cell factory calls toString on FlashcardDto items.
    */
   @Test
-  public void coversCellFactoryLambda_withoutCallingUpdateItem() {
+  public void coversCellFactoryLambdaWithoutCallingUpdateItem() {
     runOnFxThread(() -> controller.initialize());
 
     var cb = listView.getCellFactory();
@@ -936,7 +1007,7 @@ class FlashcardDeckControllerTest {
    * Covers early return branch.
    */
   @Test
-  public void testWhenStartLearningButtonIsClicked_earlyReturn() {
+  public void testWhenStartLearningButtonIsClickedEarlyReturn() {
     setField(controller, "currentDeck", null);
     setField(controller, "startLearning", new Button());
     assertDoesNotThrow(() -> controller.whenStartLearningButtonIsClicked());
@@ -948,7 +1019,7 @@ class FlashcardDeckControllerTest {
    */
   @SuppressWarnings("unchecked")
   @Test
-  public void testCreate_validationMessage_noAlert() {
+  public void testCreateValidationMessageNoAlert() {
     FlashcardDeck deck = new FlashcardDeck("Deck1");
     setField(controller, "currentDeck", mapper.toDto(deck));
     setField(controller, "currentUsername", "u");
@@ -956,14 +1027,19 @@ class FlashcardDeckControllerTest {
     answerField.setText("A");
 
     try (MockedStatic<ApiClient> api = Mockito.mockStatic(ApiClient.class)) {
-      api.when(() -> ApiClient.performApiRequest(anyString(), eq("POST"), anyString(), any(TypeReference.class)))
-      .thenReturn(new ApiResponse<>(false, ApiConstants.FLASHCARD_QUESTION_ANSWER_EMPTY, null));
-      api.when(() -> ApiClient.showAlert(anyString(), anyString())).thenAnswer(inv -> null);
+      api.when(() -> ApiClient.performApiRequest(anyString(), eq("POST"),
+              anyString(), any(TypeReference.class)))
+          .thenReturn(new ApiResponse<>(false,
+              ApiConstants.FLASHCARD_QUESTION_ANSWER_EMPTY, null));
+      api.when(() -> ApiClient.showAlert(anyString(), anyString()))
+          .thenAnswer(inv -> null);
 
       controller.whenCreateButtonIsClicked();
 
-      api.verify(() -> ApiClient.showAlert(ApiConstants.SERVER_ERROR, ApiConstants.FLASHCARD_FAILED_TO_CREATE), never());
-      api.verify(() -> ApiClient.showAlert(ApiConstants.SERVER_ERROR, ApiConstants.UNEXPECTED_ERROR), never());
+      api.verify(() -> ApiClient.showAlert(ApiConstants.SERVER_ERROR,
+          ApiConstants.FLASHCARD_FAILED_TO_CREATE), never());
+      api.verify(() -> ApiClient.showAlert(ApiConstants.SERVER_ERROR,
+          ApiConstants.UNEXPECTED_ERROR), never());
     }
   }
 
@@ -973,7 +1049,7 @@ class FlashcardDeckControllerTest {
    */
   @SuppressWarnings("unchecked")
   @Test
-  public void testCreate_exception_showsGenericAlert() {
+  public void testCreateExceptionShowsGenericAlert() {
     FlashcardDeck deck = new FlashcardDeck("Deck1");
     setField(controller, "currentDeck", mapper.toDto(deck));
     setField(controller, "currentUsername", "u");
@@ -981,18 +1057,24 @@ class FlashcardDeckControllerTest {
     answerField.setText("A");
 
     try (MockedStatic<ApiClient> api = Mockito.mockStatic(ApiClient.class)) {
-      api.when(() -> ApiClient.performApiRequest(anyString(), eq("POST"), anyString(), any(TypeReference.class)))
-      .thenThrow(new RuntimeException(ApiConstants.SERVER_CONNECTION_ERROR));
+      api.when(() -> ApiClient.performApiRequest(anyString(), eq("POST"),
+              anyString(), any(TypeReference.class)))
+          .thenThrow(new RuntimeException(
+              ApiConstants.SERVER_CONNECTION_ERROR));
       AtomicReference<String> title = new AtomicReference<>();
       AtomicReference<String> msg = new AtomicReference<>();
       api.when(() -> ApiClient.showAlert(anyString(), anyString()))
-      .thenAnswer(inv -> { title.set(inv.getArgument(0)); msg.set(inv.getArgument(1)); return null; });
+          .thenAnswer(inv -> {
+            title.set(inv.getArgument(0));
+            msg.set(inv.getArgument(1));
+            return null;
+          });
 
       controller.whenCreateButtonIsClicked();
-            assertEquals(ApiConstants.SERVER_ERROR, title.get());
-            assertEquals(ApiConstants.UNEXPECTED_ERROR, msg.get());
-        }
+      assertEquals(ApiConstants.SERVER_ERROR, title.get());
+      assertEquals(ApiConstants.UNEXPECTED_ERROR, msg.get());
     }
+  }
 
   /**
    * Tests delete card logic when server error occurs.
@@ -1000,9 +1082,9 @@ class FlashcardDeckControllerTest {
    */
   @SuppressWarnings("unchecked")
   @Test
-  public void testDelete_serverError_showsAlert() {
+  public void testDeleteServerErrorShowsAlert() {
     FlashcardDeck deck = new FlashcardDeck("Deck1");
-    deck.addFlashcard(new Flashcard("Q","A"));
+    deck.addFlashcard(new Flashcard("Q", "A"));
     setField(controller, "currentDeck", mapper.toDto(deck));
     setField(controller, "currentUsername", "tester");
 
@@ -1011,17 +1093,18 @@ class FlashcardDeckControllerTest {
 
     try (MockedStatic<ApiClient> api = Mockito.mockStatic(ApiClient.class)) {
       api.when(() -> ApiClient.performApiRequest(
-          anyString(), eq("DELETE"), isNull(), any(TypeReference.class)))
-      .thenReturn(new ApiResponse<>(false, ApiConstants.FLASHCARD_FAILED_TO_DELETE, null));
+              anyString(), eq("DELETE"), isNull(), any(TypeReference.class)))
+          .thenReturn(new ApiResponse<>(false,
+              ApiConstants.FLASHCARD_FAILED_TO_DELETE, null));
 
       AtomicReference<String> title = new AtomicReference<>();
       AtomicReference<String> msg = new AtomicReference<>();
       api.when(() -> ApiClient.showAlert(anyString(), anyString()))
-      .thenAnswer(inv -> {
-        title.set(inv.getArgument(0));
-        msg.set(inv.getArgument(1));
-        return null;
-      });
+          .thenAnswer(inv -> {
+            title.set(inv.getArgument(0));
+            msg.set(inv.getArgument(1));
+            return null;
+          });
 
       controller.whenDeleteCardButtonIsClicked();
 
@@ -1036,25 +1119,32 @@ class FlashcardDeckControllerTest {
    */
   @SuppressWarnings("unchecked")
   @Test
-  public void testDelete_exception_showsGenericAlert() {
+  public void testDeleteExceptionShowsGenericAlert() {
     FlashcardDeck deck = new FlashcardDeck("Deck1");
-    deck.addFlashcard(new Flashcard("Q","A"));
+    deck.addFlashcard(new Flashcard("Q", "A"));
     setField(controller, "currentDeck", mapper.toDto(deck));
     setField(controller, "currentUsername", "u");
-    listView.setItems(FXCollections.observableArrayList(mapper.toDto(deck).getDeck()));
+    listView.setItems(FXCollections.observableArrayList(
+        mapper.toDto(deck).getDeck()));
     listView.getSelectionModel().select(0);
 
     try (MockedStatic<ApiClient> api = Mockito.mockStatic(ApiClient.class)) {
-      api.when(() -> ApiClient.performApiRequest(anyString(), eq("DELETE"), isNull(), any(TypeReference.class)))
-      .thenThrow(new RuntimeException(ApiConstants.SERVER_CONNECTION_ERROR));
+      api.when(() -> ApiClient.performApiRequest(anyString(), eq("DELETE"),
+              isNull(), any(TypeReference.class)))
+          .thenThrow(new RuntimeException(
+              ApiConstants.SERVER_CONNECTION_ERROR));
       AtomicReference<String> title = new AtomicReference<>();
       AtomicReference<String> msg = new AtomicReference<>();
       api.when(() -> ApiClient.showAlert(anyString(), anyString()))
-      .thenAnswer(inv -> { title.set(inv.getArgument(0)); msg.set(inv.getArgument(1)); return null; });
+          .thenAnswer(inv -> {
+            title.set(inv.getArgument(0));
+            msg.set(inv.getArgument(1));
+            return null;
+          });
 
       controller.whenDeleteCardButtonIsClicked();
-            assertEquals(ApiConstants.SERVER_ERROR, title.get());
-            assertEquals(ApiConstants.UNEXPECTED_ERROR, msg.get());
+      assertEquals(ApiConstants.SERVER_ERROR, title.get());
+      assertEquals(ApiConstants.UNEXPECTED_ERROR, msg.get());
     }
   }
 
@@ -1063,7 +1153,7 @@ class FlashcardDeckControllerTest {
    * Covers null username and null startLearning button branches.
    */
   @Test
-  public void testUpdateUi_usernameAndStartLearningNull() {
+  public void testUpdateUiUsernameAndStartLearningNull() {
     setField(controller, "username", null);
     setField(controller, "startLearning", null);
     FlashcardDeck d = new FlashcardDeck("DeckX");
@@ -1081,7 +1171,7 @@ class FlashcardDeckControllerTest {
    * Covers null username, null deck, and empty deck name branches.
    */
   @Test
-  public void testLoadDeckData_earlyReturn_usernameNull() {
+  public void testLoadDeckDataEarlyReturnUsernameNull() {
     setField(controller, "currentUsername", null);
     setField(controller, "currentDeck", new FlashcardDeckDto("DeckA", List.of()));
     invokePrivate(controller, "loadDeckData");
@@ -1093,7 +1183,7 @@ class FlashcardDeckControllerTest {
    * Covers null currentDeck branch.
    */
   @Test
-  public void testLoadDeckData_earlyReturn_deckNull() {
+  public void testLoadDeckDataEarlyReturnDeckNull() {
     setField(controller, "currentUsername", "u");
     setField(controller, "currentDeck", null);
     invokePrivate(controller, "loadDeckData");
@@ -1105,7 +1195,7 @@ class FlashcardDeckControllerTest {
    * Covers empty deck name branch.
    */
   @Test
-  public void testLoadDeckData_earlyReturn_emptyDeckName() {
+  public void testLoadDeckDataEarlyReturnEmptyDeckName() {
     setField(controller, "currentUsername", "u");
     setField(controller, "currentDeck", new FlashcardDeckDto("", List.of()));
     invokePrivate(controller, "loadDeckData");
@@ -1120,7 +1210,7 @@ class FlashcardDeckControllerTest {
    */
   @SuppressWarnings("unchecked")
   @Test
-  public void testCreate_resultNull_showsServerAlert() {
+  public void testCreateResultNullShowsServerAlert() {
     FlashcardDeck deck = new FlashcardDeck("Deck1");
     setField(controller, "currentDeck", mapper.toDto(deck));
     setField(controller, "currentUsername", "u");
@@ -1128,13 +1218,18 @@ class FlashcardDeckControllerTest {
     answerField.setText("A");
 
     try (MockedStatic<ApiClient> api = Mockito.mockStatic(ApiClient.class)) {
-      api.when(() -> ApiClient.performApiRequest(anyString(), eq("POST"), anyString(), any(TypeReference.class)))
-      .thenReturn(null);
+      api.when(() -> ApiClient.performApiRequest(anyString(), eq("POST"),
+              anyString(), any(TypeReference.class)))
+          .thenReturn(null);
 
       var title = new java.util.concurrent.atomic.AtomicReference<String>();
       var msg   = new java.util.concurrent.atomic.AtomicReference<String>();
       api.when(() -> ApiClient.showAlert(anyString(), anyString()))
-      .thenAnswer(inv -> { title.set(inv.getArgument(0)); msg.set(inv.getArgument(1)); return null; });
+          .thenAnswer(inv -> {
+            title.set(inv.getArgument(0));
+            msg.set(inv.getArgument(1));
+            return null;
+          });
 
       controller.whenCreateButtonIsClicked();
 
@@ -1149,22 +1244,28 @@ class FlashcardDeckControllerTest {
    */
   @SuppressWarnings("unchecked")
   @Test
-  public void testDelete_resultNull_showsServerAlert() {
+  public void testDeleteResultNullShowsServerAlert() {
     FlashcardDeck deck = new FlashcardDeck("Deck1");
-    deck.addFlashcard(new Flashcard("Q","A"));
+    deck.addFlashcard(new Flashcard("Q", "A"));
     setField(controller, "currentDeck", mapper.toDto(deck));
     setField(controller, "currentUsername", "u");
-    listView.setItems(FXCollections.observableArrayList(mapper.toDto(deck).getDeck()));
+    listView.setItems(FXCollections.observableArrayList(
+        mapper.toDto(deck).getDeck()));
     listView.getSelectionModel().select(0);
 
     try (MockedStatic<ApiClient> api = Mockito.mockStatic(ApiClient.class)) {
-      api.when(() -> ApiClient.performApiRequest(anyString(), eq("DELETE"), isNull(), any(TypeReference.class)))
-      .thenReturn(null);
+      api.when(() -> ApiClient.performApiRequest(anyString(), eq("DELETE"),
+              isNull(), any(TypeReference.class)))
+          .thenReturn(null);
 
       var title = new java.util.concurrent.atomic.AtomicReference<String>();
       var msg   = new java.util.concurrent.atomic.AtomicReference<String>();
       api.when(() -> ApiClient.showAlert(anyString(), anyString()))
-      .thenAnswer(inv -> { title.set(inv.getArgument(0)); msg.set(inv.getArgument(1)); return null; });
+          .thenAnswer(inv -> {
+            title.set(inv.getArgument(0));
+            msg.set(inv.getArgument(1));
+            return null;
+          });
 
       controller.whenDeleteCardButtonIsClicked();
 
@@ -1179,14 +1280,16 @@ class FlashcardDeckControllerTest {
    */
   @SuppressWarnings("unchecked")
   @Test
-  public void testLoadDeckData_resultNull_noAlert() {
+  public void testLoadDeckDataResultNullNoAlert() {
     setField(controller, "currentUsername", "u");
     setField(controller, "currentDeck", new FlashcardDeckDto("DeckA", List.of()));
 
     try (MockedStatic<ApiClient> api = Mockito.mockStatic(ApiClient.class)) {
-      api.when(() -> ApiClient.performApiRequest(anyString(), eq("GET"), isNull(), any(TypeReference.class)))
-      .thenReturn(null);
-      api.when(() -> ApiClient.showAlert(anyString(), anyString())).thenAnswer(inv -> null);
+      api.when(() -> ApiClient.performApiRequest(anyString(), eq("GET"),
+              isNull(), any(TypeReference.class)))
+          .thenReturn(null);
+      api.when(() -> ApiClient.showAlert(anyString(), anyString()))
+          .thenAnswer(inv -> null);
 
       invokePrivate(controller, "loadDeckData");
 
@@ -1203,19 +1306,20 @@ class FlashcardDeckControllerTest {
    */
   @SuppressWarnings("unchecked")
   @Test
-  public void testUpdateUi_deleteButtonNull_branch() {
+  public void testUpdateUiDeleteButtonNull_branch() {
     setField(controller, "deleteCardButton", null);
     setField(controller, "currentUsername", "u");
 
     FlashcardDeck d = new FlashcardDeck("DeckX");
-    d.addFlashcard(new Flashcard("Q","A"));
+    d.addFlashcard(new Flashcard("Q", "A"));
     FlashcardDeckDto dto = mapper.toDto(d);
     setField(controller, "currentDeck", dto);
 
     try (MockedStatic<ApiClient> api = Mockito.mockStatic(ApiClient.class)) {
       api.when(() -> ApiClient.performApiRequest(
-          anyString(), eq("GET"), isNull(), any(com.fasterxml.jackson.core.type.TypeReference.class)))
-      .thenReturn(new shared.ApiResponse<>(true, "", dto));
+              anyString(), eq("GET"), isNull(),
+              any(com.fasterxml.jackson.core.type.TypeReference.class)))
+          .thenReturn(new shared.ApiResponse<>(true, "", dto));
 
       runOnFxThread(() -> {
         controller.updateUi();
@@ -1228,11 +1332,12 @@ class FlashcardDeckControllerTest {
    * Tests ListCell updateItem method with valid FlashcardDto.
    * Covers the updateItem method in the ListCell created by setCellFactory.
    * 
+   *
    * @throws Exception if reflection fails or updateItem invocation fails
    * 
    */
   @Test
-  public void testListCell_updateItem_withValidFlashcard() throws Exception {
+  public void testListCellUpdateItemWithValidFlashcard() throws Exception {
     runOnFxThread(() -> {
       try {
         controller.initialize();
@@ -1262,12 +1367,11 @@ class FlashcardDeckControllerTest {
   /**
    * Tests ListCell updateItem method with empty cell.
    * Covers the empty branch in updateItem.
-   * 
+   *
    * @throws Exception if reflection fails or updateItem invocation fails
-   * 
    */
   @Test
-  public void testListCell_updateItem_withEmptyCell() throws Exception {
+  public void testListCellUpdateItemWithEmptyCell() throws Exception {
     runOnFxThread(() -> {
       try {
         controller.initialize();
@@ -1290,13 +1394,13 @@ class FlashcardDeckControllerTest {
 
   /**
    * Tests ListCell updateItem method with null item.
-   * Covers the null item branch in updateItem.
-   * 
+   *
+   * <p>Covers the null item branch in updateItem.
+   *
    * @throws Exception if reflection fails or updateItem invocation fails
-   * 
    */
   @Test
-  public void testListCell_updateItem_withNullItem() throws Exception {
+  public void testListCellUpdateItemWithNullItem() throws Exception {
     runOnFxThread(() -> {
       try {
         controller.initialize();
@@ -1319,17 +1423,18 @@ class FlashcardDeckControllerTest {
   
   /**
    * Helper method to find updateItem method in class hierarchy.
-   * 
+   *
    * @param clazz the class to search in
    * @return the updateItem method
    * @throws NoSuchMethodException if updateItem method is not found
    * 
    */
-  private java.lang.reflect.Method findUpdateItemMethod(Class<?> clazz) throws NoSuchMethodException {
+  private Method findUpdateItemMethod(Class<?> clazz) throws NoSuchMethodException {
     Class<?> current = clazz;
     while (current != null) {
       try {
-        return current.getDeclaredMethod("updateItem", Object.class, boolean.class);
+        return current
+        .getDeclaredMethod("updateItem", Object.class, boolean.class);
       } catch (NoSuchMethodException e) {
         current = current.getSuperclass();
       }
@@ -1339,7 +1444,7 @@ class FlashcardDeckControllerTest {
 
   /**
    * Injects a value into a private field using reflection.
-   * 
+   *
    * @param obj the object containing the field
    * @param fieldName the name of the field to set
    * @param value the value to inject
@@ -1358,10 +1463,9 @@ class FlashcardDeckControllerTest {
 
   /**
    * Runs a Runnable on the JavaFX Application Thread and waits for completion.
-   * 
+   *
    * @param runnable the task to run on the FX thread
    * @throws RuntimeException if interrupted while waiting for FX thread
-   * 
    */
   private void runOnFxThread(Runnable runnable) {
     if (Platform.isFxApplicationThread()) {
@@ -1386,12 +1490,11 @@ class FlashcardDeckControllerTest {
 
   /**
    * Retrieves a private field value using reflection.
-   * 
+   *
    * @param obj the object containing the field
    * @param fieldName the name of the field to retrieve
    * @return the value of the field
    * @throws RuntimeException if field access fails
-   * 
    */
   private Object getField(Object obj, String fieldName) {
     try {
@@ -1405,12 +1508,11 @@ class FlashcardDeckControllerTest {
 
   /**
    * Invokes a private method using reflection.
-   * 
+   *
    * @param obj the object containing the method
    * @param methodName the name of the method to invoke
    * @return the return value of the invoked method
    * @throws RuntimeException if method invocation fails
-   * 
    */
   private Object invokePrivate(Object obj, String methodName) {
     try {

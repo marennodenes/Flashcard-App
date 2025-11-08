@@ -1,45 +1,52 @@
 package ui;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
-
-import java.io.IOException;
-import java.net.http.HttpResponse;
-import java.util.Map;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
-
+import java.io.IOException;
+import java.net.http.HttpResponse;
+import java.util.Map;
 import org.junit.jupiter.api.Test;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 
 /**
  * Unit tests for the {@link ApiClient} utility class.
- * 
- * This test class verifies all public static methods in {@code ApiClient}, including:
+ *
+ * <p>This test class verifies all public static methods in {@code ApiClient},
+ * including:
  * - HTTP request handling (GET, POST, PUT)
  * - JSON serialization and deserialization
  * - Error handling and edge cases
  * - Coverage of the default constructor for JaCoCo
- * 
- * All major branches, error paths, and edge cases are tested to ensure robust and maintainable code.
- * 
+ *
+ * <p>All major branches, error paths, and edge cases are tested to ensure
+ * robust and maintainable code.
+ *
  * @author marennod
  * @author sofietw
+ *
  * @see ApiClient
- * 
  */
 public class ApiClientTest {
 
   /**
    * Tests the default constructor of {@link ApiClient} to ensure JaCoCo coverage.
-   * This test simply instantiates the class, which is a no-op and only exists
-   * to satisfy code coverage tools. The constructor is package-private and does not throw.
+   *
+   * <p>This test simply instantiates the class, which is a no-op and only
+   * exists to satisfy code coverage tools. The constructor is package-private
+   * and does not throw.
    */
   @Test
   public void testApiClientConstructorCoverage() {
-      assertNotNull(new ApiClient());
+    assertNotNull(new ApiClient());
   }
 
   /**
@@ -56,53 +63,68 @@ public class ApiClientTest {
   }
 
   /**
-   * Verifies that convertObjectToJson throws JsonProcessingException for non-serializable objects.
+   * Verifies that convertObjectToJson throws JsonProcessingException for
+   * non-serializable objects.
    */
   @Test
   public void testConvertObjectToJsonThrowsOnNonSerializable() {
     Object nonSerializable = new Object() {
-    private void writeObject(java.io.ObjectOutputStream out) throws IOException {
+      private void writeObject(java.io.ObjectOutputStream out)
+          throws IOException {
         throw new IOException("fail");
-    }
+      }
     };
-    assertThrows(JsonProcessingException.class, () -> ApiClient.convertObjectToJson(nonSerializable));
+    assertThrows(JsonProcessingException.class,
+        () -> ApiClient.convertObjectToJson(nonSerializable));
   }
 
   /**
-   * Verifies that parseResponse throws JsonProcessingException for malformed JSON input.
+   * Verifies that parseResponse throws JsonProcessingException for
+   * malformed JSON input.
    */
   @Test
   public void testParseResponseThrowsOnMalformedJson() {
     TypeReference<Map<String, String>> typeRef = new TypeReference<>() {};
-    assertThrows(JsonProcessingException.class, () -> ApiClient.parseResponse("not-json", typeRef));
+    assertThrows(JsonProcessingException.class,
+        () -> ApiClient.parseResponse("not-json", typeRef));
   }
 
   /**
-   * Verifies that sendRequest throws IllegalArgumentException for null or blank URI/method.
+   * Verifies that sendRequest throws IllegalArgumentException for null or
+   * blank URI/method.
    */
   @Test
   public void testSendRequestThrowsOnNullOrBlankUriOrMethod() {
-    assertThrows(IllegalArgumentException.class, () -> ApiClient.sendRequest(null, "GET", null));
-    assertThrows(IllegalArgumentException.class, () -> ApiClient.sendRequest(" ", "GET", null));
-    assertThrows(IllegalArgumentException.class, () -> ApiClient.sendRequest("http://localhost", null, null));
-    assertThrows(IllegalArgumentException.class, () -> ApiClient.sendRequest("http://localhost", " ", null));
+    assertThrows(IllegalArgumentException.class,
+        () -> ApiClient.sendRequest(null, "GET", null));
+    assertThrows(IllegalArgumentException.class,
+        () -> ApiClient.sendRequest(" ", "GET", null));
+    assertThrows(IllegalArgumentException.class,
+        () -> ApiClient.sendRequest("http://localhost", null, null));
+    assertThrows(IllegalArgumentException.class,
+        () -> ApiClient.sendRequest("http://localhost", " ", null));
   }
 
   /**
-   * Verifies that sendRequest throws IllegalArgumentException for unsupported HTTP methods.
+   * Verifies that sendRequest throws IllegalArgumentException for
+   * unsupported HTTP methods.
    */
   @Test
   public void testSendRequestThrowsOnUnsupportedMethod() {
-    assertThrows(IllegalArgumentException.class, () -> ApiClient.sendRequest("http://localhost", "PATCH", null));
+    assertThrows(IllegalArgumentException.class,
+        () -> ApiClient.sendRequest("http://localhost", "PATCH", null));
   }
 
   /**
-   * Verifies that sendRequest throws IllegalArgumentException for missing or blank JSON body on POST/PUT.
+   * Verifies that sendRequest throws IllegalArgumentException for missing or
+   * blank JSON body on POST/PUT.
    */
   @Test
   public void testSendRequestThrowsOnMissingJsonForPostPut() {
-    assertThrows(IllegalArgumentException.class, () -> ApiClient.sendRequest("http://localhost", "POST", null));
-    assertThrows(IllegalArgumentException.class, () -> ApiClient.sendRequest("http://localhost", "PUT", " "));
+    assertThrows(IllegalArgumentException.class,
+        () -> ApiClient.sendRequest("http://localhost", "POST", null));
+    assertThrows(IllegalArgumentException.class,
+        () -> ApiClient.sendRequest("http://localhost", "PUT", " "));
   }
 
   /**
@@ -120,10 +142,11 @@ public class ApiClientTest {
    */
   @Test
   public void testSendRequestPostMethod() throws Exception {
-      String json = "{\"foo\":\"bar\"}";
-      HttpResponse<String> response = ApiClient.sendRequest("https://postman-echo.com/post", "POST", json);
-      assertNotNull(response);
-      assertTrue(response.statusCode() >= 200);
+    String json = "{\"foo\":\"bar\"}";
+    HttpResponse<String> response = ApiClient.sendRequest(
+        "https://postman-echo.com/post", "POST", json);
+    assertNotNull(response);
+    assertTrue(response.statusCode() >= 200);
   }
 
   /**
@@ -138,10 +161,10 @@ public class ApiClientTest {
   }
 
   /**
-   * Tests performApiRequest for a successful GET request and valid JSON response.
-   * 
+   * Tests performApiRequest for a successful GET request and valid
+   * JSON response.
+   *
    * @throws Exception if mocking fails
-   * 
    */
   @SuppressWarnings("unchecked")
   @Test
@@ -155,18 +178,21 @@ public class ApiClientTest {
     when(mockResponse.statusCode()).thenReturn(200);
     when(mockResponse.body()).thenReturn(responseJson);
 
-    try (MockedStatic<ApiClient> apiMock = Mockito.mockStatic(ApiClient.class, Mockito.CALLS_REAL_METHODS)) {
-      apiMock.when(() -> ApiClient.sendRequest(url, method, null)).thenReturn(mockResponse);
-      Map<String, String> result = ApiClient.performApiRequest(url, method, null, typeRef);
+    try (MockedStatic<ApiClient> apiMock =
+        Mockito.mockStatic(ApiClient.class, Mockito.CALLS_REAL_METHODS)) {
+      apiMock.when(() -> ApiClient.sendRequest(url, method, null))
+          .thenReturn(mockResponse);
+      Map<String, String> result =
+          ApiClient.performApiRequest(url, method, null, typeRef);
       assertEquals("value", result.get("key"));
     }
   }
 
   /**
-   * Verifies that performApiRequest throws RuntimeException for server error status codes.
-   * 
+   * Verifies that performApiRequest throws RuntimeException for server
+   * error status codes.
+   *
    * @throws Exception if mocking fails
-   * 
    */
   @SuppressWarnings("unchecked")
   @Test
@@ -178,30 +204,40 @@ public class ApiClientTest {
     when(mockResponse.statusCode()).thenReturn(500);
     when(mockResponse.body()).thenReturn("error");
 
-    try (MockedStatic<ApiClient> apiMock = Mockito.mockStatic(ApiClient.class, Mockito.CALLS_REAL_METHODS)) {
-      apiMock.when(() -> ApiClient.sendRequest(url, method, null)).thenReturn(mockResponse);
-      RuntimeException ex = assertThrows(RuntimeException.class, () -> ApiClient.performApiRequest(url, method, null, new TypeReference<>() {}));
+    try (MockedStatic<ApiClient> apiMock =
+        Mockito.mockStatic(ApiClient.class, Mockito.CALLS_REAL_METHODS)) {
+      apiMock.when(() -> ApiClient.sendRequest(url, method, null))
+          .thenReturn(mockResponse);
+      RuntimeException ex = assertThrows(RuntimeException.class,
+          () -> ApiClient.performApiRequest(url, method, null,
+              new TypeReference<>() {}));
       assertTrue(ex.getMessage().contains("Server error"));
     }
   }
 
   /**
-   * Verifies that performApiRequest throws RuntimeException when sendRequest throws an exception.
+   * Verifies that performApiRequest throws RuntimeException when
+   * sendRequest throws an exception.
    */
   @Test
   public void testPerformApiRequestThrowsOnSendRequestException() {
     String url = "http://localhost";
     String method = "GET";
 
-    try (MockedStatic<ApiClient> apiMock = Mockito.mockStatic(ApiClient.class, Mockito.CALLS_REAL_METHODS)) {
-      apiMock.when(() -> ApiClient.sendRequest(url, method, null)).thenThrow(new IOException("fail"));
-      RuntimeException ex = assertThrows(RuntimeException.class, () -> ApiClient.performApiRequest(url, method, null, new TypeReference<>() {}));
+    try (MockedStatic<ApiClient> apiMock =
+        Mockito.mockStatic(ApiClient.class, Mockito.CALLS_REAL_METHODS)) {
+      apiMock.when(() -> ApiClient.sendRequest(url, method, null))
+          .thenThrow(new IOException("fail"));
+      RuntimeException ex = assertThrows(RuntimeException.class,
+          () -> ApiClient.performApiRequest(url, method, null,
+              new TypeReference<>() {}));
       assertTrue(ex.getMessage().contains("Request failed"));
     }
   }
 
   /**
-   * Verifies that performApiRequest throws RuntimeException when convertObjectToJson throws an exception.
+   * Verifies that performApiRequest throws RuntimeException when
+   * convertObjectToJson throws an exception.
    */
   @Test
   public void testPerformApiRequestThrowsOnConvertObjectToJsonException() {
@@ -209,21 +245,27 @@ public class ApiClientTest {
     String method = "POST";
     Object badObject = new Object() {
       @Override
-      public String toString() { throw new RuntimeException("fail"); }
+      public String toString() {
+        throw new RuntimeException("fail");
+      }
     };
 
-    try (MockedStatic<ApiClient> apiMock = Mockito.mockStatic(ApiClient.class, Mockito.CALLS_REAL_METHODS)) {
-      apiMock.when(() -> ApiClient.convertObjectToJson(badObject)).thenThrow(new RuntimeException("fail"));
-      RuntimeException ex = assertThrows(RuntimeException.class, () -> ApiClient.performApiRequest(url, method, badObject, new TypeReference<>() {}));
+    try (MockedStatic<ApiClient> apiMock =
+        Mockito.mockStatic(ApiClient.class, Mockito.CALLS_REAL_METHODS)) {
+      apiMock.when(() -> ApiClient.convertObjectToJson(badObject))
+          .thenThrow(new RuntimeException("fail"));
+      RuntimeException ex = assertThrows(RuntimeException.class,
+          () -> ApiClient.performApiRequest(url, method, badObject,
+              new TypeReference<>() {}));
       assertTrue(ex.getMessage().contains("Request failed"));
     }
   }
 
   /**
-   * Verifies that performApiRequest throws RuntimeException when parseResponse throws an exception.
-   * 
+   * Verifies that performApiRequest throws RuntimeException when
+   * parseResponse throws an exception.
+   *
    * @throws Exception if mocking fails
-   * 
    */
   @SuppressWarnings("unchecked")
   @Test
@@ -236,19 +278,23 @@ public class ApiClientTest {
     when(mockResponse.statusCode()).thenReturn(200);
     when(mockResponse.body()).thenReturn("not-json");
 
-    try (MockedStatic<ApiClient> apiMock = Mockito.mockStatic(ApiClient.class, Mockito.CALLS_REAL_METHODS)) {
-      apiMock.when(() -> ApiClient.sendRequest(url, method, null)).thenReturn(mockResponse);
-      apiMock.when(() -> ApiClient.parseResponse("not-json", typeRef)).thenThrow(new JsonProcessingException("fail") {});
-      RuntimeException ex = assertThrows(RuntimeException.class, () -> ApiClient.performApiRequest(url, method, null, typeRef));
+    try (MockedStatic<ApiClient> apiMock =
+        Mockito.mockStatic(ApiClient.class, Mockito.CALLS_REAL_METHODS)) {
+      apiMock.when(() -> ApiClient.sendRequest(url, method, null))
+          .thenReturn(mockResponse);
+      apiMock.when(() -> ApiClient.parseResponse("not-json", typeRef))
+          .thenThrow(new JsonProcessingException("fail") {});
+      RuntimeException ex = assertThrows(RuntimeException.class,
+          () -> ApiClient.performApiRequest(url, method, null, typeRef));
       assertTrue(ex.getMessage().contains("Request failed"));
     }
   }
 
   /**
-   * Verifies that performApiRequest returns null if responseType is null on 2xx status code.
-   * 
+   * Verifies that performApiRequest returns null if responseType is null
+   * on 2xx status code.
+   *
    * @throws Exception if mocking fails
-   * 
    */
   @SuppressWarnings("unchecked")
   @Test
@@ -260,17 +306,19 @@ public class ApiClientTest {
     when(mockResponse.statusCode()).thenReturn(200);
     when(mockResponse.body()).thenReturn("{\"key\":\"value\"}");
 
-    try (MockedStatic<ApiClient> apiMock = Mockito.mockStatic(ApiClient.class, Mockito.CALLS_REAL_METHODS)) {
-      apiMock.when(() -> ApiClient.sendRequest(url, method, null)).thenReturn(mockResponse);
+    try (MockedStatic<ApiClient> apiMock =
+        Mockito.mockStatic(ApiClient.class, Mockito.CALLS_REAL_METHODS)) {
+      apiMock.when(() -> ApiClient.sendRequest(url, method, null))
+          .thenReturn(mockResponse);
       assertNull(ApiClient.performApiRequest(url, method, null, null));
     }
   }
 
   /**
-   * Verifies that performApiRequest returns null if response body is null on 2xx status code.
-   * 
+   * Verifies that performApiRequest returns null if response body is null
+   * on 2xx status code.
+   *
    * @throws Exception if mocking fails
-   * 
    */
   @SuppressWarnings("unchecked")
   @Test
@@ -283,17 +331,19 @@ public class ApiClientTest {
     when(mockResponse.statusCode()).thenReturn(200);
     when(mockResponse.body()).thenReturn(null);
 
-    try (MockedStatic<ApiClient> apiMock = Mockito.mockStatic(ApiClient.class, Mockito.CALLS_REAL_METHODS)) {
-      apiMock.when(() -> ApiClient.sendRequest(url, method, null)).thenReturn(mockResponse);
+    try (MockedStatic<ApiClient> apiMock =
+        Mockito.mockStatic(ApiClient.class, Mockito.CALLS_REAL_METHODS)) {
+      apiMock.when(() -> ApiClient.sendRequest(url, method, null))
+          .thenReturn(mockResponse);
       assertNull(ApiClient.performApiRequest(url, method, null, typeRef));
     }
   }
 
   /**
-   * Verifies that performApiRequest returns null if response body is empty/whitespace on 2xx status code.
-   * 
+   * Verifies that performApiRequest returns null if response body is
+   * empty/whitespace on 2xx status code.
+   *
    * @throws Exception if mocking fails
-   * 
    */
   @SuppressWarnings("unchecked")
   @Test
@@ -306,21 +356,24 @@ public class ApiClientTest {
     when(mockResponse.statusCode()).thenReturn(200);
     when(mockResponse.body()).thenReturn("   ");
 
-    try (MockedStatic<ApiClient> apiMock = Mockito.mockStatic(ApiClient.class, Mockito.CALLS_REAL_METHODS)) {
-      apiMock.when(() -> ApiClient.sendRequest(url, method, null)).thenReturn(mockResponse);
+    try (MockedStatic<ApiClient> apiMock =
+        Mockito.mockStatic(ApiClient.class, Mockito.CALLS_REAL_METHODS)) {
+      apiMock.when(() -> ApiClient.sendRequest(url, method, null))
+          .thenReturn(mockResponse);
       assertNull(ApiClient.performApiRequest(url, method, null, typeRef));
     }
   }
 
   /**
-   * Verifies that performApiRequest returns null for 2xx status code and parseResponse returns null.
-   * 
+   * Verifies that performApiRequest returns null for 2xx status code and
+   * parseResponse returns null.
+   *
    * @throws Exception if mocking fails
-   * 
    */
   @SuppressWarnings("unchecked")
   @Test
-  public void testPerformApiRequestReturnsNullFor2xxStatusCodeAndParseResponseReturnsNull() throws Exception {
+  public void testPerformApiRequestReturnsNullFor2xx()
+      throws Exception {
     String url = "http://localhost";
     String method = "GET";
     TypeReference<Map<String, String>> typeRef = new TypeReference<>() {};
@@ -329,22 +382,25 @@ public class ApiClientTest {
     when(mockResponse.statusCode()).thenReturn(200);
     when(mockResponse.body()).thenReturn("{\"key\":\"value\"}");
 
-    try (MockedStatic<ApiClient> apiMock = Mockito.mockStatic(ApiClient.class, Mockito.CALLS_REAL_METHODS)) {
-      apiMock.when(() -> ApiClient.sendRequest(url, method, null)).thenReturn(mockResponse);
-      apiMock.when(() -> ApiClient.parseResponse("{\"key\":\"value\"}", typeRef)).thenReturn(null);
+    try (MockedStatic<ApiClient> apiMock =
+        Mockito.mockStatic(ApiClient.class, Mockito.CALLS_REAL_METHODS)) {
+      apiMock.when(() -> ApiClient.sendRequest(url, method, null))
+          .thenReturn(mockResponse);
+      apiMock.when(() -> ApiClient.parseResponse("{\"key\":\"value\"}",
+          typeRef)).thenReturn(null);
       assertNull(ApiClient.performApiRequest(url, method, null, typeRef));
     }
   }
 
   /**
-   * Verifies that performApiRequest throws RuntimeException for non-2xx status code and null body.
-   * 
+   * Verifies that performApiRequest throws RuntimeException for non-2xx
+   * status code and null body.
+   *
    * @throws Exception if mocking fails
-   * 
    */
   @SuppressWarnings("unchecked")
   @Test
-  public void testPerformApiRequestReturnsNullForNon2xxStatusCodeAndNullBody() throws Exception {
+  public void testPerformApiRequestReturnsNull() throws Exception {
     String url = "http://localhost";
     String method = "GET";
     TypeReference<Map<String, String>> typeRef = new TypeReference<>() {};
@@ -353,9 +409,12 @@ public class ApiClientTest {
     when(mockResponse.statusCode()).thenReturn(404);
     when(mockResponse.body()).thenReturn(null);
 
-    try (MockedStatic<ApiClient> apiMock = Mockito.mockStatic(ApiClient.class, Mockito.CALLS_REAL_METHODS)) {
-      apiMock.when(() -> ApiClient.sendRequest(url, method, null)).thenReturn(mockResponse);
-      RuntimeException ex = assertThrows(RuntimeException.class, () -> ApiClient.performApiRequest(url, method, null, typeRef));
+    try (MockedStatic<ApiClient> apiMock =
+        Mockito.mockStatic(ApiClient.class, Mockito.CALLS_REAL_METHODS)) {
+      apiMock.when(() -> ApiClient.sendRequest(url, method, null))
+          .thenReturn(mockResponse);
+      RuntimeException ex = assertThrows(RuntimeException.class,
+          () -> ApiClient.performApiRequest(url, method, null, typeRef));
       assertTrue(ex.getMessage().contains("Server error"));
     }
   }

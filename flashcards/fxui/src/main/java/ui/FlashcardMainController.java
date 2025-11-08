@@ -3,6 +3,11 @@ package ui;
 import com.fasterxml.jackson.core.type.TypeReference;
 import dto.FlashcardDeckDto;
 import dto.FlashcardDeckManagerDto;
+import java.io.IOException;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.List;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -11,18 +16,10 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.scene.text.Text;
-import java.io.IOException;
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.List;
 import javafx.stage.Stage;
 import shared.ApiConstants;
 import shared.ApiEndpoints;
 import shared.ApiResponse;
-
-
-
 /**
  * Controller for the main flashcard deck management interface. Handles
  * displaying, creating, editing, and deleting flashcard decks. Provides
@@ -33,6 +30,7 @@ import shared.ApiResponse;
  * @author marennod
  * @author marieroe
  */
+
 public class FlashcardMainController {
   @FXML private Button deck_1;
   @FXML private Button deck_2;

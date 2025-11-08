@@ -9,33 +9,31 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.mockStatic;
 import static org.mockito.Mockito.when;
 
+import javafx.scene.control.Button;
+import javafx.scene.control.TextField;
+import javafx.scene.text.Text;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.MockedStatic;
 import org.testfx.framework.junit5.ApplicationExtension;
-
 import shared.ApiConstants;
 import shared.ApiResponse;
 
-import javafx.scene.control.Button;
-import javafx.scene.control.TextField;
-import javafx.scene.text.Text;
-
 /**
  * Test suite for {@link FlashcardSignUpController}.
- * 
- * Validates input validation, user creation with mocked API responses,
+ *
+ * <p>Validates input validation, user creation with mocked API responses,
  * navigation, error handling, and UI component behavior.
  * Uses TestFX for headless testing, Mockito for mocking, and reflection
  * for accessing private methods.
- * 
+ *
  * @author ailinat
  * @author marennod
  * @author AI-assisted with Claude Sonnet 4.5
- * 
+ *
  * @see FlashcardSignUpController
- * 
+ *
  */
 @ExtendWith(ApplicationExtension.class)
 public class FlashcardSignUpControllerTest {
@@ -48,11 +46,62 @@ public class FlashcardSignUpControllerTest {
    */
   @BeforeAll
   public static void setupHeadless() {
-      System.setProperty("java.awt.headless", "true");
-      System.setProperty("testfx.robot", "glass");
-      System.setProperty("testfx.headless", "true");
-      System.setProperty("prism.order", "sw");
-      System.setProperty("prism.text", "t2k");
+    System.setProperty("java.awt.headless", "true");
+    System.setProperty("testfx.robot", "glass");
+    System.setProperty("testfx.headless", "true");
+    System.setProperty("prism.order", "sw");
+    System.setProperty("prism.text", "t2k");
+  }
+
+  /**
+   * Helper method to mock all UI components of the controller.
+   * Uses reflection to inject mock JavaFX components into private fields.
+   *
+   * @param controller the controller instance to mock components for
+   *
+   * @throws Exception if method invocation or field access via reflection fails
+   */
+  private void mockAllUiComponents(FlashcardSignUpController controller) throws Exception {
+    var alertField = FlashcardSignUpController.class.getDeclaredField("alertMessage");
+    alertField.setAccessible(true);
+    alertField.set(controller, new Text());
+      
+    var exField = FlashcardSignUpController.class.getDeclaredField("ex");
+    exField.setAccessible(true);
+    exField.set(controller, new Text());
+      
+    var usernameField =
+        FlashcardSignUpController.class.getDeclaredField("usernameField");
+    usernameField.setAccessible(true);
+    if (usernameField.get(controller) == null) {
+      usernameField.set(controller, new TextField());
+    }
+      
+    var passwordField =
+        FlashcardSignUpController.class.getDeclaredField("passwordField");
+    passwordField.setAccessible(true);
+    if (passwordField.get(controller) == null) {
+      passwordField.set(controller, new TextField());
+    }
+      
+    var confirmPasswordField =
+        FlashcardSignUpController.class.getDeclaredField("confirmPasswordField");
+    confirmPasswordField.setAccessible(true);
+    if (confirmPasswordField.get(controller) == null) {
+      confirmPasswordField.set(controller, new TextField());
+    }
+      
+    var backButton = FlashcardSignUpController.class.getDeclaredField("backButton");
+    backButton.setAccessible(true);
+    if (backButton.get(controller) == null) {
+      backButton.set(controller, new Button());
+    }
+      
+    var signInButton = FlashcardSignUpController.class.getDeclaredField("signInButton");
+    signInButton.setAccessible(true);
+    if (signInButton.get(controller) == null) {
+      signInButton.set(controller, new Button());
+    }
   }
 
   /**
@@ -66,16 +115,17 @@ public class FlashcardSignUpControllerTest {
 
   /**
    * Tests validateInput method with valid username and matching passwords.
-   * 
+   *
    * @throws Exception if method invocation or field access via reflection fails
-   * 
+   *
    */
   @Test
-  public void testValidateInput_withValidData() throws Exception {
+  public void testValidateInputWithValidData() throws Exception {
     controller = new FlashcardSignUpController();
       
     // Use reflection to call private validateInput method
-    var method = FlashcardSignUpController.class.getDeclaredMethod("validateInput", String.class, String.class, String.class);
+    var method = FlashcardSignUpController.class.getDeclaredMethod(
+        "validateInput", String.class, String.class, String.class);
     method.setAccessible(true);
       
     boolean result = (Boolean) method.invoke(controller, "testuser", "password123", "password123");
@@ -84,18 +134,19 @@ public class FlashcardSignUpControllerTest {
 
   /**
    * Tests validateInput method when all fields are empty.
-   * 
+   *
    * @throws Exception if method invocation or field access via reflection fails
-   * 
+   *
    */
   @Test
-  public void testValidateInput_withEmptyFields() throws Exception {
+  public void testValidateInputWithEmptyFields() throws Exception {
     controller = new FlashcardSignUpController();
       
     // Mock UI components needed by showInlineError -> updateUi
     mockAllUiComponents(controller);
       
-    var method = FlashcardSignUpController.class.getDeclaredMethod("validateInput", String.class, String.class, String.class);
+    var method = FlashcardSignUpController.class.getDeclaredMethod(
+        "validateInput", String.class, String.class, String.class);
     method.setAccessible(true);
       
     boolean result = (Boolean) method.invoke(controller, "", "", "");
@@ -107,18 +158,19 @@ public class FlashcardSignUpControllerTest {
 
   /**
    * Tests validateInput method when passwords do not match.
-   * 
+   *
    * @throws Exception if method invocation or field access via reflection fails
-   * 
+   *
    */
   @Test
-  public void testValidateInput_withMismatchedPasswords() throws Exception {
+  public void testValidateInputWithMismatchedPasswords() throws Exception {
     controller = new FlashcardSignUpController();
       
     // Mock UI components needed by showInlineError -> updateUi
     mockAllUiComponents(controller);
       
-    var method = FlashcardSignUpController.class.getDeclaredMethod("validateInput", String.class, String.class, String.class);
+    var method = FlashcardSignUpController.class.getDeclaredMethod(
+        "validateInput", String.class, String.class, String.class);
     method.setAccessible(true);
       
     boolean result = (Boolean) method.invoke(controller, "user", "pass1", "pass2");
@@ -130,9 +182,9 @@ public class FlashcardSignUpControllerTest {
 
   /**
    * Tests initialize method with mocked UI components.
-   * 
+   *
    * @throws Exception if method invocation or field access via reflection fails
-   * 
+   *
    */
   @Test
   public void testInitializeWithMockedComponents() throws Exception {
@@ -158,9 +210,9 @@ public class FlashcardSignUpControllerTest {
 
   /**
    * Tests updateUi method with mocked components and error state.
-   * 
+   *
    * @throws Exception if method invocation or field access via reflection fails
-   * 
+   *
    */
   @Test
   public void testUpdateUiWithMockedComponents() throws Exception {
@@ -175,7 +227,8 @@ public class FlashcardSignUpControllerTest {
     exField.setAccessible(true);
     exField.set(controller, new Text());
       
-    var showAlertField = FlashcardSignUpController.class.getDeclaredField("showAlert");
+    var showAlertField =
+        FlashcardSignUpController.class.getDeclaredField("showAlert");
     showAlertField.setAccessible(true);
     showAlertField.set(controller, true);
       
@@ -193,9 +246,9 @@ public class FlashcardSignUpControllerTest {
 
   /**
    * Tests whenSignInButtonClicked method with empty input fields.
-   * 
+   *
    * @throws Exception if method invocation or field access via reflection fails
-   * 
+   *
    */
   @Test
   public void testWhenSignInButtonClickedWithMockedFields() throws Exception {
@@ -205,20 +258,24 @@ public class FlashcardSignUpControllerTest {
     mockAllUiComponents(controller);
       
     // Set up mock text fields with empty values
-    var usernameField = FlashcardSignUpController.class.getDeclaredField("usernameField");
+    var usernameField =
+        FlashcardSignUpController.class.getDeclaredField("usernameField");
     usernameField.setAccessible(true);
     usernameField.set(controller, new TextField(""));
       
-    var passwordField = FlashcardSignUpController.class.getDeclaredField("passwordField");
+    var passwordField =
+        FlashcardSignUpController.class.getDeclaredField("passwordField");
     passwordField.setAccessible(true);
     passwordField.set(controller, new TextField(""));
       
-    var confirmPasswordField = FlashcardSignUpController.class.getDeclaredField("confirmPasswordField");
+    var confirmPasswordField =
+        FlashcardSignUpController.class.getDeclaredField("confirmPasswordField");
     confirmPasswordField.setAccessible(true);
     confirmPasswordField.set(controller, new TextField(""));
       
     // Call whenSignInButtonClicked
-    var method = FlashcardSignUpController.class.getDeclaredMethod("whenSignInButtonClicked");
+    var method =
+        FlashcardSignUpController.class.getDeclaredMethod("whenSignInButtonClicked");
     method.setAccessible(true);
     method.invoke(controller);
       
@@ -230,9 +287,9 @@ public class FlashcardSignUpControllerTest {
 
   /**
    * Tests createUser method execution without API mocking.
-   * 
+   *
    * @throws Exception if method invocation or field access via reflection fails
-   * 
+   *
    */
   @Test
   public void testCreateUserMethodExecution() throws Exception {
@@ -248,7 +305,8 @@ public class FlashcardSignUpControllerTest {
     exField.set(controller, new Text());
       
     try {
-      var method = FlashcardSignUpController.class.getDeclaredMethod("createUser", String.class, String.class);
+      var method = FlashcardSignUpController.class.getDeclaredMethod(
+          "createUser", String.class, String.class);
       method.setAccessible(true);
       method.invoke(controller, "testuser", "password123");
     } catch (Exception e) {
@@ -260,16 +318,17 @@ public class FlashcardSignUpControllerTest {
 
   /**
    * Tests navigateToMainApp method execution.
-   * 
+   *
    * @throws Exception if method invocation or field access via reflection fails
-   * 
+   *
    */
   @Test
   public void testNavigateToMainAppExecution() throws Exception {
     controller = new FlashcardSignUpController();
       
     try {
-      var method = FlashcardSignUpController.class.getDeclaredMethod("navigateToMainApp", String.class);
+      var method = FlashcardSignUpController.class.getDeclaredMethod(
+          "navigateToMainApp", String.class);
       method.setAccessible(true);
       method.invoke(controller, "testuser");
     } catch (Exception e) {
@@ -281,9 +340,9 @@ public class FlashcardSignUpControllerTest {
 
   /**
    * Tests whenBackButtonIsClicked method execution.
-   * 
+   *
    * @throws Exception if field access or method invocation via reflection fails
-   * 
+   *
    */
   @Test
   public void testWhenBackButtonIsClickedExecution() throws Exception {
@@ -306,35 +365,40 @@ public class FlashcardSignUpControllerTest {
   }
 
   /**
-   * Tests whenSignInButtonClicked method with valid input that triggers createUser.
-   * 
+   * Tests whenSignInButtonClicked method with valid input that triggers
+   * createUser.
+   *
    * @throws Exception if field access or method invocation via reflection fails
    * @throws InterruptedException if thread sleep is interrupted
-   * 
+   *
    */
   @Test
-  public void testWhenSignInButtonClicked_withValidInput() throws Exception {
+  public void testWhenSignInButtonClickedWithValidInput() throws Exception {
     controller = new FlashcardSignUpController();
       
     // Mock ALL UI components
     mockAllUiComponents(controller);
       
     // Set up text fields with VALID values
-    var usernameField = FlashcardSignUpController.class.getDeclaredField("usernameField");
+    var usernameField =
+        FlashcardSignUpController.class.getDeclaredField("usernameField");
     usernameField.setAccessible(true);
     usernameField.set(controller, new TextField("validuser"));
       
-    var passwordField = FlashcardSignUpController.class.getDeclaredField("passwordField");
+    var passwordField =
+        FlashcardSignUpController.class.getDeclaredField("passwordField");
     passwordField.setAccessible(true);
     passwordField.set(controller, new TextField("password123"));
       
-    var confirmPasswordField = FlashcardSignUpController.class.getDeclaredField("confirmPasswordField");
+    var confirmPasswordField =
+        FlashcardSignUpController.class.getDeclaredField("confirmPasswordField");
     confirmPasswordField.setAccessible(true);
     confirmPasswordField.set(controller, new TextField("password123"));
       
     // Call whenSignInButtonClicked - will call createUser
     try {
-      var method = FlashcardSignUpController.class.getDeclaredMethod("whenSignInButtonClicked");
+      var method =
+          FlashcardSignUpController.class.getDeclaredMethod("whenSignInButtonClicked");
       method.setAccessible(true);
       method.invoke(controller);
     } catch (Exception e) {
@@ -347,19 +411,20 @@ public class FlashcardSignUpControllerTest {
 
   /**
    * Tests showInlineError method with various error messages.
-   * 
+   *
    * @throws Exception if method invocation via reflection fails
    * @throws InterruptedException if thread sleep is interrupted
-   * 
+   *
    */
   @Test
-  public void testShowInlineError_withDifferentMessages() throws Exception {
+  public void testShowInlineErrorWithDifferentMessages() throws Exception {
     controller = new FlashcardSignUpController();
       
     mockAllUiComponents(controller);
       
     // Test with different error messages to cover branches
-    var method = FlashcardSignUpController.class.getDeclaredMethod("showInlineError", String.class);
+    var method = FlashcardSignUpController.class.getDeclaredMethod(
+        "showInlineError", String.class);
     method.setAccessible(true);
       
     method.invoke(controller, "Username required");
@@ -376,13 +441,13 @@ public class FlashcardSignUpControllerTest {
 
   /**
    * Tests createUser method with mocked successful API response.
-   * 
+   *
    * @throws Exception if method invocation via reflection fails
    * @throws InterruptedException if thread sleep is interrupted
-   * 
+   *
    */
   @Test
-  public void testCreateUser_withMockedApiSuccess() throws Exception {
+  public void testCreateUserWithMockedApiSuccess() throws Exception {
     controller = new FlashcardSignUpController();
     mockAllUiComponents(controller);
       
@@ -405,13 +470,14 @@ public class FlashcardSignUpControllerTest {
           .thenAnswer(invocation -> null);
       
       // Call createUser
-      var method = FlashcardSignUpController.class.getDeclaredMethod("createUser", String.class, String.class);
+      var method = FlashcardSignUpController.class.getDeclaredMethod(
+          "createUser", String.class, String.class);
       method.setAccessible(true);
       
       try {
-          method.invoke(controller, "testuser", "password123");
+        method.invoke(controller, "testuser", "password123");
       } catch (Exception e) {
-          // May still fail on navigateToMainApp, but createUser logic was executed
+        // May still fail on navigateToMainApp, but createUser logic was executed
       }
       
       Thread.sleep(100);
@@ -422,17 +488,17 @@ public class FlashcardSignUpControllerTest {
 
   /**
    * Tests createUser method with mocked failed API response.
-   * 
+   *
    * @throws Exception if method invocation via reflection fails
    * @throws InterruptedException if thread sleep is interrupted
-   * 
+   *
    */
   @Test
-  void testCreateUser_withMockedApiFailure() throws Exception {
+  void testCreateUserWithMockedApiFailure() throws Exception {
     controller = new FlashcardSignUpController();
     mockAllUiComponents(controller);
       
-     // Mock ApiClient.performApiRequest to return failure
+    // Mock ApiClient.performApiRequest to return failure
     try (MockedStatic<ApiClient> mockedApiClient = mockStatic(ApiClient.class)) {
       // Create a mock failed response
       ApiResponse<?> mockResponse = mock(ApiResponse.class);
@@ -452,7 +518,8 @@ public class FlashcardSignUpControllerTest {
           .thenAnswer(invocation -> null);
       
       // Call createUser
-      var method = FlashcardSignUpController.class.getDeclaredMethod("createUser", String.class, String.class);
+      var method = FlashcardSignUpController.class.getDeclaredMethod(
+          "createUser", String.class, String.class);
       method.setAccessible(true);
       method.invoke(controller, "existinguser", "password123");
       
@@ -464,13 +531,13 @@ public class FlashcardSignUpControllerTest {
 
   /**
    * Tests createUser method when API throws an exception.
-   * 
+   *
    * @throws Exception if method invocation via reflection fails
    * @throws InterruptedException if thread sleep is interrupted
-   * 
+   *
    */
   @Test
-  public void testCreateUser_withMockedApiException() throws Exception {
+  public void testCreateUserWithMockedApiException() throws Exception {
     controller = new FlashcardSignUpController();
     mockAllUiComponents(controller);
       
@@ -489,7 +556,8 @@ public class FlashcardSignUpControllerTest {
           .thenAnswer(invocation -> null);
       
       // Call createUser
-      var method = FlashcardSignUpController.class.getDeclaredMethod("createUser", String.class, String.class);
+      var method = FlashcardSignUpController.class.getDeclaredMethod(
+          "createUser", String.class, String.class);
       method.setAccessible(true);
       method.invoke(controller, "testuser", "password123");
       
@@ -501,13 +569,13 @@ public class FlashcardSignUpControllerTest {
 
   /**
    * Tests createUser method with different API error messages.
-   * 
+   *
    * @throws Exception if method invocation via reflection fails
    * @throws InterruptedException if thread sleep is interrupted
-   * 
+   *
    */
   @Test
-  public void testCreateUser_withMockedApiErrorMessage() throws Exception {
+  public void testCreateUserWithMockedApiErrorMessage() throws Exception {
     controller = new FlashcardSignUpController();
     mockAllUiComponents(controller);
       
@@ -531,7 +599,8 @@ public class FlashcardSignUpControllerTest {
           .thenAnswer(invocation -> null);
       
       // Call createUser
-      var method = FlashcardSignUpController.class.getDeclaredMethod("createUser", String.class, String.class);
+      var method = FlashcardSignUpController.class.getDeclaredMethod(
+          "createUser", String.class, String.class);
       method.setAccessible(true);
       method.invoke(controller, "testuser", "password123");
       
@@ -543,13 +612,13 @@ public class FlashcardSignUpControllerTest {
 
   /**
    * Tests createUser method when API returns null error message.
-   * 
+   *
    * @throws Exception if method invocation via reflection fails
    * @throws InterruptedException if thread sleep is interrupted
-   * 
+   *
    */
   @Test
-  public void testCreateUser_withNullErrorMessage() throws Exception {
+  public void testCreateUserWithNullErrorMessage() throws Exception {
     controller = new FlashcardSignUpController();
     mockAllUiComponents(controller);
       
@@ -573,7 +642,8 @@ public class FlashcardSignUpControllerTest {
           .thenAnswer(invocation -> null);
       
       // Call createUser
-      var method = FlashcardSignUpController.class.getDeclaredMethod("createUser", String.class, String.class);
+      var method = FlashcardSignUpController.class.getDeclaredMethod(
+          "createUser", String.class, String.class);
       method.setAccessible(true);
       method.invoke(controller, "testuser", "password123");
       
@@ -585,13 +655,13 @@ public class FlashcardSignUpControllerTest {
 
   /**
    * Tests createUser method with "already exists" error message branch.
-   * 
+   *
    * @throws Exception if method invocation via reflection fails
    * @throws InterruptedException if thread sleep is interrupted
-   * 
+   *
    */
   @Test
-  public void testCreateUser_multipleBranches() throws Exception {
+  public void testCreateUserWithMultipleBranches() throws Exception {
     controller = new FlashcardSignUpController();
     mockAllUiComponents(controller);
       
@@ -608,7 +678,8 @@ public class FlashcardSignUpControllerTest {
       mockedApiClient.when(() -> ApiClient.showAlert(anyString(), anyString()))
           .thenAnswer(invocation -> null);
       
-      var method = FlashcardSignUpController.class.getDeclaredMethod("createUser", String.class, String.class);
+      var method = FlashcardSignUpController.class.getDeclaredMethod(
+          "createUser", String.class, String.class);
       method.setAccessible(true);
       method.invoke(controller, "existinguser", "password123");
       
@@ -620,17 +691,18 @@ public class FlashcardSignUpControllerTest {
 
   /**
    * Tests showInlineError method with empty and non-empty strings.
-   * 
+   *
    * @throws Exception if method invocation via reflection fails
    * @throws InterruptedException if thread sleep is interrupted
-   * 
+   *
    */
   @Test
-  public void testShowInlineError_withEmptyString() throws Exception {
+  public void testShowInlineErrorWithEmptyString() throws Exception {
     controller = new FlashcardSignUpController();
     mockAllUiComponents(controller);
       
-    var method = FlashcardSignUpController.class.getDeclaredMethod("showInlineError", String.class);
+    var method = FlashcardSignUpController.class.getDeclaredMethod(
+        "showInlineError", String.class);
     method.setAccessible(true);
       
     // Test with empty string to cover that branch
@@ -646,17 +718,18 @@ public class FlashcardSignUpControllerTest {
 
   /**
    * Tests validateInput method with all branch combinations for full coverage.
-   * 
+   *
    * @throws Exception if method invocation via reflection fails
    * @throws InterruptedException if thread sleep is interrupted
-   * 
+   *
    */
   @Test
-  public void testValidateInput_allBranchCombinations() throws Exception {
+  public void testValidateInputAllBranchCombinations() throws Exception {
     controller = new FlashcardSignUpController();
     mockAllUiComponents(controller);
       
-    var method = FlashcardSignUpController.class.getDeclaredMethod("validateInput", String.class, String.class, String.class);
+    var method = FlashcardSignUpController.class.getDeclaredMethod(
+        "validateInput", String.class, String.class, String.class);
     method.setAccessible(true);
       
     // Cover the remaining branch for password mismatch
@@ -676,17 +749,18 @@ public class FlashcardSignUpControllerTest {
 
   /**
    * Tests validateInput method with each field empty individually.
-   * 
+   *
    * @throws Exception if method invocation via reflection fails
    * @throws InterruptedException if thread sleep is interrupted
-   * 
+   *
    */
   @Test
-  public void testValidateInput_eachEmptyFieldSeparately() throws Exception {
+  public void testValidateInputEachEmptyFieldSeparately() throws Exception {
     controller = new FlashcardSignUpController();
     mockAllUiComponents(controller);
       
-    var method = FlashcardSignUpController.class.getDeclaredMethod("validateInput", String.class, String.class, String.class);
+    var method = FlashcardSignUpController.class.getDeclaredMethod(
+        "validateInput", String.class, String.class, String.class);
     method.setAccessible(true);
       
     // Test username empty only
@@ -705,14 +779,15 @@ public class FlashcardSignUpControllerTest {
   }
 
   /**
-   * Tests whenSignInButtonClicked method with invalid input that prevents API call.
-   * 
+   * Tests whenSignInButtonClicked method with invalid input that prevents API
+   * call.
+   *
    * @throws Exception if field access or method invocation via reflection fails
    * @throws InterruptedException if thread sleep is interrupted
-   * 
+   *
    */
   @Test
-  public void testWhenSignInButtonClicked_withInvalidInputNoApiCall() throws Exception {
+  public void testWhenSignInButtonClickedWithInvalidInput() throws Exception {
     controller = new FlashcardSignUpController();
     mockAllUiComponents(controller);
       
@@ -721,16 +796,19 @@ public class FlashcardSignUpControllerTest {
     usernameField.setAccessible(true);
     usernameField.set(controller, new TextField(""));
       
-    var passwordField = FlashcardSignUpController.class.getDeclaredField("passwordField");
+    var passwordField =
+        FlashcardSignUpController.class.getDeclaredField("passwordField");
     passwordField.setAccessible(true);
     passwordField.set(controller, new TextField("password"));
       
-    var confirmPasswordField = FlashcardSignUpController.class.getDeclaredField("confirmPasswordField");
+    var confirmPasswordField =
+        FlashcardSignUpController.class.getDeclaredField("confirmPasswordField");
     confirmPasswordField.setAccessible(true);
     confirmPasswordField.set(controller, new TextField("password"));
       
     // Call whenSignInButtonClicked - should return early without calling createUser
-    var method = FlashcardSignUpController.class.getDeclaredMethod("whenSignInButtonClicked");
+    var method =
+        FlashcardSignUpController.class.getDeclaredMethod("whenSignInButtonClicked");
     method.setAccessible(true);
     method.invoke(controller);
       
@@ -740,28 +818,29 @@ public class FlashcardSignUpControllerTest {
 
   /**
    * Tests whenBackButtonIsClicked method IOException handling.
-   * 
+   *
    * @throws Exception if method invocation via reflection fails
    * @throws InterruptedException if thread sleep is interrupted
-   * 
+   *
    */
   @Test
-  public void testWhenBackButtonIsClicked_withIOException() throws Exception {
+  public void testWhenBackButtonIsClicked() throws Exception {
     controller = new FlashcardSignUpController();
     mockAllUiComponents(controller);
       
     // Mock ApiClient.showAlert to prevent dialog
     try (MockedStatic<ApiClient> mockedApiClient = mockStatic(ApiClient.class)) {
-    mockedApiClient.when(() -> ApiClient.showAlert(anyString(), anyString()))
-        .thenAnswer(invocation -> null);
+      mockedApiClient.when(() -> ApiClient.showAlert(anyString(), anyString()))
+          .thenAnswer(invocation -> null);
       
-    // Call the method - will trigger IOException path
+      // Call the method - will trigger IOException path
       try {
-          var method = FlashcardSignUpController.class.getDeclaredMethod("whenBackButtonIsClicked");
-          method.setAccessible(true);
-          method.invoke(controller);
+        var method =
+            FlashcardSignUpController.class.getDeclaredMethod("whenBackButtonIsClicked");
+        method.setAccessible(true);
+        method.invoke(controller);
       } catch (Exception e) {
-          // Expected - will fail but executes IOException catch block
+        // Expected - will fail but executes IOException catch block
       }
       
       Thread.sleep(100);
@@ -772,28 +851,29 @@ public class FlashcardSignUpControllerTest {
 
   /**
    * Tests navigateToMainApp method IOException handling.
-   * 
+   *
    * @throws Exception if method invocation via reflection fails
    * @throws InterruptedException if thread sleep is interrupted
-   * 
+   *
    */
   @Test
-  public void testNavigateToMainApp_withIOException() throws Exception {
+  public void testNavigateToMainApp() throws Exception {
     controller = new FlashcardSignUpController();
     mockAllUiComponents(controller);
       
-      // Mock ApiClient.showAlert to prevent dialog
+    // Mock ApiClient.showAlert to prevent dialog
     try (MockedStatic<ApiClient> mockedApiClient = mockStatic(ApiClient.class)) {
       mockedApiClient.when(() -> ApiClient.showAlert(anyString(), anyString()))
           .thenAnswer(invocation -> null);
       
       // Call navigateToMainApp - will trigger IOException path
       try {
-          var method = FlashcardSignUpController.class.getDeclaredMethod("navigateToMainApp", String.class);
-          method.setAccessible(true);
-          method.invoke(controller, "testuser");
+        var method = FlashcardSignUpController.class.getDeclaredMethod(
+            "navigateToMainApp", String.class);
+        method.setAccessible(true);
+        method.invoke(controller, "testuser");
       } catch (Exception e) {
-          // Expected - will fail but executes IOException catch block
+        // Expected - will fail but executes IOException catch block
       }
       
       Thread.sleep(100);
@@ -804,17 +884,18 @@ public class FlashcardSignUpControllerTest {
 
   /**
    * Tests showInlineError method called from JavaFX Application Thread.
-   * 
+   *
    * @throws Exception if method invocation via reflection fails
    * @throws InterruptedException if thread sleep is interrupted
-   * 
+   *
    */
   @Test
-  public void testShowInlineError_fromFxApplicationThread() throws Exception {
+  public void testShowInlineError() throws Exception {
     controller = new FlashcardSignUpController();
     mockAllUiComponents(controller);
       
-    var method = FlashcardSignUpController.class.getDeclaredMethod("showInlineError", String.class);
+    var method = FlashcardSignUpController.class.getDeclaredMethod(
+        "showInlineError", String.class);
     method.setAccessible(true);
       
     // Call from JavaFX Application Thread (TestFX provides this)
@@ -832,17 +913,18 @@ public class FlashcardSignUpControllerTest {
 
   /**
    * Tests showInlineError method with null message parameter.
-   * 
+   *
    * @throws Exception if method invocation via reflection fails
    * @throws InterruptedException if thread sleep is interrupted
-   * 
+   *
    */
   @Test
-  public void testShowInlineError_withNullMessage() throws Exception {
+  public void testShowInlineErrorWithNullMessage() throws Exception {
     controller = new FlashcardSignUpController();
     mockAllUiComponents(controller);
       
-    var method = FlashcardSignUpController.class.getDeclaredMethod("showInlineError", String.class);
+    var method = FlashcardSignUpController.class.getDeclaredMethod(
+        "showInlineError", String.class);
     method.setAccessible(true);
       
     // Test with null message
@@ -858,12 +940,12 @@ public class FlashcardSignUpControllerTest {
 
   /**
    * Tests createUser method with empty username and password strings.
-   * 
+   *
    * @throws Exception if method invocation via reflection fails
    * @throws InterruptedException if thread sleep is interrupted
    */
   @Test
-  void testCreateUser_withEmptyStrings() throws Exception {
+  void testCreateUserWithEmptyStrings() throws Exception {
     controller = new FlashcardSignUpController();
     mockAllUiComponents(controller);
       
@@ -880,7 +962,8 @@ public class FlashcardSignUpControllerTest {
       mockedApiClient.when(() -> ApiClient.showAlert(anyString(), anyString()))
           .thenAnswer(invocation -> null);
       
-      var method = FlashcardSignUpController.class.getDeclaredMethod("createUser", String.class, String.class);
+      var method = FlashcardSignUpController.class.getDeclaredMethod(
+          "createUser", String.class, String.class);
       method.setAccessible(true);
       method.invoke(controller, "", "");
       
@@ -892,30 +975,34 @@ public class FlashcardSignUpControllerTest {
 
   /**
    * Tests whenSignInButtonClicked method with whitespace-only input.
-   * 
+   *
    * @throws Exception if field access or method invocation via reflection fails
    * @throws InterruptedException if thread sleep is interrupted
    */
   @Test
-  void testWhenSignInButtonClicked_withWhitespace() throws Exception {
+  void testWhenSignInButtonClickedWithWhitespace() throws Exception {
     controller = new FlashcardSignUpController();
     mockAllUiComponents(controller);
       
     // Set up text fields with whitespace that will be trimmed to empty
-    var usernameField = FlashcardSignUpController.class.getDeclaredField("usernameField");
+    var usernameField =
+        FlashcardSignUpController.class.getDeclaredField("usernameField");
     usernameField.setAccessible(true);
     usernameField.set(controller, new TextField("  "));
       
-    var passwordField = FlashcardSignUpController.class.getDeclaredField("passwordField");
+    var passwordField =
+        FlashcardSignUpController.class.getDeclaredField("passwordField");
     passwordField.setAccessible(true);
     passwordField.set(controller, new TextField("  "));
       
-    var confirmPasswordField = FlashcardSignUpController.class.getDeclaredField("confirmPasswordField");
+    var confirmPasswordField =
+        FlashcardSignUpController.class.getDeclaredField("confirmPasswordField");
     confirmPasswordField.setAccessible(true);
     confirmPasswordField.set(controller, new TextField("  "));
       
     // Call whenSignInButtonClicked - should trigger trim() and fail validation
-    var method = FlashcardSignUpController.class.getDeclaredMethod("whenSignInButtonClicked");
+    var method =
+        FlashcardSignUpController.class.getDeclaredMethod("whenSignInButtonClicked");
     method.setAccessible(true);
     method.invoke(controller);
       
@@ -927,7 +1014,7 @@ public class FlashcardSignUpControllerTest {
    * Tests whenSignInButtonClicked method with valid input surrounded by whitespace.
    */
   @Test
-  public void testWhenSignInButtonClicked_withValidInputAndWhitespace() throws Exception {
+  public void testWhenSignInButtonClickedWithValidInputAndWhitespace() throws Exception {
     controller = new FlashcardSignUpController();
     mockAllUiComponents(controller);
     
@@ -938,27 +1025,31 @@ public class FlashcardSignUpControllerTest {
       when(mockResponse.getMessage()).thenReturn(ApiConstants.USER_OPERATION_FAILED);
             
       mockedApiClient.when(() -> ApiClient.performApiRequest(
-        anyString(), anyString(), any(), any()
-        )).thenReturn(mockResponse);
+          anyString(), anyString(), any(), any()
+      )).thenReturn(mockResponse);
             
       mockedApiClient.when(() -> ApiClient.showAlert(anyString(), anyString()))
-        .thenAnswer(invocation -> null);
+          .thenAnswer(invocation -> null);
             
       // Set up text fields with leading/trailing whitespace
-      var usernameField = FlashcardSignUpController.class.getDeclaredField("usernameField");
+      var usernameField =
+          FlashcardSignUpController.class.getDeclaredField("usernameField");
       usernameField.setAccessible(true);
       usernameField.set(controller, new TextField("  validuser  "));
             
-      var passwordField = FlashcardSignUpController.class.getDeclaredField("passwordField");
+      var passwordField =
+          FlashcardSignUpController.class.getDeclaredField("passwordField");
       passwordField.setAccessible(true);
       passwordField.set(controller, new TextField("  password123  "));
             
-      var confirmPasswordField = FlashcardSignUpController.class.getDeclaredField("confirmPasswordField");
+      var confirmPasswordField =
+          FlashcardSignUpController.class.getDeclaredField("confirmPasswordField");
       confirmPasswordField.setAccessible(true);
       confirmPasswordField.set(controller, new TextField("  password123  "));
             
       // Call whenSignInButtonClicked - should trim and call createUser
-      var method = FlashcardSignUpController.class.getDeclaredMethod("whenSignInButtonClicked");
+      var method =
+          FlashcardSignUpController.class.getDeclaredMethod("whenSignInButtonClicked");
       method.setAccessible(true);
       method.invoke(controller);
             
@@ -966,36 +1057,41 @@ public class FlashcardSignUpControllerTest {
     }
         
     assertTrue(true);
-}
+  }
 
   /**
-   * Tests whenSignInButtonClicked method trim behavior with various whitespace characters.
-   * 
+   * Tests whenSignInButtonClicked method trim behavior with various whitespace
+   * characters.
+   *
    * @throws Exception if field access or method invocation via reflection fails
    * @throws InterruptedException if thread sleep is interrupted
-   * 
+   *
    */
   @Test
-  public void testWhenSignInButtonClicked_trimBehavior() throws Exception {
+  public void testWhenSignInButtonClickedTrimBehavior() throws Exception {
     controller = new FlashcardSignUpController();
     mockAllUiComponents(controller);
       
     // Test with mixed whitespace scenarios
-    var usernameField = FlashcardSignUpController.class.getDeclaredField("usernameField");
+    var usernameField =
+        FlashcardSignUpController.class.getDeclaredField("usernameField");
     usernameField.setAccessible(true);
     usernameField.set(controller, new TextField(" user "));
       
-    var passwordField = FlashcardSignUpController.class.getDeclaredField("passwordField");
+    var passwordField =
+        FlashcardSignUpController.class.getDeclaredField("passwordField");
     passwordField.setAccessible(true);
     passwordField.set(controller, new TextField("\tpass\t"));
       
-    var confirmPasswordField = FlashcardSignUpController.class.getDeclaredField("confirmPasswordField");
+    var confirmPasswordField =
+        FlashcardSignUpController.class.getDeclaredField("confirmPasswordField");
     confirmPasswordField.setAccessible(true);
     confirmPasswordField.set(controller, new TextField("\npass\n"));
       
     // Call whenSignInButtonClicked
     try {
-      var method = FlashcardSignUpController.class.getDeclaredMethod("whenSignInButtonClicked");
+      var method =
+          FlashcardSignUpController.class.getDeclaredMethod("whenSignInButtonClicked");
       method.setAccessible(true);
       method.invoke(controller);
     } catch (Exception e) {
@@ -1004,52 +1100,5 @@ public class FlashcardSignUpControllerTest {
       
     Thread.sleep(100);
     assertTrue(true);
-  }
-
-  /**
-   * Helper method to mock all UI components of the controller.
-   * Uses reflection to inject mock JavaFX components into private fields.
-   * 
-   * @param controller the controller instance to mock components for
-   * @throws Exception if method invocation or field access via reflection fails
-   */
-  private void mockAllUiComponents(FlashcardSignUpController controller) throws Exception {
-    var alertField = FlashcardSignUpController.class.getDeclaredField("alertMessage");
-    alertField.setAccessible(true);
-    alertField.set(controller, new Text());
-      
-    var exField = FlashcardSignUpController.class.getDeclaredField("ex");
-    exField.setAccessible(true);
-    exField.set(controller, new Text());
-      
-    var usernameField = FlashcardSignUpController.class.getDeclaredField("usernameField");
-    usernameField.setAccessible(true);
-    if (usernameField.get(controller) == null) {
-      usernameField.set(controller, new TextField());
-    }
-      
-    var passwordField = FlashcardSignUpController.class.getDeclaredField("passwordField");
-    passwordField.setAccessible(true);
-    if (passwordField.get(controller) == null) {
-      passwordField.set(controller, new TextField());
-    }
-      
-    var confirmPasswordField = FlashcardSignUpController.class.getDeclaredField("confirmPasswordField");
-    confirmPasswordField.setAccessible(true);
-    if (confirmPasswordField.get(controller) == null) {
-      confirmPasswordField.set(controller, new TextField());
-    }
-      
-    var backButton = FlashcardSignUpController.class.getDeclaredField("backButton");
-    backButton.setAccessible(true);
-    if (backButton.get(controller) == null) {
-      backButton.set(controller, new Button());
-    }
-      
-    var signInButton = FlashcardSignUpController.class.getDeclaredField("signInButton");
-    signInButton.setAccessible(true);
-    if (signInButton.get(controller) == null) {
-      signInButton.set(controller, new Button());
-    }
   }
 }

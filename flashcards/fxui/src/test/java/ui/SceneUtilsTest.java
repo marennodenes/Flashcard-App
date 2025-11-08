@@ -7,23 +7,22 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import javafx.scene.Scene;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.StackPane;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.testfx.framework.junit5.ApplicationTest;
 
-import javafx.scene.Scene;
-import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.StackPane;
-
 /**
  * Unit tests for the {@link SceneUtils} utility class.
- * Verifies scene creation and scaling functionality.
- * 
+ *
+ * <p>Verifies scene creation and scaling functionality.
+ *
  * @author marennod
  * @author chrsom
- * 
+ *
  * @see SceneUtils
- * 
  */
 public class SceneUtilsTest extends ApplicationTest {
 
@@ -119,8 +118,8 @@ public class SceneUtilsTest extends ApplicationTest {
 
     // Assert
     assertNotNull(scene.getRoot(), "Scene root should not be null");
-    assertTrue(scene.getRoot() instanceof StackPane, 
-      "Scene root should be wrapped in StackPane");
+    assertTrue(scene.getRoot() instanceof StackPane,
+        "Scene root should be wrapped in StackPane");
   }
 
   /**
@@ -139,10 +138,10 @@ public class SceneUtilsTest extends ApplicationTest {
 
     // Assert
     // Translation should be applied to compensate for scaling
-    assertNotEquals(0.0, root.getTranslateX(), 
-      "TranslateX should be set to center content");
-    assertNotEquals(0.0, root.getTranslateY(), 
-      "TranslateY should be set to center content");
+    assertNotEquals(0.0, root.getTranslateX(),
+        "TranslateX should be set to center content");
+    assertNotEquals(0.0, root.getTranslateY(),
+        "TranslateY should be set to center content");
   }
 
   /**
@@ -160,43 +159,46 @@ public class SceneUtilsTest extends ApplicationTest {
     Scene scene = SceneUtils.createScaledScene(root);
 
     // Assert
-    assertEquals(600.0 * SCALE_FACTOR, scene.getWidth(), DELTA, 
-      "Scene width should match custom size doubled");
-    assertEquals(400.0 * SCALE_FACTOR, scene.getHeight(), DELTA, 
-      "Scene height should match custom size doubled");
+    assertEquals(600.0 * SCALE_FACTOR, scene.getWidth(), DELTA,
+        "Scene width should match custom size doubled");
+    assertEquals(400.0 * SCALE_FACTOR, scene.getHeight(), DELTA,
+        "Scene height should match custom size doubled");
   }
 
   /**
    * Tests utility class instantiation prevention via private constructor.
-   * Verifies that constructor throws UnsupportedOperationException when accessed via reflection.
-   * 
-   * @throws Exception if reflection fails (expected behavior wraps UnsupportedOperationException)
-   * 
+   *
+   * <p>Verifies that constructor throws UnsupportedOperationException when accessed
+   * via reflection.
+   *
+   * @throws Exception if reflection fails (expected behavior wraps
+   *     UnsupportedOperationException)
    */
   @Test
   public void testPrivateConstructorThrowsException() {
     // Act & Assert
     Exception exception = assertThrows(
-      Exception.class,
+        Exception.class,
         () -> {
-            // Use reflection to access private constructor
-            var constructor = SceneUtils.class.getDeclaredConstructor();
-            constructor.setAccessible(true);
-            constructor.newInstance();
+          // Use reflection to access private constructor
+          var constructor = SceneUtils.class.getDeclaredConstructor();
+          constructor.setAccessible(true);
+          constructor.newInstance();
         },
-        "Private constructor should throw exception"
-      );
+        "Private constructor should throw exception");
 
     // Reflection wraps the exception in InvocationTargetException
     assertTrue(exception.getCause() instanceof UnsupportedOperationException,
-      "Cause should be UnsupportedOperationException");
-    assertEquals("Utility class", exception.getCause().getMessage(), 
-      "Exception message should be 'Utility class'");
+        "Cause should be UnsupportedOperationException");
+    assertEquals("Utility class", exception.getCause().getMessage(),
+        "Exception message should be 'Utility class'");
   }
 
   /**
    * Tests idempotency of applyScaling method.
-   * Verifies that calling applyScaling multiple times doesn't throw exceptions or change scale values.
+   *
+   * <p>Verifies that calling applyScaling multiple times doesn't throw exceptions
+   * or change scale values.
    */
   @Test
   public void testApplyScalingMultipleTimes() {
@@ -205,8 +207,8 @@ public class SceneUtilsTest extends ApplicationTest {
 
     // Act & Assert - should not throw
     assertDoesNotThrow(() -> {
-        SceneUtils.applyScaling(root);
-        SceneUtils.applyScaling(root); // Apply again
+      SceneUtils.applyScaling(root);
+      SceneUtils.applyScaling(root); // Apply again
     });
 
     // Verify scale is still correct

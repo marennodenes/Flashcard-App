@@ -58,9 +58,7 @@ public final class SceneUtils {
     // Apply scaling to root
     applyScaling(root);
 
-    // Wrap in StackPane with top-left alignment to preserve AnchorPane positioning
-    StackPane container = new StackPane(root);
-    StackPane.setAlignment(root, Pos.TOP_LEFT);
+    
 
     // Compute offset based on extra space created by scaling and apply
     // a factor to move further right/down
@@ -68,6 +66,10 @@ public final class SceneUtils {
     double extraHeight = height * (SCALE_FACTOR - 1);
     root.setTranslateX(extraWidth * OFFSET_FACTOR);
     root.setTranslateY(extraHeight * OFFSET_FACTOR);
+
+    // Wrap in StackPane with top-left alignment to preserve AnchorPane positioning
+    StackPane container = new StackPane(root);
+    StackPane.setAlignment(root, Pos.TOP_LEFT);
 
     // Create scene with scaled dimensions
     Scene scene = new Scene(container, width * SCALE_FACTOR, height * SCALE_FACTOR);
