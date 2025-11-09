@@ -32,63 +32,31 @@ To quickly test the application:
     mvn clean install -DskipTests
     ```
 
-3. Open a new terminal
-
-    **macOS**
-
-    ```bash
-    open -na Terminal
-    ```
-
-    **Windows (Command Prompt)**
-
-    ```bash
-   start cmd
-    ```
-
-    **Windows (PowerShell)**
-
-    ```bash
-    start powershell
-    ```
-
-    **Linux (GNOME Terminal)**
-
-    ```bash
-    gnome-terminal &
-    ```
-
-    **Linux (KDE Konsole)**
-
-    ```bash
-    konsole &
-    ```
-
-4. Open the `server` module in the new terminal
+3. Open the `server` module in the new terminal
 
     ```bash
     cd server
     ```
 
-5. Run the backend
+4. Run the backend
 
     ```bash
     mvn spring-boot:run
     ```
 
-6. While the backend is running, open the `fxui` module in the old terminal
+5. While the backend is running, open the `fxui` module in the old terminal
 
     ```bash
     cd fxui
     ```
 
-7. Run the app
+6. Run the app
 
     ```bash
     mvn javafx:run
     ```
 
-**Note:** Both the server (step 5) and client (step 7) must be running simultaneously.
+**Note:** Both the server (step 4) and client (step 6) must be running simultaneously.
 
 ## Building the project
 
@@ -153,75 +121,7 @@ To create an executable file that runs locally on your computer:
 
 ### Method 2: Maven
 
-1. Open the project folder
-
-    ```bash
-    cd flashcards
-    ```
-
-2. Install necessary dependencies
-
-    ```bash
-    mvn clean install
-    ```
-
-3. Open a new terminal
-
-    **macOS**
-
-    ```bash
-    open -na Terminal
-    ```
-
-    **Windows (Command Prompt)**
-
-    ```bash
-   start cmd
-    ```
-
-    **Windows (PowerShell)**
-
-    ```bash
-    start powershell
-    ```
-
-    **Linux (GNOME Terminal)**
-
-    ```bash
-    gnome-terminal &
-    ```
-
-    **Linux (KDE Konsole)**
-
-    ```bash
-    konsole &
-    ```
-
-4. Open the `server` module in the new terminal
-
-    ```bash
-    cd server
-    ```
-
-5. Run the backend
-
-    ```bash
-    mvn spring-boot:run
-    ```
-
-6. While the backend is running, navigate to the the `fxui` module in the old terminal
-
-    ```bash
-    cd fxui
-    ```
-
-7. Run the app
-
-    ```bash
-    mvn javafx:run
-    ```
-
-**Note:** Both the server (step 5) and client (step 7) must be running simultaneously for the application to work.
+- See quickstart above
 
 ### Method 3: VS Code
 
@@ -243,50 +143,34 @@ This structure helps separate concerns and makes the project easy to navigate.
 
 ## App design
 
-<!-- markdownlint-disable MD033 -->
-
 **Login page:** initial window when opening the app, and opens when you click "Log out" on other pages
 
-<div>
-    <img src="/images/app/release_3/flashcardlogin_empty.png" alt="login empty" width="300">
-    <img src="/images/app/release_3/flashcardlogin_error.png" alt="login error" width="300">
-</div><br>
+<img src="./images/app/release_3/flashcardlogin_empty.png" alt="login empty" width="300"> <img src="./images/app/release_3/flashcardlogin_error.png" alt="login error" width="300">
+
 
 **Sign up page:** opens when you click "Sign up" on the Login page
 
-<div>
-    <img src="/images/app/release_3/flashcardsignup_empty.png" alt="signup empty" width="300">
-    <img src="/images/app/release_3/flashcardsignup_error.png" alt="signup error" width="300">
-</div><br>
+<img src="./images/app/release_3/flashcardsignup_empty.png" alt="signup empty" width="300"> <img src="./images/app/release_3/flashcardsignup_error.png" alt="signup error" width="300">
+
 
 **Main dashboard:** opens after clicking "Log in" or "Sign in", or when clicking "back" on the deck management page
 
-<div>
-    <img src="/images/app/release_3/flashcardmain_no_decks.png" alt="main empty" width="300">
-    <img src="/images/app/release_3/flashcardmain_error.png" alt="main error" width="300">
-</div><br>
+<img src="./images/app/release_3/flashcardmain_no_decks.png" alt="main empty" width="300">  <img src="./images/app/release_3/flashcardmain_error.png" alt="main error" width="300">
+
 
 **Deck management:** opens when clicking a deck on the main dashboard, or when clicking "back" on the learning page
 
-<div>
-    <img src="/images/app/release_3/flashcarddeck_create_card.png" alt="create card" width="300">
-    <img src="/images/app/release_3/flashcarddeck_card_selected.png" alt="card selected" width="300">
-</div><br>
+<img src="./images/app/release_3/flashcarddeck_create_card.png" alt="create card" width="300">  <img src="./images/app/release_3/flashcarddeck_card_selected.png" alt="card selected" width="300"> 
+
 
 **Learning page:** opens when clicking "Start learning" om the deck management page
 
-<div>
-    <img src="/images/app/release_3/flashcardlearning_question.png" alt="question" width="300">
-    <img src="/images/app/release_3/flashcardlearning_answer.png" alt="answer" width="300">
-</div><br>
+ <img src="./images/app/release_3/flashcardlearning_question.png" alt="question" width="300"> <img src="./images/app/release_3/flashcardlearning_answer.png" alt="answer" width="300">
+
 
 **Server errors:** example of a server error that will appear as a pop up alert
 
-<div>
-    <img src="/images/app/release_3/flashcardlogin_popup.png" alt="server error" width="400">
-</div>
-
-<!-- markdownlint-enable MD033 -->
+<img src="./images/app/release_3/flashcardlogin_popup.png" alt="server error" width="400">
 
 ## Dependencies
 
@@ -329,15 +213,13 @@ After running `mvn test`, you can generate test coverage reports via JaCoCo:
 - **server**: Instruction Coverage: 95% | Branch Coverage: 91%
 - **storage**: Instruction Coverage: 100% | Branch Coverage: 95%
 
-<!-- markdownlint-disable MD033 -->
 
-<img src="/images/jaCoCo/release_3/core_jacoco_release3.png" alt="core JaCoCo coverage" width="700">
-<img src="/images/jaCoCo/release_3/fxui_jacoco_release3.png" alt="fxui JaCoCo coverage" width="700">
-<img src="/images/jaCoCo/release_3/shared_jacoco_release3.png" alt="shared JaCoCo coverage" width="700">
-<img src="/images/jaCoCo/release_3/server_jacoco_release3.png" alt="server JaCoCo coverage" width="700">
-<img src="/images/jaCoCo/release_3/storage_jacoco_release3.png" alt="storage JaCoCo coverage" width="700">
+<img src="./images/jaCoCo/release_3/core_jacoco_release3.png" alt="core JaCoCo coverage" width="600">
+<img src="./images/jaCoCo/release_3/fxui_jacoco_release3.png" alt="fxui JaCoCo coverage" width="600">
+<img src="./images/jaCoCo/release_3/shared_jacoco_release3.png" alt="shared JaCoCo coverage" width="600">
+<img src="./images/jaCoCo/release_3/server_jacoco_release3.png" alt="server JaCoCo coverage" width="600">
+<img src="./images/jaCoCo/release_3/storage_jacoco_release3.png" alt="storage JaCoCo coverage" width="600">
 
-<!-- markdownlint-enable MD033 -->
 
 Current coverage targets focus on core business logic and critical user workflows.
 
