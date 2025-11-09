@@ -193,7 +193,7 @@ class FlashcardDeckControllerTest {
    * Tests UI update when deck name does not match any deck.
    */
   @Test
-  public void testUpdateUiWithNonMatchingDeckName() {
+  public void testUpdateUiDeckNameNotFound() {
     FlashcardDeckManager mgr = new FlashcardDeckManager();
     FlashcardDeck deck = new FlashcardDeck("Deck1");
     deck.addFlashcard(new Flashcard("Q1", "A1"));
@@ -203,42 +203,38 @@ class FlashcardDeckControllerTest {
     assertTrue(listView.getItems().isEmpty());
   }
 
-  /**
-   * Tests setting deck manager when deck already exists.
-   */
-  @Test
-  public void testSetDeckManagerWithExistingDeck() {
-    FlashcardDeckManager mgr = new FlashcardDeckManager();
-    FlashcardDeck deck = new FlashcardDeck("Deck1");
-    mgr.addDeck(deck);
-    runOnFxThread(() -> assertDoesNotThrow(() -> controller.setDeck(mapper.toDto(deck))));
-  }
 
   /**
-   * Tests setting deck manager when deck is not in manager.
+   * Tests setting deck manager for existing deck, not in manager, and duplicate deck.
+   * Combines:
+   * - setting deck manager when deck already exists
+   * - setting deck manager when deck is not in manager
+   * - setting deck manager with duplicate deck
    */
   @Test
-  public void testSetDeckManagerWithDeckNotInManager() {
-    FlashcardDeck deck = new FlashcardDeck("Deck1");
-    runOnFxThread(() -> assertDoesNotThrow(() -> controller.setDeck(mapper.toDto(deck))));
-  }
+  public void testSetDeckManagerScenarios() {
+    // Scenario 1: deck already exists
+    FlashcardDeckManager mgr1 = new FlashcardDeckManager();
+    FlashcardDeck deck1 = new FlashcardDeck("Deck1");
+    mgr1.addDeck(deck1);
+    runOnFxThread(() -> assertDoesNotThrow(() -> controller.setDeck(mapper.toDto(deck1))));
 
-  /**
-   * Tests setting deck manager with duplicate deck.
-   */
-  @Test
-  public void testSetDeckManagerWithDuplicateDeck() {
-    FlashcardDeckManager mgr = new FlashcardDeckManager();
-    FlashcardDeck deck = new FlashcardDeck("Deck1");
-    mgr.addDeck(deck);
-    runOnFxThread(() -> assertDoesNotThrow(() -> controller.setDeck(mapper.toDto(deck))));
+    // Scenario 2: deck not in manager
+    FlashcardDeck deck2 = new FlashcardDeck("Deck1");
+    runOnFxThread(() -> assertDoesNotThrow(() -> controller.setDeck(mapper.toDto(deck2))));
+
+    // Scenario 3: duplicate deck
+    FlashcardDeckManager mgr2 = new FlashcardDeckManager();
+    FlashcardDeck deck3 = new FlashcardDeck("Deck1");
+    mgr2.addDeck(deck3);
+    runOnFxThread(() -> assertDoesNotThrow(() -> controller.setDeck(mapper.toDto(deck3))));
   }
 
   /**
    * Tests whenCreateButtonIsClicked method.
    */
   @Test
-  public void testWhenCreateButtonIsClickedAddsCard() {
+  public void testWhenCreateCardButtonIsClicked() {
     FlashcardDeckManager mgr = new FlashcardDeckManager();
     FlashcardDeck deck = new FlashcardDeck("Deck1");
     mgr.addDeck(deck);
@@ -258,7 +254,7 @@ class FlashcardDeckControllerTest {
    * Tests card creation logic and API failure.
    */
   @Test
-  public void testWhenCreateButtonIsClickedApiFailure() {
+  public void testCreateCardApiFailure() {
     FlashcardDeckManager mgr = new FlashcardDeckManager();
     FlashcardDeck deck = new FlashcardDeck("Deck1");
     mgr.addDeck(deck);
@@ -280,7 +276,7 @@ class FlashcardDeckControllerTest {
    * Tests card deletion logic and API success.
    */
   @Test
-  public void testWhenDeleteCardButtonIsClickedRemovesCard() {
+  public void testWhenDeleteCardButtonIsClicked() {
     FlashcardDeckManager mgr = new FlashcardDeckManager();
     FlashcardDeck deck = new FlashcardDeck("Deck1");
     deck.addFlashcard(new Flashcard("Q1", "A1"));
@@ -305,7 +301,7 @@ class FlashcardDeckControllerTest {
    * Tests card deletion logic and API failure.
    */
   @Test
-  public void testWhenDeleteCardButtonIsClickedApiFailure() {
+  public void testDeleteCardApiFailure() {
     FlashcardDeckManager mgr = new FlashcardDeckManager();
     FlashcardDeck deck = new FlashcardDeck("Deck1");
     deck.addFlashcard(new Flashcard("Q1", "A1"));
@@ -343,7 +339,7 @@ class FlashcardDeckControllerTest {
    * Tests getCurrentDeck returns null if deck not found.
    */
   @Test
-  public void testGetCurrentDeckReturnsNullIfNotFound() {
+  public void testGetDeckNullIfNotFound() {
     setField(controller, "currentDeck", null);
     FlashcardDeckDto deck = (FlashcardDeckDto) getField(controller, "currentDeck");
     assertNull(deck);
@@ -417,7 +413,7 @@ class FlashcardDeckControllerTest {
    * Tests log out logic when API call fails.
    */
   @Test
-  public void testWhenLogOutFailure() {
+  public void testLogOutFail() {
     // Mock the questionField to have a scene and window to avoid UI issues
     TextField mockField = mock(TextField.class);
     Scene mockScene = mock(Scene.class);
@@ -434,52 +430,46 @@ class FlashcardDeckControllerTest {
     }
   }
 
-  /**
-   * Tests setting deck manager with no decks.
-   */
-  @Test
-  public void testSetDeckManagerWithNoDecks() {
-    runOnFxThread(() -> assertDoesNotThrow(
-        () -> controller.setDeck(mapper.toDto(new FlashcardDeck("DeckX")))));
-  }
 
   /**
-   * Tests setting deck manager with null deck.
+   * Tests setting deck manager with no decks and with null deck.
+   * Combines:
+   * - setting deck manager with no decks
+   * - setting deck manager with null deck
    */
   @Test
-  public void testSetDeckManagerWithNullDeck() {
+  public void testSetManagerNoDecksAndNullDeck() {
+    // Scenario 1: no decks
+    runOnFxThread(() -> assertDoesNotThrow(
+        () -> controller.setDeck(mapper.toDto(new FlashcardDeck("DeckX")))));
+    // Scenario 2: null deck
     runOnFxThread(() -> assertDoesNotThrow(() -> controller.setDeck(null)));
   }
 
+
   /**
-   * Tests UI update when current deck name is null.
+   * Tests UI update for null deck name, empty deck manager, and multiple decks.
+   * Combines:
+   * - UI update when current deck name is null
+   * - UI update with empty deck manager
+   * - UI update with multiple decks
    */
   @Test
-  public void testUpdateUiNoCurrentDeckName() {
+  public void testUpdateUiScenarios() {
+    // Scenario 1: current deck name is null
     setField(controller, "currentDeck", null);
     runOnFxThread(() -> controller.updateUi());
     assertTrue(listView.getItems().isEmpty());
-  }
 
-  /**
-   * Tests UI update with empty deck manager.
-   */
-  @Test
-  public void testUpdateUiEmptyDeckManager() {
+    // Scenario 2: empty deck manager
     setField(controller, "currentDeck", null);
     FlashcardDeck deck1 = new FlashcardDeck("Deck1");
     setField(controller, "currentDeck", mapper.toDto(deck1));
     runOnFxThread(() -> controller.updateUi());
     assertTrue(listView.getItems().isEmpty());
-  }
 
-  /**
-   * Tests UI update with multiple decks.
-   */
-  @Test
-  public void testUpdateUiMultipleDecks() {
+    // Scenario 3: multiple decks
     FlashcardDeckManager mgr = new FlashcardDeckManager();
-    FlashcardDeck deck1 = new FlashcardDeck("Deck1");
     FlashcardDeck deck2 = new FlashcardDeck("Deck2");
     deck1.addFlashcard(new Flashcard("Q1", "A1"));
     deck2.addFlashcard(new Flashcard("Q2", "A2"));
@@ -490,7 +480,7 @@ class FlashcardDeckControllerTest {
   /**
    * Tests card deletion logic for last card.
    */
-  public void testWhenDeleteCardButtonIsClickedRemovesLastCard() {
+  public void testDeleteLastCard() {
     FlashcardDeckManager mgr = new FlashcardDeckManager();
     FlashcardDeck deck = new FlashcardDeck("Deck1");
     deck.addFlashcard(new Flashcard("Q1", "A1"));
@@ -515,7 +505,7 @@ class FlashcardDeckControllerTest {
    */
   @SuppressWarnings("unchecked")
   @Test
-  public void testSetCurrentUsernameCases() {
+  public void testSetUsernameCases() {
     try (MockedStatic<ApiClient> apiClient = Mockito.mockStatic(ApiClient.class)) {
       apiClient.when(() -> ApiClient.performApiRequest(anyString(), eq("GET"),
               isNull(), any(TypeReference.class)))
@@ -538,7 +528,7 @@ class FlashcardDeckControllerTest {
    */
   @SuppressWarnings("unchecked")
   @Test
-  public void testSetDeckManagerCases() {
+  public void testSetManagerCases() {
     try (MockedStatic<ApiClient> apiClient = Mockito.mockStatic(ApiClient.class)) {
       apiClient.when(() -> ApiClient.performApiRequest(anyString(), eq("GET"),
               isNull(), any(TypeReference.class)))
@@ -577,7 +567,7 @@ class FlashcardDeckControllerTest {
    * Covers valid, empty, whitespace, and API failure scenarios.
    */
   @Test
-  public void testWhenCreateButtonIsClickedCases() {
+  public void testCreateCardCases() {
     FlashcardDeckManager mgr = new FlashcardDeckManager();
     FlashcardDeck deck = new FlashcardDeck("Deck1");
     mgr.addDeck(deck);
@@ -627,7 +617,7 @@ class FlashcardDeckControllerTest {
    * Covers valid, no selection, and API failure scenarios.
    */
   @Test
-  public void testWhenDeleteCardButtonIsClickedCases() {
+  public void testDeleteCardCases() {
     FlashcardDeckManager mgr = new FlashcardDeckManager();
     FlashcardDeck deck = new FlashcardDeck("Deck1");
     deck.addFlashcard(new Flashcard("Q1", "A1"));
@@ -770,7 +760,7 @@ class FlashcardDeckControllerTest {
    * Covers null manager, deck not found, and deck found scenarios.
    */
   @Test
-  public void testGetCurrentDeckBranches() {
+  public void testGetDeckBranches() {
     setField(controller, "currentDeck", null);
     FlashcardDeck deck1 = new FlashcardDeck("Deck1");
     setField(controller, "currentDeck", mapper.toDto(deck1));
@@ -797,7 +787,7 @@ class FlashcardDeckControllerTest {
    * Covers null manager, null deck name, empty/whitespace input, and API failure scenarios.
    */
   @Test
-  public void testWhenCreateButtonIsClickedBranches() {
+  public void testCreateCardBranches() {
     setField(controller, "currentDeck", null);
     questionField.setText("Q");
     answerField.setText("A");
@@ -852,7 +842,7 @@ class FlashcardDeckControllerTest {
    * Covers null manager, null deck name, no selection, and API failure scenarios.
    */
   @Test
-  public void testWhenDeleteCardButtonIsClickedBranches() {
+  public void testDeleteCardBranches() {
     setField(controller, "currentDeck", null);
     
     FlashcardDeck deck1 = new FlashcardDeck("Deck1");
@@ -905,7 +895,7 @@ class FlashcardDeckControllerTest {
    */
   @SuppressWarnings("unchecked")
   @Test
-  public void testLoadDeckDataSuccessFailureException() {
+  public void testLoadDeckDataScenarios() {
     // Prepare a deck dto with a name
     FlashcardDeck deck = new FlashcardDeck("DeckLoad");
     deck.addFlashcard(new Flashcard("Q", "A"));
@@ -958,7 +948,7 @@ class FlashcardDeckControllerTest {
    * Tests cell factory calls toString on FlashcardDto items.
    */
   @Test
-  public void coversCellFactoryLambdaWithoutCallingUpdateItem() {
+  public void testCellFactoryLambda() {
     runOnFxThread(() -> controller.initialize());
 
     var cb = listView.getCellFactory();
@@ -973,7 +963,7 @@ class FlashcardDeckControllerTest {
    * Covers early return branch.
    */
   @Test
-  public void testWhenStartLearningButtonIsClickedEarlyReturn() {
+  public void testStartLearningEarlyReturn() {
     setField(controller, "currentDeck", null);
     setField(controller, "startLearning", new Button());
     assertDoesNotThrow(() -> controller.whenStartLearningButtonIsClicked());
@@ -985,7 +975,7 @@ class FlashcardDeckControllerTest {
    */
   @SuppressWarnings("unchecked")
   @Test
-  public void testCreateValidationMessageNoAlert() {
+  public void testCreateValidationNoAlert() {
     FlashcardDeck deck = new FlashcardDeck("Deck1");
     setField(controller, "currentDeck", mapper.toDto(deck));
     setField(controller, "currentUsername", "u");
@@ -1015,7 +1005,7 @@ class FlashcardDeckControllerTest {
    */
   @SuppressWarnings("unchecked")
   @Test
-  public void testCreateExceptionShowsGenericAlert() {
+  public void testCreateExceptionAlert() {
     FlashcardDeck deck = new FlashcardDeck("Deck1");
     setField(controller, "currentDeck", mapper.toDto(deck));
     setField(controller, "currentUsername", "u");
@@ -1048,7 +1038,7 @@ class FlashcardDeckControllerTest {
    */
   @SuppressWarnings("unchecked")
   @Test
-  public void testDeleteServerErrorShowsAlert() {
+  public void testDeleteServerErrorAlert() {
     FlashcardDeck deck = new FlashcardDeck("Deck1");
     deck.addFlashcard(new Flashcard("Q", "A"));
     setField(controller, "currentDeck", mapper.toDto(deck));
@@ -1085,7 +1075,7 @@ class FlashcardDeckControllerTest {
    */
   @SuppressWarnings("unchecked")
   @Test
-  public void testDeleteExceptionShowsGenericAlert() {
+  public void testDeleteExceptionAlert() {
     FlashcardDeck deck = new FlashcardDeck("Deck1");
     deck.addFlashcard(new Flashcard("Q", "A"));
     setField(controller, "currentDeck", mapper.toDto(deck));
@@ -1119,7 +1109,7 @@ class FlashcardDeckControllerTest {
    * Covers null username and null startLearning button branches.
    */
   @Test
-  public void testUpdateUiUsernameAndStartLearningNull() {
+  public void testUpdateUiUsernameStartLearningNull() {
     setField(controller, "username", null);
     setField(controller, "startLearning", null);
     FlashcardDeck d = new FlashcardDeck("DeckX");
@@ -1132,36 +1122,29 @@ class FlashcardDeckControllerTest {
     assertTrue(deleteCardButton.isDisabled());
   }
 
+
   /**
    * Tests loadDeckData method early return scenarios.
-   * Covers null username, null deck, and empty deck name branches.
+   * Covers:
+   * - null username
+   * - null deck
+   * - empty deck name
    */
   @Test
-  public void testLoadDeckDataEarlyReturnUsernameNull() {
+  public void testLoadDeckDataEarlyReturnScenarios() {
+    // Scenario 1: null username
     setField(controller, "currentUsername", null);
     setField(controller, "currentDeck", new FlashcardDeckDto("DeckA", List.of()));
     invokePrivate(controller, "loadDeckData");
     assertNull(getField(controller, "currentDeck"));
-  }
 
-  /**
-   * Tests loadDeckData method early return when currentDeck is null.
-   * Covers null currentDeck branch.
-   */
-  @Test
-  public void testLoadDeckDataEarlyReturnDeckNull() {
+    // Scenario 2: null deck
     setField(controller, "currentUsername", "u");
     setField(controller, "currentDeck", null);
     invokePrivate(controller, "loadDeckData");
     assertNull(getField(controller, "currentDeck"));
-  }
 
-  /**
-   * Tests loadDeckData method early return when deck name is empty.
-   * Covers empty deck name branch.
-   */
-  @Test
-  public void testLoadDeckDataEarlyReturnEmptyDeckName() {
+    // Scenario 3: empty deck name
     setField(controller, "currentUsername", "u");
     setField(controller, "currentDeck", new FlashcardDeckDto("", List.of()));
     invokePrivate(controller, "loadDeckData");
@@ -1176,7 +1159,7 @@ class FlashcardDeckControllerTest {
    */
   @SuppressWarnings("unchecked")
   @Test
-  public void testCreateResultNullShowsServerAlert() {
+  public void testCreateResultNullAlert() {
     FlashcardDeck deck = new FlashcardDeck("Deck1");
     setField(controller, "currentDeck", mapper.toDto(deck));
     setField(controller, "currentUsername", "u");
@@ -1297,10 +1280,8 @@ class FlashcardDeckControllerTest {
   /**
    * Tests ListCell updateItem method with valid FlashcardDto.
    * Covers the updateItem method in the ListCell created by setCellFactory.
-   * 
    *
    * @throws Exception if reflection fails or updateItem invocation fails
-   * 
    */
   @Test
   public void testListCellUpdateItemWithValidFlashcard() throws Exception {
@@ -1393,7 +1374,6 @@ class FlashcardDeckControllerTest {
    * @param clazz the class to search in
    * @return the updateItem method
    * @throws NoSuchMethodException if updateItem method is not found
-   * 
    */
   private Method findUpdateItemMethod(Class<?> clazz) throws NoSuchMethodException {
     Class<?> current = clazz;
@@ -1415,7 +1395,6 @@ class FlashcardDeckControllerTest {
    * @param fieldName the name of the field to set
    * @param value the value to inject
    * @throws RuntimeException if field access fails
-   * 
    */
   private void setField(Object obj, String fieldName, Object value) {
     try {

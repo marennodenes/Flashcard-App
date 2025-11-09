@@ -202,7 +202,7 @@ public class FlashcardLoginControllerTest {
    */
   @SuppressWarnings("unchecked")
   @Test
-  public void testWhenLoginButtonClickedSuccessfulLogin() throws Exception {
+  public void testWhenLoginButtonClickedSuccess() throws Exception {
     when(usernameField.getText()).thenReturn("user");
     when(passwordField.getText()).thenReturn("pass");
 
@@ -253,7 +253,7 @@ public class FlashcardLoginControllerTest {
    */
   @SuppressWarnings("unchecked")
   @Test
-  public void testWhenLoginButtonClickedInvalidCredentials() throws Exception {
+  public void testWhenLoginButtonClickedInvalid() throws Exception {
     when(usernameField.getText()).thenReturn("user");
     when(passwordField.getText()).thenReturn("pass");
     LoginResponseDto mockLoginResponseFail = mock(LoginResponseDto.class);
@@ -313,7 +313,7 @@ public class FlashcardLoginControllerTest {
    */
   @SuppressWarnings("unchecked")
   @Test
-  public void testWhenLoginButtonClickedNavigateToMainAppIoException() throws Exception {
+  public void testWhenLoginButtonClickedNavigateIoException() throws Exception {
     // Arrange: valid username/password
     when(usernameField.getText()).thenReturn("user");
     when(passwordField.getText()).thenReturn("pass");
@@ -354,7 +354,7 @@ public class FlashcardLoginControllerTest {
    */
   @SuppressWarnings("unchecked")
   @Test
-  public void testWhenLoginButtonClickedSuccessfulApiButNullData() throws Exception {
+  public void testWhenLoginButtonClickedSuccessNullData() throws Exception {
     when(usernameField.getText()).thenReturn("user");
     when(passwordField.getText()).thenReturn("pass");
 

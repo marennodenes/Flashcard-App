@@ -24,7 +24,7 @@ public class UserDataTest {
    * - The deck manager starts with zero decks
    */
   @Test
-  public void constructor_withNullDeckManager_createsEmptyManager() {
+  public void testConstructorWithNullManager() {
     User user = new User("alex", "mypassword");
     UserData userData = new UserData(user, null);
 
@@ -33,14 +33,14 @@ public class UserDataTest {
   }
 
   /**
-   * Tests the UserData constructor with a null deck manager.
+   * Tests the UserData constructor with user only.
    * Validates that the single-parameter constructor:
    * - Properly stores the provided user
    * - Creates a new empty FlashcardDeckManager automatically
    * - Initializes the deck manager with zero decks
    */
   @Test
-  public void constructor_withUserOnly() {
+  public void testConstructorUserOnly() {
     User user = new User("sofie", "pass123");
     UserData userData = new UserData(user);
 
@@ -59,7 +59,7 @@ public class UserDataTest {
    * - External modifications to the original manager don't affect the UserData's manager
    */
   @Test
-  public void constructor_userAndManager() {
+  public void testConstructorUserAndManager() {
     User user = new User("alex", "mypassword");
     FlashcardDeckManager manager = new FlashcardDeckManager();
     FlashcardDeck deck = new FlashcardDeck("Java");
@@ -81,7 +81,7 @@ public class UserDataTest {
    * - Populated deck manager with correct deck count
    */
   @Test
-  public void setDeckManager() {
+  public void testSetDeckManager() {
     User user = new User("sofie", "pass123");
     UserData userData = new UserData(user);
 
@@ -111,7 +111,7 @@ public class UserDataTest {
    * the internal deck manager of the UserData instance.
    */
   @Test
-  public void getDeckManager_returnsDefensiveCopy() {
+  public void testGetDeckManagerDefensiveCopy() {
     User user = new User("alex", "mypassword");
     FlashcardDeckManager manager = new FlashcardDeckManager();
     FlashcardDeck deck = new FlashcardDeck("Java");
@@ -126,7 +126,7 @@ public class UserDataTest {
   }
 
   /**
-   * Tests the getDeckManager method of UserData.
+   * Tests the getUser method of UserData.
    * Validates that the getUser method:
    * - Returns the correct user object that was provided during construction
    * - Preserves the username correctly
@@ -134,7 +134,7 @@ public class UserDataTest {
    * - Provides proper access to user credentials
    */
   @Test
-  public void getUser() {
+  public void testGetUser() {
     User user = new User("alex", "mypassword");
     UserData userData = new UserData(user);
     assertEquals("alex", userData.getUser().getUsername());

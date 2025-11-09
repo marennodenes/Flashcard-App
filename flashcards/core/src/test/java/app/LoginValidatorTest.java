@@ -66,7 +66,7 @@ public class LoginValidatorTest {
    * @see LoginValidator#isUsernameUnique(String)
    */
   @Test
-  public void isUsernameUnique() {
+  public void testIsUsernameUnique() {
     Mockito.when(mockPersistence.userExists("uniqueUser")).thenReturn(false);
     assertTrue(validator.isUsernameUnique("uniqueUser"));
 
@@ -85,7 +85,7 @@ public class LoginValidatorTest {
    * @see LoginValidator#authenticateUser(String, String)
    */
   @Test
-  public void authenticateUser() {
+  public void testAuthenticateUser() {
     String encodedPassword = PasswordEncoder.encode("securePassword");
     User user = new User("testUser", encodedPassword);
     Mockito.when(mockPersistence.userExists("testUser")).thenReturn(true);
@@ -109,21 +109,21 @@ public class LoginValidatorTest {
    * @throws IllegalStateException when legacy plain text passwords are encountered
    */
   @Test
-  public void equalPasswords() {
+  public void testEqualPasswords() {
     assertTrue(validator.equalPasswords("password123", "password123"));
     assertFalse(validator.equalPasswords("password123", "differentPassword"));
   }
 
   /**
-   * Tests the equalPasswords method of LoginValidator.
-   * Validates password equality checking:
-   * - Returns true for matching passwords
-   * - Returns false for non-matching passwords
+   * Tests the findUserByUsername method of LoginValidator.
+   * Validates user lookup functionality:
+   * - Returns user for existing username
+   * - Returns null for non-existing username
    *
-   * @see LoginValidator#equalPasswords(String, String)
+   * @see LoginValidator#findUserByUsername(String)
    */
   @Test
-  public void findUserByUsername() {
+  public void testFindUserByUsername() {
     User user = new User("searchUser", "password123");
     Mockito.when(mockPersistence.userExists("searchUser")).thenReturn(true);
     Mockito.when(mockPersistence.readUserData("searchUser")).thenReturn(user);

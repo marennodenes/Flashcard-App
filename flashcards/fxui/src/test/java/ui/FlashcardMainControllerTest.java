@@ -256,7 +256,7 @@ class FlashcardMainControllerTest {
    */
   @SuppressWarnings("unchecked")
   @Test
-  public void testSetCurrentUsernameValidusername() throws Exception {
+  public void testSetCurrentUsernameValid() throws Exception {
 
     // Test set current username with valid username
     try (MockedStatic<ApiClient> apiClient = mockStatic(ApiClient.class)) {
@@ -371,7 +371,7 @@ class FlashcardMainControllerTest {
    */
   @SuppressWarnings("unchecked")
   @Test
-  public void testUpdateUiMaxdecksreachedDisablesnewdeckbutton() throws Exception {
+  public void testUpdateUiMaxDecksDisablesNewDeck() throws Exception {
     try (MockedStatic<ApiClient> apiClient = mockStatic(ApiClient.class)) {
       ApiResponse<FlashcardDeckManagerDto> response = createSuccessResponse(new ArrayList<>());
       apiClient.when(() -> ApiClient.performApiRequest(
@@ -397,7 +397,7 @@ class FlashcardMainControllerTest {
    */
   @SuppressWarnings("unchecked")
   @Test
-  public void testUpdateUiLessthanmaxdecksEnablesnewdeckbutton() throws Exception {
+  public void testUpdateUiLessThanMaxDecksEnablesNewDeck() throws Exception {
     try (MockedStatic<ApiClient> apiClient = mockStatic(ApiClient.class)) {
       ApiResponse<FlashcardDeckManagerDto> response = createSuccessResponse(new ArrayList<>());
       apiClient.when(() -> ApiClient.performApiRequest(
@@ -422,7 +422,7 @@ class FlashcardMainControllerTest {
    */
   @SuppressWarnings("unchecked")
   @Test
-  public void testUpdateUiShowscorrectnumberofdecks() throws Exception {
+  public void testUpdateUiShowsCorrectDeckCount() throws Exception {
     try (MockedStatic<ApiClient> apiClient = mockStatic(ApiClient.class)) {
       List<FlashcardDeckDto> decksForResponse = new ArrayList<>();
 
@@ -470,7 +470,7 @@ class FlashcardMainControllerTest {
    * Tests that no decks message is shown when no decks exist.
    */
   @Test
-  public void testUpdateUiNodecksShowsnodecksmessage() {
+  public void testUpdateUiNoDecksShowsMessage() {
     runOnFxThread(() -> controller.updateUi());
     assertTrue(noDecks.isVisible());
   }
@@ -537,7 +537,7 @@ class FlashcardMainControllerTest {
    * Tests that input field is cleared after update.
    */
   @Test
-  public void testUpdateUiClearsinputfield() {
+  public void testUpdateUiClearsInputField() {
     deckNameInput.setText("Some text");
     runOnFxThread(() -> controller.updateUi());
     assertEquals("", deckNameInput.getText());
@@ -549,7 +549,7 @@ class FlashcardMainControllerTest {
    * @throws Exception if reflection fails
    */
   @Test
-  public void testUpdateUiWithNullComponentsHandlesGracefully() throws Exception {
+  public void testUpdateUiWithNullComponents() throws Exception {
     // Set components that have null checks in updateUi() to null
     setField("usernameField", null);
     setField("alertMessage", null);
@@ -602,7 +602,7 @@ class FlashcardMainControllerTest {
    */
   @SuppressWarnings("unchecked")
   @Test
-  public void testUpdateUiShowalertfalseHidesalert() throws Exception {
+  public void testUpdateUiShowAlertFalseHidesAlert() throws Exception {
     try (MockedStatic<ApiClient> apiClient = mockStatic(ApiClient.class)) {
       ApiResponse<FlashcardDeckManagerDto> response = createSuccessResponse(new ArrayList<>());
       apiClient.when(() -> ApiClient.performApiRequest(
@@ -635,7 +635,7 @@ class FlashcardMainControllerTest {
    */
   @SuppressWarnings("unchecked")
   @Test
-  public void testWhenDeleteDeckButtonIsClickedRemovesdeck() throws Exception {
+  public void testWhenDeleteDeckButtonIsClickedRemovesDeck() throws Exception {
     try (MockedStatic<ApiClient> apiClient = mockStatic(ApiClient.class)) {
       ApiResponse<FlashcardDeckManagerDto> getResponse = createSuccessResponse(new ArrayList<>());
       ApiResponse<FlashcardDeckManagerDto> putResponse = createSuccessResponse(new ArrayList<>());
@@ -681,7 +681,7 @@ class FlashcardMainControllerTest {
    */
   @SuppressWarnings("unchecked")
   @Test
-  public void testWhenDeleteDeckButtonIsClickedUpdatesui() throws Exception {
+  public void testWhenDeleteDeckButtonIsClickedUpdatesUi() throws Exception {
     try (MockedStatic<ApiClient> apiClient = mockStatic(ApiClient.class)) {
       ApiResponse<FlashcardDeckManagerDto> getResponse = createSuccessResponse(new ArrayList<>());
       ApiResponse<FlashcardDeckManagerDto> putResponse = createSuccessResponse(new ArrayList<>());
@@ -729,7 +729,7 @@ class FlashcardMainControllerTest {
    * @throws Exception if test setup fails
    */
   @Test
-  void testWhenDeleteDeckButtonIsClickedValiddeck() throws Exception {
+  void testWhenDeleteDeckButtonIsClickedValidDeck() throws Exception {
     FlashcardDeckDto deck = new FlashcardDeckDto("Deck1", new ArrayList<>());
     deleteDeck1.setUserData(deck);
 
@@ -752,7 +752,7 @@ class FlashcardMainControllerTest {
    * @throws Exception if test setup fails
    */
   @Test
-  public void testWhenDeleteDeckButtonIsClickedApifailure() throws Exception {
+  public void testWhenDeleteDeckButtonIsClickedApiFailure() throws Exception {
     FlashcardDeckDto deck = new FlashcardDeckDto("Deck1", new ArrayList<>());
     deleteDeck1.setUserData(deck);
 
@@ -775,7 +775,7 @@ class FlashcardMainControllerTest {
    * @throws Exception if test setup fails
    */
   @Test
-  public void testWhenDeleteDeckButtonIsClickedNulldeck() throws Exception {
+  public void testWhenDeleteDeckButtonIsClickedDeckNull() throws Exception {
     deleteDeck1.setUserData(null);
     runOnFxThread(() -> assertDoesNotThrow(
         () -> controller.whenDeleteDeckButtonIsClicked(
@@ -789,7 +789,7 @@ class FlashcardMainControllerTest {
    */
   @SuppressWarnings("unchecked")
   @Test
-  public void testWhenDeleteDeckButtonIsClickedSuccessfulApiResponse() throws Exception {
+  public void testWhenDeleteDeckButtonIsClickedSuccessApi() throws Exception {
     FlashcardDeckDto deck = new FlashcardDeckDto("Deck1", new ArrayList<>());
     deleteDeck1.setUserData(deck);
 
@@ -821,7 +821,7 @@ class FlashcardMainControllerTest {
    */
   @SuppressWarnings("unchecked")
   @Test
-  public void testWhenDeleteDeckButtonIsClickedFailedApiResponse() throws Exception {
+  public void testWhenDeleteDeckButtonIsClickedFailedApi() throws Exception {
     FlashcardDeckDto deck = new FlashcardDeckDto("Deck1", new ArrayList<>());
     deleteDeck1.setUserData(deck);
 
@@ -846,7 +846,7 @@ class FlashcardMainControllerTest {
    */
   @SuppressWarnings("unchecked")
   @Test
-  public void testWhenDeleteDeckButtonIsClickedNullApiResponse() throws Exception {
+  public void testWhenDeleteDeckButtonIsClickedNullApi() throws Exception {
     FlashcardDeckDto deck = new FlashcardDeckDto("Deck1", new ArrayList<>());
     deleteDeck1.setUserData(deck);
 
@@ -1003,7 +1003,7 @@ class FlashcardMainControllerTest {
    */
   @SuppressWarnings("unchecked")
   @Test
-  public void testWhenNewDeckButtonIsClickedNullApiResponse() throws Exception {
+  public void testWhenNewDeckButtonIsClickedNullApi() throws Exception {
     deckNameInput.setText("NewDeck");
 
     try (MockedStatic<ApiClient> apiClient = mockStatic(ApiClient.class)) {
@@ -1025,7 +1025,7 @@ class FlashcardMainControllerTest {
    */
   @SuppressWarnings("unchecked")
   @Test
-  public void testWhenNewDeckButtonIsClickedExceptionWithCause() throws Exception {
+  public void testWhenNewDeckButtonIsClickedExceptionCause() throws Exception {
     deckNameInput.setText("NewDeck");
 
     try (MockedStatic<ApiClient> apiClient = mockStatic(ApiClient.class)) {
@@ -1085,7 +1085,7 @@ class FlashcardMainControllerTest {
    */
   @SuppressWarnings("unchecked")
   @Test
-  public void testWhenaDeckIsClickedLoadsView() throws Exception {
+  public void testWhenDeckIsClickedLoadsView() throws Exception {
     try (MockedStatic<ApiClient> apiClient = mockStatic(ApiClient.class)) {
       ApiResponse<FlashcardDeckManagerDto> response =
           createSuccessResponse(new ArrayList<>());
@@ -1112,7 +1112,7 @@ class FlashcardMainControllerTest {
    */
   @SuppressWarnings("unchecked")
   @Test
-  public void testWhenaDeckIsClickedExecutesHandler() throws Exception {
+  public void testWhenDeckIsClickedExecutesHandler() throws Exception {
     try (MockedStatic<ApiClient> apiClient = mockStatic(ApiClient.class)) {
       ApiResponse<FlashcardDeckManagerDto> response =
           createSuccessResponse(new ArrayList<>());
@@ -1211,7 +1211,7 @@ class FlashcardMainControllerTest {
    */
   @SuppressWarnings("unchecked")
   @Test
-  public void testLoadUserDataSuccessfully() throws Exception {
+  public void testLoadUserDataSuccess() throws Exception {
     List<FlashcardDeckDto> deckDtos = new ArrayList<>();
     FlashcardDeckDto deckDto = createDeckDto("Test Deck", 
         createFlashcardDto("Q1", "A1"));
@@ -1234,63 +1234,48 @@ class FlashcardMainControllerTest {
     }
   }
 
+
   /**
-   * Tests that API failure creates empty manager.
+   * Tests that empty manager is created for API failure, exception, or null data.
+   * Combines:
+   * - API failure
+   * - exception thrown
+   * - null data
    *
    * @throws Exception if test setup fails
    */
   @SuppressWarnings("unchecked")
   @Test
-  public void testLoadUserDataApiFailureCreatesEmptyManager() throws Exception {
+  public void testLoadUserDataEmptyManagerScenarios() throws Exception {
+    // Scenario 1: API failure
     try (MockedStatic<ApiClient> apiClient = mockStatic(ApiClient.class)) {
       ApiResponse<FlashcardDeckManagerDto> response = createFailureResponse();
       apiClient.when(() -> ApiClient.performApiRequest(
           anyString(), eq("GET"), isNull(), any(TypeReference.class)))
           .thenReturn(response);
-
       controller.setCurrentUsername("testuser");
-
       List<FlashcardDeckDto> decks = (List<FlashcardDeckDto>) getField("decks");
       assertEquals(0, decks.size());
     }
-  }
 
-  /**
-   * Tests that exception creates empty manager.
-   *
-   * @throws Exception if test setup fails
-   */
-  @SuppressWarnings("unchecked")
-  @Test
-  public void testLoadUserDataExceptionThrownCreatesEmptyManager() throws Exception {
+    // Scenario 2: exception thrown
     try (MockedStatic<ApiClient> apiClient = mockStatic(ApiClient.class)) {
       apiClient.when(() -> ApiClient.performApiRequest(
           anyString(), eq("GET"), isNull(), any(TypeReference.class)))
           .thenThrow(new RuntimeException("Network error"));
-
       controller.setCurrentUsername("testuser");
       List<FlashcardDeckDto> decks = (List<FlashcardDeckDto>) getField("decks");
       assertEquals(0, decks.size());
     }
-  }
 
-  /**
-   * Tests that null data creates empty manager.
-   *
-   * @throws Exception if test setup fails
-   */
-  @SuppressWarnings("unchecked")
-  @Test
-  public void testLoadUserDataSuccessButNullDataCreatesEmptyManager() throws Exception {
+    // Scenario 3: null data
     try (MockedStatic<ApiClient> apiClient = mockStatic(ApiClient.class)) {
       ApiResponse<FlashcardDeckManagerDto> response =
           new ApiResponse<>(true, "Success", null);
       apiClient.when(() -> ApiClient.performApiRequest(
           anyString(), eq("GET"), isNull(), any(TypeReference.class)))
           .thenReturn(response);
-          
       controller.setCurrentUsername("testuser");
-
       List<FlashcardDeckDto> decks = (List<FlashcardDeckDto>) getField("decks");
       assertEquals(0, decks.size());
     }
@@ -1303,7 +1288,7 @@ class FlashcardMainControllerTest {
    */
   @SuppressWarnings("unchecked")
   @Test
-  public void testSaveUserDataSaveFailureShowsAlert() throws Exception {
+  public void testSaveUserDataFailureAlert() throws Exception {
     try (MockedStatic<ApiClient> apiClient = mockStatic(ApiClient.class)) {
       ApiResponse<FlashcardDeckManagerDto> getResponse =
           createSuccessResponse(new ArrayList<>());
@@ -1334,7 +1319,7 @@ class FlashcardMainControllerTest {
    */
   @SuppressWarnings("unchecked")
   @Test
-  public void testSetDeckManagerCreatesDefensiveCopy() throws Exception {
+  public void testSetDeckManagerDefensiveCopy() throws Exception {
     try (MockedStatic<ApiClient> apiClient = mockStatic(ApiClient.class)) {
       FlashcardDeck deck = new FlashcardDeck();
       deck.setDeckName("Original Deck");
@@ -1374,7 +1359,7 @@ class FlashcardMainControllerTest {
    */
   @SuppressWarnings("unchecked")
   @Test
-  public void testSetDeckManagerCopiesFlashcards() throws Exception {
+  public void testSetDeckManagerCopiesCards() throws Exception {
     try (MockedStatic<ApiClient> apiClient = mockStatic(ApiClient.class)) {
       FlashcardDeck deck = new FlashcardDeck();
       deck.setDeckName("Test Deck");
