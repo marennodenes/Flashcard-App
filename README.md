@@ -283,7 +283,7 @@ After running `mvn test`, you can generate test coverage reports via JaCoCo:
     ```
 
 **Current test coverage:**
-//todo: remember to update these 
+//todo: remember to update these
 
 - **core**: Instruction Coverage: 88% | Branch Coverage: 92%
 - **fxui**: Instruction Coverage: 90% | Branch Coverage: 85%
