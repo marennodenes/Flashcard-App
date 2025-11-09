@@ -88,8 +88,8 @@ Each user has their own file (like `julie.json`):
       {
         "deckName": "Spanish Vocabulary",
         "flashcards": [
-          {"number": 1, "question": "Hello", "answer": "Hola"},
-          {"number": 2, "question": "Goodbye", "answer": "Adiós"}
+          { "number": 1, "question": "Hello", "answer": "Hola" },
+          { "number": 2, "question": "Goodbye", "answer": "Adiós" }
         ]
       }
     ]
@@ -107,7 +107,7 @@ CREATE TABLE users (
     password VARCHAR(255)
 );
 
--- Decks table  
+-- Decks table
 CREATE TABLE decks (
     id INT PRIMARY KEY,
     user_id INT,
@@ -188,6 +188,27 @@ Instead of everything in one JavaFX app, we split it:
 - Use full-screen mode on laptop for better focus
 - Switch between devices and pick up where they left off
 - App automatically adapts to their screen size and device type
+
+## SUAS Analysis
+
+The Sustainability Awareness Diagram below maps how our decisions when making the app create ripple effects across social, economic, environmental, technical and individual dimensions. This analysis helps us understand both the positive impacts we want to maximize and the negative consequences we need to mitigate as we scale.
+
+<img src="../../images/sustainability/susAd.png" alt="SUAS Sustainability Analysis Diagram" width="600">
+
+
+
+| ID  | Effect                                                                      | Sustainability Dimension | Level     | Affects    | Affected by |
+| --- | --------------------------------------------------------------------------- | ------------------------ | --------- | ---------- | ----------- |
+| 1   | Limited cross-device compatibility                                          | Technical                | Immediate | 3          |             |
+| 2   | Scalable educational content delivery platform                              | Technical                | Immediate | 4, 5, 6, 8 |             |
+| 3   | Lack of universal design principle                                          | Social                   | Immediate |            | 1           |
+| 4   | Accessible learning for everyone                                            | Social                   | Systemic  |            | 2           |
+| 5   | Higher costs for database migration and new infrastructure                  | Economic                 | Enabling  |            | 2           |
+| 6   | Potential advertising revenue with low expenses                             | Economic                 | Enabling  |            | 2           |
+| 7   | Reduced paper consumption and transportation needs through digital learning | Environmental            | Systemic  |            |             |
+| 8   | Increased energy use from servers and devices                               | Environmental            | Enabling  |            | 2           |
+| 9   | Mental health and mastery through learning progress                         | Individual               | Enabling  |            | 10          |
+| 10  | Improved learning efficiency through spaced repetition technique            | Individual               | Enabling  | 9          |             |
 
 ## Conclusion
 
