@@ -13,6 +13,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.mockConstruction;
 import static org.mockito.Mockito.mockStatic;
 import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -57,17 +58,25 @@ import shared.ApiResponse;
  * @see "docs/release_3/ai_tools.md"
  */
 public class FlashcardLoginControllerTest {
-  
+
   private FlashcardLoginController controller;
-  
-  @Mock private Text alertMessage;
-  @Mock private Text ex;
-  @Mock private Button loginButton;
-  @Mock private TextField usernameField;
-  @Mock private TextField passwordField;
-  @Mock private Button signUpButton;
-  @Mock private Stage stage;
-  @Mock private Scene scene;
+
+  @Mock
+  private Text alertMessage;
+  @Mock
+  private Text ex;
+  @Mock
+  private Button loginButton;
+  @Mock
+  private TextField usernameField;
+  @Mock
+  private TextField passwordField;
+  @Mock
+  private Button signUpButton;
+  @Mock
+  private Stage stage;
+  @Mock
+  private Scene scene;
 
   /**
    * Initializes JavaFX toolkit before running tests.
@@ -75,7 +84,7 @@ public class FlashcardLoginControllerTest {
    * <p>Starts the JavaFX Platform if not already initialized.
    *
    * @throws InterruptedException if thread is interrupted while waiting for
-   *     JavaFX initialization
+   *                              JavaFX initialization
    */
   @BeforeAll
   public static void initJavaFx() throws InterruptedException {
@@ -92,17 +101,28 @@ public class FlashcardLoginControllerTest {
   }
 
   /**
-   * Tears down JavaFX platform after all tests complete.
-   * Exits the JavaFX Platform to clean up resources.
+   * Tests initialize method behavior.
+   *
+   * <p>Verifies that alert elements are hidden on initialization.
+   *
+   * @throws Exception if test execution fails
    */
-  @AfterAll
-  public static void tearDown() {
-    if (Platform.isFxApplicationThread()) {
-      Platform.exit();
-    }
+  @Test
+  public void testInitialize() throws Exception {
+    controller.initialize();
+
+    verify(alertMessage).setVisible(false);
+    verify(ex).setVisible(false);
   }
 
-
+  /**
+   * Tests FlashcardLoginController instantiation. Verifies that controller object
+   * is successfully created.
+   */
+  @Test
+  public void testFlashcardLoginController() {
+    assertNotNull(controller);
+  }
 
   /**
    * Sets up test fixtures before each test method.
@@ -115,7 +135,7 @@ public class FlashcardLoginControllerTest {
   public void setUp() throws Exception {
     MockitoAnnotations.openMocks(this);
     controller = new FlashcardLoginController();
-      
+
     // Inject mocked FXML fields using reflection
     injectMockField("alertMessage", alertMessage);
     injectMockField("ex", ex);
@@ -123,17 +143,17 @@ public class FlashcardLoginControllerTest {
     injectMockField("usernameField", usernameField);
     injectMockField("passwordField", passwordField);
     injectMockField("signUpButton", signUpButton);
-      
+
     // Set up common mock behaviors
     when(loginButton.getScene()).thenReturn(scene);
     when(signUpButton.getScene()).thenReturn(scene);
     when(scene.getWindow()).thenReturn(stage);
   }
-  
+
   /**
    * Helper method to inject mock objects into controller fields via reflection.
    *
-   * @param fieldName the name of the field to inject into
+   * @param fieldName  the name of the field to inject into
    * @param mockObject the mock object to inject
    *
    * @throws Exception if field access via reflection fails
@@ -145,38 +165,30 @@ public class FlashcardLoginControllerTest {
   }
 
   /**
-   * Tests login button click with empty username field.
+   * Tests login button click with empty username field and empty password field.
    *
    * <p>Verifies that appropriate error message is displayed.
    *
    * @throws Exception if test execution fails
    */
   @Test
-  public void testWhenLoginButtonClickedEmptyUsername() throws Exception {
+  public void testWhenLoginButtonClickedEmptyFields() throws Exception {
     when(usernameField.getText()).thenReturn(""); // Empty username
     when(passwordField.getText()).thenReturn("password"); // Non-empty password
-  
+
     controller.whenLoginButtonClicked();
-  
+
     verify(alertMessage).setText("Username and password\ncannot be empty");
     verify(alertMessage).setVisible(true);
     verify(ex).setVisible(true);
-  }
 
-  /**
-   * Tests login button click with empty password field.
-   *
-   * <p>Verifies that appropriate error message is displayed.
-   *
-   * @throws Exception if test execution fails
-   */
-  @Test
-  public void testWhenLoginButtonClickedEmptyPassword() throws Exception {
+    reset(alertMessage, ex); // Reset mocks for next check
+
     when(usernameField.getText()).thenReturn("username"); // Non-empty username
     when(passwordField.getText()).thenReturn(""); // Empty password
-  
+
     controller.whenLoginButtonClicked();
-  
+
     verify(alertMessage).setText("Username and password\ncannot be empty");
     verify(alertMessage).setVisible(true);
     verify(ex).setVisible(true);
@@ -203,23 +215,21 @@ public class FlashcardLoginControllerTest {
     when(mockApiResponse.getData()).thenReturn(mockLoginResponse);
 
     try (MockedStatic<ApiClient> mockedApiClient = mockStatic(ApiClient.class)) {
-      mockedApiClient.when(() -> ApiClient.performApiRequest(
-          anyString(), anyString(), any(LoginRequestDto.class),
-          any(TypeReference.class)))
-          .thenReturn(mockApiResponse);
+      mockedApiClient.when(() -> ApiClient
+          .performApiRequest(anyString(), anyString(), any(LoginRequestDto.class),
+          any(TypeReference.class))).thenReturn(mockApiResponse);
 
       // Use a spy and override the public method to avoid actual navigation
       FlashcardLoginController spyController = spy(controller);
 
       // Use reflection to make the private method accessible and stub it
-      Method navigateToMainAppMethod =
-          FlashcardLoginController.class.getDeclaredMethod(
-              "navigateToMainApp", String.class);
+      Method navigateToMainAppMethod = FlashcardLoginController.class
+          .getDeclaredMethod("navigateToMainApp",
+          String.class);
       navigateToMainAppMethod.setAccessible(true);
 
       // Replace controller with spy for this branch
-      Field controllerField =
-          FlashcardLoginControllerTest.class.getDeclaredField("controller");
+      Field controllerField = FlashcardLoginControllerTest.class.getDeclaredField("controller");
       controllerField.setAccessible(true);
       controllerField.set(this, spyController);
 
@@ -255,10 +265,9 @@ public class FlashcardLoginControllerTest {
     when(mockApiResponseFail.getData()).thenReturn(mockLoginResponseFail);
 
     try (MockedStatic<ApiClient> mockedApiClient = mockStatic(ApiClient.class)) {
-      mockedApiClient.when(() -> ApiClient.performApiRequest(
-          anyString(), anyString(), any(LoginRequestDto.class),
-          any(TypeReference.class)))
-          .thenReturn(mockApiResponseFail);
+      mockedApiClient.when(() -> ApiClient
+          .performApiRequest(anyString(), anyString(), any(LoginRequestDto.class),
+          any(TypeReference.class))).thenReturn(mockApiResponseFail);
 
       controller.whenLoginButtonClicked();
       verify(alertMessage).setText(ApiConstants.LOGIN_FAILED);
@@ -266,7 +275,6 @@ public class FlashcardLoginControllerTest {
       verify(ex, atLeastOnce()).setVisible(true);
     }
   }
-
 
   /**
    * Tests login when API returns an error response.
@@ -285,10 +293,9 @@ public class FlashcardLoginControllerTest {
     when(mockApiResponseError.getMessage()).thenReturn(ApiConstants.SERVER_ERROR);
 
     try (MockedStatic<ApiClient> mockedApiClient = mockStatic(ApiClient.class)) {
-      mockedApiClient.when(() -> ApiClient.performApiRequest(
-          anyString(), anyString(), any(LoginRequestDto.class),
-          any(TypeReference.class)))
-          .thenReturn(mockApiResponseError);
+      mockedApiClient.when(() -> ApiClient
+          .performApiRequest(anyString(), anyString(), any(LoginRequestDto.class),
+          any(TypeReference.class))).thenReturn(mockApiResponseError);
 
       controller.whenLoginButtonClicked();
       verify(alertMessage).setText(ApiConstants.SERVER_ERROR);
@@ -301,15 +308,13 @@ public class FlashcardLoginControllerTest {
    * Tests IOException handling during navigation to main app after successful
    * login.
    *
-   * <p>Verifies that ApiClient.showAlert is called with appropriate error
-   * message.
+   * <p>Verifies that ApiClient.showAlert is called with appropriate error message.
    *
    * @throws Exception if mock construction or API setup fails
    */
   @SuppressWarnings("unchecked")
   @Test
-  public void testWhenLoginButtonClickedNavigateToMainAppIoException()
-      throws Exception {
+  public void testWhenLoginButtonClickedNavigateToMainAppIoException() throws Exception {
     // Arrange: valid username/password
     when(usernameField.getText()).thenReturn("user");
     when(passwordField.getText()).thenReturn("pass");
@@ -322,38 +327,69 @@ public class FlashcardLoginControllerTest {
     when(mockApiResponse.getData()).thenReturn(mockLoginResponse);
 
     try (MockedStatic<ApiClient> mockedApiClient = mockStatic(ApiClient.class);
-        MockedConstruction<FXMLLoader> mockedFXMLLoader = mockConstruction(
-            FXMLLoader.class,
-            (loader, context) -> {
+        MockedConstruction<FXMLLoader> mockedFXMLLoader = mockConstruction(FXMLLoader
+            .class, (loader, context) -> {
               when(loader.load()).thenThrow(new IOException("Simulated IO error"));
             })) {
 
-      mockedApiClient.when(() -> ApiClient.performApiRequest(
-          anyString(), anyString(), any(LoginRequestDto.class),
-          any(TypeReference.class)))
-          .thenReturn(mockApiResponse);
+      mockedApiClient.when(() -> ApiClient
+          .performApiRequest(anyString(), anyString(), any(LoginRequestDto.class),
+          any(TypeReference.class))).thenReturn(mockApiResponse);
 
       // Act: call the public method, which will internally call navigateToMainApp
       // and hit the IOException
       controller.whenLoginButtonClicked();
 
       // Assert: ApiClient.showAlert should be called for navigation errors
-      mockedApiClient.verify(() -> ApiClient.showAlert(
-          eq(ApiConstants.LOAD_ERROR),
-          eq(ApiConstants.UNEXPECTED_ERROR)
-      ));
+      mockedApiClient.verify(() -> ApiClient
+          .showAlert(eq(ApiConstants.LOAD_ERROR), eq(ApiConstants.UNEXPECTED_ERROR)));
     }
   }
 
   /**
-   * Tests successful navigation to main application screen.
+   * Tests login with successful API response but null data.
    *
-   * <p>Verifies username is set and stage transitions correctly.
+   * <p>Verifies that API response message is displayed when data is null.
+   *
+   * @throws Exception if mock API setup fails
+   */
+  @SuppressWarnings("unchecked")
+  @Test
+  public void testWhenLoginButtonClickedSuccessfulApiButNullData() throws Exception {
+    when(usernameField.getText()).thenReturn("user");
+    when(passwordField.getText()).thenReturn("pass");
+
+    // Mock API response that is successful but returns null data
+    ApiResponse<LoginResponseDto> mockApiResponse = mock(ApiResponse.class);
+    when(mockApiResponse.isSuccess()).thenReturn(true);
+    when(mockApiResponse.getData()).thenReturn(null); // This is the key difference
+    when(mockApiResponse.getMessage()).thenReturn("No user data received");
+
+    try (MockedStatic<ApiClient> mockedApiClient = mockStatic(ApiClient.class)) {
+      mockedApiClient.when(() -> ApiClient
+          .performApiRequest(anyString(), anyString(), any(LoginRequestDto.class),
+          any(TypeReference.class))).thenReturn(mockApiResponse);
+
+      controller.whenLoginButtonClicked();
+
+      // Should hit the else branch and show the API response message
+      verify(alertMessage).setText("No user data received");
+      verify(alertMessage, atLeastOnce()).setVisible(true);
+      verify(ex, atLeastOnce()).setVisible(true);
+    }
+  }
+
+  /**
+   * Tests successful navigation to main application screen, and tests navigation
+   * failure when FXML loading throws IOException.
+   *
+   * <p>Verifies username is set and stage transitions correctly, and verifies that
+   * error alert is displayed via ApiClient.
    *
    * @throws Exception if reflection or mock construction fails
    */
   @Test
-  public void testNavigateToMainAppSuccess() throws Exception {
+  public void testNavigateToMainApp() throws Exception {
     // Arrange
     String username = "testuser";
     Parent realRoot = new javafx.scene.layout.Pane(); // Use a real JavaFX Parent subclass
@@ -362,9 +398,8 @@ public class FlashcardLoginControllerTest {
     Scene mockScene = mock(Scene.class);
 
     // Mock FXMLLoader construction
-    try (MockedConstruction<FXMLLoader> mocked = mockConstruction(
-        FXMLLoader.class,
-        (loader, context) -> {
+    try (MockedConstruction<FXMLLoader> mocked = 
+        mockConstruction(FXMLLoader.class, (loader, context) -> {
           when(loader.load()).thenReturn(realRoot);
           when(loader.getController()).thenReturn(mockMainController);
         })) {
@@ -375,9 +410,9 @@ public class FlashcardLoginControllerTest {
       when(mockScene.getWindow()).thenReturn(mockStage);
 
       // Make the private method accessible
-      Method navigateToMainAppMethod =
-          FlashcardLoginController.class.getDeclaredMethod(
-              "navigateToMainApp", String.class);
+      Method navigateToMainAppMethod = FlashcardLoginController.class
+          .getDeclaredMethod("navigateToMainApp",
+          String.class);
       navigateToMainAppMethod.setAccessible(true);
 
       // Act
@@ -388,25 +423,11 @@ public class FlashcardLoginControllerTest {
       verify(mockStage).setScene(any(Scene.class));
       verify(mockStage).show();
     }
-  }
-
-  /**
-   * Tests navigation failure when FXML loading throws IOException.
-   *
-   * <p>Verifies that error alert is displayed via ApiClient.
-   *
-   * @throws Exception if reflection or mock construction fails
-   */
-  @Test
-  public void testNavigateToMainAppFailure() throws Exception {
-    // Arrange
-    String username = "testuser";
 
     // Mock FXMLLoader construction to throw IOException
     try (MockedStatic<ApiClient> mockedApiClient = mockStatic(ApiClient.class);
-        MockedConstruction<FXMLLoader> mocked = mockConstruction(
-            FXMLLoader.class,
-            (loader, context) -> {
+        MockedConstruction<FXMLLoader> mocked = 
+            mockConstruction(FXMLLoader.class, (loader, context) -> {
               when(loader.load()).thenThrow(new IOException("Load failed"));
             })) {
 
@@ -414,9 +435,8 @@ public class FlashcardLoginControllerTest {
       when(loginButton.getScene()).thenReturn(scene);
       when(scene.getWindow()).thenReturn(stage);
 
-      var method =
-          FlashcardLoginController.class.getDeclaredMethod(
-              "navigateToMainApp", String.class);
+      var method = FlashcardLoginController.class
+          .getDeclaredMethod("navigateToMainApp", String.class);
       method.setAccessible(true);
 
       // Act: navigateToMainApp now handles IOException internally
@@ -426,30 +446,28 @@ public class FlashcardLoginControllerTest {
       method.invoke(controller, username);
 
       // Assert: ApiClient.showAlert should be called for navigation errors
-      mockedApiClient.verify(() -> ApiClient.showAlert(
-          eq(ApiConstants.LOAD_ERROR),
-          eq(ApiConstants.UNEXPECTED_ERROR)
-      ));
+      mockedApiClient.verify(() -> ApiClient
+          .showAlert(eq(ApiConstants.LOAD_ERROR), eq(ApiConstants.UNEXPECTED_ERROR)));
     }
   }
 
   /**
-   * Tests updateUi method when showAlert flag is true.
+   * Tests updateUi method when showAlert flag is true and when showAlert flag is
+   * false.
    *
-   * <p>Verifies that error message is displayed and flag is reset.
+   * <p>Verifies that error message is displayed and flag is reset, and verifies that
+   * alert elements are hidden when flag is false.
    *
    * @throws Exception if field access via reflection fails
    */
   @Test
-  public void testUpdateUiShowAlertTrue() throws Exception {
+  public void testUpdateUi() throws Exception {
     final FlashcardLoginController controller = new FlashcardLoginController();
 
     // Access private fields via reflection
-    Field showAlertField =
-        FlashcardLoginController.class.getDeclaredField("showAlert");
+    Field showAlertField = FlashcardLoginController.class.getDeclaredField("showAlert");
     Field errorField = FlashcardLoginController.class.getDeclaredField("error");
-    Field alertMessageField =
-        FlashcardLoginController.class.getDeclaredField("alertMessage");
+    Field alertMessageField = FlashcardLoginController.class.getDeclaredField("alertMessage");
     final Field exField = FlashcardLoginController.class.getDeclaredField("ex");
 
     showAlertField.setAccessible(true);
@@ -476,40 +494,9 @@ public class FlashcardLoginControllerTest {
     assertEquals("Invalid credentials", mockAlert.getText());
     assertTrue(mockAlert.isVisible());
     assertTrue(mockEx.isVisible());
-  }
-
-  /**
-   * Tests updateUi method when showAlert flag is false.
-   *
-   * <p>Verifies that alert elements are hidden.
-   *
-   * @throws Exception if field access via reflection fails
-   */
-  @Test
-  public void testUpdateUiShowAlertFalse() throws Exception {
-    final FlashcardLoginController controller = new FlashcardLoginController();
-
-    Field showAlertField =
-        FlashcardLoginController.class.getDeclaredField("showAlert");
-    Field alertMessageField =
-        FlashcardLoginController.class.getDeclaredField("alertMessage");
-    Field exField = FlashcardLoginController.class.getDeclaredField("ex");
-
-    showAlertField.setAccessible(true);
-    alertMessageField.setAccessible(true);
-    exField.setAccessible(true);
-
-    // Mock UI components
-    Text mockAlert = new Text();
-    Text mockEx = new Text();
-
-    mockAlert.setVisible(true);
-    mockEx.setVisible(true);
-
-    alertMessageField.set(controller, mockAlert);
-    exField.set(controller, mockEx);
 
     showAlertField.set(controller, false);
+    errorField.setAccessible(false);
 
     // Act
     controller.updateUi();
@@ -519,24 +506,24 @@ public class FlashcardLoginControllerTest {
     assertFalse(mockEx.isVisible());
   }
 
-
   /**
-   * Tests successful navigation to sign-up page.
+   * Tests successful navigation to sign-up page, and navigation failure to
+   * sign-up page when FXML loading fails.
    *
-   * <p>Verifies that scene is set and stage is shown.
+   * <p>Verifies that scene is set and stage is shown when successfull, and verifies
+   * that IOException is thrown and propagated when loading fails.
    *
    * @throws Exception if reflection or mock construction fails
    */
   @Test
-  public void testNavigateToSignUpPageSuccess() throws Exception {
+  public void testNavigateToSignUpPage() throws Exception {
     // Arrange
     Parent realRoot = new javafx.scene.layout.Pane(); // Use a real JavaFX Parent subclass
     Stage mockStage = mock(Stage.class);
     Scene mockScene = mock(Scene.class);
 
-    try (MockedConstruction<FXMLLoader> mocked = mockConstruction(
-        FXMLLoader.class,
-        (loader, context) -> {
+    try (MockedConstruction<FXMLLoader> mocked = 
+        mockConstruction(FXMLLoader.class, (loader, context) -> {
           when(loader.load()).thenReturn(realRoot);
         })) {
 
@@ -545,8 +532,7 @@ public class FlashcardLoginControllerTest {
       when(mockScene.getWindow()).thenReturn(mockStage);
 
       // Make the private method accessible
-      Method method =
-          FlashcardLoginController.class.getDeclaredMethod("navigateToSignUpPage");
+      Method method = FlashcardLoginController.class.getDeclaredMethod("navigateToSignUpPage");
       method.setAccessible(true);
 
       // Act
@@ -556,21 +542,9 @@ public class FlashcardLoginControllerTest {
       verify(mockStage).setScene(any(Scene.class));
       verify(mockStage).show();
     }
-  }
 
-  /**
-   * Tests navigation failure to sign-up page when FXML loading fails.
-   *
-   * <p>Verifies that IOException is thrown and propagated.
-   *
-   * @throws Exception if reflection or mock construction fails
-   */
-  @Test
-  public void testNavigateToSignUpPageFailure() throws Exception {
-    // Arrange
-    try (MockedConstruction<FXMLLoader> mocked = mockConstruction(
-        FXMLLoader.class,
-        (loader, context) -> {
+    try (MockedConstruction<FXMLLoader> mocked = 
+        mockConstruction(FXMLLoader.class, (loader, context) -> {
           when(loader.load()).thenThrow(new IOException("Load failed"));
         })) {
 
@@ -578,8 +552,7 @@ public class FlashcardLoginControllerTest {
       when(signUpButton.getScene()).thenReturn(scene);
       when(scene.getWindow()).thenReturn(stage);
 
-      Method method =
-          FlashcardLoginController.class.getDeclaredMethod("navigateToSignUpPage");
+      Method method = FlashcardLoginController.class.getDeclaredMethod("navigateToSignUpPage");
       method.setAccessible(true);
 
       // Act & Assert
@@ -591,122 +564,52 @@ public class FlashcardLoginControllerTest {
   }
 
   /**
-   * Tests successful sign-up button click and navigation to sign-up page.
+   * Tests successful sign-up button click and navigation to sign-up page, and
+   * tests IOException handling during sign-up button click.
    *
-   * <p>Verifies that no error messages are shown and stage transitions
-   * correctly.
+   * <p>Verifies that no error messages are shown and stage transitions correctly,
+   * and verifies that ApiClient.showAlert is called with appropriate error
+   * message.
    *
-   * @throws Exception if mock construction fails
+   * @throws Exception if mock construction fails, or API setup fails
    */
   @Test
-  public void testWhenSignUpButtonClickedSuccess() throws Exception {
-    // Mock successful FXMLLoader construction (same pattern as your other success tests)
+  public void testWhenSignUpButtonClicked() throws Exception {
+    // Mock successful FXMLLoader construction
     Parent realRoot = new javafx.scene.layout.Pane();
     Stage mockStage = mock(Stage.class);
     Scene mockScene = mock(Scene.class);
 
-    try (MockedConstruction<FXMLLoader> mockedFXMLLoader = mockConstruction(
-        FXMLLoader.class,
-        (loader, context) -> {
-          when(loader.load()).thenReturn(realRoot); // Make load() succeed
-        })) {
-      
+    try (MockedConstruction<FXMLLoader> mockedFXMLLoader =
+          mockConstruction(FXMLLoader.class, (loader, context) -> {
+            when(loader.load()).thenReturn(realRoot); // Make load() succeed
+          })) {
+
       // Set up mocks for the navigation
       injectMockField("signUpButton", signUpButton);
       when(signUpButton.getScene()).thenReturn(mockScene);
       when(mockScene.getWindow()).thenReturn(mockStage);
-        
+
       // Act
       controller.whenSignUpButtonClicked();
-        
+
       // Assert: no error should be shown and navigation should succeed
       verify(alertMessage, never()).setText("Failed to load signup page");
       verify(mockStage).setScene(any(Scene.class));
       verify(mockStage).show();
     }
-  }
 
-  /**
-   * Tests IOException handling during sign-up button click.
-   *
-   * <p>Verifies that ApiClient.showAlert is called with appropriate error
-   * message.
-   *
-   * @throws Exception if mock setup fails
-   */
-  @Test
-  public void testWhenSignUpButtonClickedIoException() throws Exception {
     try (MockedStatic<ApiClient> mockedApiClient = mockStatic(ApiClient.class);
-        MockedConstruction<FXMLLoader> mockedFXMLLoader = mockConstruction(
-            FXMLLoader.class,
-            (loader, context) -> {
-              when(loader.load()).thenThrow(
-                  new IOException("Simulated navigation error"));
-            })) {
-      
+        MockedConstruction<FXMLLoader> mockedFXMLLoader = 
+                mockConstruction(FXMLLoader.class, (loader, context) -> {
+                  when(loader.load()).thenThrow(new IOException("Simulated navigation error"));
+                })) {
+
       controller.whenSignUpButtonClicked();
-        
-      mockedApiClient.verify(() -> ApiClient.showAlert(
-          ApiConstants.LOAD_ERROR,
-          ApiConstants.UNEXPECTED_ERROR
-      ));
+
+      mockedApiClient.verify(() -> ApiClient
+          .showAlert(ApiConstants.LOAD_ERROR, ApiConstants.UNEXPECTED_ERROR));
     }
   }
 
-  /**
-   * Tests initialize method behavior.
-   *
-   * <p>Verifies that alert elements are hidden on initialization.
-   *
-   * @throws Exception if test execution fails
-   */
-  @Test
-  public void testInitialize() throws Exception {      
-    controller.initialize();
-      
-    verify(alertMessage).setVisible(false);
-    verify(ex).setVisible(false);
-  }
-
-  /**
-   * Tests FlashcardLoginController instantiation.
-   * Verifies that controller object is successfully created.
-   */
-  @Test
-  public void testFlashcardLoginController() {
-    assertNotNull(controller);
-  }
-
-  /**
-   * Tests login with successful API response but null data.
-   *
-   * <p>Verifies that API response message is displayed when data is null.
-   *
-   * @throws Exception if mock API setup fails
-   */
-  @SuppressWarnings("unchecked")
-  @Test
-  public void testWhenLoginButtonClickedSuccessfulApiButNullData() throws Exception {
-    when(usernameField.getText()).thenReturn("user");
-    when(passwordField.getText()).thenReturn("pass");
-      
-    // Mock API response that is successful but returns null data
-    ApiResponse<LoginResponseDto> mockApiResponse = mock(ApiResponse.class);
-    when(mockApiResponse.isSuccess()).thenReturn(true);
-    when(mockApiResponse.getData()).thenReturn(null); // This is the key difference
-    when(mockApiResponse.getMessage()).thenReturn("No user data received");
-
-    try (MockedStatic<ApiClient> mockedApiClient = mockStatic(ApiClient.class)) {
-      mockedApiClient.when(() -> ApiClient.performApiRequest(
-          anyString(), anyString(), any(LoginRequestDto.class), any(TypeReference.class)))
-          .thenReturn(mockApiResponse);
-
-      controller.whenLoginButtonClicked();
-      
-      // Should hit the else branch and show the API response message
-      verify(alertMessage).setText("No user data received");
-      verify(alertMessage, atLeastOnce()).setVisible(true);
-      verify(ex, atLeastOnce()).setVisible(true);
-    }
-  }
 }
