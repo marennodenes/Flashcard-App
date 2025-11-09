@@ -22,9 +22,11 @@ Early in the project, he set up the initial FlashcardController and UI component
 
 Isa took responsibility for implementing the server's business logic layer, developing all three service classes (UserService, DeckService, and FlashcardService) that handle core application operations. These services manage the logic between the REST controllers and the persistence layer, ensuring proper data validation and business rule enforcement.
 
-In the shared module, Isa contributed to all DTO classes and developed key API utilities including ApiResponse, ApiEndpoints, and ApiConstants, establishing consistent communication patterns across the application. She also wrote comprehensive test suites for the core module, covering all fundamental classes including Flashcard, FlashcardDeck, FlashcardDeckManager, User, UserData, LoginValidator, and PasswordEncoder.
+In the shared module, Isa contributed to all DTO classes and developed key API utilities including ApiResponse, ApiEndpoints, and ApiConstants, establishing consistent communication patterns across the application. She also wrote comprehensive test suites for the core module, covering all fundamental classes.
 
 Early in the project, Isa set up the initial FlashcardController and UI components, establishing the foundation for the JavaFX interface. She also contributed to project documentation and created system diagrams to illustrate the application's architecture and design.
+
+Beyond her technical contributions, Isa brought valuable perspective to our team dynamics. She consistently encouraged us to pause and think critically about our solutions, preventing rushed implementations and ensuring we chose the optimal approach for each challenge. This thoughtful approach significantly improved our code quality and architectural decisions.
 
 ## Maren Nodenes-Fimland
 
