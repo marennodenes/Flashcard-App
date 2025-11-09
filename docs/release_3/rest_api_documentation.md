@@ -8,6 +8,37 @@ This documentation provides a comprehensive overview of all API endpoints, inclu
 
 The REST API allows secure interaction with various application features, including user authentication, deck management, and flashcard operations. Each endpoint is documented with clear specifications on required parameters, request bodies, and response types. Following this documentation will ensure correct and secure usage of the API.
 
+## Table of content
+
+- [API Documentation](#api-documentation)
+  - [Introduction](#introduction)
+    - [Purpose](#purpose)
+  - [Table of content](#table-of-content)
+  - [Base URL](#base-url)
+  - [Response Format](#response-format)
+  - [User Management API](#user-management-api)
+    - [POST /api/v1/users/register](#post-apiv1usersregister)
+    - [POST /api/v1/users/login](#post-apiv1userslogin)
+    - [GET /api/v1/users](#get-apiv1users)
+    - [GET /api/v1/users/find](#get-apiv1usersfind)
+    - [POST /api/v1/users/validate-password](#post-apiv1usersvalidate-password)
+    - [User Management Error Handling](#user-management-error-handling)
+  - [Deck Management API](#deck-management-api)
+    - [GET /api/v1/decks](#get-apiv1decks)
+    - [GET /api/v1/decks/{deckName}](#get-apiv1decksdeckname)
+    - [POST /api/v1/decks/{deckName}](#post-apiv1decksdeckname)
+    - [DELETE /api/v1/decks/{deckName}](#delete-apiv1decksdeckname)
+    - [PUT /api/v1/decks](#put-apiv1decks)
+    - [Deck Management Error Handling](#deck-management-error-handling)
+  - [Flashcard Management API](#flashcard-management-api)
+    - [POST /api/v1/flashcards/create](#post-apiv1flashcardscreate)
+    - [GET /api/v1/flashcards/get](#get-apiv1flashcardsget)
+    - [GET /api/v1/flashcards/get-all](#get-apiv1flashcardsget-all)
+    - [DELETE /api/v1/flashcards/delete](#delete-apiv1flashcardsdelete)
+    - [Flashcard Management Error Handling](#flashcard-management-error-handling)
+  - [General Error Handling](#general-error-handling)
+  - [Security Considerations](#security-considerations)
+
 ## Base URL
 
 ```bash
@@ -81,6 +112,7 @@ Register a new user by creating an account with a username and password.
 - **400 BAD REQUEST**: The request format was invalid or validation failed.
 
   - "Username requirements not met:"
+
     - "Username 'johndoe' is already taken"
     - "Username cannot be empty"
 

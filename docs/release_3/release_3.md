@@ -79,7 +79,7 @@ Our development approach continued to emphasize pair programming and regular com
 
 ## Code Quality Report
 
-As of this release, the project maintains exceptionally high code quality standards through enhanced tools and practices. For detailed information about our code quality approach, see our [Code Quality](code_quality.md) documentation.
+As of this release, the project maintains high code quality standards through enhanced tools and practices. For detailed information about our code quality approach, see our [Code Quality](code_quality.md) documentation.
 
 Key quality measures include:
 
@@ -119,29 +119,34 @@ The UML documentation provides comprehensive visual representations of the appli
 
 Due to the extensive number of classes across the project, we have organized the class diagrams by module to provide clear, focused views of each architectural layer. Each diagram shows the classes, their attributes and methods, and the relationships between them within that specific module.
 
-The class diagrams follow UML conventions where `+` indicates public visibility, `-` indicates private visibility, and `#` indicates protected visibility. Solid arrows show dependencies and associations, while dashed arrows show interface implementations or usage relationships.
+The class diagrams follow UML conventions where `green cicle` indicates public visibility, `red square` indicates private visibility, and `red filled square` indicates protected visibility. Solid arrows show dependencies and associations, while dashed arrows show interface implementations or usage relationships.
 
 **core**
+
 ![core module class diagram](uml_documentation/screenshots/class_core.png)
 
 The core module contains the fundamental domain models including `Flashcard`, `FlashcardDeck`, `FlashcardDeckManager`, and authentication-related classes like `User`, `UserData`, `LoginValidator`, and `PasswordEncoder`.
 
 **fxui**
+
 ![fxui module class diagram](uml_documentation/screenshots/class_fxui.png)
 
 The fxui module shows all JavaFX controllers and the `ApiClient` that handles REST API communication. This includes controllers for login, signup, main view, deck management, and flashcard learning.
 
 **server**
+
 ![server module class diagram](uml_documentation/screenshots/class_server.png)
 
 The server module illustrates the Spring Boot REST API structure with controllers (`UserController`, `DeckController`, `FlashcardController`) and services (`UserService`, `DeckService`, `FlashcardService`) that implement the business logic.
 
 **shared**
+
 ![shared module class diagram](uml_documentation/screenshots/class_shared.png)
 
 The shared module contains all Data Transfer Objects (DTOs) used for client-server communication, mapper classes for converting between domain objects and DTOs, and API constants and endpoints.
 
 **storage**
+
 ![storage module class diagram](uml_documentation/screenshots/class_storage.png)
 
 The storage module shows the `FlashcardPersistent` class which implements the `UserPersistence` interface and handles JSON-based file storage for user data and flashcards.
@@ -160,6 +165,8 @@ The architecture diagram provides a high-level overview of the system's structur
 
 The sequence diagram illustrates the process that occurs when a user creates a new deck in the application. It shows the chronological order of method calls between objects across different layers of the system:
 The JavaFX controller initiates a request through the ApiClient, which communicates with the REST API (DeckController). The API then uses the DeckService and FlashcardPersistent components to store the new deck in the underlying data storage. Finally, the updated list of decks is retrieved and returned to the client so the user interface can be refreshed.
+
+We deliberately chose not to include an alt (alternative flow) section in our sequence diagram. The purpose of this diagram is to clearly illustrate the main success scenario of the user story, the process of successfully creating a new deck. Including alternative or error-handling paths would have made the diagram significantly more complex and harder to read. Therefore we prioritized a simplified view. The alternative cases (such as failed API calls or invalid input) are still handled in the actual implementation and corresponding test cases but are not shown here to keep the diagram focused and easy to interpret.
 
 ### Package diagram
 
