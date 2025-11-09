@@ -151,6 +151,7 @@ public class DeckController {
       @RequestParam String username,
       @RequestBody FlashcardDeckManager deckManager) {
     try {
+      Objects.requireNonNull(deckManager, "Deck manager cannot be null");
       deckService.updateAllDecks(username, deckManager);
       return new ApiResponse<>(true, ApiConstants.DECK_UPDATED, null);
     } catch (Exception e) {

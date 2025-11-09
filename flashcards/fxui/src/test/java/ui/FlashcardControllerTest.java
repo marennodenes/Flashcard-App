@@ -2,10 +2,12 @@ package ui;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNotSame;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import app.Flashcard;
 import app.FlashcardDeck;
@@ -18,12 +20,16 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 import javafx.application.Platform;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
-import org.junit.jupiter.api.AfterAll;
+import javafx.scene.layout.Pane;
+import javafx.stage.Stage;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.testfx.util.WaitForAsyncUtils;
 
 
 /**
@@ -58,14 +64,6 @@ public class FlashcardControllerTest {
           // Toolkit already initialized
       }
     }
-  }
-
-  /**
-   * Tears down JavaFX platform after all tests complete.
-   */
-  @AfterAll
-  public static void tearDown() {
-      // Don't exit platform as other tests may need it
   }
 
   /**
@@ -110,15 +108,8 @@ public class FlashcardControllerTest {
   public void testControllerInitialization() throws Exception {
     assertNotNull(controller);
     assertEquals("testUser", getField("currentUsername"));
-  }
 
-  /**
-   * Tests initialize method with empty deck.
-   *
-   * @throws Exception when initializing fails
-   */
-  @Test
-  public void testInitializeWithEmptyDeck() throws Exception {
+    // Test initiaze with empty deck
     FlashcardController newController = new FlashcardController();
     newController.initialize();
     assertDoesNotThrow(() -> newController.initialize());
@@ -168,62 +159,28 @@ public class FlashcardControllerTest {
   public void testSetCurrentUsername() throws Exception {
     controller.setCurrentUsername("newUser");
     assertEquals("newUser", getField("currentUsername"));
-  }
 
-  /**
-   * Tests setting the current username with various inputs.
-   *
-   * @throws Exception when setting the username fails
-   */
-  @Test
-  public void testSetCurrentUsernameWithNull() throws Exception {
+    // Test set current username with null
     controller.setCurrentUsername(null);
     assertEquals("", getField("currentUsername"));
-  }
 
-  /**
-   * Tests setting the current username with empty string.   
-   *
-   * @throws Exception when setting the username fails
-   */
-  @Test
-  public void testSetCurrentUsernameWithEmptyString() throws Exception {
+    // Test set current username with empty string
     controller.setCurrentUsername("");
     assertEquals("", getField("currentUsername"));
-  }
 
-  /**
-   * Tests setting the current username with leading/trailing whitespace.
-   *
-   * @throws Exception when setting the username fails
-   */
-  @Test
-  public void testSetCurrentUsernameWithWhitespace() throws Exception {
+    // Test set currentUsername with whitespace
     controller.setCurrentUsername("  user123  ");
     assertEquals("user123", getField("currentUsername"));
-  }
 
-  /**
-   * Tests setting the current username with a valid username.
-   *
-   * @throws Exception when setting the username fails
-   */
-  @Test
-  public void testSetCurrentUsernameWithValidUsername() throws Exception {
+    // Test set currentUsername with valid username
     controller.setCurrentUsername("validUser");
     assertEquals("validUser", getField("currentUsername"));
-  }
 
-  /**
-   * Tests setting the current username updates the UI field.
-   *
-   * @throws Exception when setting the username fails
-   */
-  @Test
-  public void testSetCurrentUsernameUpdatesUsernameField() throws Exception {
+    // Test set currentUsername updates usernameField
     assertNull(getField("usernameField"));
     controller.setCurrentUsername("testUser");
     assertEquals("testUser", getField("currentUsername"));
+    
   }
 
   /**
@@ -262,7 +219,7 @@ public class FlashcardControllerTest {
    * @throws Exception when navigating fails
    */
   @Test
-  public void testNavigationLogic_goToNextCard() throws Exception {
+  public void testNavigationLogicGoToNextCard() throws Exception {
     assertEquals(0, getField("currentCardI"));
     
     callPrivateMethod("goToNextCard");
@@ -278,7 +235,7 @@ public class FlashcardControllerTest {
    * @throws Exception when navigating fails
    */
   @Test
-  public void testNavigationLogic_goToPreviousCard() throws Exception {
+  public void testNavigationLogicGoToPreviousCard() throws Exception {
     setField("currentCardI", 2);
     
     callPrivateMethod("goToPreviousCard");
@@ -289,31 +246,26 @@ public class FlashcardControllerTest {
   }
 
   /**
-   * Tests navigation boundaries (wrapping) when going past first or last card.
+   * Tests navigation wrapping when going past first or last card.
    *
    * @throws Exception when navigating fails
    */
   @Test
-  public void testNavigationBoundaries_atStart() throws Exception {
+  public void testNavigationWrappingAtStart() throws Exception {
+
+    // Test wrapping at start
     setField("currentCardI", 0);
     callPrivateMethod("goToPreviousCard");
     assertEquals(2, getField("currentCardI"));
-  }
 
-  /**
-   * Tests navigation boundaries (wrapping) when going past first or last card.
-   *
-   * @throws Exception when navigating fails
-   */
-  @Test
-  public void testNavigationBoundaries_atEnd() throws Exception {
+    // Test wrapping at end
     setField("currentCardI", 2);
     callPrivateMethod("goToNextCard");
     assertEquals(0, getField("currentCardI"));
   }
 
   /**
-   * Tests getting the current card.
+   * Tests getting the current card with valid and invalid indexes.
    *
    * @throws Exception when getting the current card fails
    */
@@ -332,6 +284,28 @@ public class FlashcardControllerTest {
     
     assertEquals("Q2", currentCard.getQuestion());
     assertEquals("A2", currentCard.getAnswer());
+
+    // Test get current card with null deck
+    setField("deck", null);
+    FlashcardDto current = (FlashcardDto) callPrivateMethodWithReturn("getCurrentCard");
+    assertNull(current);
+
+    // Test get current card with invalid index
+    setField("currentCardI", 99);
+    FlashcardDto current1 = (FlashcardDto) callPrivateMethodWithReturn("getCurrentCard");
+    assertNull(current1);
+
+    // Test get current card with negative index
+    setField("currentCardI", -1);
+    FlashcardDto current2 = (FlashcardDto) callPrivateMethodWithReturn("getCurrentCard");
+    assertNull(current2);
+
+    // Test get current card with null card
+    List<FlashcardDto> deckWithNull = Collections.singletonList(null);
+    setField("deck", deckWithNull);
+    setField("currentCardI", 0);
+    FlashcardDto current3 = (FlashcardDto) callPrivateMethodWithReturn("getCurrentCard");
+    assertNull(current3);
   }
 
   /**
@@ -473,48 +447,6 @@ public class FlashcardControllerTest {
   public void testUpdateProgressWithValidState() throws Exception {
     setField("currentCardI", 1);
     assertDoesNotThrow(() -> controller.updateProgress());
-  }
-
-  /**
-   * Tests getCurrentCard method with various edge cases.
-   *
-   * @throws Exception when getting the current card fails
-   */
-  @Test
-  public void testGetCurrentCardWithNullDeck() throws Exception {
-    setField("deck", null);
-    
-    FlashcardDto current = (FlashcardDto) callPrivateMethodWithReturn("getCurrentCard");
-    
-    assertNull(current);
-  }
-
-  /**
-   * Tests getCurrentCard method with invalid index.
-   *
-   * @throws Exception when getting the current card fails
-   */
-  @Test
-  public void testGetCurrentCardWithInvalidIndex() throws Exception {
-    setField("currentCardI", 99);
-    
-    FlashcardDto current = (FlashcardDto) callPrivateMethodWithReturn("getCurrentCard");
-    
-    assertNull(current);
-  }
-
-  /**
-   * Tests getCurrentCard method with negative index.
-   *
-   * @throws Exception when getting the current card fails
-   */
-  @Test
-  public void testGetCurrentCardWithNegativeIndex() throws Exception {
-    setField("currentCardI", -1);
-    
-    FlashcardDto current = (FlashcardDto) callPrivateMethodWithReturn("getCurrentCard");
-    
-    assertNull(current);
   }
 
   /**
@@ -711,28 +643,58 @@ public class FlashcardControllerTest {
     assertDoesNotThrow(() -> callPrivateMethod("whenCardButtonClicked"));
   }
 
-  /**
-   * Tests flipCard method with null card button.
-   *
-   * @throws Exception when flipping the card fails
-   */
-  @Test
-  public void testFlipCardWithNullCardButton() throws Exception {
-    setField("card", null);
-    assertNull(getField("card"));
-  
-    callPrivateMethod("flipCard");
-    assertDoesNotThrow(() -> callPrivateMethod("flipCard"));
-  }
 
   /**
-   * Tests flipCard method toggles the showing answer state.
+   * Tests flipCard method with question, answer and null handling.
    *
    * @throws Exception when flipping the card fails
    */
   @Test
-  public void testFlipCardTogglesShowingAnswer() throws Exception {
+  public void testFlipCard() throws Exception {
+    FlashcardDeck deck = new FlashcardDeck("Animated");
+    deck.addFlashcard(new Flashcard("Question?", "Answer!"));
+    FlashcardDeckDto deckDto = mapper.toDto(deck);
+    setField("deck", deckDto.getDeck());
+    setField("originalDeck", deckDto);
+    setField("currentCardI", 0);
     setField("isShowingAnswer", false);
+
+    Platform.runLater(() -> controller.updateUi());
+    WaitForAsyncUtils.waitForFxEvents();
+
+    assertEquals("Question?", cardButton.getText());
+    assertFalse((Boolean) getField("isShowingAnswer"));
+
+    Platform.runLater(() -> {
+      try {
+        callPrivateMethod("flipCard");
+      } catch (Exception e) {
+        throw new RuntimeException(e);
+      }
+    });
+    WaitForAsyncUtils.sleep(250, TimeUnit.MILLISECONDS);
+    WaitForAsyncUtils.waitForFxEvents();
+
+    assertEquals("Answer!", cardButton.getText());
+    assertTrue((Boolean) getField("isShowingAnswer"));
+
+    Platform.runLater(() -> {
+      try {
+        callPrivateMethod("flipCard");
+      } catch (Exception e) {
+        throw new RuntimeException(e);
+      }
+    });
+    WaitForAsyncUtils.sleep(250, TimeUnit.MILLISECONDS);
+    WaitForAsyncUtils.waitForFxEvents();
+
+    assertEquals("Question?", cardButton.getText());
+    assertFalse((Boolean) getField("isShowingAnswer"));
+
+    setField("card", null);
+    assertNull(getField("card"));
+
+    callPrivateMethod("flipCard");
     assertDoesNotThrow(() -> callPrivateMethod("flipCard"));
   }
 
@@ -815,22 +777,6 @@ public class FlashcardControllerTest {
   }
 
   /**
-   * Tests getCurrentCard method when deck contains null card.
-   *
-   * @throws Exception when getting the current card fails
-   */
-  @Test
-  public void testGetCurrentCardReturnsNullForNullCardInList() throws Exception {
-    List<FlashcardDto> deckWithNull = Collections.singletonList(null);
-    setField("deck", deckWithNull);
-    setField("currentCardI", 0);
-    
-    FlashcardDto current = (FlashcardDto) callPrivateMethodWithReturn("getCurrentCard");
-    
-    assertNull(current);
-  }
-
-  /**
    * Tests navigation methods wrap around correctly.
    *
    * @throws Exception when navigating fails
@@ -844,26 +790,6 @@ public class FlashcardControllerTest {
     
     callPrivateMethod("goToPreviousCard");
     assertEquals(2, getField("currentCardI"));
-  }
-
-  /**
-   * Tests updateUi method with all UI fields null.
-   *
-   * @throws Exception when updating UI fails
-   */
-  @Test
-  public void testUpdateUiHandlesAllNullFields() throws Exception {
-    setField("card", null);
-    setField("decknameField", null);
-    setField("usernameField", null);
-    
-    assertNull(getField("card"));
-    assertNull(getField("decknameField"));
-    assertNull(getField("usernameField"));
-    
-    controller.updateUi();
-    
-    assertDoesNotThrow(() -> controller.updateUi());
   }
 
   /**
@@ -881,56 +807,12 @@ public class FlashcardControllerTest {
   }
 
   /**
-   * Tests whenLogOut method with null backButton.
-   *
-   * @throws Exception when logging out fails
-   */
-  @Test
-  public void testWhenLogOutWithNullButton() throws Exception {
-    setField("backButton", null);
-    
-    assertThrows(NullPointerException.class, () -> controller.whenLogOut(null));
-  }
-
-  /**
-   * Tests updateUi method when showing question.
-   *
-   * @throws Exception when updating UI fails
-   */
-  @Test
-  public void testUpdateUiWithShowingAnswerFalse() throws Exception {
-    setField("isShowingAnswer", false);
-    setField("currentCardI", 0);
-    
-    controller.updateUi();
-    
-    assertDoesNotThrow(() -> controller.updateUi());
-  }
-
-  /**
-   * Tests flipCard method with real card button.
-   *
-   * @throws Exception when flipping the card fails
-   */
-  @Test
-  public void testFlipCardWithRealButton() throws Exception {
-    if (cardButton != null) {
-      setField("card", cardButton);
-      setField("isShowingAnswer", false);
-      
-      controller.flipCard();
-      
-      assertDoesNotThrow(() -> controller.flipCard());
-    }
-  }
-
-  /**
    * Tests whenBackButtonIsClicked method with real back button.
    *
    * @throws Exception when clicking back button fails
    */
   @Test
-  public void testWhenBackButtonIsClickedWithRealButton() throws Exception {
+  public void testWhenBackButtonIsClicked() throws Exception {
     if (backButton != null) {
       setField("backButton", backButton);
       setField("originalDeck", 
@@ -945,55 +827,66 @@ public class FlashcardControllerTest {
   }
 
   /**
-   * Tests whenLogOut method with real back button.
+   * Tests whenLogOut method.
    *
    * @throws Exception when logging out fails
    */
   @Test
-  public void testWhenLogOutWithRealButton() throws Exception {
+  public void testWhenLogOut() throws Exception {
     if (backButton != null) {
       setField("backButton", backButton);
-          
+      CountDownLatch latch = new CountDownLatch(1);
       Platform.runLater(() -> {
-        assertDoesNotThrow(() -> controller.whenLogOut(null));
+        try {
+          Stage stage = new Stage();
+          Pane root = new Pane();
+          root.getChildren().add(backButton);
+          Scene scene = new Scene(root);
+          stage.setScene(scene);
+          assertDoesNotThrow(() -> controller.whenLogOut(null));
+        } finally {
+          latch.countDown();
+        }
       });
+      latch.await();
     }
+
+    setField("backButton", null);
+    assertThrows(NullPointerException.class, () -> controller.whenLogOut(null));
   }
 
   /**
-   * Tests updateUi method with real card button.
+   * Tests updateUi method.
    *
    * @throws Exception when updating UI fails
    */
   @Test
-  public void testUpdateUiWithRealButton() throws Exception {
-    if (cardButton != null) {
-      setField("card", cardButton);
-      setField("isShowingAnswer", false);
-      
-      controller.updateUi();
-      
-      String buttonText = cardButton.getText();
-      assertNotNull(buttonText);
-    }
-  }
+  public void testUpdateUi() throws Exception {
 
-  /**
-   * Tests updateUi method when showing answer with real card button.
-   *
-   * @throws Exception when updating UI fails
-   */
-  @Test
-  public void testUpdateUiShowingAnswerWithRealButton() throws Exception {
+    // Test updateUi with showing answer true and current card index 0
     if (cardButton != null) {
       setField("card", cardButton);
       setField("isShowingAnswer", true);
-      
       controller.updateUi();
-      
       String buttonText = cardButton.getText();
       assertNotNull(buttonText);
     }
+
+    // Test updateUi with all UI fields null
+    setField("card", null);
+    setField("decknameField", null);
+    setField("usernameField", null);
+    assertNull(getField("card"));
+    assertNull(getField("decknameField"));
+    assertNull(getField("usernameField"));
+    controller.updateUi();
+    assertDoesNotThrow(() -> controller.updateUi());
+
+    // Test updateUi with showing answer false and current card index 0
+    setField("isShowingAnswer", false);
+    setField("currentCardI", 0);
+    controller.updateUi();
+    assertDoesNotThrow(() -> controller.updateUi());
   }
 
   /**

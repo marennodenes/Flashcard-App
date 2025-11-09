@@ -46,7 +46,7 @@ public class ApiClientTest {
    * and does not throw.
    */
   @Test
-  public void testApiClientConstructorCoverage() {
+  public void testApiClientConstructor() {
     assertNotNull(new ApiClient());
   }
 
@@ -61,14 +61,7 @@ public class ApiClientTest {
     TypeReference<Map<String, String>> typeRef = new TypeReference<>() {};
     Map<String, String> result = ApiClient.parseResponse(json, typeRef);
     assertEquals("value", result.get("key"));
-  }
 
-  /**
-   * Verifies that convertObjectToJson throws JsonProcessingException for
-   * non-serializable objects.
-   */
-  @Test
-  public void testConvertObjectToJsonThrowsOnNonSerializable() {
     Object nonSerializable = new Object() {
       private void writeObject(java.io.ObjectOutputStream out)
           throws IOException {
@@ -77,15 +70,7 @@ public class ApiClientTest {
     };
     assertThrows(JsonProcessingException.class,
         () -> ApiClient.convertObjectToJson(nonSerializable));
-  }
 
-  /**
-   * Verifies that parseResponse throws JsonProcessingException for
-   * malformed JSON input.
-   */
-  @Test
-  public void testParseResponseThrowsOnMalformedJson() {
-    TypeReference<Map<String, String>> typeRef = new TypeReference<>() {};
     assertThrows(JsonProcessingException.class,
         () -> ApiClient.parseResponse("not-json", typeRef));
   }
@@ -93,9 +78,11 @@ public class ApiClientTest {
   /**
    * Verifies that sendRequest throws IllegalArgumentException for null or
    * blank URI/method.
+   *
+   * @throws Exception if sending the request fails
    */
   @Test
-  public void testSendRequestThrowsOnNullOrBlankUriOrMethod() {
+  public void testSendRequest() throws Exception {
     assertThrows(IllegalArgumentException.class,
         () -> ApiClient.sendRequest(null, "GET", null));
     assertThrows(IllegalArgumentException.class,
@@ -104,62 +91,54 @@ public class ApiClientTest {
         () -> ApiClient.sendRequest("http://localhost", null, null));
     assertThrows(IllegalArgumentException.class,
         () -> ApiClient.sendRequest("http://localhost", " ", null));
-  }
-
-  /**
-   * Verifies that sendRequest throws IllegalArgumentException for
-   * unsupported HTTP methods.
-   */
-  @Test
-  public void testSendRequestThrowsOnUnsupportedMethod() {
+    
     assertThrows(IllegalArgumentException.class,
         () -> ApiClient.sendRequest("http://localhost", "PATCH", null));
-  }
-
-  /**
-   * Verifies that sendRequest throws IllegalArgumentException for missing or
-   * blank JSON body on POST/PUT.
-   */
-  @Test
-  public void testSendRequestThrowsOnMissingJsonForPostPut() {
+    assertThrows(IOException.class,
+        () -> ApiClient.sendRequest("http://localhost", "DELETE", null));
     assertThrows(IllegalArgumentException.class,
         () -> ApiClient.sendRequest("http://localhost", "POST", null));
     assertThrows(IllegalArgumentException.class,
         () -> ApiClient.sendRequest("http://localhost", "PUT", " "));
+    assertThrows(IOException.class,
+        () -> ApiClient.sendRequest("http://localhost", "GET", null));
+
   }
 
-  /**
-   * Tests sendRequest for a valid GET request to an external endpoint.
-   */
-  @Test
-  public void testSendRequestGetMethod() throws Exception {
-    HttpResponse<String> response = ApiClient.sendRequest("https://postman-echo.com/get", "GET", null);
-    assertNotNull(response);
-    assertTrue(response.statusCode() >= 200);
-  }
+
 
   /**
    * Tests sendRequest for a valid POST request to an external endpoint.
    */
   @Test
-  public void testSendRequestPostMethod() throws Exception {
+  public void testSendRequestHttpsMethods() throws Exception {
     String json = "{\"foo\":\"bar\"}";
+
+    // POST request
     HttpResponse<String> response = ApiClient.sendRequest(
         "https://postman-echo.com/post", "POST", json);
     assertNotNull(response);
     assertTrue(response.statusCode() >= 200);
-  }
 
-  /**
-   * Tests sendRequest for a valid PUT request to an external endpoint.
-   */
-  @Test
-  public void testSendRequestPutMethod() throws Exception {
-    String json = "{\"foo\":\"bar\"}";
-    HttpResponse<String> response = ApiClient.sendRequest("https://postman-echo.com/put", "PUT", json);
+    // GET request
+    response = ApiClient.sendRequest(
+        "https://postman-echo.com/get", "GET", null);
+    assertNotNull(response);
+    assertTrue(response.statusCode() >= 200);
+
+    // PUT request
+    response = ApiClient.sendRequest(
+        "https://postman-echo.com/put", "PUT", json);
+    assertNotNull(response);
+    assertTrue(response.statusCode() >= 200);
+
+    // DELETE request
+    response = ApiClient.sendRequest(
+        "https://postman-echo.com/delete", "DELETE", null);
     assertNotNull(response);
     assertTrue(response.statusCode() >= 200);
   }
+
 
   /**
    * Tests performApiRequest for a successful GET request and valid
@@ -342,13 +321,13 @@ public class ApiClientTest {
 
   /**
    * Verifies that performApiRequest returns null if response body is
-   * empty/whitespace on 2xx status code.
+   * empty/whitespace on 2xx status code or body is null.
    *
    * @throws Exception if mocking fails
    */
   @SuppressWarnings("unchecked")
   @Test
-  public void testPerformApiRequestReturnsNullIfResponseBodyIsEmpty() throws Exception {
+  public void testPerformApiRequestReturnsNull() throws Exception {
     String url = "http://localhost";
     String method = "GET";
     TypeReference<Map<String, String>> typeRef = new TypeReference<>() {};
@@ -363,60 +342,31 @@ public class ApiClientTest {
           .thenReturn(mockResponse);
       assertNull(ApiClient.performApiRequest(url, method, null, typeRef));
     }
-  }
 
-  /**
-   * Verifies that performApiRequest returns null for 2xx status code and
-   * parseResponse returns null.
-   *
-   * @throws Exception if mocking fails
-   */
-  @SuppressWarnings("unchecked")
-  @Test
-  public void testPerformApiRequestReturnsNullFor2xx()
-      throws Exception {
-    String url = "http://localhost";
-    String method = "GET";
-    TypeReference<Map<String, String>> typeRef = new TypeReference<>() {};
-      
-    HttpResponse<String> mockResponse = (HttpResponse<String>) mock(HttpResponse.class);
-    when(mockResponse.statusCode()).thenReturn(200);
-    when(mockResponse.body()).thenReturn("{\"key\":\"value\"}");
+    HttpResponse<String> mockResponse2 = (HttpResponse<String>) mock(HttpResponse.class);
+    when(mockResponse2.statusCode()).thenReturn(404);
+    when(mockResponse2.body()).thenReturn(null);
 
     try (MockedStatic<ApiClient> apiMock =
         Mockito.mockStatic(ApiClient.class, Mockito.CALLS_REAL_METHODS)) {
       apiMock.when(() -> ApiClient.sendRequest(url, method, null))
-          .thenReturn(mockResponse);
-      apiMock.when(() -> ApiClient.parseResponse("{\"key\":\"value\"}",
-          typeRef)).thenReturn(null);
-      assertNull(ApiClient.performApiRequest(url, method, null, typeRef));
-    }
-  }
-
-  /**
-   * Verifies that performApiRequest throws RuntimeException for non-2xx
-   * status code and null body.
-   *
-   * @throws Exception if mocking fails
-   */
-  @SuppressWarnings("unchecked")
-  @Test
-  public void testPerformApiRequestReturnsNull() throws Exception {
-    String url = "http://localhost";
-    String method = "GET";
-    TypeReference<Map<String, String>> typeRef = new TypeReference<>() {};
-      
-    HttpResponse<String> mockResponse = (HttpResponse<String>) mock(HttpResponse.class);
-    when(mockResponse.statusCode()).thenReturn(404);
-    when(mockResponse.body()).thenReturn(null);
-
-    try (MockedStatic<ApiClient> apiMock =
-        Mockito.mockStatic(ApiClient.class, Mockito.CALLS_REAL_METHODS)) {
-      apiMock.when(() -> ApiClient.sendRequest(url, method, null))
-          .thenReturn(mockResponse);
+          .thenReturn(mockResponse2);
       RuntimeException ex = assertThrows(RuntimeException.class,
           () -> ApiClient.performApiRequest(url, method, null, typeRef));
       assertTrue(ex.getMessage().contains("Server error"));
+    }
+
+    HttpResponse<String> mockResponse3 = (HttpResponse<String>) mock(HttpResponse.class);
+    when(mockResponse3.statusCode()).thenReturn(200);
+    when(mockResponse3.body()).thenReturn("{\"key\":\"value\"}");
+
+    try (MockedStatic<ApiClient> apiMock =
+        Mockito.mockStatic(ApiClient.class, Mockito.CALLS_REAL_METHODS)) {
+      apiMock.when(() -> ApiClient.sendRequest(url, method, null))
+          .thenReturn(mockResponse3);
+      apiMock.when(() -> ApiClient.parseResponse("{\"key\":\"value\"}",
+          typeRef)).thenReturn(null);
+      assertNull(ApiClient.performApiRequest(url, method, null, typeRef));
     }
   }
 }

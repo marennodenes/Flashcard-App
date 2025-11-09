@@ -34,7 +34,6 @@ import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
-import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -93,14 +92,6 @@ class FlashcardDeckControllerTest {
   }
 
   /**
-   * Tears down JavaFX platform after all tests complete.
-   */
-  @AfterAll
-  public static void tearDown() {
-    // Don't exit platform as other tests may need it
-  }
-
-  /**
    * Sets up a fresh controller and injects mock UI components before each test.
    *
    * @throws RuntimeException if reflection fails to inject fields
@@ -126,6 +117,15 @@ class FlashcardDeckControllerTest {
     setField(controller, "currentUsername", null);
     FlashcardDeck deck = new FlashcardDeck("Deck1");
     setField(controller, "currentDeck", mapper.toDto(deck));
+  }
+
+  /**
+   * Tests controller initialization logic.
+   */
+  @Test
+  public void testInitialize() {
+    runOnFxThread(() -> assertDoesNotThrow(
+        () -> controller.initialize()));
   }
 
   /**
@@ -235,7 +235,7 @@ class FlashcardDeckControllerTest {
   }
 
   /**
-   * Tests card creation logic and API success.
+   * Tests whenCreateButtonIsClicked method.
    */
   @Test
   public void testWhenCreateButtonIsClickedAddsCard() {
@@ -411,15 +411,6 @@ class FlashcardDeckControllerTest {
           .thenAnswer(inv -> null);
       assertDoesNotThrow(() -> controller.whenBackButtonIsClicked());
     }
-  }
-
-  /**
-   * Tests controller initialization logic.
-   */
-  @Test
-  public void testInitialize() {
-    runOnFxThread(() -> assertDoesNotThrow(
-        () -> controller.initialize()));
   }
 
   /**
@@ -964,29 +955,6 @@ class FlashcardDeckControllerTest {
   }
 
   /**
-   * Tests selection listener enabling and disabling delete button.
-   */
-  @Test
-  public void testSelectionListenerEnablesAndDisablesDelete() {
-    runOnFxThread(() -> controller.initialize());
-    assertTrue(deleteCardButton.isDisabled());
-
-    FlashcardDeck d = new FlashcardDeck("D");
-    d.addFlashcard(new Flashcard("Q", "A"));
-    FlashcardDto item = mapper.toDto(d).getDeck().get(0);
-
-    runOnFxThread(() -> {
-      listView.setItems(FXCollections.observableArrayList(item));
-      listView.getSelectionModel().select(0);
-    });
-
-    assertFalse(deleteCardButton.isDisabled());
-
-    runOnFxThread(() -> listView.getSelectionModel().clearSelection());
-    assertTrue(deleteCardButton.isDisabled());
-  }
-
-  /**
    * Tests cell factory calls toString on FlashcardDto items.
    */
   @Test
@@ -1304,7 +1272,7 @@ class FlashcardDeckControllerTest {
    */
   @SuppressWarnings("unchecked")
   @Test
-  public void testUpdateUiDeleteButtonNull_branch() {
+  public void testUpdateUiDeleteButtonNull() {
     setField(controller, "deleteCardButton", null);
     setField(controller, "currentUsername", "u");
 

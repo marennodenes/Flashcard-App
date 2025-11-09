@@ -21,6 +21,7 @@ import dto.FlashcardDeckManagerDto;
 import dto.FlashcardDto;
 import dto.mappers.FlashcardDeckMapper;
 import java.io.IOException;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
@@ -33,7 +34,6 @@ import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
-import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -123,14 +123,6 @@ class FlashcardMainControllerTest {
   }
 
   /**
-     * Tears down JavaFX platform after all tests complete.
-     */
-  @AfterAll
-  public static void tearDown() {
-    // Don't exit platform as other tests may need it
-  }
-
-  /**
    * Initializes the test stage.
    *
    * @param stage the JavaFX stage for testing
@@ -140,8 +132,6 @@ class FlashcardMainControllerTest {
     this.stage = stage;
     stage.setWidth(1);
     stage.setHeight(1);
-    stage.setX(-1000);
-    stage.setY(-1000);
   }
 
   /**
@@ -244,10 +234,10 @@ class FlashcardMainControllerTest {
   }
 
   /**
-   * Tests that all buttons are hidden and disabled initially.
+   * Tests initialize method.
    */
   @Test
-  public void testInitializeAllbuttonshiddeninitially() {
+  public void testInitialize() {
     assertFalse(deck1.isVisible());
     assertTrue(deck1.isDisabled());
     assertFalse(deck2.isVisible());
@@ -255,13 +245,7 @@ class FlashcardMainControllerTest {
 
     assertFalse(deleteDeck1.isVisible());
     assertFalse(deleteDeck2.isVisible());
-  }
 
-  /**
-   * Tests that alerts are hidden initially.
-   */
-  @Test
-  public void testInitializeAlertshiddeninitially() {
     runOnFxThread(() -> controller.updateUi());
     assertFalse(alertMessage.isVisible());
     assertFalse(ex.isVisible());
@@ -272,7 +256,9 @@ class FlashcardMainControllerTest {
    */
   @SuppressWarnings("unchecked")
   @Test
-  public void testSetCurrentUsernameValidusername() {
+  public void testSetCurrentUsernameValidusername() throws Exception {
+
+    // Test set current username with valid username
     try (MockedStatic<ApiClient> apiClient = mockStatic(ApiClient.class)) {
       ApiResponse<FlashcardDeckManagerDto> response = createSuccessResponse(new ArrayList<>());
       apiClient.when(() -> ApiClient.performApiRequest(
@@ -281,42 +267,32 @@ class FlashcardMainControllerTest {
 
       controller.setCurrentUsername("testuser");
       assertEquals("testuser", usernameField.getText());
+      assertEquals("testuser", getField("currentUsername"));
     }
-  }
 
-  /**
-   * Tests handling of null username.
-   */
-  @Test
-  public void testSetCurrentUsernameNullusername() {
+    // Test set current username with null username
     controller.setCurrentUsername(null);
-    assertEquals("", usernameField.getText());
-  }
+    assertEquals("testuser", usernameField.getText());
+    assertEquals("testuser", getField("currentUsername"));
 
-  /**
-   * Tests handling of empty username.
-   */
-  @Test
-  public void testSetCurrentUsernameEmptyusername() {
+    // Test set current username with empty username
+    controller.setCurrentUsername("");
+    assertEquals("testuser", usernameField.getText());
+    assertEquals("testuser", getField("currentUsername"));
+
+    // Test set current username with whitespace username
     controller.setCurrentUsername("   ");
-    assertEquals("", usernameField.getText());
-  }
+    assertEquals("testuser", usernameField.getText());
+    assertEquals("testuser", getField("currentUsername"));
 
-  /**
-   * Tests that username trims whitespace.
-   */
-  @SuppressWarnings("unchecked")
-  @Test
-  public void testSetCurrentUsernameTrimswhitespace() {
-    try (MockedStatic<ApiClient> apiClient = mockStatic(ApiClient.class)) {
-      ApiResponse<FlashcardDeckManagerDto> response = createSuccessResponse(new ArrayList<>());
-      apiClient.when(() -> ApiClient.performApiRequest(
-          anyString(), eq("GET"), isNull(), any(TypeReference.class)))
-          .thenReturn(response);
+    // Test set current username with whitespace
+    controller.setCurrentUsername("  user123  ");
+    assertEquals("user123", usernameField.getText());
 
-      controller.setCurrentUsername("  testuser  ");
-      assertEquals("testuser", usernameField.getText());
-    }
+    // Test set current username trim whitespace
+    controller.setCurrentUsername("validUser");
+    assertEquals("validUser", usernameField.getText());
+
   }
 
   /**
@@ -326,7 +302,9 @@ class FlashcardMainControllerTest {
    */
   @SuppressWarnings("unchecked")
   @Test
-  public void testWhenNewDeckButtonIsClickedValiddeckname() throws Exception {
+  public void testWhenNewDeckButtonIsClicked() throws Exception {
+
+    // Test when new deck button is clicked with valid deck name
     try (MockedStatic<ApiClient> apiClient = mockStatic(ApiClient.class)) {
       FlashcardDeckDto newDeckDto = new FlashcardDeckDto(
           "My New Deck", new ArrayList<>());
@@ -354,16 +332,8 @@ class FlashcardMainControllerTest {
       assertEquals(1, decks.size());
       assertEquals("My New Deck", decks.get(0).getDeckName());
     }
-  }
 
-  /**
-   * Tests that empty deck name shows error.
-   *
-   * @throws Exception if test setup fails
-   */
-  @SuppressWarnings("unchecked")
-  @Test
-  public void testWhenNewDeckButtonIsClickedEmptynameShowserror() throws Exception {
+    // Test when new deck button is clicked with empty deck name
     try (MockedStatic<ApiClient> apiClient = mockStatic(ApiClient.class)) {
       ApiResponse<FlashcardDeckManagerDto> response = createSuccessResponse(new ArrayList<>());
       apiClient.when(() -> ApiClient.performApiRequest(
@@ -372,22 +342,13 @@ class FlashcardMainControllerTest {
 
       controller.setCurrentUsername("testuser");
       deckNameInput.setText("");
-
       ActionEvent event = new ActionEvent();
       controller.whenNewDeckButtonIsClicked(event);
       assertTrue(alertMessage.isVisible());
       assertTrue(ex.isVisible());
     }
-  }
 
-  /**
-   * Tests that invalid deck name shows error.
-   *
-   * @throws Exception if test setup fails
-   */
-  @SuppressWarnings("unchecked")
-  @Test
-  public void testWhenNewDeckButtonIsClickedInvalidnameShowserror() throws Exception {
+    // Test when new deck button is clicked with invalid username
     try (MockedStatic<ApiClient> apiClient = mockStatic(ApiClient.class)) {
       ApiResponse<FlashcardDeckManagerDto> response = createSuccessResponse(new ArrayList<>());
       apiClient.when(() -> ApiClient.performApiRequest(
@@ -521,7 +482,7 @@ class FlashcardMainControllerTest {
    */
   @SuppressWarnings("unchecked")
   @Test
-  public void testUpdateUiHasdecksHidesnodecksmessage() throws Exception {
+  public void testUpdateUiHasDecksHidesNoDecksMessage() throws Exception {
     try (MockedStatic<ApiClient> apiClient = mockStatic(ApiClient.class)) {
       ApiResponse<FlashcardDeckManagerDto> response = createSuccessResponse(new ArrayList<>());
       apiClient.when(() -> ApiClient.performApiRequest(
@@ -547,7 +508,7 @@ class FlashcardMainControllerTest {
    */
   @SuppressWarnings("unchecked")
   @Test
-  public void testUpdateUiDeckbuttonsshowcorrectnames() throws Exception {
+  public void testUpdateUiDeckButtonsShowCorrectNames() throws Exception {
     try (MockedStatic<ApiClient> apiClient = mockStatic(ApiClient.class)) {
       ApiResponse<FlashcardDeckManagerDto> response = createSuccessResponse(new ArrayList<>());
       apiClient.when(() -> ApiClient.performApiRequest(
@@ -588,7 +549,7 @@ class FlashcardMainControllerTest {
    * @throws Exception if reflection fails
    */
   @Test
-  public void testUpdateUiWithnullcomponentsHandlesgracefully() throws Exception {
+  public void testUpdateUiWithNullComponentsHandlesGracefully() throws Exception {
     // Set components that have null checks in updateUi() to null
     setField("usernameField", null);
     setField("alertMessage", null);
@@ -609,7 +570,7 @@ class FlashcardMainControllerTest {
    */
   @SuppressWarnings("unchecked")
   @Test
-  public void testUpdateUiShowalerttrueDisplaysalert() throws Exception {
+  public void testUpdateUiShowAlertTrueDisplaysAlert() throws Exception {
     try (MockedStatic<ApiClient> apiClient = mockStatic(ApiClient.class)) {
       ApiResponse<FlashcardDeckManagerDto> response = createSuccessResponse(new ArrayList<>());
 
@@ -1212,9 +1173,9 @@ class FlashcardMainControllerTest {
 
       controller.setCurrentUsername("testuser");
 
-      java.util.concurrent.CountDownLatch setupLatch = new java.util.concurrent.CountDownLatch(1);
+      CountDownLatch setupLatch = new java.util.concurrent.CountDownLatch(1);
 
-      javafx.application.Platform.runLater(() -> {
+      Platform.runLater(() -> {
         try {
           javafx.scene.layout.StackPane root = new javafx.scene.layout.StackPane();
           root.getChildren().add(logOutButton);
@@ -1225,11 +1186,11 @@ class FlashcardMainControllerTest {
         }
       });
 
-      setupLatch.await(2, java.util.concurrent.TimeUnit.SECONDS);
+      setupLatch.await(2, TimeUnit.SECONDS);
       ActionEvent event = new ActionEvent(logOutButton, null);
 
       try {
-        java.lang.reflect.Method method =
+        Method method =
             FlashcardMainController.class.getMethod("whenLogOut", ActionEvent.class);
         method.invoke(controller, event);
       } catch (Exception e) {
@@ -1437,7 +1398,6 @@ class FlashcardMainControllerTest {
       }
       
       // Directly invoke loadUserData via reflection to test flashcard copying
-      // without UI complications
       var loadUserDataMethod = FlashcardMainController.class.getDeclaredMethod("loadUserData");
       loadUserDataMethod.setAccessible(true);
       loadUserDataMethod.invoke(controller);

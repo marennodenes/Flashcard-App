@@ -65,6 +65,32 @@ public class FlashcardAppTest {
   }
 
   /**
+   * Creates a testable FlashcardApp with mock resource loading.
+   *
+   * <p>This allows the start() method to execute completely without
+   * path encoding issues.
+   */
+  private FlashcardApp createTestableApp() {
+    return new FlashcardApp() {
+      @Override
+      protected Parent loadLoginScene() throws IOException {
+        StackPane root = new StackPane();
+        root.getChildren().add(new Label("Test Login"));
+        return root;
+      }
+
+      @Override
+      protected URL getLoginStylesheet() {
+        try {
+          return java.net.URI.create("file:///test.css").toURL();
+        } catch (Exception e) {
+          return null;
+        }
+      }
+    };
+  }
+
+  /**
    * Tests that FlashcardApp extends JavaFX Application class.
    */
   @Test
@@ -176,31 +202,5 @@ public class FlashcardAppTest {
         "Test should complete within timeout");
     assertTrue(success.get(),
         "start() method should execute successfully");
-  }
-
-  /**
-   * Creates a testable FlashcardApp with mock resource loading.
-   *
-   * <p>This allows the start() method to execute completely without
-   * path encoding issues.
-   */
-  private FlashcardApp createTestableApp() {
-    return new FlashcardApp() {
-      @Override
-      protected Parent loadLoginScene() throws IOException {
-        StackPane root = new StackPane();
-        root.getChildren().add(new Label("Test Login"));
-        return root;
-      }
-
-      @Override
-      protected URL getLoginStylesheet() {
-        try {
-          return java.net.URI.create("file:///test.css").toURL();
-        } catch (Exception e) {
-          return null;
-        }
-      }
-    };
   }
 }
