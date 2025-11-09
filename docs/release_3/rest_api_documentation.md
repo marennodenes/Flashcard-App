@@ -8,36 +8,30 @@ This documentation provides a comprehensive overview of all API endpoints, inclu
 
 The REST API allows secure interaction with various application features, including user authentication, deck management, and flashcard operations. Each endpoint is documented with clear specifications on required parameters, request bodies, and response types. Following this documentation will ensure correct and secure usage of the API.
 
-## Table of content
+## Table of contents
 
-- [API Documentation](#api-documentation)
-  - [Introduction](#introduction)
-    - [Purpose](#purpose)
-  - [Table of content](#table-of-content)
-  - [Base URL](#base-url)
-  - [Response Format](#response-format)
-  - [User Management API](#user-management-api)
-    - [POST /api/v1/users/register](#post-apiv1usersregister)
-    - [POST /api/v1/users/login](#post-apiv1userslogin)
-    - [GET /api/v1/users](#get-apiv1users)
-    - [GET /api/v1/users/find](#get-apiv1usersfind)
-    - [POST /api/v1/users/validate-password](#post-apiv1usersvalidate-password)
-    - [User Management Error Handling](#user-management-error-handling)
-  - [Deck Management API](#deck-management-api)
-    - [GET /api/v1/decks](#get-apiv1decks)
-    - [GET /api/v1/decks/{deckName}](#get-apiv1decksdeckname)
-    - [POST /api/v1/decks/{deckName}](#post-apiv1decksdeckname)
-    - [DELETE /api/v1/decks/{deckName}](#delete-apiv1decksdeckname)
-    - [PUT /api/v1/decks](#put-apiv1decks)
-    - [Deck Management Error Handling](#deck-management-error-handling)
-  - [Flashcard Management API](#flashcard-management-api)
-    - [POST /api/v1/flashcards/create](#post-apiv1flashcardscreate)
-    - [GET /api/v1/flashcards/get](#get-apiv1flashcardsget)
-    - [GET /api/v1/flashcards/get-all](#get-apiv1flashcardsget-all)
-    - [DELETE /api/v1/flashcards/delete](#delete-apiv1flashcardsdelete)
-    - [Flashcard Management Error Handling](#flashcard-management-error-handling)
-  - [General Error Handling](#general-error-handling)
-  - [Security Considerations](#security-considerations)
+- [Introduction](#introduction)
+- [Base URL](#base-url)
+- [Response Format](#response-format)
+- [User Management API](#user-management-api)
+  - [POST /api/v1/users/register](#post-apiv1usersregister)
+  - [POST /api/v1/users/login](#post-apiv1userslogin)
+  - [GET /api/v1/users](#get-apiv1users)
+  - [GET /api/v1/users/find/{username}](#get-apiv1usersfindusername)
+  - [POST /api/v1/users/validate-password](#post-apiv1usersvalidate-password)
+- [Deck Management API](#deck-management-api)
+  - [GET /api/v1/decks](#get-apiv1decks)
+  - [GET /api/v1/decks/{username}/{deckName}](#get-apiv1decksusernamedeckname)
+  - [POST /api/v1/decks/{username}](#post-apiv1decksusername)
+  - [DELETE /api/v1/decks/{username}/{deckName}](#delete-apiv1decksusernamedeckname)
+  - [PUT /api/v1/decks/{username}/{deckName}](#put-apiv1decksusernamedeckname)
+- [Flashcard Management API](#flashcard-management-api)
+  - [POST /api/v1/flashcards/create](#post-apiv1flashcardscreate)
+  - [GET /api/v1/flashcards/get](#get-apiv1flashcardsget)
+  - [GET /api/v1/flashcards/get-all](#get-apiv1flashcardsget-all)
+  - [DELETE /api/v1/flashcards/delete](#delete-apiv1flashcardsdelete)
+- [General Error Handling](#general-error-handling)
+- [Security Considerations](#security-considerations)
 
 ## Base URL
 
@@ -62,6 +56,8 @@ Where:
 - `success` (boolean, required): Indicates whether the operation succeeded
 - `message` (string, required): Descriptive message about the operation result
 - `data` (object, optional): The actual response payload (type varies by endpoint)
+
+**Note**: All API endpoints return HTTP status code **200 OK**. Success or failure is determined by the `success` field in the response body, not by HTTP status codes.
 
 ---
 
@@ -102,41 +98,33 @@ Register a new user by creating an account with a username and password.
     "message": "User created successfully",
     "data": {
       "username": "johndoe",
-      "flashcardDeckManager": {
-        "decks": []
-      }
+      "password": "[hashed-password]",
+      "deckManager": []
     }
   }
   ```
 
-- **400 BAD REQUEST**: The request format was invalid or validation failed.
+- **200 OK (with success: false)**: The request format was invalid or validation failed.
 
-  - "Username requirements not met:"
-
-    - "Username 'johndoe' is already taken"
-    - "Username cannot be empty"
-
-  - "Password requirements not met:"
-    - "Password must contain at least 8 characters, including uppercase, lowercase, numbers, and special characters"
-    - "Password cannot be empty"
-
-- **500 INTERNAL SERVER ERROR**: An error occurred on the server during registration.
+  - Username requirements not met:
 
   ```json
-  {
-    "success": false,
-    "message": "Error creating user: [error details]",
-    "data": null
-  }
+    {
+      "success": false,
+      "message": "Username 'johndoe' is already taken",
+      "data": null
+    }
   ```
 
-#### POST Register HTTP Status Codes
+  - Password requirements not met:
 
-- **200 OK**: Registration was successful.
-- **400 BAD REQUEST**: The request format was invalid or validation failed.
-- **500 INTERNAL SERVER ERROR**: An error occurred on the server during registration.
-
----
+  ```json
+    {
+      "success": false,
+      "message": "Password must contain at least 8 characters, including uppercase, lowercase, numbers, and special characters",
+      "data": null
+    }
+  ```
 
 ### POST /api/v1/users/login
 
@@ -163,38 +151,34 @@ Authenticate a user by verifying their username and password.
 
 #### POST Login Response
 
-- **200 OK**: The login was successful. User data and login status are returned.
+- **200 OK**: The login was successful. User credentials are returned (without deck data).
 
   ```json
   {
     "success": true,
-    "message": "Login successful",
+    "message": "Login success",
     "data": {
-      "loginSuccessful": true,
-      "message": "Login successful: johndoe",
+      "success": true,
+      "message": "Login success for username: 'johndoe'",
       "userData": {
         "username": "johndoe",
-        "flashcardDeckManager": {
-          "decks": [
-            {
-              "name": "Spanish Vocabulary",
-              "flashcards": [...]
-            }
-          ]
-        }
+        "password": "[hashed-password]",
+        "deckManager": []
       }
     }
   }
   ```
 
-- **401 UNAUTHORIZED**: The provided credentials are incorrect.
+  Deck data is retrieved separately using `GET /api/v1/decks` after successful login.
+
+- **200 OK (with data.success: false)**: The provided credentials are incorrect.
 
   ```json
   {
     "success": true,
     "message": "Login response",
     "data": {
-      "loginSuccessful": false,
+      "success": false,
       "message": "Invalid password",
       "userData": null
     }
@@ -208,29 +192,22 @@ Authenticate a user by verifying their username and password.
     "success": true,
     "message": "Login response",
     "data": {
-      "loginSuccessful": false,
+      "success": false,
       "message": "User not found",
       "userData": null
     }
   }
   ```
 
-- **500 INTERNAL SERVER ERROR**: An error occurred on the server during login.
+- **200 OK (with success: false)**: An error occurred on the server during login.
 
   ```json
   {
     "success": false,
-    "message": "Error logging in user: [error details]",
+    "message": "Could not complete user operation\nPlease try again",
     "data": null
   }
   ```
-
-#### POST Login HTTP Status Codes
-
-- **200 OK**: The request was processed successfully (check `loginSuccessful` for actual login status).
-- **500 INTERNAL SERVER ERROR**: An error occurred on the server during login.
-
----
 
 ### GET /api/v1/users
 
@@ -258,44 +235,25 @@ Retrieve user data for a specific username.
     "message": "User retrieved successfully",
     "data": {
       "username": "johndoe",
-      "flashcardDeckManager": {
-        "decks": [...]
-      }
+      "password": "[hashed-password]",
+      "deckManager": []
     }
   }
   ```
 
-- **404 NOT FOUND**: The username provided does not match any user in the system.
+  This endpoint returns user credentials only. Deck data is retrieved separately using `GET /api/v1/decks`.
+
+- **200 OK (with success: false)**: The username provided does not match any user in the system.
 
   ```json
   {
     "success": false,
-    "message": "Error retrieving user: User not found",
+    "message": "Could not complete user operation\nPlease try again",
     "data": null
   }
   ```
 
-- **500 INTERNAL SERVER ERROR**: An error occurred on the server.
-
-  ```json
-  {
-    "success": false,
-    "message": "Error retrieving user: [error details]",
-    "data": null
-  }
-  ```
-
-#### GET User HTTP Status Codes
-
-- **200 OK**: User data retrieved successfully.
-- **404 NOT FOUND**: The username provided does not match any user in the system.
-- **500 INTERNAL SERVER ERROR**: An error occurred on the server.
-
----
-
-### GET /api/v1/users/find
-
-Check if a user with the given username exists in the system.
+### GET /api/v1/users/find/{username}
 
 #### GET Find User Request
 
@@ -331,22 +289,15 @@ Check if a user with the given username exists in the system.
   }
   ```
 
-- **500 INTERNAL SERVER ERROR**: An error occurred on the server.
+- **200 OK (with success: false)**: An error occurred on the server.
 
   ```json
   {
     "success": false,
-    "message": "Error checking user existence: [error details]",
+    "message": "Could not complete user operation\nPlease try again",
     "data": null
   }
   ```
-
-#### GET Find User HTTP Status Codes
-
-- **200 OK**: User existence check completed successfully.
-- **500 INTERNAL SERVER ERROR**: An error occurred on the server.
-
----
 
 ### POST /api/v1/users/validate-password
 
@@ -387,42 +338,15 @@ Validate a password for a specific user.
   }
   ```
 
-- **500 INTERNAL SERVER ERROR**: An error occurred on the server.
+- **200 OK (with success: false)**: An error occurred on the server.
 
   ```json
   {
     "success": false,
-    "message": "Error validating password: [error details]",
+    "message": "Could not complete user operation\nPlease try again",
     "data": null
   }
   ```
-
-#### POST Validate Password HTTP Status Codes
-
-- **200 OK**: Password validation completed successfully.
-- **500 INTERNAL SERVER ERROR**: An error occurred on the server.
-
----
-
-### User Management Error Handling
-
-User Management endpoints return structured error responses to assist with troubleshooting:
-
-- **Error Format**:
-
-  ```json
-  {
-    "success": false,
-    "message": "Descriptive error message",
-    "data": null
-  }
-  ```
-
-- **Common Errors**:
-  - **400 BAD REQUEST**: The request format was invalid or validation failed.
-  - **401 UNAUTHORIZED**: The provided credentials are incorrect.
-  - **404 NOT FOUND**: The username provided does not match any user in the system.
-  - **500 INTERNAL SERVER ERROR**: An error occurred on the server.
 
 ---
 
@@ -457,16 +381,17 @@ Retrieve all decks for a specific user.
     "data": {
       "decks": [
         {
-          "name": "Spanish Vocabulary",
+          "deckName": "Spanish Vocabulary",
           "flashcards": [
             {
               "question": "¿Cómo estás?",
-              "answer": "How are you?"
+              "answer": "How are you?",
+              "number": 1
             }
           ]
         },
         {
-          "name": "Math Formulas",
+          "deckName": "Math Formulas",
           "flashcards": []
         }
       ]
@@ -474,35 +399,17 @@ Retrieve all decks for a specific user.
   }
   ```
 
-- **404 NOT FOUND**: The username provided does not match any user in the system.
+- **200 OK (with success: false)**: An error occurred while retrieving decks.
 
   ```json
   {
     "success": false,
-    "message": "Error retrieving decks: User not found",
+    "message": "Could not load data",
     "data": null
   }
   ```
 
-- **500 INTERNAL SERVER ERROR**: An error occurred on the server.
-
-  ```json
-  {
-    "success": false,
-    "message": "Error retrieving decks: [error details]",
-    "data": null
-  }
-  ```
-
-#### GET All Decks HTTP Status Codes
-
-- **200 OK**: Decks retrieved successfully.
-- **404 NOT FOUND**: The username provided does not match any user in the system.
-- **500 INTERNAL SERVER ERROR**: An error occurred on the server.
-
----
-
-### GET /api/v1/decks/{deckName}
+### GET /api/v1/decks/{username}/{deckName}
 
 Retrieve a specific deck by name for a user.
 
@@ -529,46 +436,29 @@ Retrieve a specific deck by name for a user.
     "success": true,
     "message": "Deck retrieved successfully",
     "data": {
-      "name": "Spanish Vocabulary",
+      "deckName": "Spanish Vocabulary",
       "flashcards": [
         {
           "question": "¿Cómo estás?",
-          "answer": "How are you?"
+          "answer": "How are you?",
+          "number": 1
         }
       ]
     }
   }
   ```
 
-- **404 NOT FOUND**: The deck or user was not found.
+- **200 OK (with success: false)**: An error occurred while retrieving the deck.
 
   ```json
   {
     "success": false,
-    "message": "Error retrieving deck: Deck not found",
+    "message": "Could not load data",
     "data": null
   }
   ```
 
-- **500 INTERNAL SERVER ERROR**: An error occurred on the server.
-
-  ```json
-  {
-    "success": false,
-    "message": "Error retrieving deck: [error details]",
-    "data": null
-  }
-  ```
-
-#### GET Specific Deck HTTP Status Codes
-
-- **200 OK**: Deck retrieved successfully.
-- **404 NOT FOUND**: The deck or user was not found.
-- **500 INTERNAL SERVER ERROR**: An error occurred on the server.
-
----
-
-### POST /api/v1/decks/{deckName}
+### POST /api/v1/decks/{username}
 
 Create a new deck for a user.
 
@@ -595,52 +485,57 @@ Create a new deck for a user.
     "success": true,
     "message": "Deck created successfully",
     "data": {
-      "name": "Spanish Vocabulary",
+      "deckName": "Spanish Vocabulary",
       "flashcards": []
     }
   }
   ```
 
-- **400 BAD REQUEST**: The deck already exists or validation failed.
+- **200 OK (with success: false)**: An error occurred while creating the deck.
 
-  ```json
-  {
-    "success": false,
-    "message": "Error creating deck: Deck already exists",
-    "data": null
-  }
-  ```
+  Possible error messages:
 
-- **404 NOT FOUND**: The username provided does not match any user in the system.
+  - User not found:
 
-  ```json
-  {
-    "success": false,
-    "message": "Error creating deck: User not found",
-    "data": null
-  }
-  ```
+    ```json
+    {
+      "success": false,
+      "message": "User not found",
+      "data": null
+    }
+    ```
 
-- **500 INTERNAL SERVER ERROR**: An error occurred on the server.
+  - Deck already exists:
 
-  ```json
-  {
-    "success": false,
-    "message": "Error creating deck: [error details]",
-    "data": null
-  }
-  ```
+    ```json
+    {
+      "success": false,
+      "message": "Deck name already exists",
+      "data": null
+    }
+    ```
 
-#### POST Create Deck HTTP Status Codes
+  - Deck name empty:
 
-- **200 OK**: Deck created successfully.
-- **400 BAD REQUEST**: The deck already exists or validation failed.
-- **404 NOT FOUND**: The username provided does not match any user in the system.
-- **500 INTERNAL SERVER ERROR**: An error occurred on the server.
+    ```json
+    {
+      "success": false,
+      "message": "Deck name cannot be empty",
+      "data": null
+    }
+    ```
 
----
+  - Maximum decks reached:
 
-### DELETE /api/v1/decks/{deckName}
+    ```json
+    {
+      "success": false,
+      "message": "Max number of decks reached",
+      "data": null
+    }
+    ```
+
+### DELETE /api/v1/decks/{username}/{deckName}
 
 Delete a deck for a user.
 
@@ -670,35 +565,17 @@ Delete a deck for a user.
   }
   ```
 
-- **404 NOT FOUND**: The deck or user was not found.
+- **200 OK (with success: false)**: An error occurred while deleting the deck.
 
   ```json
   {
     "success": false,
-    "message": "Error deleting deck: Deck not found",
+    "message": "Could not complete deck operation - Please try again",
     "data": null
   }
   ```
 
-- **500 INTERNAL SERVER ERROR**: An error occurred on the server.
-
-  ```json
-  {
-    "success": false,
-    "message": "Error deleting deck: [error details]",
-    "data": null
-  }
-  ```
-
-#### DELETE Deck HTTP Status Codes
-
-- **200 OK**: Deck deleted successfully.
-- **404 NOT FOUND**: The deck or user was not found.
-- **500 INTERNAL SERVER ERROR**: An error occurred on the server.
-
----
-
-### PUT /api/v1/decks
+### PUT /api/v1/decks/{username}/{deckName}
 
 Update all decks for a user.
 
@@ -747,52 +624,15 @@ Update all decks for a user.
   }
   ```
 
-- **404 NOT FOUND**: The username provided does not match any user in the system.
+- **200 OK (with success: false)**: An error occurred while updating decks.
 
   ```json
   {
     "success": false,
-    "message": "Error updating decks: User not found",
+    "message": "Could not update deck - Please try again",
     "data": null
   }
   ```
-
-- **500 INTERNAL SERVER ERROR**: An error occurred on the server.
-
-  ```json
-  {
-    "success": false,
-    "message": "Error updating decks: [error details]",
-    "data": null
-  }
-  ```
-
-#### PUT Update Decks HTTP Status Codes
-
-- **200 OK**: Decks updated successfully.
-- **404 NOT FOUND**: The username provided does not match any user in the system.
-- **500 INTERNAL SERVER ERROR**: An error occurred on the server.
-
----
-
-### Deck Management Error Handling
-
-Deck Management endpoints return structured error responses to assist with troubleshooting:
-
-- **Error Format**:
-
-  ```json
-  {
-    "success": false,
-    "message": "Descriptive error message",
-    "data": null
-  }
-  ```
-
-- **Common Errors**:
-  - **400 BAD REQUEST**: The request format was invalid or the deck already exists.
-  - **404 NOT FOUND**: The deck or user was not found.
-  - **500 INTERNAL SERVER ERROR**: An error occurred on the server.
 
 ---
 
@@ -829,38 +669,21 @@ Create a new flashcard in a specified deck.
     "message": "Flashcard created successfully",
     "data": {
       "question": "¿Cómo estás?",
-      "answer": "How are you?"
+      "answer": "How are you?",
+      "number": 1
     }
   }
   ```
 
-- **404 NOT FOUND**: The deck or user was not found.
+- **200 OK (with success: false)**: An error occurred while creating the flashcard.
 
   ```json
   {
     "success": false,
-    "message": "Failed to create flashcard: Deck not found",
+    "message": "Could not complete flashcard operation - Please try again",
     "data": null
   }
   ```
-
-- **500 INTERNAL SERVER ERROR**: An error occurred on the server.
-
-  ```json
-  {
-    "success": false,
-    "message": "Failed to create flashcard: [error details]",
-    "data": null
-  }
-  ```
-
-#### POST Create Flashcard HTTP Status Codes
-
-- **200 OK**: Flashcard created successfully.
-- **404 NOT FOUND**: The deck or user was not found.
-- **500 INTERNAL SERVER ERROR**: An error occurred on the server.
-
----
 
 ### GET /api/v1/flashcards/get
 
@@ -890,38 +713,21 @@ Retrieve a specific flashcard by its position in a deck.
     "message": "Flashcard retrieved successfully",
     "data": {
       "question": "¿Cómo estás?",
-      "answer": "How are you?"
+      "answer": "How are you?",
+      "number": 1
     }
   }
   ```
 
-- **404 NOT FOUND**: The flashcard, deck, or user was not found.
+- **200 OK (with success: false)**: The flashcard, deck, or user was not found.
 
   ```json
   {
     "success": false,
-    "message": "Failed to retrieve flashcard: Flashcard not found at position 1",
+    "message": "Could not complete flashcard operation - Please try again",
     "data": null
   }
   ```
-
-- **500 INTERNAL SERVER ERROR**: An error occurred on the server.
-
-  ```json
-  {
-    "success": false,
-    "message": "Failed to retrieve flashcard: [error details]",
-    "data": null
-  }
-  ```
-
-#### GET Flashcard HTTP Status Codes
-
-- **200 OK**: Flashcard retrieved successfully.
-- **404 NOT FOUND**: The flashcard, deck, or user was not found.
-- **500 INTERNAL SERVER ERROR**: An error occurred on the server.
-
----
 
 ### GET /api/v1/flashcards/get-all
 
@@ -951,43 +757,27 @@ Retrieve all flashcards from a specific deck.
     "data": [
       {
         "question": "¿Cómo estás?",
-        "answer": "How are you?"
+        "answer": "How are you?",
+        "number": 1
       },
       {
         "question": "¿Qué tal?",
-        "answer": "What's up?"
+        "answer": "What's up?",
+        "number": 2
       }
     ]
   }
   ```
 
-- **404 NOT FOUND**: The deck or user was not found.
+- **200 OK (with success: false)**: The deck or user was not found.
 
   ```json
   {
     "success": false,
-    "message": "Failed to retrieve flashcards: Deck not found",
+    "message": "Could not complete flashcard operation - Please try again",
     "data": null
   }
   ```
-
-- **500 INTERNAL SERVER ERROR**: An error occurred on the server.
-
-  ```json
-  {
-    "success": false,
-    "message": "Failed to retrieve flashcards: [error details]",
-    "data": null
-  }
-  ```
-
-#### GET All Flashcards HTTP Status Codes
-
-- **200 OK**: Flashcards retrieved successfully.
-- **404 NOT FOUND**: The deck or user was not found.
-- **500 INTERNAL SERVER ERROR**: An error occurred on the server.
-
----
 
 ### DELETE /api/v1/flashcards/delete
 
@@ -1019,74 +809,31 @@ Delete a flashcard by its position in a deck.
   }
   ```
 
-- **404 NOT FOUND**: The flashcard, deck, or user was not found.
+- **200 OK (with success: false)**: The flashcard, deck, or user was not found.
 
   ```json
   {
     "success": false,
-    "message": "Failed to delete flashcard: Flashcard not found at position 1",
+    "message": "Could not complete flashcard operation - Please try again",
     "data": null
   }
   ```
-
-- **500 INTERNAL SERVER ERROR**: An error occurred on the server.
-
-  ```json
-  {
-    "success": false,
-    "message": "Failed to delete flashcard: [error details]",
-    "data": null
-  }
-  ```
-
-#### DELETE Flashcard HTTP Status Codes
-
-- **200 OK**: Flashcard deleted successfully.
-- **404 NOT FOUND**: The flashcard, deck, or user was not found.
-- **500 INTERNAL SERVER ERROR**: An error occurred on the server.
-
----
-
-### Flashcard Management Error Handling
-
-Flashcard Management endpoints return structured error responses to assist with troubleshooting:
-
-- **Error Format**:
-
-  ```json
-  {
-    "success": false,
-    "message": "Descriptive error message",
-    "data": null
-  }
-  ```
-
-- **Common Errors**:
-  - **404 NOT FOUND**: The flashcard, deck, or user was not found.
-  - **500 INTERNAL SERVER ERROR**: An error occurred on the server.
 
 ---
 
 ## General Error Handling
 
-All API endpoints follow a consistent error handling pattern:
+All API endpoints follow a consistent error response pattern:
 
-- **Error Response Format**:
+```json
+{
+  "success": false,
+  "message": "Descriptive error message explaining what went wrong",
+  "data": null
+}
+```
 
-  ```json
-  {
-    "success": false,
-    "message": "Descriptive error message explaining what went wrong",
-    "data": null
-  }
-  ```
-
-- **HTTP Status Codes**:
-  - **200 OK**: The request was successful
-  - **400 BAD REQUEST**: The request format was invalid or validation failed
-  - **401 UNAUTHORIZED**: The provided credentials are incorrect
-  - **404 NOT FOUND**: The requested resource was not found
-  - **500 INTERNAL SERVER ERROR**: An unexpected server error occurred
+All endpoints return HTTP status code **200 OK**. Success or failure is determined by the `success` field in the response body, with error details provided in the `message` field.
 
 ---
 
