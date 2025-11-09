@@ -198,7 +198,7 @@ The Sustainability Awareness Diagram below maps how our decisions when making th
 
 <!-- markdownlint-disable MD033 -->
 
-<img src="../../images/sustainability/susAd.png" alt="SUAS Sustainability Analysis Diagram" width="600">
+<img src="../../images/sustainability/susAd.png" alt="SUAS Sustainability Analysis Diagram" width="800">
 
 <!-- markdownlint-enable MD033 -->
 
