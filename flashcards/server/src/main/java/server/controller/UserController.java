@@ -5,6 +5,7 @@ import dto.LoginRequestDto;
 import dto.LoginResponseDto;
 import dto.UserDataDto;
 import dto.mappers.UserMapper;
+import java.util.Objects;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -100,6 +101,7 @@ public class UserController {
   @PostMapping (ApiEndpoints.USER_REGISTER)
   public ApiResponse<UserDataDto> createUser(@RequestBody LoginRequestDto request) {
     try {
+      Objects.requireNonNull(request, "Login request cannot be null");
       User user = userService.createUserWithValidation(request.getUsername(), 
           request.getPassword());
       UserDataDto dto = mapper.toDto(user);
@@ -125,6 +127,7 @@ public class UserController {
   @PostMapping (ApiEndpoints.USER_LOGIN)
   public ApiResponse<LoginResponseDto> logInUser(@RequestBody LoginRequestDto request) { 
     try {
+      Objects.requireNonNull(request, "Login request cannot be null");
       Boolean login = userService.logInUser(request.getUsername(), request.getPassword());
       
       if (login) {

@@ -20,6 +20,7 @@ import dto.FlashcardDeckManagerDto;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -428,12 +429,16 @@ public class DeckControllerTest {
    */
   @Test
   public void testUpdateAllDecksSuccess() throws Exception {
-    doNothing().when(deckService).updateAllDecks(anyString(), any(FlashcardDeckManager.class));
-
+    doNothing()
+      .when(deckService).updateAllDecks(anyString(), any(FlashcardDeckManager.class));
+    
+    String requestBody = objectMapper.writeValueAsString(testDeckManagerDto);
+    Objects.requireNonNull(requestBody, "Request body cannot be null");
+      
     mockMvc.perform(put(ApiEndpoints.DECKS)
         .param("username", "testUser")
-        .contentType(MediaType.APPLICATION_JSON)
-        .content(objectMapper.writeValueAsString(testDeckManagerDto)))
+        .contentType(Objects.requireNonNull(MediaType.APPLICATION_JSON))
+        .content(requestBody))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.success").value(true))
         .andExpect(jsonPath("$.message").value(ApiConstants.DECK_UPDATED));
@@ -451,10 +456,13 @@ public class DeckControllerTest {
     doThrow(new IllegalArgumentException("User not found"))
       .when(deckService).updateAllDecks(anyString(), any(FlashcardDeckManager.class));
 
+    String requestBody = objectMapper.writeValueAsString(testDeckManagerDto);
+    Objects.requireNonNull(requestBody, "Request body cannot be null");
+
     mockMvc.perform(put(ApiEndpoints.DECKS)
         .param("username", "nonExistent")
-        .contentType(MediaType.APPLICATION_JSON)
-        .content(objectMapper.writeValueAsString(testDeckManagerDto)))
+        .contentType(Objects.requireNonNull(MediaType.APPLICATION_JSON))
+        .content(requestBody))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.success").value(false))
         .andExpect(jsonPath("$.message").value(ApiConstants.DECK_UPDATE_FAILED));
@@ -472,10 +480,13 @@ public class DeckControllerTest {
     doThrow(new IllegalArgumentException("Invalid deck data"))
       .when(deckService).updateAllDecks(anyString(), any(FlashcardDeckManager.class));
 
+    String requestBody = objectMapper.writeValueAsString(testDeckManagerDto);
+    Objects.requireNonNull(requestBody, "Request body cannot be null");
+
     mockMvc.perform(put(ApiEndpoints.DECKS)
         .param("username", "testUser")
-        .contentType(MediaType.APPLICATION_JSON)
-        .content(objectMapper.writeValueAsString(testDeckManagerDto)))
+        .contentType(Objects.requireNonNull(MediaType.APPLICATION_JSON))
+        .content(requestBody))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.success").value(false))
         .andExpect(jsonPath("$.message").value(ApiConstants.DECK_UPDATE_FAILED));
