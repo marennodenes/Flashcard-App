@@ -283,19 +283,18 @@ After running `mvn test`, you can generate test coverage reports via JaCoCo:
     ```
 
 **Current test coverage:**
-//todo: remember to update these
 
-- **core**: Instruction Coverage: 88% | Branch Coverage: 92%
-- **fxui**: Instruction Coverage: 90% | Branch Coverage: 85%
-- **shared**: Instruction Coverage: 98% | Branch Coverage: 87%
-- **server**: Instruction Coverage: 92% | Branch Coverage: 92%
-- **storage**: Instruction Coverage: 98% | Branch Coverage: 87%
+- **core**: Instruction Coverage: 86% | Branch Coverage: 90%
+- **fxui**: Instruction Coverage: 87% | Branch Coverage: 84%
+- **shared**: Instruction Coverage: 97% | Branch Coverage: 87%
+- **server**: Instruction Coverage: 95% | Branch Coverage: 91%
+- **storage**: Instruction Coverage: 100% | Branch Coverage: 95%
 
-![core JaCoCo coverage](images/jaCoCo/release_3/coreJaCoCo_release3.png)
-![fxui JaCoCo coverage](images/jaCoCo/release_3/fxuiJaCoCo_release3.png)
-![shared JaCoCo coverage](images/jaCoCo/release_3/sharedJaCoCo_release3.png)
-![server JaCoCo coverage](images/jaCoCo/release_3/serverJaCoCo_release3.png)
-![storage JaCoCo coverage](images/jaCoCo/release_3/storageJaCoCo_release3.png)
+![core JaCoCo coverage](images/jaCoCo/release_3/core_jacoco_release3.png)
+![fxui JaCoCo coverage](images/jaCoCo/release_3/fxui_jacoco_release3.png)
+![shared JaCoCo coverage](images/jaCoCo/release_3/shared_jacoco_release3.png)
+![server JaCoCo coverage](images/jaCoCo/release_3/server_jacoco_release3.png)
+![storage JaCoCo coverage](images/jaCoCo/release_3/storage_jacoco_release3.png)
 
 Current coverage targets focus on core business logic and critical user workflows.
 

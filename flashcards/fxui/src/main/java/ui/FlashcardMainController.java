@@ -128,7 +128,8 @@ public class FlashcardMainController {
       if (i < decks.size()) {
         FlashcardDeckDto deck = decks.get(i);
         if (deckButtons[i] != null) {
-          deckButtons[i].setText(deck.getDeckName());
+          String decodedName = java.net.URLDecoder.decode(deck.getDeckName(), java.nio.charset.StandardCharsets.UTF_8);
+          deckButtons[i].setText(decodedName);
           deckButtons[i].setDisable(false);
           deckButtons[i].setVisible(true);
           // Store deck reference in button for event handling
