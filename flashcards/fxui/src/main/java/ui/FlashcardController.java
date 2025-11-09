@@ -87,7 +87,8 @@ public class FlashcardController {
       if (originalDeck != null && originalDeck.getDeckName() != null) {
         deckName = originalDeck.getDeckName();
       }
-      String decodedName = deckName == null ? "" : java.net.URLDecoder.decode(deckName, java.nio.charset.StandardCharsets.UTF_8);
+      String decodedName = deckName == null ? "" : java.net.URLDecoder.decode(deckName, 
+          java.nio.charset.StandardCharsets.UTF_8);
       decknameField.setText(decodedName);
     }
     if (usernameField != null) {
