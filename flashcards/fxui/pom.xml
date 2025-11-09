@@ -150,7 +150,7 @@
         <groupId>org.openjfx</groupId>
         <artifactId>javafx-maven-plugin</artifactId>
         <configuration>
-          <mainClass>ui.FlashcardApp</mainClass>
+          <mainClass>flashcards.fxui/ui.FlashcardApp</mainClass>
           <compress>2</compress>
           <noHeaderFiles>true</noHeaderFiles>
           <noManPages>true</noManPages>
