@@ -115,51 +115,53 @@ For the current release, the application provides a robust, scalable foundation 
 
 The UML documentation provides comprehensive visual representations of the application's structure and behavior through various diagrams. These diagrams illustrate how the different modules interact, how data flows through the system, and how the classes are organized within each module.
 
-### Class diagrams
+## Class diagrams
 
 Due to the extensive number of classes across the project, we have organized the class diagrams by module to provide clear, focused views of each architectural layer. Each diagram shows the classes, their attributes and methods, and the relationships between them within that specific module.
 
 The class diagrams follow UML conventions where `green cicle` indicates public visibility, `red square` indicates private visibility, and `red filled square` indicates protected visibility. Solid arrows show dependencies and associations, while dashed arrows show interface implementations or usage relationships.
 
-**core**
+<!-- markdownlint-disable MD033 -->
 
-![core module class diagram](uml_documentation/screenshots/class_core.png)
+### core
+
+<img src="./uml_documentation/screenshots/class_core.png" alt="core" width="500">
 
 The core module contains the fundamental domain models including `Flashcard`, `FlashcardDeck`, `FlashcardDeckManager`, and authentication-related classes like `User`, `UserData`, `LoginValidator`, and `PasswordEncoder`.
 
-**fxui**
+### fxui
 
-![fxui module class diagram](uml_documentation/screenshots/class_fxui.png)
+<img src="./uml_documentation/screenshots/class_fxui.png" alt="fxui" width="700">
 
 The fxui module shows all JavaFX controllers and the `ApiClient` that handles REST API communication. This includes controllers for login, signup, main view, deck management, and flashcard learning.
 
-**server**
+### server
 
-![server module class diagram](uml_documentation/screenshots/class_server.png)
+<img src="./uml_documentation/screenshots/class_server.png" alt="server" width="700">
 
 The server module illustrates the Spring Boot REST API structure with controllers (`UserController`, `DeckController`, `FlashcardController`) and services (`UserService`, `DeckService`, `FlashcardService`) that implement the business logic.
 
-**shared**
+### shared
 
-![shared module class diagram](uml_documentation/screenshots/class_shared.png)
+<img src="./uml_documentation/screenshots/class_shared.png" alt="shared" width="700">
 
 The shared module contains all Data Transfer Objects (DTOs) used for client-server communication, mapper classes for converting between domain objects and DTOs, and API constants and endpoints.
 
-**storage**
+### storage
 
-![storage module class diagram](uml_documentation/screenshots/class_storage.png)
+<img src="./uml_documentation/screenshots/class_storage.png" alt="storage" width="400">
 
 The storage module shows the `FlashcardPersistent` class which implements the `UserPersistence` interface and handles JSON-based file storage for user data and flashcards.
 
-### Architecture diagram
+## Architecture diagram
 
-![architecture diagram](uml_documentation/screenshots/architecture.png)
+<img src="./uml_documentation/screenshots/class_architecture.png" alt="archritecture" width="600">
 
 The architecture diagram provides a high-level overview of the system's structure, showing how the five modules (core, fxui, server, shared, storage) interact with each other. It illustrates the client-server separation, with the JavaFX client communicating with the Spring Boot server via REST API, and the server using the storage layer for data persistence.
 
-### Sequence diagram
+## Sequence diagram
 
-![sequence diagram](uml_documentation/screenshots/sequence.png)
+<img src="./uml_documentation/screenshots/sequence.png" alt="sequence" width="600">
 
 **User story:** As a user I, want to create a new deck so that I can start creating flashcards for a new topic.
 
@@ -168,8 +170,10 @@ The JavaFX controller initiates a request through the ApiClient, which communica
 
 We deliberately chose not to include an alt (alternative flow) section in our sequence diagram. The purpose of this diagram is to clearly illustrate the main success scenario of the user story, the process of successfully creating a new deck. Including alternative or error-handling paths would have made the diagram significantly more complex and harder to read. Therefore we prioritized a simplified view. The alternative cases (such as failed API calls or invalid input) are still handled in the actual implementation and corresponding test cases but are not shown here to keep the diagram focused and easy to interpret.
 
-### Package diagram
+## Package diagram
 
-![package diagram](uml_documentation/screenshots/package.png)
+<img src="./uml_documentation/screenshots/package.png" alt="package" width="200">
 
 The package diagram shows the dependencies between the five main modules of the application. It clearly illustrates how the modules depend on each other, with the shared module being used by both client (fxui) and server modules, the server depending on core, storage, and shared, and the clean separation of concerns enforced by this multi-module architecture.
+
+<!-- markdownlint-enable MD033 -->

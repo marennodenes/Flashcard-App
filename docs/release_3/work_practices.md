@@ -41,13 +41,10 @@ Team communication outside of meetings primarily took place in a Facebook Messen
 
 ## Guidelines
 
-We followed a few lightweight guidelines to ensure consistency:
-
-Use Conventional Commits (see [commit_message_standard.md](commit_message_standard.md)).
-
-Use issue templates and pull request templates to make it easier for other group members to understand without having to ask (see [issue_templates](/.github/issue_templates/FeatureRequest.md) and [pull_request_templates](/.github/pull_request_templates/FeatureImplementation.md)).
-
-Write descriptive method names to improve readability and make the code easier to understand for others.
+- We followed a few lightweight guidelines to ensure consistency:
+- Use Conventional Commits (see [commit_message_standard.md](commit_message_standard.md)).
+- Use issue templates and pull request templates to make it easier for other group members to understand without having to ask (see [issue_templates](/.github/issue_templates/FeatureRequest.md) and [pull_request_templates](/.github/pull_request_templates/FeatureImplementation.md)).
+- Write descriptive method names to improve readability and make the code easier to understand for others.
 
 ## Pull Requests and Code Reviews
 

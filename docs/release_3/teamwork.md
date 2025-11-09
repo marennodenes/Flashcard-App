@@ -8,7 +8,7 @@ We also realized how important clear issue and pull request descriptions are. In
 
 Pair programming proved highly effective for us. Working in pairs helped solve problems faster, improved code quality, and deepened our understanding of the system since two people shared responsibility for each part.
 
-We now meet twice a week to plan and stay aligned. As the project grew, tracking all files and components became challenging, so we improved our JavaDoc comments. Each pair now gives a short update during meetings, keeping everyone informed and simplifying task assignment. Between meetings, we use Messenger for quick questions and updates.
+During the project we have met twice a ween to plan and stay aligned. As the project grew, tracking all files and components became challenging, so we improved our JavaDoc comments. We gave a short update during meetings, keeping everyone informed and simplifying task assignment. Between meetings, we used Messenger for quick questions and updates.
 
 ## Key Learnings from Our Experience
 

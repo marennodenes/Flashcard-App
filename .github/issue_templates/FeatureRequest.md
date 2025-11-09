@@ -16,6 +16,8 @@
 
 > What steps should be made for implementing this release?
 >
+*Example:*
+
 1. Create a “sign up” page with text fields for username and password + a “log in” button
 2. Create a “new user” button on the login page
 3. When clicked, open the “sign up” page where the user can add username and password
@@ -26,6 +28,8 @@
 
 > What features should be implemented for this issue to be accepted?
 >
+*Example:*
+
 - [ ]  Sign up page is created
 - [ ]  Buttons leads users to the correct pages
 - [ ]  Each new user gets its own user file
@@ -35,4 +39,6 @@
 
 > Any additional information about the feature
 >
+*Example:*
+
 - If the username is not unique, there should be a warning to change username.

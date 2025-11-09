@@ -16,13 +16,15 @@
 
 > Provide a list of documents or sections that need to be created or updated.
 >
-1. Create a high-level overview of the main modules: `fxui`, `core`, and `storage`.
-2. Update README with key classes in each module explained
+1. Create a high-level overview of the main modules: `fxui`, `core`, `server`, `storage`, and `shared`.
+2. Update README with key classes in each module explained.
 
 ## **Acceptance Criteria**
 
 > Define the criteria that will indicate the documentation request is complete.
 >
+*Example:*
+
 - [ ]  Documentation includes high-level architecture diagram.
 - [ ]  README is updated with key classes explained.
 
@@ -30,4 +32,6 @@
 
 > Add any other details, such as relevant links or attachments.
 >
+*Example:*
+
 - Existing documentation can be found here: [Link to existing docs].

@@ -40,6 +40,17 @@ We maintain three main controllers: `UserController` for authentication and user
 
 Example REST controller pattern: [UserController.java:100-114](../../flashcards/server/src/main/java/server/controller/UserController.java#L100-L114)
 
+## API Design Principles
+
+Our REST API follows established design principles:
+
+- **Resource-based URLs**: Clean endpoints like `/api/v1/users` and `/api/v1/flashcards`
+- **HTTP method semantics**: GET for retrieval, POST for creation, PUT for updates, DELETE for removal
+- **Stateless design**: No server-side session management
+- **Consistent response format**: All endpoints use `ApiResponse<T>` wrapper
+- **Versioning strategy**: URL path versioning (`/api/v1/`)
+- **RESTful conventions**: Following REST principles for predictable APIs
+
 ## Authentication and Security
 
 We implement robust security measures:
@@ -86,7 +97,7 @@ We implement comprehensive error handling:
 Our testing approach includes:
 
 - **Unit tests**: Individual methods and classes in isolation
-- **Integration tests**: Component interaction and API endpoints
+- **Headless tests**: For cleaner tests
 - **Coverage goals**: High test coverage of business logic
 - **Test naming**: Descriptive method names explaining what is tested
 
@@ -113,17 +124,6 @@ This ensures internal models can evolve independently from public API contracts.
 - **Single Responsibility Principle**: Each class has a focused purpose
 - **Dependency injection**: Spring Boot DI for loose coupling
 - **Separation of concerns**: Clean boundaries between UI, business logic, and data access
-
-## API Design Principles
-
-Our REST API follows established design principles:
-
-- **Resource-based URLs**: Clean endpoints like `/api/v1/users` and `/api/v1/flashcards`
-- **HTTP method semantics**: GET for retrieval, POST for creation, PUT for updates, DELETE for removal
-- **Stateless design**: No server-side session management
-- **Consistent response format**: All endpoints use `ApiResponse<T>` wrapper
-- **Versioning strategy**: URL path versioning (`/api/v1/`)
-- **RESTful conventions**: Following REST principles for predictable APIs
 
 ## Maven Configuration for Quality
 

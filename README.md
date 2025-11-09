@@ -32,10 +32,10 @@ To quickly test the application:
     mvn clean install -DskipTests
     ```
 
-3. Open the `server` module in the new terminal
+3. Open the `server` module in a new terminal
 
     ```bash
-    cd server
+    cd flashcards/server
     ```
 
 4. Run the backend
@@ -88,40 +88,35 @@ To create an executable file that runs locally on your computer:
     mvn clean install
     ```
 
-2. Open `fxui` module
+2. To be able to use the app, you must run the REST-API `server` in our app
 
     ```bash
-        cd fxui
+    cd server
+    mvn spring-boot:run
     ```
 
-3. When in `fxui`, run this command to run and create a executable application
+3. Open a new terminal and the `fxui` module and run this command to run and create a executable application
 
     ```bash
-        mvn clean package javafx:jlink jpackage:jpackage
+    cd flashcards/fxui
+    mvn clean package javafx:jlink jpackage:jpackage
     ```
 
-4. To be able to use the app, you must run the REST-API `server` in our app
-
-    ```bash
-        cd server
-        mvn spring-boot:run
-    ```
-
-5. Now you can run the applicication
+4. Now you can run the applicication
 
     **macOS & windows**
 
-    Now there has been created a Flashcards-1.0.0.dmg in `fxui/target/dist`. Locate this file and run that file.
+    Now there has been created a Flashcards-1.0.0.dmg in `fxui/target/dist`. Open this file.
 
     **Linux**
 
-    Now there has been created a FlashcardsApp.desktop in `fxui`. Locate this file and run that file.
+    Now there has been created a FlashcardsApp.desktop in `fxui`. Open this file.
 
-6. You can now use the application on your computer
+5. You can now use the application on your computer
 
 ### Method 2: Maven
 
-- See quickstart above
+- See quickstart method above.
 
 ### Method 3: VS Code
 
@@ -143,34 +138,33 @@ This structure helps separate concerns and makes the project easy to navigate.
 
 ## App design
 
+<!-- markdownlint-disable MD033 -->
+
 **Login page:** initial window when opening the app, and opens when you click "Log out" on other pages
 
-<img src="./images/app/release_3/flashcardlogin_empty.png" alt="login empty" width="300"> <img src="./images/app/release_3/flashcardlogin_error.png" alt="login error" width="300">
-
+<img src="./images/app/release_3/flashcardlogin_empty.png" alt="login empty" width="300"> <img src="./images/app/release_3/flashcardlogin_error.png" alt="login error" width="300"><br>
 
 **Sign up page:** opens when you click "Sign up" on the Login page
 
-<img src="./images/app/release_3/flashcardsignup_empty.png" alt="signup empty" width="300"> <img src="./images/app/release_3/flashcardsignup_error.png" alt="signup error" width="300">
-
+<img src="./images/app/release_3/flashcardsignup_empty.png" alt="signup empty" width="300"> <img src="./images/app/release_3/flashcardsignup_error.png" alt="signup error" width="300"><br>
 
 **Main dashboard:** opens after clicking "Log in" or "Sign in", or when clicking "back" on the deck management page
 
-<img src="./images/app/release_3/flashcardmain_no_decks.png" alt="main empty" width="300">  <img src="./images/app/release_3/flashcardmain_error.png" alt="main error" width="300">
-
+<img src="./images/app/release_3/flashcardmain_no_decks.png" alt="main empty" width="300">  <img src="./images/app/release_3/flashcardmain_error.png" alt="main error" width="300"><br>
 
 **Deck management:** opens when clicking a deck on the main dashboard, or when clicking "back" on the learning page
 
-<img src="./images/app/release_3/flashcarddeck_create_card.png" alt="create card" width="300">  <img src="./images/app/release_3/flashcarddeck_card_selected.png" alt="card selected" width="300"> 
-
+<img src="./images/app/release_3/flashcarddeck_create_card.png" alt="create card" width="300">  <img src="./images/app/release_3/flashcarddeck_card_selected.png" alt="card selected" width="300"><br>
 
 **Learning page:** opens when clicking "Start learning" om the deck management page
 
- <img src="./images/app/release_3/flashcardlearning_question.png" alt="question" width="300"> <img src="./images/app/release_3/flashcardlearning_answer.png" alt="answer" width="300">
-
+ <img src="./images/app/release_3/flashcardlearning_question.png" alt="question" width="300"> <img src="./images/app/release_3/flashcardlearning_answer.png" alt="answer" width="300"><br>
 
 **Server errors:** example of a server error that will appear as a pop up alert
 
-<img src="./images/app/release_3/flashcardlogin_popup.png" alt="server error" width="400">
+<img src="./images/app/release_3/flashcardlogin_popup.png" alt="server error" width="400"><br>
+
+<!-- markdownlint-enable MD033 -->
 
 ## Dependencies
 
@@ -213,6 +207,7 @@ After running `mvn test`, you can generate test coverage reports via JaCoCo:
 - **server**: Instruction Coverage: 95% | Branch Coverage: 91%
 - **storage**: Instruction Coverage: 100% | Branch Coverage: 95%
 
+<!-- markdownlint-disable MD033 -->
 
 <img src="./images/jaCoCo/release_3/core_jacoco_release3.png" alt="core JaCoCo coverage" width="600">
 <img src="./images/jaCoCo/release_3/fxui_jacoco_release3.png" alt="fxui JaCoCo coverage" width="600">
@@ -220,6 +215,7 @@ After running `mvn test`, you can generate test coverage reports via JaCoCo:
 <img src="./images/jaCoCo/release_3/server_jacoco_release3.png" alt="server JaCoCo coverage" width="600">
 <img src="./images/jaCoCo/release_3/storage_jacoco_release3.png" alt="storage JaCoCo coverage" width="600">
 
+<!-- markdownlint-enable MD033 -->
 
 Current coverage targets focus on core business logic and critical user workflows.
 

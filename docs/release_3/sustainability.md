@@ -1,4 +1,4 @@
-# Sustainability and Scalability
+# Sustainability
 
 This document explains what we would need to change in our Flashcards app if it became popular and had millions of users.
 
@@ -81,18 +81,21 @@ Each user has their own file (like `julie.json`):
 
 ```json
 {
-  "username": "julie",
-  "password": "encrypted_password",
-  "deckManager": {
-    "decks": [
-      {
-        "deckName": "Spanish Vocabulary",
-        "flashcards": [
-          { "number": 1, "question": "Hello", "answer": "Hola" },
-          { "number": 2, "question": "Goodbye", "answer": "Adiós" }
-        ]
-      }
-    ]
+  "username" : "example",
+  "password" : "encrypted_password",
+  "deckManager" : {
+    "decks" : [ {
+      "deckName" : "deck1",
+      "flashcards" : [ {
+        "number" : 1,
+        "question" : "question1",
+        "answer" : "answer1"
+      }, {
+        "number" : 2,
+        "question" : "question2",
+        "answer" : "question2"
+      } ]
+    } ]
   }
 }
 ```
@@ -193,9 +196,11 @@ Instead of everything in one JavaFX app, we split it:
 
 The Sustainability Awareness Diagram below maps how our decisions when making the app create ripple effects across social, economic, environmental, technical and individual dimensions. This analysis helps us understand both the positive impacts we want to maximize and the negative consequences we need to mitigate as we scale.
 
+<!-- markdownlint-disable MD033 -->
+
 <img src="../../images/sustainability/susAd.png" alt="SUAS Sustainability Analysis Diagram" width="600">
 
-
+<!-- markdownlint-enable MD033 -->
 
 | ID  | Effect                                                                      | Sustainability Dimension | Level     | Affects    | Affected by |
 | --- | --------------------------------------------------------------------------- | ------------------------ | --------- | ---------- | ----------- |
