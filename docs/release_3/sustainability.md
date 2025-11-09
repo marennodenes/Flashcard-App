@@ -1,6 +1,6 @@
 # Sustainability and Scalability
 
-This document explains what we would need to change in our Flashcards app if it became really popular and had millions of users.
+This document explains what we would need to change in our Flashcards app if it became popular and had millions of users.
 
 ## Current Setup
 
@@ -52,21 +52,21 @@ This works fine for a few hundred users, but would break with millions of users.
 
 ### 4. User Interface Limitations
 
-**Current problem:** The app has a tiny, fixed window that cannot adapt to different devices or user needs.
+**Current problem:** The app has a fixed window that cannot adapt to different devices or user needs.
 
 **What's wrong with our current JavaFX app:**
 
 - **Fixed tiny window size** - Cannot be resized larger or smaller by users
 - **Hard-coded FXML layouts** - All buttons, text fields, and components have fixed pixel positions
 - **Desktop-only design** - Only works on computers, completely unusable on phones or tablets
-- **Poor user experience** - Users stuck with whatever small window size we chose
+- **Poor user experience** - Users are stuck with whatever window size we chose
 - **No accessibility options** - Cannot adjust text size or layout for different needs
 - **One-size-fits-all approach** - Doesn't work well on small laptop screens or large monitors
 
 **Real-world impact:**
 
 - Students with small laptop screens struggle to use the app effectively
-- App is completely unusable on phones where students might want to study on the go
+- App does not work on phones where students might want to study on the go
 - Users with vision issues cannot make text larger
 
 ## What We Would Need to Change
@@ -138,9 +138,9 @@ CREATE TABLE flashcards (
 
 **Solution:** Use login tokens that work on any device.
 
-- Users can log in from phone, tablet, and computer
-- Automatic logout for security
-- Remember login for a while, then ask again
+- Users can sign in from phones, tablets, and computers
+- Automatic logout after a period of inactivity or on suspicious activity
+- Option to remember a device for a limited time, with the ability to revoke sessions from all devices
 
 ### 3. Handle More Users at Once
 
@@ -174,7 +174,7 @@ Instead of everything in one JavaFX app, we split it:
 - **Frontend (what users see)** - React web app, mobile apps, etc.
 - **Backend (data and logic)** - Our existing REST API server handles all the business logic
 
-**Why this separation is brilliant:**
+**Why this separation works:**
 
 - **One backend, many frontends** - Same data and logic works for web, mobile, and desktop
 - **Easier development** - Frontend team works on user interface, backend team works on data
@@ -184,28 +184,28 @@ Instead of everything in one JavaFX app, we split it:
 
 **Real benefits for users:**
 
-- Study flashcards on phone during bus ride
+- Study flashcards on phone
 - Use full-screen mode on laptop for better focus
 - Switch between devices and pick up where they left off
 - App automatically adapts to their screen size and device type
 
 ## Conclusion
 
-Right now our flashcards app works great for a small number of users. But if it became really popular with millions of users, we would need to make big changes:
+Right now our flashcards app works well for a small number of users. If it became popular with millions of users, we would need to make larger changes:
 
 **Most important changes:**
 
 - Switch from JSON files to a database
-- Make the user interface work on different devices and screen sizes
+- Make the user interface responsive so it works across device sizes
 
 **Other changes needed:**
 
-- Better login system for multiple devices
+- Better login system supporting multiple devices and session management
 - Multiple servers to handle more users
 - Web and mobile versions of the app
 - Bigger development team
 - More expensive hosting
 
-**The good news:** We can make these changes gradually without breaking the current app. We would start with the database change and responsive UI, then add the other improvements over time as we get more users.
+**The good news:** We can make these changes gradually without breaking the current app. Start with the database migration and a responsive UI, then add the other improvements as demand grows.
 
-This way, our app could grow from hundreds of users to millions of users without major problems.
+This way, our app could grow from tens of users to millions without major problems.

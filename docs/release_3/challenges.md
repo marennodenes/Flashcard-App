@@ -1,6 +1,6 @@
 # Challenges
 
-The team has encountered several challenges during this iteration of the project, primarily due to increased technical requirements and a restructuring of the project. We identified two key challenges that we deliberately chose to focus on and address throughout the process. These were the need to carry out an intentional change of the Java version midway through the iteration, as well as the development and implementation of tests.
+The team has encountered several challenges during this iteration of the project, primarily due to increased technical requirements and a restructuring of the project. We identified two key challenges that we chose to focus on and address throughout the process. These were the need to carry out an intentional change of the Java version midway through the iteration, as well as the development and implementation of tests.
 
 ## 1. Java version
 
