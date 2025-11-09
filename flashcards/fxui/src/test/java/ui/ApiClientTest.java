@@ -78,11 +78,11 @@ public class ApiClientTest {
   /**
    * Verifies that sendRequest throws IllegalArgumentException for null or
    * blank URI/method.
-   * 
+   *
    * @throws Exception if sending the request fails
    */
   @Test
-  public void testSendRequest() throws Exception{
+  public void testSendRequest() throws Exception {
     assertThrows(IllegalArgumentException.class,
         () -> ApiClient.sendRequest(null, "GET", null));
     assertThrows(IllegalArgumentException.class,
