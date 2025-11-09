@@ -136,11 +136,10 @@
                         -Dprism.verbose=false
                         -Djavafx.animation.framerate=1
                         -Dtestfx.setup.timeout=60000
-                        --add-opens javafx.graphics/com.sun.javafx.application=ALL-UNNAMED
-                        --add-opens javafx.graphics/com.sun.glass.ui=ALL-UNNAMED
-                        --add-opens javafx.graphics/com.sun.glass.ui.monocle=ALL-UNNAMED
-                        --add-exports javafx.graphics/com.sun.glass.ui=ALL-UNNAMED
-                        --add-exports javafx.graphics/com.sun.glass.ui.monocle=ALL-UNNAMED
+                    -XX:+EnableDynamicAgentLoading
+                    --add-opens javafx.graphics/com.sun.javafx.application=ALL-UNNAMED
+                    --add-opens javafx.graphics/com.sun.glass.ui=ALL-UNNAMED
+                    --add-exports javafx.graphics/com.sun.glass.ui=ALL-UNNAMED
                     </argLine>
                     <runOrder>alphabetical</runOrder>
                     <forkCount>1</forkCount>

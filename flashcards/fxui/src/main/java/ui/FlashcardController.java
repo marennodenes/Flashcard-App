@@ -274,7 +274,9 @@ public class FlashcardController {
       Scene scene = SceneUtils.createScaledScene(root);
       scene.getStylesheets().add(getClass().getResource("FlashcardLogin.css").toExternalForm());
       stage.setScene(scene);
-      stage.show();
+      if (!Boolean.getBoolean("testfx.headless")) {
+        stage.show();
+      }
     } catch (IOException e) {
       System.err.println(ApiConstants.LOAD_ERROR + ": " + e.getMessage());
       ApiClient.showAlert(ApiConstants.LOAD_ERROR, ApiConstants.UNEXPECTED_ERROR);

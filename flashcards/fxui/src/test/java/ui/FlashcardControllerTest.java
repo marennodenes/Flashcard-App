@@ -2,10 +2,12 @@ package ui;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNotSame;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import app.Flashcard;
 import app.FlashcardDeck;
@@ -18,12 +20,17 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 import javafx.application.Platform;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.layout.Pane;
+import javafx.stage.Stage;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.testfx.util.WaitForAsyncUtils;
 
 
 /**
@@ -711,28 +718,58 @@ public class FlashcardControllerTest {
     assertDoesNotThrow(() -> callPrivateMethod("whenCardButtonClicked"));
   }
 
-  /**
-   * Tests flipCard method with null card button.
-   *
-   * @throws Exception when flipping the card fails
-   */
-  @Test
-  public void testFlipCardWithNullCardButton() throws Exception {
-    setField("card", null);
-    assertNull(getField("card"));
-  
-    callPrivateMethod("flipCard");
-    assertDoesNotThrow(() -> callPrivateMethod("flipCard"));
-  }
 
   /**
-   * Tests flipCard method toggles the showing answer state.
+   * Tests flipCard method with question, answer and null handling.
    *
    * @throws Exception when flipping the card fails
    */
   @Test
-  public void testFlipCardTogglesShowingAnswer() throws Exception {
+  public void testFlipCard() throws Exception {
+    FlashcardDeck deck = new FlashcardDeck("Animated");
+    deck.addFlashcard(new Flashcard("Question?", "Answer!"));
+    FlashcardDeckDto deckDto = mapper.toDto(deck);
+    setField("deck", deckDto.getDeck());
+    setField("originalDeck", deckDto);
+    setField("currentCardI", 0);
     setField("isShowingAnswer", false);
+
+    Platform.runLater(() -> controller.updateUi());
+    WaitForAsyncUtils.waitForFxEvents();
+
+    assertEquals("Question?", cardButton.getText());
+    assertFalse((Boolean) getField("isShowingAnswer"));
+
+    Platform.runLater(() -> {
+      try {
+        callPrivateMethod("flipCard");
+      } catch (Exception e) {
+        throw new RuntimeException(e);
+      }
+    });
+    WaitForAsyncUtils.sleep(250, TimeUnit.MILLISECONDS);
+    WaitForAsyncUtils.waitForFxEvents();
+
+    assertEquals("Answer!", cardButton.getText());
+    assertTrue((Boolean) getField("isShowingAnswer"));
+
+    Platform.runLater(() -> {
+      try {
+        callPrivateMethod("flipCard");
+      } catch (Exception e) {
+        throw new RuntimeException(e);
+      }
+    });
+    WaitForAsyncUtils.sleep(250, TimeUnit.MILLISECONDS);
+    WaitForAsyncUtils.waitForFxEvents();
+
+    assertEquals("Question?", cardButton.getText());
+    assertFalse((Boolean) getField("isShowingAnswer"));
+
+    setField("card", null);
+    assertNull(getField("card"));
+
+    callPrivateMethod("flipCard");
     assertDoesNotThrow(() -> callPrivateMethod("flipCard"));
   }
 
@@ -908,23 +945,6 @@ public class FlashcardControllerTest {
   }
 
   /**
-   * Tests flipCard method with real card button.
-   *
-   * @throws Exception when flipping the card fails
-   */
-  @Test
-  public void testFlipCardWithRealButton() throws Exception {
-    if (cardButton != null) {
-      setField("card", cardButton);
-      setField("isShowingAnswer", false);
-      
-      controller.flipCard();
-      
-      assertDoesNotThrow(() -> controller.flipCard());
-    }
-  }
-
-  /**
    * Tests whenBackButtonIsClicked method with real back button.
    *
    * @throws Exception when clicking back button fails
@@ -955,6 +975,11 @@ public class FlashcardControllerTest {
       setField("backButton", backButton);
           
       Platform.runLater(() -> {
+        Stage stage = new Stage();
+        Pane root = new Pane();
+        root.getChildren().add(backButton);
+        Scene scene = new Scene(root);
+        stage.setScene(scene);
         assertDoesNotThrow(() -> controller.whenLogOut(null));
       });
     }

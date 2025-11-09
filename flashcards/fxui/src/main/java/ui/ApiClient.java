@@ -151,6 +151,10 @@ public final class ApiClient {
    * @param content the content message to display in the alert
    */
   public static void showAlert(final String title, final String content) {
+    if (Boolean.getBoolean("testfx.headless")) {
+      System.err.println(title + ": " + content);
+      return;
+    }
     Alert alert = new Alert(Alert.AlertType.ERROR);
     alert.setTitle(title);
     alert.setHeaderText(null);
