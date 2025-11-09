@@ -139,7 +139,16 @@ To create an executable file that runs locally on your computer:
         mvn spring-boot:run
     ```
 
-5. Now there has been created a Flashcards-1.0.0.dmg in `fxui/target/dist`. Locate this file and run that file.
+5. Now you can run the applicication
+    **macOS & windows**
+    ```bash
+    Now there has been created a Flashcards-1.0.0.dmg in `fxui/target/dist`. Locate this file and run that file.
+    ```
+
+    **Linux**
+    ```bash
+    Now there has been created a FlashcardsApp.desktop in `fxui`. Locate this file and run that file.
+    ```
 6. You can now use the application on your computer
 
 ### Method 2: Maven
