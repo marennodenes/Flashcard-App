@@ -140,15 +140,15 @@ To create an executable file that runs locally on your computer:
     ```
 
 5. Now you can run the applicication
+
     **macOS & windows**
-    ```bash
+
     Now there has been created a Flashcards-1.0.0.dmg in `fxui/target/dist`. Locate this file and run that file.
-    ```
 
     **Linux**
-    ```bash
+
     Now there has been created a FlashcardsApp.desktop in `fxui`. Locate this file and run that file.
-    ```
+
 6. You can now use the application on your computer
 
 ### Method 2: Maven
@@ -243,20 +243,50 @@ This structure helps separate concerns and makes the project easy to navigate.
 
 ## App design
 
+<!-- markdownlint-disable MD033 -->
+
 **Login page:** initial window when opening the app, and opens when you click "Log out" on other pages
-![Login interface](images/app/release_3/FlashcardLogin_release3.png)
+
+<div>
+    <img src="/images/app/release_3/flashcardlogin_empty.png" alt="login empty" width="300">
+    <img src="/images/app/release_3/flashcardlogin_error.png" alt="login error" width="300">
+</div><br>
 
 **Sign up page:** opens when you click "Sign up" on the Login page
-![Signup interface](images/app/release_3/FlashcardSignUp_release3.png)
+
+<div>
+    <img src="/images/app/release_3/flashcardsignup_empty.png" alt="signup empty" width="300">
+    <img src="/images/app/release_3/flashcardsignup_error.png" alt="signup error" width="300">
+</div><br>
 
 **Main dashboard:** opens after clicking "Log in" or "Sign in", or when clicking "back" on the deck management page
-![Main dashboard](images/app/release_3/FlashcardMain_release3.png)
+
+<div>
+    <img src="/images/app/release_3/flashcardmain_no_decks.png" alt="main empty" width="300">
+    <img src="/images/app/release_3/flashcardmain_error.png" alt="main error" width="300">
+</div><br>
 
 **Deck management:** opens when clicking a deck on the main dashboard, or when clicking "back" on the learning page
-![Deck management](images/app/release_3/FlashcardList_release3.png)
+
+<div>
+    <img src="/images/app/release_3/flashcarddeck_create_card.png" alt="create card" width="300">
+    <img src="/images/app/release_3/flashcarddeck_card_selected.png" alt="card selected" width="300">
+</div><br>
 
 **Learning page:** opens when clicking "Start learning" om the deck management page
-![Learning interface](images/app/release_3/FlashcardPage_release3.png)
+
+<div>
+    <img src="/images/app/release_3/flashcardlearning_question.png" alt="question" width="300">
+    <img src="/images/app/release_3/flashcardlearning_answer.png" alt="answer" width="300">
+</div><br>
+
+**Server errors:** example of a server error that will appear as a pop up alert
+
+<div>
+    <img src="/images/app/release_3/flashcardlogin_popup.png" alt="server error" width="400">
+</div>
+
+<!-- markdownlint-enable MD033 -->
 
 ## Dependencies
 
@@ -299,11 +329,15 @@ After running `mvn test`, you can generate test coverage reports via JaCoCo:
 - **server**: Instruction Coverage: 95% | Branch Coverage: 91%
 - **storage**: Instruction Coverage: 100% | Branch Coverage: 95%
 
-![core JaCoCo coverage](images/jaCoCo/release_3/core_jacoco_release3.png)
-![fxui JaCoCo coverage](images/jaCoCo/release_3/fxui_jacoco_release3.png)
-![shared JaCoCo coverage](images/jaCoCo/release_3/shared_jacoco_release3.png)
-![server JaCoCo coverage](images/jaCoCo/release_3/server_jacoco_release3.png)
-![storage JaCoCo coverage](images/jaCoCo/release_3/storage_jacoco_release3.png)
+<!-- markdownlint-disable MD033 -->
+
+<img src="/images/jaCoCo/release_3/core_jacoco_release3.png" alt="core JaCoCo coverage" width="700">
+<img src="/images/jaCoCo/release_3/fxui_jacoco_release3.png" alt="fxui JaCoCo coverage" width="700">
+<img src="/images/jaCoCo/release_3/shared_jacoco_release3.png" alt="shared JaCoCo coverage" width="700">
+<img src="/images/jaCoCo/release_3/server_jacoco_release3.png" alt="server JaCoCo coverage" width="700">
+<img src="/images/jaCoCo/release_3/storage_jacoco_release3.png" alt="storage JaCoCo coverage" width="700">
+
+<!-- markdownlint-enable MD033 -->
 
 Current coverage targets focus on core business logic and critical user workflows.
 
