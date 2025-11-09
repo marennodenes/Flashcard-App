@@ -112,7 +112,6 @@ public class UserControllerTest {
    *
    * @throws Exception if the MockMvc request fails
    */
-  @SuppressWarnings("null")
   @Test
   public void testCreateUserSuccess() throws Exception {
     when(userService.createUserWithValidation(anyString(), anyString())).thenReturn(testUser);
@@ -133,7 +132,6 @@ public class UserControllerTest {
    *
    * @throws Exception if the MockMvc request fails
    */
-  @SuppressWarnings("null")
   @Test
   public void testCreateUserInvalidCredentials() throws Exception {
     when(userService.createUserWithValidation(anyString(), anyString()))
@@ -153,7 +151,6 @@ public class UserControllerTest {
    *
    * @throws Exception if the MockMvc request fails
    */
-  @SuppressWarnings("null")
   @Test
   public void testCreateUserUserAlreadyExists() throws Exception {
     when(userService.createUserWithValidation(anyString(), anyString()))
@@ -174,7 +171,6 @@ public class UserControllerTest {
    *
    * @throws Exception if the MockMvc request fails
    */
-  @SuppressWarnings("null")
   @Test
   public void testLogInUserSuccess() throws Exception {
     when(userService.logInUser("testUser", "TestPassword123!")).thenReturn(true);
@@ -196,7 +192,6 @@ public class UserControllerTest {
    *
    * @throws Exception if the MockMvc request fails
    */
-  @SuppressWarnings("null")
   @Test
   public void testLogInUserWrongPassword() throws Exception {
     when(userService.logInUser("testUser", "WrongPassword"))
@@ -218,7 +213,6 @@ public class UserControllerTest {
    *
    * @throws Exception if the MockMvc request fails
    */
-  @SuppressWarnings("null")
   @Test
   public void testLogInUserUserNotFound() throws Exception {
     when(userService.logInUser("ghost", "anyPassword")).thenReturn(false);
@@ -242,7 +236,6 @@ public class UserControllerTest {
    * @throws Exception if the MockMvc request fails
    * 
    */
-  @SuppressWarnings("null")
   @Test
   public void testLogInUserEmptyUsername() throws Exception {
     when(userService.logInUser("", "TestPassword123!"))
@@ -264,7 +257,6 @@ public class UserControllerTest {
    *
    * @throws Exception if the MockMvc request fails
    */
-  @SuppressWarnings("null")
   @Test
   public void testLogInUserEmptyPassword() throws Exception {
     when(userService.logInUser("testUser", ""))
@@ -286,7 +278,6 @@ public class UserControllerTest {
    *
    * @throws Exception if the MockMvc request fails
    */
-  @SuppressWarnings("null")
   @Test
   public void testLogInUserException() throws Exception {
     when(userService.logInUser(anyString(), anyString()))

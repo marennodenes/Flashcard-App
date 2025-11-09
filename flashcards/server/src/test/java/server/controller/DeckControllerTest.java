@@ -426,7 +426,6 @@ public class DeckControllerTest {
    *
    * @throws Exception if the MockMvc request fails
    */
-  @SuppressWarnings("null")
   @Test
   public void testUpdateAllDecksSuccess() throws Exception {
     doNothing().when(deckService).updateAllDecks(anyString(), any(FlashcardDeckManager.class));
@@ -447,7 +446,6 @@ public class DeckControllerTest {
    *
    * @throws Exception if the MockMvc request fails
    */
-  @SuppressWarnings("null")
   @Test
   public void testUpdateAllDecksUserNotFound() throws Exception {
     doThrow(new IllegalArgumentException("User not found"))
@@ -469,7 +467,6 @@ public class DeckControllerTest {
    *
    * @throws Exception if the MockMvc request fails
    */
-  @SuppressWarnings("null")
   @Test
   public void testUpdateAllDecksInvalidData() throws Exception {
     doThrow(new IllegalArgumentException("Invalid deck data"))
