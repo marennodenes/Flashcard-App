@@ -1,11 +1,13 @@
 package ui;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URL;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.text.Font;
 import javafx.stage.Stage;
 
 /**
@@ -26,7 +28,9 @@ public class FlashcardApp extends Application {
    */
   @Override
   public void start(Stage primaryStage) throws IOException {
+    preloadFonts();
     primaryStage.setTitle("Flashcards App");
+    primaryStage.setResizable(false);
     Scene scene = SceneUtils.createScaledScene(loadLoginScene());
     scene.getStylesheets().add(getLoginStylesheet().toExternalForm());
     primaryStage.setScene(scene);
@@ -60,5 +64,22 @@ public class FlashcardApp extends Application {
    */
   public static void main(String[] args) {
     Application.launch(args);
+  }
+
+  private void preloadFonts() {
+    loadFont("/fonts/Ubuntu-Regular.ttf");
+    loadFont("/fonts/Ubuntu-Bold.ttf");
+  }
+
+  private void loadFont(String path) {
+    try (InputStream stream = getClass().getResourceAsStream(path)) {
+      if (stream != null) {
+        Font.loadFont(stream, 14);
+      } else {
+        System.err.println("Could not find font resource: " + path);
+      }
+    } catch (IOException e) {
+      System.err.println("Failed to load font " + path + ": " + e.getMessage());
+    }
   }
 }

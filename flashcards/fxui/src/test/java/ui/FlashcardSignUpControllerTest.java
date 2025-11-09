@@ -12,7 +12,6 @@ import static org.mockito.Mockito.when;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.scene.text.Text;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.MockedStatic;
@@ -39,18 +38,6 @@ public class FlashcardSignUpControllerTest {
 
   /** The controller instance under test. */
   private FlashcardSignUpController controller;
-
-  /**
-   * Configures JavaFX to run in headless mode for CI/CD environments.
-   */
-  @BeforeAll
-  public static void setupHeadless() {
-    System.setProperty("java.awt.headless", "true");
-    System.setProperty("testfx.robot", "glass");
-    System.setProperty("testfx.headless", "true");
-    System.setProperty("prism.order", "sw");
-    System.setProperty("prism.text", "t2k");
-  }
 
   /**
    * Helper method to mock all UI components of the controller.
