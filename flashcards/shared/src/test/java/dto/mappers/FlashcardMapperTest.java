@@ -80,6 +80,8 @@ public class FlashcardMapperTest {
 
   /**
    * Tests null input handling for toDto.
+   *
+   * @throws IllegalArgumentException when input is null.
    */
   @Test
   public void testToDtoNullInput() {
@@ -89,6 +91,8 @@ public class FlashcardMapperTest {
 
   /**
    * Tests null input handling for fromDto.
+   *
+   * @throws IllegalArgumentException when input is null.
    */
   @Test
   public void testFromDtoNullInput() {

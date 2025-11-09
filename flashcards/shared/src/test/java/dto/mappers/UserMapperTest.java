@@ -139,6 +139,8 @@ public class UserMapperTest {
 
   /**
    * Tests toDto(UserData) with null input throws NullPointerException.
+   *
+   * @throws NullPointerException when input is null.
    */
   @Test
   public void testToDtoUserDataNullInput() {
@@ -148,6 +150,8 @@ public class UserMapperTest {
 
   /**
    * Tests fromDto(UserDataDto) with null input throws NullPointerException.
+   *
+   * @throws NullPointerException when input is null.
    */
   @Test
   public void testFromDtoNullInput() {
@@ -157,6 +161,8 @@ public class UserMapperTest {
 
   /**
    * Tests fromLoginRequestDto with null input throws NullPointerException.
+   *
+   * @throws NullPointerException when input is null.
    */
   @Test
   public void testFromLoginRequestDtoNullInput() {

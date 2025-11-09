@@ -32,6 +32,8 @@ import shared.ApiResponse;
  */
 
 public class FlashcardMainController {
+
+  // FXML UI components
   @FXML private Button deck1;
   @FXML private Button deck2;
   @FXML private Button deck3;
@@ -226,14 +228,11 @@ public class FlashcardMainController {
         String errorMsg = result != null 
             ? result.getMessage() : ApiConstants.NO_RESPONSE_FROM_SERVER;
         
-        // Check if it's a validation error that should be shown as inline text (not popup)
         if (errorMsg != null && (errorMsg.equals(ApiConstants.DECK_ALREADY_EXISTS) 
             || errorMsg.equals(ApiConstants.DECK_LIMIT_REACHED) 
             || errorMsg.equals(ApiConstants.DECK_NAME_EMPTY))) {
-          // Validation error, show as inline text only, no popup
           showInlineError(errorMsg);
         } else {
-          // Server error, show popup and log to terminal
           System.err.println(ApiConstants.SERVER_ERROR + ": " + errorMsg);
           ApiClient.showAlert(ApiConstants.SERVER_ERROR, ApiConstants.DECK_FAILED_TO_CREATE);
         }

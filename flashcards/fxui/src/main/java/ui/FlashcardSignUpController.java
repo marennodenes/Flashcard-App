@@ -24,6 +24,7 @@ import shared.ApiResponse;
  * @author ailinat
  */
 public class FlashcardSignUpController {
+  
   @FXML private Text alertMessage;
   @FXML private Text ex;
   @FXML private TextField usernameField;

@@ -58,8 +58,6 @@ public final class SceneUtils {
     // Apply scaling to root
     applyScaling(root);
 
-    
-
     // Compute offset based on extra space created by scaling and apply
     // a factor to move further right/down
     double extraWidth = width * (SCALE_FACTOR - 1);

@@ -35,6 +35,7 @@ import shared.ApiResponse;
  * @author chrsom
  */
 public class FlashcardDeckController {
+  
   @FXML private TextField questionField;
   @FXML private TextField answerField;
   @FXML private ListView<FlashcardDto> listView;

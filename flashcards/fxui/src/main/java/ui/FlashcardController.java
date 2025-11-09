@@ -28,6 +28,7 @@ import shared.ApiConstants;
  */
 public class FlashcardController {
 
+  // FXML injected UI components
   private @FXML Button backButton;
   private @FXML Button nextButton; 
   private @FXML Button previousButton; 
@@ -50,12 +51,12 @@ public class FlashcardController {
         """;
   
   private String answerStyle = """
-                -fx-background-color: #5c7b80;
-                -fx-effect: dropshadow(gaussian, #89b9bf, 0, 1, 5, 5);
-                -fx-border-width: 2;
-                -fx-background-radius: 3;
-                -fx-font-weight: bold;
-            """;
+            -fx-background-color: #5c7b80;
+            -fx-effect: dropshadow(gaussian, #89b9bf, 0, 1, 5, 5);
+            -fx-border-width: 2;
+            -fx-background-radius: 3;
+            -fx-font-weight: bold;
+        """;
 
   private boolean isShowingAnswer = false;
 

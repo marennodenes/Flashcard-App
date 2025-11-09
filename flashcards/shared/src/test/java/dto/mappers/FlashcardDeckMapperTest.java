@@ -90,6 +90,8 @@ public class FlashcardDeckMapperTest {
 
   /**
    * Tests null input handling for toDto.
+   *
+   * @throws IllegalArgumentException when input is null.
    */
   @Test
   public void testToDtoNullInput() {
@@ -99,6 +101,8 @@ public class FlashcardDeckMapperTest {
 
   /**
    * Tests null input handling for fromDto.
+   *
+   * @throws IllegalArgumentException when input is null.
    */
   @Test
   public void testFromDtoNullInput() {
@@ -108,6 +112,8 @@ public class FlashcardDeckMapperTest {
 
   /**
    * Tests null input handling for toDtoList.
+   *
+   * @throws IllegalArgumentException when input is null.
    */
   @Test
   public void testToDtoListNullInput() {
@@ -117,6 +123,8 @@ public class FlashcardDeckMapperTest {
 
   /**
    * Tests null input handling for fromDtoList.
+   *
+   * @throws IllegalArgumentException when input is null.
    */
   @Test
   public void testFromDtoListNullInput() {

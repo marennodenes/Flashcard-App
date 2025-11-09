@@ -13,12 +13,11 @@ import java.io.IOException;
  * Implements UserPersistence interface and ensures user credentials are preserved 
  * when updating flashcard data.
  *
- * @author parts of these methods are generated with help from claude.ai
  * @author sofietw
  * @author ailinat
  * @author marennod
  * @author chrsom
- * 
+ * @see "docs/release_3/ai_tools.md"
  */
 public class FlashcardPersistent implements UserPersistence {
 
