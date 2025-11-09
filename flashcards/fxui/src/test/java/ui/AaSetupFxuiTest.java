@@ -9,6 +9,7 @@ import org.junit.jupiter.api.Test;
  * is applied before other JavaFX tests run.
  *
  * @author marennod
+ * @author ailinat
  */
 public class AaSetupFxuiTest {
 
