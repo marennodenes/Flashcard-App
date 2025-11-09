@@ -168,14 +168,6 @@
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-surefire-plugin</artifactId>
           <version>${maven-surefire-plugin.version}</version>
-          <configuration>
-            <argLine>
-              --add-exports javafx.graphics/com.sun.javafx.application=ALL-UNNAMED
-              --add-opens javafx.graphics/com.sun.javafx.application=ALL-UNNAMED
-              --add-exports javafx.graphics/com.sun.glass.ui=ALL-UNNAMED
-              ${argLine}
-            </argLine>
-          </configuration>
         </plugin>
         <plugin>
           <groupId>org.openjfx</groupId>
