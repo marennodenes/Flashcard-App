@@ -95,65 +95,74 @@ package shared {
 
     package shared {
         class ApiConstants {
-            + {static} final String USER_NOT_FOUND
             + {static} final String USER_CREATED
-            + {static} final String USER_RETRIEVED
-            + {static} final String USER_ALREADY_EXISTS
-            + {static} final String USER_RETRIEVED_ERROR
+            + {static} final String USER_RETRIEVED 
             + {static} final String USER_EXISTS
+            + {static} final String USER_NOT_FOUND 
+            + {static} final String USER_ALREADY_EXISTS 
+            + {static} final String USER_CREATION_ERROR 
+            + {static} final String USER_RETRIEVED_ERROR 
             + {static} final String USER_EXISTS_ERROR
-            + {static} final String LOGIN_FAILED
-            + {static} final String LOGIN_SUCCESS
+            + {static} final String USER_OPERATION_FAILED 
+            + {static} final String LOGIN_SUCCESS 
             + {static} final String LOGIN_RESPONSE
+            + {static} final String LOGIN_FAILED
             + {static} final String LOGIN_RESPONSE_ERROR
-            + {static} final String INVALID_PASSWORD
-            + {static} final String PASSWORD_VALIDARION_SUCCESS
-            + {static} final String USER_EXISTENCE_CHECK_SUCCESS
-            + {static} final String EMPTY_FIELDS
-            + {static} final String EMPTY_SIGNUP_FIELDS
-            + {static} final String PASSWORDS_NOT_EQUAL
-            + {static} final String USERNAME_ALREADY_EXISTS
-            + {static} final String DECK_NAME_EMPTY
-            + {static} final String FLASHCARD_QUESTION_ANSWER_EMPTY
+            + {static} final String LOGIN_OPERATION_FAILED
+            + {static} final String INVALID_PASSWORD 
+            + {static} final String PASSWORD_VALIDATION_SUCCESSFUL 
             + {static} final String PASSWORD_TOO_SHORT
-            + {static} final String PASSWORD_MISSING_UPPERCASE
-            + {static} final String PASSWORD_MISSING_LOWERCASE
-            + {static} final String PASSWORD_MISSING_DIGIT
-            + {static} final String PASSWORD_MISSING_SPECIAL
-            + {static} final String PASSWORD_VALIDATION_SUCCESSFUL
-            + {static} final String PASSWORD_VALIDATION_ERROR
-            + {static} final String FLASHCARD_FAILED
-            + {static} final String FLASHCARD_NOT_FOUND
-            + {static} final String FLASHCARD_CREATED
+            + {static} final String PASSWORD_MISSING_UPPERCASE 
+            + {static} final String PASSWORD_MISSING_LOWERCASE 
+            + {static} final String PASSWORD_MISSING_DIGIT 
+            + {static} final String PASSWORD_MISSING_SPECIAL 
+            + {static} final String PASSWORD_VALIDATION_ERROR 
+            + {static} final String FLASHCARD_CREATED 
             + {static} final String FLASHCARD_DELETED
-            + {static} final String FLASHCARD_FAILED_TO_DELETE
-            + {static} final String FLASHCARD_FAILED_TO_CREATE
-            + {static} final String FLASHCARD_RETRIEVED
-            + {static} final String FLASHCARD_RETRIEVED_FAILED
-            + {static} final String DECK_NOT_FOUND
+            + {static} final String FLASHCARD_RETRIEVED 
+            + {static} final String FLASHCARDS_RETRIEVED
+            + {static} final String FLASHCARD_NOT_FOUND
+            + {static} final String FLASHCARD_FAILED
+            + {static} final String FLASHCARD_FAILED_TO_DELETE 
+            + {static} final String FLASHCARD_FAILED_TO_CREATE 
+            + {static} final String FLASHCARD_RETRIEVED_FAILED 
+            + {static} final String FLASHCARDS_RETRIEVED_FAILED 
+            + {static} final String FLASHCARD_OPERATION_FAILED 
             + {static} final String DECK_CREATED
             + {static} final String DECK_DELETED
+            + {static} final String DECK_RETRIEVED
+            + {static} final String DECK_UPDATED
+            + {static} final String DECKS_RETRIEVED
+            + {static} final String DECK_NOT_FOUND
+            + {static} final String DECK_ALREADY_EXISTS
+            + {static} final String DECK_LIMIT_REACHED
             + {static} final String DECK_FAILED_TO_CREATE
             + {static} final String DECK_FAILED_TO_DELETE
             + {static} final String DECK_DELETED_ERROR
-            + {static} final String DECK_RETRIEVED
-            + {static} final String DECK_UPDATED
             + {static} final String DECK_CREATED_ERROR
             + {static} final String DECK_RETRIEVING_ERROR
             + {static} final String DECK_UPDATED_ERROR
-            + {static} final String INVALID_REQUEST
+            + {static} final String DECKS_RETRIEVING_ERROR
+            + {static} final String DECK_OPERATION_FAILED 
+            + {static} final String DECK_UPDATE_FAILED
+            + {static} final String EMPTY_FIELDS
+            + {static} final String PASSWORDS_NOT_EQUAL
+            + {static} final String DECK_NAME_EMPTY
+            + {static} final String FLASHCARD_QUESTION_ANSWER_EMPTY
             + {static} final String SERVER_ERROR
-            + {static} final String VALIDATION_ERROR
             + {static} final String LOAD_ERROR
-            + {static} final String FAILED_TO_LOAD_DECK_DATA
-            + {static} final String FAILED_TO_LOAD_USER_DATA
-            + {static} final String NO_RESPONSE_FROM_SERVER
-            + {static} final String SERVER_CONNECTION_ERROR
-            + {static} final String NO_VALID_BUTTON_FOR_SCENE_SWITCH
-            + {static} final String UNEXPECTED_ERROR
+            + {static} final String VALIDATION_ERROR
+            + {static} final String UNEXPECTED_ERROR 
+            + {static} final String LOG_UNEXPECTED_ERROR 
+            + {static} final String INVALID_REQUEST 
+            + {static} final String FAILED_TO_LOAD_DATA
+            + {static} final String NO_RESPONSE_FROM_SERVER 
+            + {static} final String SERVER_CONNECTION_ERROR 
+            + {static} final String NO_VALID_BUTTON_FOR_SCENE_SWITCH                 
         }
 
         class ApiEndpoints {
+            - ApiEndpoints()
             + {static} final String SERVER_HOST
             + {static} final String SERVER_PORT
             + {static} final String SERVER_BASE_URL

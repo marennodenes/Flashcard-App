@@ -66,11 +66,21 @@ public class FlashcardApp extends Application {
     Application.launch(args);
   }
 
+  /**
+   * Preloads custom fonts used in the application to ensure they are available when needed.
+   * Loads the Ubuntu Regular and Bold fonts from resources.
+   * This ensures consistent font rendering across different platforms.
+   */
   private void preloadFonts() {
     loadFont("/fonts/Ubuntu-Regular.ttf");
     loadFont("/fonts/Ubuntu-Bold.ttf");
   }
 
+  /**
+   * Loads a font from the specified resource path.
+   *
+   * @param path the path to the font resource
+   */
   private void loadFont(String path) {
     try (InputStream stream = getClass().getResourceAsStream(path)) {
       if (stream != null) {
