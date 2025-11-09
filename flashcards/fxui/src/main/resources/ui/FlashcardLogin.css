@@ -91,9 +91,9 @@
 }
 
 .password-field {
-  font-size: 7pt;
+  font-size: 12px;
   font-family: "Ubuntu", sans-serif;
-  -fx-font-size: 7pt;
+  -fx-font-size: 12px;
   -fx-font-family: "Ubuntu", sans-serif;
 }
 

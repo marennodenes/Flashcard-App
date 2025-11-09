@@ -38,9 +38,9 @@ import org.testfx.util.WaitForAsyncUtils;
  *
  * @author marennod
  * @author ailinat
- * 
+ *
  * @see FlashcardController
- * 
+ *
  */
 public class FlashcardControllerTest {
 
@@ -105,7 +105,7 @@ public class FlashcardControllerTest {
    * @throws Exception when accessing fields fails
    */
   @Test
-  public void testControllerInitialization() throws Exception {
+  public void testInitialization() throws Exception {
     assertNotNull(controller);
     assertEquals("testUser", getField("currentUsername"));
 
@@ -121,7 +121,7 @@ public class FlashcardControllerTest {
    * @throws Exception when initializing fails
    */
   @Test
-  public void testInitializeWithNonEmptyDeck() throws Exception {
+  public void testInitializeNonEmptyDeck() throws Exception {
     // Given: Controller with non-empty deck
     FlashcardController newController = new FlashcardController();
     FlashcardDeck deck = new FlashcardDeck("Test");
@@ -142,7 +142,7 @@ public class FlashcardControllerTest {
    * @throws Exception when initializing fails
    */
   @Test
-  public void testInitializeSetsCurrentCardToZero() throws Exception {
+  public void testInitializeCurrentCard() throws Exception {
     FlashcardController newController = new FlashcardController();
 
     newController.initialize();
@@ -205,7 +205,7 @@ public class FlashcardControllerTest {
    * @throws Exception when accessing fields fails
    */
   @Test
-  public void testCurrentCardIndexHandling() throws Exception {
+  public void testCardIndex() throws Exception {
     assertEquals(0, getField("currentCardI"));
     
     setField("currentCardI", 1);
@@ -219,7 +219,7 @@ public class FlashcardControllerTest {
    * @throws Exception when navigating fails
    */
   @Test
-  public void testNavigationLogicGoToNextCard() throws Exception {
+  public void testGoToNextCard() throws Exception {
     assertEquals(0, getField("currentCardI"));
     
     callPrivateMethod("goToNextCard");
@@ -235,7 +235,7 @@ public class FlashcardControllerTest {
    * @throws Exception when navigating fails
    */
   @Test
-  public void testNavigationLogicGoToPreviousCard() throws Exception {
+  public void testGoToPreviousCard() throws Exception {
     setField("currentCardI", 2);
     
     callPrivateMethod("goToPreviousCard");
@@ -251,17 +251,20 @@ public class FlashcardControllerTest {
    * @throws Exception when navigating fails
    */
   @Test
-  public void testNavigationWrappingAtStart() throws Exception {
-
-    // Test wrapping at start
+  public void testNavigationWrapping() throws Exception {
+    // Test wrapping at start - go from first card to last
     setField("currentCardI", 0);
     callPrivateMethod("goToPreviousCard");
     assertEquals(2, getField("currentCardI"));
 
-    // Test wrapping at end
+    // Test wrapping at end - go from last card to first
     setField("currentCardI", 2);
     callPrivateMethod("goToNextCard");
     assertEquals(0, getField("currentCardI"));
+    
+    // Test additional wrapping sequence
+    callPrivateMethod("goToPreviousCard");
+    assertEquals(2, getField("currentCardI"));
   }
 
   /**
@@ -378,7 +381,7 @@ public class FlashcardControllerTest {
    */
   @SuppressWarnings("unchecked")
   @Test
-  public void testSetDeckWithNullDeck() throws Exception {
+  public void testSetNullDeck() throws Exception {
     controller.setDeck(null);
     
     List<FlashcardDto> deck = (List<FlashcardDto>) getField("deck");
@@ -395,7 +398,7 @@ public class FlashcardControllerTest {
    */
   @SuppressWarnings("unchecked")
   @Test
-  public void testSetDeckWithValidDeck() throws Exception {
+  public void testSetValidDeck() throws Exception {
     FlashcardDeck newDeck = new FlashcardDeck("New Deck");
     newDeck.addFlashcard(new Flashcard("New Q1", "New A1"));
     newDeck.addFlashcard(new Flashcard("New Q2", "New A2"));
@@ -420,7 +423,7 @@ public class FlashcardControllerTest {
    * @throws Exception when updating progress fails
    */
   @Test
-  public void testUpdateProgressWithNullDeck() throws Exception {
+  public void testUpdateProgressNull() throws Exception {
     setField("deck", null);
     setField("currentCardI", 0);
     
@@ -433,7 +436,7 @@ public class FlashcardControllerTest {
    * @throws Exception when updating progress fails
    */
   @Test
-  public void testUpdateProgressWithNegativeCardIndex() throws Exception {
+  public void testUpdateProgressNegative() throws Exception {
     setField("currentCardI", -1);
     controller.updateProgress();
   }
@@ -444,7 +447,7 @@ public class FlashcardControllerTest {
    * @throws Exception when updating progress fails
    */
   @Test
-  public void testUpdateProgressWithValidState() throws Exception {
+  public void testUpdateProgressValid() throws Exception {
     setField("currentCardI", 1);
     assertDoesNotThrow(() -> controller.updateProgress());
   }
@@ -777,49 +780,25 @@ public class FlashcardControllerTest {
   }
 
   /**
-   * Tests navigation methods wrap around correctly.
-   *
-   * @throws Exception when navigating fails
-   */
-  @Test
-  public void testNavigationWrapping() throws Exception {
-    setField("currentCardI", 2);
-    
-    callPrivateMethod("goToNextCard");
-    assertEquals(0, getField("currentCardI"));
-    
-    callPrivateMethod("goToPreviousCard");
-    assertEquals(2, getField("currentCardI"));
-  }
-
-  /**
-   * Tests whenBackButtonIsClicked method with null buttons.
-   *
-   * @throws Exception when clicking back button fails
-   */
-  @Test
-  public void testWhenBackButtonIsClickedWithNullButtons() throws Exception {
-    setField("card", null);
-    setField("nextButton", null);
-    setField("backButton", null);
-    
-    assertDoesNotThrow(() -> controller.whenBackButtonIsClicked());
-  }
-
-  /**
-   * Tests whenBackButtonIsClicked method with real back button.
+   * Tests whenBackButtonIsClicked method with both null and real back button scenarios.
    *
    * @throws Exception when clicking back button fails
    */
   @Test
   public void testWhenBackButtonIsClicked() throws Exception {
+    // Test with null buttons
+    setField("card", null);
+    setField("nextButton", null);
+    setField("backButton", null);
+    assertDoesNotThrow(() -> controller.whenBackButtonIsClicked());
+
+    // Test with real back button
     if (backButton != null) {
       setField("backButton", backButton);
       setField("originalDeck", 
           new FlashcardDeckDto("Test", mapper
               .toDto(new FlashcardDeck("Test"))
               .getDeck()));
-        
       Platform.runLater(() -> {
         assertDoesNotThrow(() -> controller.whenBackButtonIsClicked());
       });

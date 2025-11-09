@@ -100,32 +100,23 @@ public class FlashcardAppTest {
   }
 
   /**
-   * Tests that the main method exists with correct signature.
+   * Tests application requirements: main method and required resources.
    *
    * @throws NoSuchMethodException if main method is not found
    */
   @Test
-  public void testMainMethodExists() throws NoSuchMethodException {
+  public void testAppRequirements() throws NoSuchMethodException {
+    // Test main method exists
     assertNotNull(FlashcardApp.class.getMethod("main", String[].class),
         "Main method should exist");
-  }
-
-  /**
-   * Tests that FXML login resource exists in classpath.
-   */
-  @Test
-  public void testLoginFxmlResourceExists() {
-    URL resourceUrl = FlashcardApp.class.getResource("/ui/FlashcardLogin.fxml");
-    assertNotNull(resourceUrl, "FlashcardLogin.fxml should exist");
-  }
-
-  /**
-   * Tests that CSS stylesheet resource exists in classpath.
-   */
-  @Test
-  public void testLoginCssResourceExists() {
-    URL resourceUrl = FlashcardApp.class.getResource("/ui/FlashcardLogin.css");
-    assertNotNull(resourceUrl, "FlashcardLogin.css should exist");
+    
+    // Test FXML resource exists
+    URL fxmlUrl = FlashcardApp.class.getResource("/ui/FlashcardLogin.fxml");
+    assertNotNull(fxmlUrl, "FlashcardLogin.fxml should exist");
+    
+    // Test CSS resource exists
+    URL cssUrl = FlashcardApp.class.getResource("/ui/FlashcardLogin.css");
+    assertNotNull(cssUrl, "FlashcardLogin.css should exist");
   }
 
   /**

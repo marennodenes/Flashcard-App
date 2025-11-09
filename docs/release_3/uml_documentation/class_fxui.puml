@@ -1,6 +1,7 @@
 @startuml class_fxui
 title FXUI Module - JavaFX User Interface
 
+left to right direction
 
 package ui {
     class ApiClient {
@@ -17,9 +18,11 @@ package ui {
 
     class FlashcardApp {
         + {static} void main(String[] args)
+        + void start(Stage stage)
         # Parent loadLoginScene()
         # URL getLoginStylesheet()
-        + void start(Stage stage)
+        - void preloadFonts()
+        - void loadFont(String path)
     }
 
     class FlashcardController {
@@ -133,7 +136,7 @@ package ui {
         + void refreshDecks()
         + void setCurrentUsername(String username)
         + void whenNewDeckButtonIsClicked()
-        + void whenDeleteDeckButtonIsClicked()
+        + void whenDeleteDeckButtonIsClicked(ActionEvent event)
         + void whenDeckIsClicked(ActionEvent event)
         + void whenLogout(ActionEvent event)
         - void hideAllDeckButtons()
@@ -187,10 +190,24 @@ FlashcardSignUpController --> ApiClient : uses
 ApiClient --> ApiResponse : uses
 ApiClient --> ApiEndpoints : uses
 FlashcardApp --> FlashcardLoginController : starts with
-FlashcardLoginController --> FlashcardMainController : navigates to
-FlashcardLoginController --> FlashcardSignUpController : navigates to
-FlashcardMainController --> FlashcardDeckController : navigates to
-FlashcardDeckController --> FlashcardController : navigates to
-SceneUtils ..> FlashcardApp : used by
+FlashcardLoginController <--> FlashcardMainController : navigates to
+FlashcardLoginController <--> FlashcardSignUpController : navigates to
+FlashcardMainController <--> FlashcardDeckController : navigates to
+FlashcardDeckController <--> FlashcardController : navigates to
+FlashcardController --> FlashcardLoginController : navigates to
+FlashcardDeckController --> FlashcardLoginController : navigates to
+FlashcardSignUpController --> FlashcardMainController : navigates to
+FlashcardApp --> SceneUtils : uses
+FlashcardLoginController --> SceneUtils : uses
+FlashcardSignUpController --> SceneUtils : uses
+FlashcardMainController --> SceneUtils : uses
+FlashcardDeckController --> SceneUtils : uses
+FlashcardController --> SceneUtils : uses
+FlashcardApp --> ApiConstants : uses
+FlashcardLoginController --> ApiConstants : uses
+FlashcardSignUpController --> ApiConstants : uses
+FlashcardMainController --> ApiConstants : uses
+FlashcardDeckController --> ApiConstants : uses
+FlashcardController --> ApiConstants : uses
 
 @enduml

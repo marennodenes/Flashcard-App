@@ -285,7 +285,7 @@ public class FlashcardPersistentTest {
    * 
    */
   @Test
-  public void testUserExistsWithIncompleteData() throws IOException {
+  public void testUserExistsIncompleteData() throws IOException {
     // Test case 1: File exists but username is null
     // Because of @JsonUnwrapped, username and password are at root level, not under "user"
     String testUsername1 = "test_null_username";
@@ -375,7 +375,7 @@ public class FlashcardPersistentTest {
    * 
    */
   @Test
-  public void testReadUserDataInternalWithMalformedJson() throws IOException {
+  public void testReadUserMalformedJson() throws IOException {
     String testUsername = "test_malformed_json";
     
     // Create a file with malformed JSON content
@@ -423,7 +423,7 @@ public class FlashcardPersistentTest {
    * 
    */
   @Test
-  public void testWriteUserDataInternalDirectoryCreationFailure() throws IOException {
+  public void testWriteUserDirFail() throws IOException {
     // Save the original system property
     String originalUserDir = System.getProperty("user.dir");
     
@@ -481,7 +481,7 @@ public class FlashcardPersistentTest {
    * 
    */
   @Test
-  public void testWriteUserDataDuplicateUser() throws IOException {
+  public void testWriteUserDuplicate() throws IOException {
     // Create a user
     String username = "test_duplicate_user";
     User testUser = new User(username, "password123");
@@ -510,7 +510,7 @@ public class FlashcardPersistentTest {
    * 
    */
   @Test
-  public void testWriteUserDataWithExistingDirectory() throws IOException {
+  public void testWriteUserExistingDir() throws IOException {
     String username = "test_existing_dir_user";
     
     // Clean up first in case user exists from previous test run

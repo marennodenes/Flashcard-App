@@ -46,7 +46,7 @@ public class ApiClientTest {
    * and does not throw.
    */
   @Test
-  public void testApiClientConstructor() {
+  public void testConstructor() {
     assertNotNull(new ApiClient());
   }
 
@@ -54,7 +54,7 @@ public class ApiClientTest {
    * Tests conversion of a Java object to JSON and parsing back to an object.
    */
   @Test
-  public void testConvertObjectToJsonAndParseResponse() throws JsonProcessingException {
+  public void testJsonConversionAndParseResponse() throws JsonProcessingException {
     Map<String, String> map = Map.of("key", "value");
     String json = ApiClient.convertObjectToJson(map);
     assertTrue(json.contains("key"));
@@ -148,7 +148,7 @@ public class ApiClientTest {
    */
   @SuppressWarnings("unchecked")
   @Test
-  public void testPerformApiRequestSuccess() throws Exception {
+  public void testApiRequestSuccess() throws Exception {
     String url = "http://localhost";
     String method = "GET";
     String responseJson = "{\"key\":\"value\"}";
@@ -176,7 +176,7 @@ public class ApiClientTest {
    */
   @SuppressWarnings("unchecked")
   @Test
-  public void testPerformApiRequestServerError() throws Exception {
+  public void testApiRequestServerError() throws Exception {
     String url = "http://localhost";
     String method = "GET";
   
@@ -200,7 +200,7 @@ public class ApiClientTest {
    * sendRequest throws an exception.
    */
   @Test
-  public void testPerformApiRequestThrowsOnSendRequestException() {
+  public void testApiRequestSendException() {
     String url = "http://localhost";
     String method = "GET";
 
@@ -220,7 +220,7 @@ public class ApiClientTest {
    * convertObjectToJson throws an exception.
    */
   @Test
-  public void testPerformApiRequestThrowsOnConvertObjectToJsonException() {
+  public void testApiRequestJsonException() {
     String url = "http://localhost";
     String method = "POST";
     Object badObject = new Object() {
@@ -249,7 +249,7 @@ public class ApiClientTest {
    */
   @SuppressWarnings("unchecked")
   @Test
-  public void testPerformApiRequestThrowsOnParseResponseException() throws Exception {
+  public void testApiRequestParseException() throws Exception {
     String url = "http://localhost";
     String method = "GET";
     TypeReference<Map<String, String>> typeRef = new TypeReference<>() {};
@@ -278,7 +278,7 @@ public class ApiClientTest {
    */
   @SuppressWarnings("unchecked")
   @Test
-  public void testPerformApiRequestReturnsNullIfResponseTypeIsNull() throws Exception {
+  public void testApiRequestNullResponseType() throws Exception {
     String url = "http://localhost";
     String method = "GET";
       
@@ -302,7 +302,7 @@ public class ApiClientTest {
    */
   @SuppressWarnings("unchecked")
   @Test
-  public void testPerformApiRequestReturnsNullIfResponseBodyIsNull() throws Exception {
+  public void testApiRequestNullResponseBody() throws Exception {
     String url = "http://localhost";
     String method = "GET";
     TypeReference<Map<String, String>> typeRef = new TypeReference<>() {};
@@ -327,7 +327,7 @@ public class ApiClientTest {
    */
   @SuppressWarnings("unchecked")
   @Test
-  public void testPerformApiRequestReturnsNull() throws Exception {
+  public void testApiRequestEmptyResponse() throws Exception {
     String url = "http://localhost";
     String method = "GET";
     TypeReference<Map<String, String>> typeRef = new TypeReference<>() {};
