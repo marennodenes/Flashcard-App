@@ -110,7 +110,7 @@ To create an executable file that runs locally on your computer:
 
     **Linux**
 
-    Now there has been created a FlashcardsApp.desktop in `fxui`. Open this file (remember to click "Mark Executable"). 
+    Now there has been created a FlashcardsApp.desktop in `fxui`. Open this file (remember to click "Mark Executable").
 
 5. You can now use the application on your computer
 
