@@ -193,7 +193,9 @@ class UserServiceTest {
     //success
     String username = "user";
     String password = "Valid1@Pass";
+    User storedUser = new User(username, password);
     when(persistent.userExists(username)).thenReturn(true);
+    when(persistent.readUserData(username)).thenReturn(storedUser);
 
     assertTrue(userService.logInUser(username, password));
 
@@ -207,7 +209,8 @@ class UserServiceTest {
 
     // invalid password
     when(persistent.userExists("user")).thenReturn(true);
-    assertFalse(userService.logInUser("user", "abc"));
+    when(persistent.readUserData("user")).thenReturn(storedUser);
+    assertFalse(userService.logInUser("user", "Wrong1@Pass"));
   }
 
   
@@ -220,12 +223,23 @@ class UserServiceTest {
    */
   @Test
   public void testValidatePassword() {
+    String username = "user";
+    String password = "Valid1@Pass";
+    User storedUser = new User(username, password);
+    when(persistent.userExists(username)).thenReturn(true);
+    when(persistent.readUserData(username)).thenReturn(storedUser);
+
     // success
-    assertTrue(userService.validatePassword("user", "Valid1@Pass"));
+    assertTrue(userService.validatePassword(username, password));
 
     // empty fields
-    assertFalse(userService.validatePassword("", "Valid1@Pass"));
-    assertFalse(userService.validatePassword("user", ""));
+    assertFalse(userService.validatePassword("", password));
+    assertFalse(userService.validatePassword(username, ""));
+
+    // wrong password
+    when(persistent.userExists(username)).thenReturn(true);
+    when(persistent.readUserData(username)).thenReturn(storedUser);
+    assertFalse(userService.validatePassword(username, "Wrong1@Pass"));
   }
 
 
