@@ -1,4 +1,3 @@
-
 # Flashcards Application
 
 [open in Eclipse Che](https://che.stud.ntnu.no/#https://git.ntnu.no/IT1901-2025-groups/gr2516.git)
@@ -16,45 +15,46 @@ This application uses a **client-server architecture**:
 
 Both components must be running simultaneously for the application to work. The client communicates with the server via HTTP requests to the REST API.
 
+
 ## Quickstart
 
 To quickly test the application:
 
 1. Open the project folder
 
-    ```bash
-    cd flashcards
-    ```
+   ```bash
+   cd flashcards
+   ```
 
 2. Install necessary dependencies while skipping tests
 
-    ```bash
-    mvn clean install -DskipTests
-    ```
+   ```bash
+   mvn clean install -DskipTests
+   ```
 
 3. Open the `server` module in a new terminal
 
-    ```bash
-    cd flashcards/server
-    ```
+   ```bash
+   cd flashcards/server
+   ```
 
 4. Run the backend
 
-    ```bash
-    mvn spring-boot:run
-    ```
+   ```bash
+   mvn spring-boot:run
+   ```
 
 5. While the backend is running, open the `fxui` module in the old terminal
 
-    ```bash
-    cd fxui
-    ```
+   ```bash
+   cd fxui
+   ```
 
 6. Run the app
 
-    ```bash
-    mvn javafx:run
-    ```
+   ```bash
+   mvn javafx:run
+   ```
 
 **Note:** Both the server (step 4) and client (step 6) must be running simultaneously.
 
@@ -66,15 +66,15 @@ To build all modules and run tests:
 
 1. Navigate to the flashcards folder:
 
-    ```bash
-    cd flashcards
-    ```
+   ```bash
+   cd flashcards
+   ```
 
 2. Build all modules:
 
-    ```bash
-    mvn clean install
-    ```
+   ```bash
+   mvn clean install
+   ```
 
 ## Running the application
 
@@ -84,33 +84,33 @@ To create an executable file that runs locally on your computer:
 
 1. If not already done, make sure to build the project
 
-     ```bash
-    mvn clean install
-    ```
+   ```bash
+   mvn clean install
+   ```
 
 2. To be able to use the app, you must run the REST-API `server` in our app
 
-    ```bash
-    cd server
-    mvn spring-boot:run
-    ```
+   ```bash
+   cd server
+   mvn spring-boot:run
+   ```
 
 3. Open a new terminal and the `fxui` module and run this command to run and create a executable application
 
-    ```bash
-    cd flashcards/fxui
-    mvn clean package javafx:jlink jpackage:jpackage
-    ```
+   ```bash
+   cd flashcards/fxui
+   mvn clean package javafx:jlink jpackage:jpackage
+   ```
 
 4. Now you can run the applicication
 
-    **macOS & windows**
+   **macOS & windows**
 
-    Now there has been created a Flashcards-1.0.0.dmg in `fxui/target/dist`. Open this file.
+   Now there has been created a Flashcards-1.0.0.dmg in `fxui/target/dist`. Open this file.
 
-    **Linux**
+   **Linux**
 
-    Now there has been created a FlashcardsApp.desktop in `fxui`. Open this file (remember to click "Mark Executable").
+   Now there has been created a FlashcardsApp.desktop in `fxui`. Open this file (remember to click "Mark Executable").
 
 5. You can now use the application on your computer
 
@@ -121,6 +121,32 @@ To create an executable file that runs locally on your computer:
 ### Method 3: VS Code
 
 Use the configured task "Run JavaFX App" from the VS Code command palette. **Important:** This task only starts the client, you must still run the server separately using `mvn spring-boot:run` in the `flashcards/server` directory.
+
+## User Account Requirements
+
+When creating an account, username and password must meet the following criteria:
+
+### Username Requirements
+
+- Cannot be empty or contain whitespace
+- Must be unique (not already taken by another user)
+- Cannot contain any special characters (only letters and numbers)
+
+### Password Requirements
+
+- **Minimum length**: 8 characters
+- **Uppercase letter**: At least one (A-Z)
+- **Lowercase letter**: At least one (a-z)
+- **Digit**: At least one number (0-9)
+- **Special character**: At least one non-alphanumeric character (e.g., !, @, #, $, %, etc.)
+
+**Example of valid password**: `SecurePass123!`
+
+**Security Features**:
+
+- All passwords are automatically encrypted using SHA-256 with random salt
+- Passwords are never stored in plain text
+- Login attempts validate against encrypted passwords
 
 ## Code structure
 
@@ -150,15 +176,15 @@ This structure helps separate concerns and makes the project easy to navigate.
 
 **Main dashboard:** opens after clicking "Log in" or "Sign in", or when clicking "back" on the deck management page
 
-<img src="./images/app/release_3/flashcardmain_no_decks.png" alt="main empty" width="300">  <img src="./images/app/release_3/flashcardmain_error.png" alt="main error" width="300"><br>
+<img src="./images/app/release_3/flashcardmain_no_decks.png" alt="main empty" width="300"> <img src="./images/app/release_3/flashcardmain_error.png" alt="main error" width="300"><br>
 
 **Deck management:** opens when clicking a deck on the main dashboard, or when clicking "back" on the learning page
 
-<img src="./images/app/release_3/flashcarddeck_create_card.png" alt="create card" width="300">  <img src="./images/app/release_3/flashcarddeck_card_selected.png" alt="card selected" width="300"><br>
+<img src="./images/app/release_3/flashcarddeck_create_card.png" alt="create card" width="300"> <img src="./images/app/release_3/flashcarddeck_card_selected.png" alt="card selected" width="300"><br>
 
 **Learning page:** opens when clicking "Start learning" om the deck management page
 
- <img src="./images/app/release_3/flashcardlearning_question.png" alt="question" width="300"> <img src="./images/app/release_3/flashcardlearning_answer.png" alt="answer" width="300"><br>
+<img src="./images/app/release_3/flashcardlearning_question.png" alt="question" width="300"> <img src="./images/app/release_3/flashcardlearning_answer.png" alt="answer" width="300"><br>
 
 **Server errors:** example of a server error that will appear as a pop up alert
 
@@ -183,9 +209,9 @@ After running `mvn test`, you can generate test coverage reports via JaCoCo:
 
 1. Navigate to a specific module (core, fxui, server, shared, storage)
 
-    ```bash
-    cd XXX
-    ```
+   ```bash
+   cd XXX
+   ```
 
 2. Generate the JaCoCo report by running:
 
@@ -195,9 +221,9 @@ After running `mvn test`, you can generate test coverage reports via JaCoCo:
 
 3. Open the HTML report to show JaCoCo coverage, from the module you ran tests for:
 
-    ```bash
-    open target/site/jacoco/index.html
-    ```
+   ```bash
+   open target/site/jacoco/index.html
+   ```
 
 **Current test coverage:**
 

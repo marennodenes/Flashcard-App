@@ -167,6 +167,8 @@ public class ApiConstantsTest {
     assertEquals("Deck name cannot be empty", ApiConstants.DECK_NAME_EMPTY);
     assertEquals("Flashcard question and answer cannot be empty", 
         ApiConstants.FLASHCARD_QUESTION_ANSWER_EMPTY);
+    assertEquals("Username can only contain\nletters and numbers", 
+        ApiConstants.INVALID_USERNAME);
   }
 
   /**

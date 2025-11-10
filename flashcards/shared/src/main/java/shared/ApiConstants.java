@@ -94,6 +94,8 @@ public class ApiConstants {
   public static final String DECK_NAME_EMPTY = "Deck name cannot be empty";
   public static final String FLASHCARD_QUESTION_ANSWER_EMPTY = 
       "Flashcard question and answer cannot be empty";
+  public static final String INVALID_USERNAME =
+      "Username can only contain\nletters and numbers";
 
   /** System error messages. */
   public static final String SERVER_ERROR = "Server Error";
