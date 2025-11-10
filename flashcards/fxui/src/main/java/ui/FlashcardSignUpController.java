@@ -117,6 +117,12 @@ public class FlashcardSignUpController {
       return false;
     }
 
+    // Check for invalid username characters
+    if (!username.matches("[A-Za-z0-9]+")) {
+      showInlineError(ApiConstants.INVALID_USERNAME);
+      return false;
+    }
+
     // Check if passwords match
     if (!password.equals(confirmedPassword)) {
       showInlineError(ApiConstants.PASSWORDS_NOT_EQUAL);

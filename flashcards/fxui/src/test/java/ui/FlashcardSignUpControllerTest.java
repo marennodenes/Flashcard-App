@@ -1,5 +1,6 @@
 package ui;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -136,6 +137,15 @@ public class FlashcardSignUpControllerTest {
     // Empty confirm password only
     assertFalse((Boolean) method.invoke(controller, "username", "password", ""));
     Thread.sleep(50);
+
+    // Invalid username characters
+    assertFalse((Boolean) method.invoke(controller, "invalid user", "password123", "password123"));
+    Thread.sleep(50);
+
+    var alertField = FlashcardSignUpController.class.getDeclaredField("alertMessage");
+    alertField.setAccessible(true);
+    Text alert = (Text) alertField.get(controller);
+    assertEquals(ApiConstants.INVALID_USERNAME, alert.getText());
   }
 
   /**
