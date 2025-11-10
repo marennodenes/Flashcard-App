@@ -9,6 +9,8 @@
 
 > Provide clear steps on how to reproduce the issue.
 >
+*Example:*
+
 1. Open the [FlashcardPersistent.java](http://FlashcardPersistent.java) file
 2. Find the method creating and saving new files
 3. Rewrite method and ensure filepath is correct
@@ -38,6 +40,8 @@
 
 > Define what should be checked or validated to consider the fix complete.
 >
+*Example:*
+
 - [ ]  Files should be saved with correct name
 - [ ]  New users should get a file saved in the correct folder
 
@@ -45,4 +49,6 @@
 
 > Include any other relevant information such as logs, screenshots, or links to related issues.
 >
+*Example:*
+
 - Related issue: [Link to issue or MR]

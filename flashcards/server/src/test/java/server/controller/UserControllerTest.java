@@ -10,6 +10,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import app.User;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import dto.LoginRequestDto;
+import java.util.Objects;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,7 +40,7 @@ import shared.ApiEndpoints;
  *
  * @author chrsom 
  * @author isamw
- * @author parts of class is generated with the help of claude.ai
+ * @see "docs/release_3/ai_tools.md"
  * @see UserController
  * @see UserService
  */
@@ -112,14 +113,16 @@ public class UserControllerTest {
    *
    * @throws Exception if the MockMvc request fails
    */
-  @SuppressWarnings("null")
   @Test
   public void testCreateUserSuccess() throws Exception {
     when(userService.createUserWithValidation(anyString(), anyString())).thenReturn(testUser);
 
+    String requestBody = objectMapper.writeValueAsString(loginRequest);
+    Objects.requireNonNull(requestBody, "Request body cannot be null");
+
     mockMvc.perform(post(ApiEndpoints.USERS_V1 + ApiEndpoints.USER_REGISTER)
-        .contentType(MediaType.APPLICATION_JSON)
-        .content(objectMapper.writeValueAsString(loginRequest)))
+        .contentType(Objects.requireNonNull(MediaType.APPLICATION_JSON))
+        .content(requestBody))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.success").value(true))
         .andExpect(jsonPath("$.message").value(ApiConstants.USER_CREATED))
@@ -133,15 +136,17 @@ public class UserControllerTest {
    *
    * @throws Exception if the MockMvc request fails
    */
-  @SuppressWarnings("null")
   @Test
   public void testCreateUserInvalidCredentials() throws Exception {
     when(userService.createUserWithValidation(anyString(), anyString()))
         .thenThrow(new IllegalArgumentException(ApiConstants.PASSWORD_TOO_SHORT));
 
+    String requestBody = objectMapper.writeValueAsString(loginRequest);
+    Objects.requireNonNull(requestBody, "Request body cannot be null");
+
     mockMvc.perform(post(ApiEndpoints.USERS_V1 + ApiEndpoints.USER_REGISTER)
-        .contentType(MediaType.APPLICATION_JSON)
-        .content(objectMapper.writeValueAsString(loginRequest)))
+        .contentType(Objects.requireNonNull(MediaType.APPLICATION_JSON))
+        .content(requestBody))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.success").value(false))
         .andExpect(jsonPath("$.message").value(ApiConstants.PASSWORD_TOO_SHORT));
@@ -153,15 +158,17 @@ public class UserControllerTest {
    *
    * @throws Exception if the MockMvc request fails
    */
-  @SuppressWarnings("null")
   @Test
   public void testCreateUserUserAlreadyExists() throws Exception {
     when(userService.createUserWithValidation(anyString(), anyString()))
         .thenThrow(new IllegalArgumentException(ApiConstants.USER_ALREADY_EXISTS));
 
+    String requestBody = objectMapper.writeValueAsString(loginRequest);
+    Objects.requireNonNull(requestBody, "Request body cannot be null");
+
     mockMvc.perform(post(ApiEndpoints.USERS_V1 + ApiEndpoints.USER_REGISTER)
-        .contentType(MediaType.APPLICATION_JSON)
-        .content(objectMapper.writeValueAsString(loginRequest)))
+        .contentType(Objects.requireNonNull(MediaType.APPLICATION_JSON))
+        .content(requestBody))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.success").value(false))
         .andExpect(jsonPath("$.message").value(ApiConstants.USER_ALREADY_EXISTS));
@@ -174,15 +181,17 @@ public class UserControllerTest {
    *
    * @throws Exception if the MockMvc request fails
    */
-  @SuppressWarnings("null")
   @Test
   public void testLogInUserSuccess() throws Exception {
     when(userService.logInUser("testUser", "TestPassword123!")).thenReturn(true);
     when(userService.getUser("testUser")).thenReturn(testUser);
 
+    String requestBody = objectMapper.writeValueAsString(loginRequest);
+    Objects.requireNonNull(requestBody, "Request body cannot be null");
+
     mockMvc.perform(post(ApiEndpoints.USERS_V1 + ApiEndpoints.USER_LOGIN)
-        .contentType(MediaType.APPLICATION_JSON)
-        .content(objectMapper.writeValueAsString(loginRequest)))
+        .contentType(Objects.requireNonNull(MediaType.APPLICATION_JSON))
+        .content(requestBody))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.success").value(true))
         .andExpect(jsonPath("$.message").value(ApiConstants.LOGIN_SUCCESS))
@@ -196,7 +205,6 @@ public class UserControllerTest {
    *
    * @throws Exception if the MockMvc request fails
    */
-  @SuppressWarnings("null")
   @Test
   public void testLogInUserWrongPassword() throws Exception {
     when(userService.logInUser("testUser", "WrongPassword"))
@@ -204,9 +212,12 @@ public class UserControllerTest {
 
     LoginRequestDto wrongRequest = new LoginRequestDto("testUser", "WrongPassword");
 
+    String requestBody = objectMapper.writeValueAsString(wrongRequest);
+    Objects.requireNonNull(requestBody, "Request body cannot be null");
+
     mockMvc.perform(post(ApiEndpoints.USERS_V1 + ApiEndpoints.USER_LOGIN)
-        .contentType(MediaType.APPLICATION_JSON)
-        .content(objectMapper.writeValueAsString(wrongRequest)))
+        .contentType(Objects.requireNonNull(MediaType.APPLICATION_JSON))
+        .content(requestBody))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.success").value(false))
         .andExpect(jsonPath("$.message").value(ApiConstants.LOGIN_OPERATION_FAILED));
@@ -218,7 +229,6 @@ public class UserControllerTest {
    *
    * @throws Exception if the MockMvc request fails
    */
-  @SuppressWarnings("null")
   @Test
   public void testLogInUserUserNotFound() throws Exception {
     when(userService.logInUser("ghost", "anyPassword")).thenReturn(false);
@@ -226,9 +236,12 @@ public class UserControllerTest {
 
     LoginRequestDto request = new LoginRequestDto("ghost", "anyPassword");
 
+    String requestBody = objectMapper.writeValueAsString(request);
+    Objects.requireNonNull(requestBody, "Request body cannot be null");
+
     mockMvc.perform(post(ApiEndpoints.USERS_V1 + ApiEndpoints.USER_LOGIN)
-        .contentType(MediaType.APPLICATION_JSON)
-        .content(objectMapper.writeValueAsString(request)))
+        .contentType(Objects.requireNonNull(MediaType.APPLICATION_JSON))
+        .content(requestBody))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.success").value(true))
         .andExpect(jsonPath("$.data.success").value(false))
@@ -242,7 +255,6 @@ public class UserControllerTest {
    * @throws Exception if the MockMvc request fails
    * 
    */
-  @SuppressWarnings("null")
   @Test
   public void testLogInUserEmptyUsername() throws Exception {
     when(userService.logInUser("", "TestPassword123!"))
@@ -250,9 +262,12 @@ public class UserControllerTest {
 
     LoginRequestDto request = new LoginRequestDto("", "TestPassword123!");
 
+    String requestBody = objectMapper.writeValueAsString(request);
+    Objects.requireNonNull(requestBody, "Request body cannot be null");
+
     mockMvc.perform(post(ApiEndpoints.USERS_V1 + ApiEndpoints.USER_LOGIN)
-      .contentType(MediaType.APPLICATION_JSON)
-      .content(objectMapper.writeValueAsString(request)))
+      .contentType(Objects.requireNonNull(MediaType.APPLICATION_JSON))
+      .content(requestBody))
           .andExpect(status().isOk())
           .andExpect(jsonPath("$.success").value(false))
           .andExpect(jsonPath("$.message").value(ApiConstants.LOGIN_OPERATION_FAILED));
@@ -264,7 +279,6 @@ public class UserControllerTest {
    *
    * @throws Exception if the MockMvc request fails
    */
-  @SuppressWarnings("null")
   @Test
   public void testLogInUserEmptyPassword() throws Exception {
     when(userService.logInUser("testUser", ""))
@@ -272,9 +286,12 @@ public class UserControllerTest {
 
     LoginRequestDto request = new LoginRequestDto("testUser", "");
 
+    String requestBody = objectMapper.writeValueAsString(request);
+    Objects.requireNonNull(requestBody, "Request body cannot be null");
+
     mockMvc.perform(post(ApiEndpoints.USERS_V1 + ApiEndpoints.USER_LOGIN)
-      .contentType(MediaType.APPLICATION_JSON)
-      .content(objectMapper.writeValueAsString(request)))
+      .contentType(Objects.requireNonNull(MediaType.APPLICATION_JSON))
+      .content(requestBody))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.success").value(false))
         .andExpect(jsonPath("$.message").value(ApiConstants.LOGIN_OPERATION_FAILED));
@@ -286,7 +303,6 @@ public class UserControllerTest {
    *
    * @throws Exception if the MockMvc request fails
    */
-  @SuppressWarnings("null")
   @Test
   public void testLogInUserException() throws Exception {
     when(userService.logInUser(anyString(), anyString()))
@@ -294,9 +310,12 @@ public class UserControllerTest {
 
     LoginRequestDto request = new LoginRequestDto("testUser", "TestPassword123!");
 
+    String requestBody = objectMapper.writeValueAsString(request);
+    Objects.requireNonNull(requestBody, "Request body cannot be null");
+
     mockMvc.perform(post(ApiEndpoints.USERS_V1 + ApiEndpoints.USER_LOGIN)
-      .contentType(MediaType.APPLICATION_JSON)
-      .content(objectMapper.writeValueAsString(request)))
+      .contentType(Objects.requireNonNull(MediaType.APPLICATION_JSON))
+      .content(requestBody))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.success").value(false))
         .andExpect(jsonPath("$.message").value(ApiConstants.LOGIN_OPERATION_FAILED));

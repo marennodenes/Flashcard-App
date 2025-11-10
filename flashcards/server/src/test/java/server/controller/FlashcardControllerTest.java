@@ -42,7 +42,7 @@ import shared.ApiEndpoints;
  *
  * @author chrsom
  * @author isamw
- * @author parts of class is generated with the help of claude.ai
+ * @see "docs/release_3/ai_tools.md"
  * @see FlashcardController
  * @see FlashcardService
  */

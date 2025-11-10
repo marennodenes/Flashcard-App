@@ -1,4 +1,4 @@
-@startuml
+@startuml architecture
 skinparam componentStyle rectangle
 
 actor "App User" as AppUser
@@ -34,7 +34,7 @@ node "Storage Module" as storage {
 
 AppUser --> fxui : Interacts with GUI
 fxui --> shared : Uses DTOs and API Classes
-shared --> server : Sends API Requests
+shared --> server : Sends API Requests (Via API Client)
 shared --> core : Uses domain models in mappers
 server --> core : Business logic processing
 server --> storage : Data persistence and retrieval

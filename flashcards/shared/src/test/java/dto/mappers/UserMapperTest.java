@@ -26,6 +26,8 @@ import org.junit.jupiter.api.Test;
  *
  * @author marennod
  * @author ailinat
+ * 
+ * @see "docs/release_3/ai_tools.md"
  */
 public class UserMapperTest {
 
@@ -137,6 +139,8 @@ public class UserMapperTest {
 
   /**
    * Tests toDto(UserData) with null input throws NullPointerException.
+   *
+   * @throws NullPointerException when input is null.
    */
   @Test
   public void testToDtoUserDataNullInput() {
@@ -146,6 +150,8 @@ public class UserMapperTest {
 
   /**
    * Tests fromDto(UserDataDto) with null input throws NullPointerException.
+   *
+   * @throws NullPointerException when input is null.
    */
   @Test
   public void testFromDtoNullInput() {
@@ -155,6 +161,8 @@ public class UserMapperTest {
 
   /**
    * Tests fromLoginRequestDto with null input throws NullPointerException.
+   *
+   * @throws NullPointerException when input is null.
    */
   @Test
   public void testFromLoginRequestDtoNullInput() {

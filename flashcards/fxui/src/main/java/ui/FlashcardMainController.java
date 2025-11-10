@@ -1,19 +1,13 @@
 package ui;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import dto.FlashcardDeckDto;
+import dto.FlashcardDeckManagerDto;
 import java.io.IOException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
-
-import com.fasterxml.jackson.core.type.TypeReference;
-
-import dto.FlashcardDeckDto;
-import dto.FlashcardDeckManagerDto;
-import shared.ApiConstants;
-import shared.ApiEndpoints;
-import shared.ApiResponse;
-
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -23,19 +17,23 @@ import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
-
+import shared.ApiConstants;
+import shared.ApiEndpoints;
+import shared.ApiResponse;
 /**
  * Controller for the main flashcard deck management interface. Handles
  * displaying, creating, editing, and deleting flashcard decks. Provides
  * navigation to deck editing and learning interfaces. Integrates with REST API
  * for persistent data storage.
- * 
+ *
  * @author chrsom
  * @author marennod
  * @author marieroe
- * 
  */
+
 public class FlashcardMainController {
+
+  // FXML UI components
   @FXML private Button deck1;
   @FXML private Button deck2;
   @FXML private Button deck3;
@@ -84,8 +82,8 @@ public class FlashcardMainController {
   public void initialize() {
     // Initialize button arrays for easier iteration
     deckButtons = new Button[] { deck1, deck2, deck3, deck4, deck5, deck6, deck7, deck8 };
-    deleteButtons = new Button[] { deleteDeck1, deleteDeck2, deleteDeck3, deleteDeck4, deleteDeck5, deleteDeck6,
-        deleteDeck7, deleteDeck8 };
+    deleteButtons = new Button[] { deleteDeck1, deleteDeck2, deleteDeck3, deleteDeck4, deleteDeck5,
+        deleteDeck6, deleteDeck7, deleteDeck8 };
 
     hideAllDeckButtons();
     // Don't load user data here - wait for setCurrentUsername to be called
@@ -132,7 +130,9 @@ public class FlashcardMainController {
       if (i < decks.size()) {
         FlashcardDeckDto deck = decks.get(i);
         if (deckButtons[i] != null) {
-          deckButtons[i].setText(deck.getDeckName());
+          String decodedName = java.net.URLDecoder.decode(deck.getDeckName(), 
+              java.nio.charset.StandardCharsets.UTF_8);
+          deckButtons[i].setText(decodedName);
           deckButtons[i].setDisable(false);
           deckButtons[i].setVisible(true);
           // Store deck reference in button for event handling
@@ -170,9 +170,8 @@ public class FlashcardMainController {
   /**
    * Sets the current username and loads their data. This method is called from
    * the login controller to set the logged-in user.
-   * 
+   *
    * @param username the username to set as current user
-   * 
    */
   public void setCurrentUsername(String username) {
     if (username != null && !username.trim().isEmpty()) {
@@ -186,9 +185,8 @@ public class FlashcardMainController {
    * Creates a new deck with the entered name. Reads the deck name from the input
    * field, creates a new deck via REST API, reloads the deck list, and updates
    * the UI. Shows an error message if deck creation fails.
-   * 
+   *
    * @param event the action event from clicking the new deck button
-   * 
    */
   @FXML
   public void whenNewDeckButtonIsClicked(ActionEvent event) {
@@ -214,7 +212,8 @@ public class FlashcardMainController {
       // Send empty JSON object as body since ApiClient requires it for POST requests
       // Server doesn't use the body (uses URL parameters), but ApiClient validation
       // requires it
-      ApiResponse<FlashcardDeckDto> result = ApiClient.performApiRequest(url, "POST", "{}", // Empty JSON object string
+      ApiResponse<FlashcardDeckDto> result = ApiClient.performApiRequest(url,
+          "POST", "{}", // Empty JSON object string
           new TypeReference<ApiResponse<FlashcardDeckDto>>() {
           });
 
@@ -226,22 +225,20 @@ public class FlashcardMainController {
         // Update UI to show new deck
         updateUi();
       } else {
-        String errorMsg = result != null ? result.getMessage() : ApiConstants.NO_RESPONSE_FROM_SERVER;
+        String errorMsg = result != null 
+            ? result.getMessage() : ApiConstants.NO_RESPONSE_FROM_SERVER;
         
-        // Check if it's a validation error that should be shown as inline text (not popup)
-        if (errorMsg != null && (errorMsg.equals(ApiConstants.DECK_ALREADY_EXISTS) || 
-            errorMsg.equals(ApiConstants.DECK_LIMIT_REACHED) || 
-            errorMsg.equals(ApiConstants.DECK_NAME_EMPTY))) {
-          // Validation error - show as inline text only, no popup
+        if (errorMsg != null && (errorMsg.equals(ApiConstants.DECK_ALREADY_EXISTS) 
+            || errorMsg.equals(ApiConstants.DECK_LIMIT_REACHED) 
+            || errorMsg.equals(ApiConstants.DECK_NAME_EMPTY))) {
           showInlineError(errorMsg);
         } else {
-          // Server error - show popup and log to terminal
           System.err.println(ApiConstants.SERVER_ERROR + ": " + errorMsg);
           ApiClient.showAlert(ApiConstants.SERVER_ERROR, ApiConstants.DECK_FAILED_TO_CREATE);
         }
       }
     } catch (RuntimeException e) {
-      // Network/API error - show popup and log to terminal
+      // Network/API error, show popup and log to terminal
       String errorMsg = e.getMessage();
       if (e.getCause() != null) {
         errorMsg = e.getCause().getMessage();
@@ -259,9 +256,8 @@ public class FlashcardMainController {
    * Deletes the selected deck. Retrieves the deck from the clicked delete
    * button's user data, deletes it via REST API, reloads the deck list, and
    * refreshes the UI.
-   * 
+   *
    * @param event the action event from clicking a delete button
-   * 
    */
   @FXML
   public void whenDeleteDeckButtonIsClicked(ActionEvent event) {
@@ -285,7 +281,8 @@ public class FlashcardMainController {
         loadUserData();
         updateUi();
       } else {
-        String errorMsg = result != null ? result.getMessage() : ApiConstants.NO_RESPONSE_FROM_SERVER;
+        String errorMsg = result != null 
+            ? result.getMessage() : ApiConstants.NO_RESPONSE_FROM_SERVER;
         // Server error - show popup and log to terminal
         System.err.println(ApiConstants.SERVER_ERROR + ": " + errorMsg);
         ApiClient.showAlert(ApiConstants.SERVER_ERROR, ApiConstants.DECK_FAILED_TO_DELETE);
@@ -302,12 +299,11 @@ public class FlashcardMainController {
    * selected deck from the button's user data, loads the FlashcardListUI, passes
    * the current username and selected deck DTO to the controller, and switches
    * scenes.
-   * 
+   *
    * @param event the action event from clicking a deck button
-   * 
    */
   @FXML
-  public void whenADeckIsClicked(ActionEvent event) {
+  public void whenDeckIsClicked(ActionEvent event) {
     try {
       Button clickedButton = (Button) event.getSource();
       FlashcardDeckDto selectedDeck = (FlashcardDeckDto) clickedButton.getUserData();
@@ -336,9 +332,8 @@ public class FlashcardMainController {
   /**
    * Handles log out button click event. Loads the login screen, applies the
    * appropriate CSS styling, and switches to the login scene.
-   * 
+   *
    * @param event the action event from clicking the log out button
-   * 
    */
   @FXML
   public void whenLogOut(ActionEvent event) {
@@ -364,10 +359,10 @@ public class FlashcardMainController {
   /**
    * Shows an inline error message without popup.
    * Used for validation errors that should only appear as text.
-   * Hides and disables all deck and delete byttons. Used to reset the UI state before showing onlu the relevant buttons
-   * 
+   * Hides and disables all deck and delete buttons. 
+   * Used to reset the UI state before showing only the relevant buttons
+   *
    * @param message the error message to display inline
-   * 
    */
   private void hideAllDeckButtons() {
     for (Button b : deckButtons) {
@@ -408,10 +403,9 @@ public class FlashcardMainController {
   }
   
   /**
-   * Private method to show error messages on the UI
-   * 
+   * Private method to show error messages on the UI.
+   *
    * @param message the error message to show
-   * 
    */
   private void showInlineError(String message) {
     error = message;

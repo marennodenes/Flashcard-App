@@ -1,18 +1,15 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+<?xml version="1.0"?>
+<!-- JaCoCo configuration and multi-module setup assisted by Claude Sonnet, see "docs/release_3/ai_tools.md" -->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
-
   <parent>
     <groupId>it1901</groupId>
     <artifactId>flashcards</artifactId>
     <version>0.0.1-SNAPSHOT</version>
   </parent>
-
   <artifactId>server</artifactId>
   <name>server</name>
   <packaging>jar</packaging>
-
   <dependencies>
     <!-- Internal dependencies -->
     <dependency>
@@ -20,26 +17,22 @@
       <artifactId>core</artifactId>
       <version>${project.version}</version>
     </dependency>
-    
     <dependency>
       <groupId>it1901</groupId>
       <artifactId>storage</artifactId>
       <version>${project.version}</version>
     </dependency>
-
     <!-- Shared DTOs and utilities -->
     <dependency>
       <groupId>it1901</groupId>
       <artifactId>shared</artifactId>
       <version>${project.version}</version>
     </dependency>
-
     <!-- Spring Boot Web -->
     <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-web</artifactId>
     </dependency>
-
     <!-- Spring Boot DevTools (optional, for development) -->
     <dependency>
       <groupId>org.springframework.boot</groupId>
@@ -47,26 +40,13 @@
       <scope>runtime</scope>
       <optional>true</optional>
     </dependency>
-
     <!-- Test dependencies -->
     <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-test</artifactId>
       <scope>test</scope>
     </dependency>
-    
-    <dependency>
-      <groupId>org.junit.jupiter</groupId>
-      <artifactId>junit-jupiter-api</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.junit.jupiter</groupId>
-      <artifactId>junit-jupiter-engine</artifactId>
-      <scope>test</scope>
-    </dependency>
   </dependencies>
-
   <build>
     <plugins>
       <!-- Spring Boot Maven Plugin -->
@@ -77,7 +57,6 @@
           <mainClass>server.ServerApplication</mainClass>
         </configuration>
       </plugin>
-
       <!-- Maven Compiler Plugin -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
@@ -91,24 +70,20 @@
           </compilerArgs>
         </configuration>
       </plugin>
-
       <!-- Test Runner -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
       </plugin>
-
       <!-- Code Quality Tools -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-checkstyle-plugin</artifactId>
       </plugin>
-      
       <plugin>
         <groupId>com.github.spotbugs</groupId>
         <artifactId>spotbugs-maven-plugin</artifactId>
       </plugin>
-      
       <plugin>
         <groupId>org.jacoco</groupId>
         <artifactId>jacoco-maven-plugin</artifactId>

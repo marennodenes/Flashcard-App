@@ -9,7 +9,7 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane fx:id="anchorPane" prefHeight="264.0" prefWidth="416.0" stylesheets="@FlashcardLogin.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ui.FlashcardLoginController">
+<AnchorPane fx:id="anchorPane" prefHeight="264.0" prefWidth="416.0" stylesheets="@FlashcardLogin.css" xmlns="http://javafx.com/javafx/21.0.0" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ui.FlashcardLoginController">
    <children>
       <Text layoutX="195.0" layoutY="79.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="textForTitles" />
       <ImageView fitHeight="59.0" fitWidth="64.0" layoutX="16.0" layoutY="15.0" pickOnBounds="true" preserveRatio="true">
@@ -36,7 +36,7 @@
       <Text layoutX="33.0" layoutY="192.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="nameTag" text="Password: " />
       <Button fx:id="loginButton" layoutX="304.0" layoutY="138.0" mnemonicParsing="false" onAction="#whenLoginButtonClicked" prefHeight="42.0" prefWidth="82.0" text="Log in" />
       <Text fx:id="alertMessage" layoutX="218.0" layoutY="58.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="alerts" text="Alert" />
-      <PasswordField fx:id="passwordField" layoutX="113.0" layoutY="170.0" prefHeight="31.0" prefWidth="177.0" />
+      <PasswordField fx:id="passwordField" styleClass="password-field" layoutX="113.0" layoutY="170.0" prefHeight="31.0" prefWidth="177.0" />
       <Button fx:id="signUpButton" layoutX="205.0" layoutY="211.0" mnemonicParsing="false" onAction="#whenSignUpButtonClicked" prefHeight="18.0" prefWidth="50.0" text="Sign up" />
       <Text fx:id="newUserText" layoutX="136.0" layoutY="227.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="textForTitles" text="New user: " wrappingWidth="71.19069168032115" />
       <Text fx:id="ex" layoutX="205.0" layoutY="60.0" strokeType="OUTSIDE" strokeWidth="0.0" text="!" />

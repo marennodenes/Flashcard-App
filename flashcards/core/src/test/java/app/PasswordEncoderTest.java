@@ -12,6 +12,7 @@ import org.junit.jupiter.api.Test;
  *
  * @author isamw
  * @author chrsom
+ * @see "docs/release_3/ai_tools.md"
  * @see PasswordEncoder
  */
 public class PasswordEncoderTest {

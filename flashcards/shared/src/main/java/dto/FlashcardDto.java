@@ -50,9 +50,7 @@ public class FlashcardDto {
    * Constructs a new FlashcardDto with the specified question, answer, and number.
    *
    * @param question the question on the flashcard; must not be null or blank
-   * 
    * @param answer the answer on the flashcard; must not be null or blank
-   *
    * @param number the unique number of the flashcard; must be at least 1
    */
   public FlashcardDto(String question, String answer, int number) {

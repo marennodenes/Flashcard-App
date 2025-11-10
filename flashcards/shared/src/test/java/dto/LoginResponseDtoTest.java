@@ -12,7 +12,6 @@ import org.junit.jupiter.api.Test;
  * This test class verifies the correct construction and behavior of LoginResponseDto,
  * including success status, message, and user data handling.
  *
- * @author parts of this code is generated with claude.ai
  * @author marennod
  * @author ailinat
  */

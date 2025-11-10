@@ -5,6 +5,7 @@ import dto.LoginRequestDto;
 import dto.LoginResponseDto;
 import dto.UserDataDto;
 import dto.mappers.UserMapper;
+import java.util.Objects;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -23,9 +24,8 @@ import shared.ApiResponse;
  * It interacts with the UserService to perform business logic 
  * and data operations.
  *
- * @author parts of class is generated with the help of claude.ai
- * @author @ailinat
- * @author @sofietw
+ * @author ailinat
+ * @author sofietw
  * @see server.service.UserService
  */
 @RestController
@@ -101,6 +101,7 @@ public class UserController {
   @PostMapping (ApiEndpoints.USER_REGISTER)
   public ApiResponse<UserDataDto> createUser(@RequestBody LoginRequestDto request) {
     try {
+      Objects.requireNonNull(request, "Login request cannot be null");
       User user = userService.createUserWithValidation(request.getUsername(), 
           request.getPassword());
       UserDataDto dto = mapper.toDto(user);
@@ -121,10 +122,12 @@ public class UserController {
    * @param request the login request containing username and password
    * @return {@link ApiResponse} with 
    *            login result and user data
+   * @see "docs/release_3/ai_tools.md"
    */
   @PostMapping (ApiEndpoints.USER_LOGIN)
   public ApiResponse<LoginResponseDto> logInUser(@RequestBody LoginRequestDto request) { 
     try {
+      Objects.requireNonNull(request, "Login request cannot be null");
       Boolean login = userService.logInUser(request.getUsername(), request.getPassword());
       
       if (login) {

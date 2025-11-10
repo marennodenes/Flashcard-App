@@ -81,9 +81,8 @@ public class UserService {
    * @param password the password for the new user
    * @return the newly created User object
    * @throws IOException if an error occurs while writing user data
-   * @throws IllegalArgumentException if the username or password is empty
-   * @throws IllegalArgumentException if the user already exists
-   * @throws IllegalArgumentException if the password is invalid
+   * @throws IllegalArgumentException if the username or password is empty,
+   *     user already exists, or password is invalid
    */
   public User createUser(String username, String password) throws IOException { 
     LoginValidator validator = new LoginValidator(persistent);

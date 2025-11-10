@@ -1,130 +1,128 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- UI module configuration and JaCoCo setup assisted by Claude Sonnet -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" 
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 
-         http://maven.apache.org/maven-v4_0_0.xsd">
-    <modelVersion>4.0.0</modelVersion>
-    
-    <!-- Parent reference -->
-    <parent>
-        <groupId>it1901</groupId>
-        <artifactId>flashcards</artifactId>
-        <version>0.0.1-SNAPSHOT</version>
-    </parent>
-    
-    <artifactId>fxui</artifactId>
-    <packaging>jar</packaging>
-    
-    <dependencies>
-        <!-- Dependency on the shared module -->
-        <dependency>
-            <groupId>it1901</groupId>
-            <artifactId>shared</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        
-        <!-- JavaFX dependencies -->
-        <dependency>
-            <groupId>org.openjfx</groupId>
-            <artifactId>javafx-controls</artifactId>
-            <version>21</version>
-        </dependency>
-        <dependency>
-            <groupId>org.openjfx</groupId>
-            <artifactId>javafx-fxml</artifactId>
-            <version>21</version>
-        </dependency>
-
-        <!-- Jackson for JSON processing - All components needed -->
-        <dependency>
-            <groupId>com.fasterxml.jackson.core</groupId>
-            <artifactId>jackson-core</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.fasterxml.jackson.core</groupId>
-            <artifactId>jackson-databind</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.fasterxml.jackson.core</groupId>
-            <artifactId>jackson-annotations</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.fasterxml.jackson.datatype</groupId>
-            <artifactId>jackson-datatype-jsr310</artifactId>
-        </dependency>
-
-        <!-- Testing dependencies -->
-        <dependency>
-            <groupId>org.junit.jupiter</groupId>
-            <artifactId>junit-jupiter-api</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.junit.jupiter</groupId>
-            <artifactId>junit-jupiter-engine</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.junit.jupiter</groupId>
-            <artifactId>junit-jupiter-params</artifactId>
-            <scope>test</scope>
-        </dependency>
-        
-        <!-- TestFX for JavaFX UI testing -->
-        <dependency>
-            <groupId>org.testfx</groupId>
-            <artifactId>testfx-core</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.testfx</groupId>
-            <artifactId>testfx-junit5</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.hamcrest</groupId>
-            <artifactId>hamcrest</artifactId>
-            <scope>test</scope>
-        </dependency>
-        
-        <!-- Monocle for headless JavaFX testing -->
-        <dependency>
-            <groupId>org.testfx</groupId>
-            <artifactId>openjfx-monocle</artifactId>
-            <version>jdk-12.0.1+2</version>
-            <scope>test</scope>
-        </dependency>
-
-        <!-- Mockito for testing (version managed by parent) -->
+<!-- JaCoCo configuration and multi-module setup assisted by Claude Sonnet, see "docs/release_3/ai_tools.md" -->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0           http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <!-- Parent reference -->
+  <parent>
+    <groupId>it1901</groupId>
+    <artifactId>flashcards</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+  </parent>
+  <artifactId>fxui</artifactId>
+  <packaging>jar</packaging>
+  <dependencies>
+    <!-- Dependency on the shared module -->
     <dependency>
-        <groupId>org.mockito</groupId>
-        <artifactId>mockito-core</artifactId>
-        <scope>test</scope>
+      <groupId>it1901</groupId>
+      <artifactId>shared</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <!-- JavaFX dependencies -->
+    <dependency>
+      <groupId>org.openjfx</groupId>
+      <artifactId>javafx-controls</artifactId>
+      <version>21</version>
     </dependency>
     <dependency>
-        <groupId>org.mockito</groupId>
-        <artifactId>mockito-inline</artifactId>
-        <scope>test</scope>
+      <groupId>org.openjfx</groupId>
+      <artifactId>javafx-fxml</artifactId>
+      <version>21</version>
+    </dependency>
+    <!-- Jackson for JSON processing - All components needed -->
+    <dependency>
+      <groupId>com.fasterxml.jackson.core</groupId>
+      <artifactId>jackson-core</artifactId>
     </dependency>
     <dependency>
-        <groupId>org.mockito</groupId>
-        <artifactId>mockito-junit-jupiter</artifactId>
-        <scope>test</scope>
+      <groupId>com.fasterxml.jackson.core</groupId>
+      <artifactId>jackson-databind</artifactId>
     </dependency>
-    </dependencies>
-
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-surefire-plugin</artifactId>
-                <configuration>
-                    <argLine>
+    <dependency>
+      <groupId>com.fasterxml.jackson.core</groupId>
+      <artifactId>jackson-annotations</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.fasterxml.jackson.datatype</groupId>
+      <artifactId>jackson-datatype-jsr310</artifactId>
+    </dependency>
+    <!-- Testing dependencies -->
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter-api</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter-engine</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter-params</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <!-- TestFX for JavaFX UI testing -->
+    <dependency>
+      <groupId>org.testfx</groupId>
+      <artifactId>testfx-core</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.testfx</groupId>
+      <artifactId>testfx-junit5</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.hamcrest</groupId>
+      <artifactId>hamcrest</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <!-- Monocle for headless JavaFX testing -->
+    <dependency>
+      <groupId>org.testfx</groupId>
+      <artifactId>openjfx-monocle</artifactId>
+      <version>jdk-12.0.1+2</version>
+      <scope>test</scope>
+    </dependency>
+    <!-- Mockito for testing (version managed by parent) -->
+    <dependency>
+      <groupId>org.mockito</groupId>
+      <artifactId>mockito-core</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.mockito</groupId>
+      <artifactId>mockito-inline</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.mockito</groupId>
+      <artifactId>mockito-junit-jupiter</artifactId>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-resources-plugin</artifactId>
+        <version>3.3.1</version>
+        <executions>
+          <execution>
+            <id>default-testResources</id>
+            <phase>none</phase>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <configuration>
+          <argLine>
                         @{argLine}
                         -Djava.awt.headless=true
                         -Dtestfx.robot=glass
@@ -136,218 +134,207 @@
                         -Dprism.verbose=false
                         -Djavafx.animation.framerate=1
                         -Dtestfx.setup.timeout=60000
-                        --add-opens javafx.graphics/com.sun.javafx.application=ALL-UNNAMED
-                        --add-opens javafx.graphics/com.sun.glass.ui=ALL-UNNAMED
-                        --add-opens javafx.graphics/com.sun.glass.ui.monocle=ALL-UNNAMED
-                        --add-exports javafx.graphics/com.sun.glass.ui=ALL-UNNAMED
-                        --add-exports javafx.graphics/com.sun.glass.ui.monocle=ALL-UNNAMED
+                    -XX:+EnableDynamicAgentLoading
+                    --add-opens javafx.graphics/com.sun.javafx.application=ALL-UNNAMED
+                    --add-opens javafx.graphics/com.sun.glass.ui=ALL-UNNAMED
+                    --add-exports javafx.graphics/com.sun.glass.ui=ALL-UNNAMED
                     </argLine>
-                    <runOrder>alphabetical</runOrder>
-                    <forkCount>1</forkCount>
-                    <reuseForks>false</reuseForks>
-                    <trimStackTrace>false</trimStackTrace>
-                </configuration>
-            </plugin>
-            
-            
-            <!-- JavaFX Maven plugin for running the application -->
-            <plugin>
-                <groupId>org.openjfx</groupId>
-                <artifactId>javafx-maven-plugin</artifactId>
+          <runOrder>alphabetical</runOrder>
+          <forkCount>1</forkCount>
+          <reuseForks>false</reuseForks>
+          <trimStackTrace>false</trimStackTrace>
+        </configuration>
+      </plugin>
+      <!-- JavaFX Maven plugin for running the application -->
+      <plugin>
+        <groupId>org.openjfx</groupId>
+        <artifactId>javafx-maven-plugin</artifactId>
+        <configuration>
+          <mainClass>flashcards.fxui/ui.FlashcardApp</mainClass>
+          <compress>2</compress>
+          <noHeaderFiles>true</noHeaderFiles>
+          <noManPages>true</noManPages>
+          <launcher>flashcards</launcher>
+          <jlinkImageName>flashcards</jlinkImageName>
+          <jlinkZipName>flashcards</jlinkZipName>
+        </configuration>
+      </plugin>
+      <!-- JPackage plugin for native installer -->
+      <plugin>
+        <groupId>org.panteleyev</groupId>
+        <artifactId>jpackage-maven-plugin</artifactId>
+        <version>1.6.5</version>
+        <configuration>
+          <name>${app.name}</name>
+          <appVersion>${app.version}</appVersion>
+          <vendor>${app.vendor}</vendor>
+          <description>${app.description}</description>
+          <destination>${project.build.directory}/dist</destination>
+          <module>flashcards.fxui/ui.FlashcardApp</module>
+          <runtimeImage>target/flashcards</runtimeImage>
+          <!-- Icon will be set platform-specifically in profiles -->
+          <javaOptions>
+            <option>-Dfile.encoding=UTF-8</option>
+          </javaOptions>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-checkstyle-plugin</artifactId>
+      </plugin>
+      <plugin>
+        <groupId>com.github.spotbugs</groupId>
+        <artifactId>spotbugs-maven-plugin</artifactId>
+      </plugin>
+      <plugin>
+        <groupId>org.jacoco</groupId>
+        <artifactId>jacoco-maven-plugin</artifactId>
+      </plugin>
+    </plugins>
+  </build>
+  <profiles>
+    <!-- Packaging profile for creating native installers -->
+    <profile>
+      <id>package-app</id>
+      <build>
+        <plugins>
+          <!-- Copy dependencies to lib folder -->
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-dependency-plugin</artifactId>
+            <version>3.8.1</version>
+            <executions>
+              <execution>
+                <id>copy-dependencies</id>
+                <phase>package</phase>
+                <goals>
+                  <goal>copy-dependencies</goal>
+                </goals>
                 <configuration>
-                    <mainClass>ui.FlashcardApp</mainClass>
-                    <compress>2</compress>
-                    <noHeaderFiles>true</noHeaderFiles>
-                    <noManPages>true</noManPages>
-                    <launcher>flashcards</launcher>
-                    <jlinkImageName>flashcards</jlinkImageName>
-                    <jlinkZipName>flashcards</jlinkZipName>
+                  <outputDirectory>${project.build.directory}/lib</outputDirectory>
+                  <includeScope>runtime</includeScope>
                 </configuration>
-            </plugin>
-            
-            <!-- JPackage plugin for native installer -->
-            <plugin>
-                <groupId>org.panteleyev</groupId>
-                <artifactId>jpackage-maven-plugin</artifactId>
-                <version>1.6.5</version>
-                <configuration>
-                    <name>${app.name}</name>
-                    <appVersion>${app.version}</appVersion>
-                    <vendor>${app.vendor}</vendor>
-                    <description>${app.description}</description>
-                    <destination>${project.build.directory}/dist</destination>
-                    <module>flashcards.fxui/ui.FlashcardApp</module>
-                    <runtimeImage>target/flashcards</runtimeImage>
-                    <!-- Icon will be set platform-specifically in profiles -->
-                    <javaOptions>
-                        <option>-Dfile.encoding=UTF-8</option>
-                    </javaOptions>
-                </configuration>
-            </plugin>
-            
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-checkstyle-plugin</artifactId>
-            </plugin>
-            <plugin>
-                <groupId>com.github.spotbugs</groupId>
-                <artifactId>spotbugs-maven-plugin</artifactId>
-            </plugin>
-            <plugin>
-                <groupId>org.jacoco</groupId>
-                <artifactId>jacoco-maven-plugin</artifactId>
-            </plugin>
+              </execution>
+            </executions>
+          </plugin>
+          <!-- Create executable JAR -->
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-jar-plugin</artifactId>
+            <version>3.4.2</version>
+            <configuration>
+              <archive>
+                <manifest>
+                  <addClasspath>true</addClasspath>
+                  <classpathPrefix>lib/</classpathPrefix>
+                  <mainClass>${main.class}</mainClass>
+                </manifest>
+              </archive>
+              <outputDirectory>${project.build.directory}/lib</outputDirectory>
+            </configuration>
+          </plugin>
+          <!-- JPackage plugin for native installer -->
+          <plugin>
+            <groupId>org.panteleyev</groupId>
+            <artifactId>jpackage-maven-plugin</artifactId>
+            <version>1.6.5</version>
+            <configuration>
+              <name>${app.name}</name>
+              <appVersion>${app.version}</appVersion>
+              <vendor>${app.vendor}</vendor>
+              <description>${app.description}</description>
+              <destination>${project.build.directory}/dist</destination>
+              <input>${project.build.directory}/lib</input>
+              <runtimeImage>${java.home}</runtimeImage>
+              <mainJar>${project.build.finalName}.jar</mainJar>
+              <mainClass>${main.class}</mainClass>
+              <javaOptions>
+                <option>-Dfile.encoding=UTF-8</option>
+              </javaOptions>
+            </configuration>
+            <executions>
+              <execution>
+                <id>jpackage</id>
+                <phase>verify</phase>
+                <goals>
+                  <goal>jpackage</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
         </plugins>
-    </build>
-
-    <profiles>
-        <!-- Packaging profile for creating native installers -->
-        <profile>
-            <id>package-app</id>
-            <build>
-                <plugins>
-                    <!-- Copy dependencies to lib folder -->
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-dependency-plugin</artifactId>
-                        <version>3.8.1</version>
-                        <executions>
-                            <execution>
-                                <id>copy-dependencies</id>
-                                <phase>package</phase>
-                                <goals>
-                                    <goal>copy-dependencies</goal>
-                                </goals>
-                                <configuration>
-                                    <outputDirectory>${project.build.directory}/lib</outputDirectory>
-                                    <includeScope>runtime</includeScope>
-                                </configuration>
-                            </execution>
-                        </executions>
-                    </plugin>
-
-                    <!-- Create executable JAR -->
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-jar-plugin</artifactId>
-                        <version>3.4.2</version>
-                        <configuration>
-                            <archive>
-                                <manifest>
-                                    <addClasspath>true</addClasspath>
-                                    <classpathPrefix>lib/</classpathPrefix>
-                                    <mainClass>${main.class}</mainClass>
-                                </manifest>
-                            </archive>
-                            <outputDirectory>${project.build.directory}/lib</outputDirectory>
-                        </configuration>
-                    </plugin>
-
-                    <!-- JPackage plugin for native installer -->
-                    <plugin>
-                        <groupId>org.panteleyev</groupId>
-                        <artifactId>jpackage-maven-plugin</artifactId>
-                        <version>1.6.5</version>
-                        <configuration>
-                            <name>${app.name}</name>
-                            <appVersion>${app.version}</appVersion>
-                            <vendor>${app.vendor}</vendor>
-                            <description>${app.description}</description>
-                            <destination>${project.build.directory}/dist</destination>
-                            <input>${project.build.directory}/lib</input>
-                            <runtimeImage>${java.home}</runtimeImage>
-                            <mainJar>${project.build.finalName}.jar</mainJar>
-                            <mainClass>${main.class}</mainClass>
-                            <javaOptions>
-                                <option>-Dfile.encoding=UTF-8</option>
-                            </javaOptions>
-                        </configuration>
-                        <executions>
-                            <execution>
-                                <id>jpackage</id>
-                                <phase>verify</phase>
-                                <goals>
-                                    <goal>jpackage</goal>
-                                </goals>
-                            </execution>
-                        </executions>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-
-        <!-- Windows-specific packaging -->
-        <profile>
-            <id>windows</id>
-            <activation>
-                <os>
-                    <family>windows</family>
-                </os>
-            </activation>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>org.panteleyev</groupId>
-                        <artifactId>jpackage-maven-plugin</artifactId>
-                        <configuration>
-                            <type>MSI</type>
-                            <icon>src/main/resources/ui/app-icon.ico</icon>
-                            <winMenu>true</winMenu>
-                            <winShortcut>true</winShortcut>
-                            <winDirChooser>true</winDirChooser>
-                            <winPerUserInstall>false</winPerUserInstall>
-                        </configuration>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-
-        <!-- macOS-specific packaging -->
-        <profile>
-            <id>mac</id>
-            <activation>
-                <os>
-                    <family>mac</family>
-                </os>
-            </activation>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>org.panteleyev</groupId>
-                        <artifactId>jpackage-maven-plugin</artifactId>
-                        <configuration>
-                            <type>DMG</type>
-                            <icon>src/main/resources/ui/app-icon.icns</icon>
-                            <macPackageName>${app.name}</macPackageName>
-                        </configuration>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-
-        <!-- Linux-specific packaging -->
-        <profile>
-            <id>linux</id>
-            <activation>
-                <os>
-                    <family>unix</family>
-                    <name>Linux</name>
-                </os>
-            </activation>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>org.panteleyev</groupId>
-                        <artifactId>jpackage-maven-plugin</artifactId>
-                        <configuration>
-                            <type>DEB</type>
-                            <icon>src/main/resources/ui/app-icon.png</icon>
-                            <linuxShortcut>true</linuxShortcut>
-                            <linuxMenuGroup>Education</linuxMenuGroup>
-                        </configuration>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-    </profiles>
+      </build>
+    </profile>
+    <!-- Windows-specific packaging -->
+    <profile>
+      <id>windows</id>
+      <activation>
+        <os>
+          <family>windows</family>
+        </os>
+      </activation>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.panteleyev</groupId>
+            <artifactId>jpackage-maven-plugin</artifactId>
+            <configuration>
+              <type>MSI</type>
+              <icon>src/main/resources/ui/app-icon.ico</icon>
+              <winMenu>true</winMenu>
+              <winShortcut>true</winShortcut>
+              <winDirChooser>true</winDirChooser>
+              <winPerUserInstall>false</winPerUserInstall>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+    <!-- macOS-specific packaging -->
+    <profile>
+      <id>mac</id>
+      <activation>
+        <os>
+          <family>mac</family>
+        </os>
+      </activation>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.panteleyev</groupId>
+            <artifactId>jpackage-maven-plugin</artifactId>
+            <configuration>
+              <type>DMG</type>
+              <icon>src/main/resources/ui/app-icon.icns</icon>
+              <macPackageName>${app.name}</macPackageName>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+    <!-- Linux-specific packaging -->
+    <profile>
+      <id>linux</id>
+      <activation>
+        <os>
+          <family>unix</family>
+          <name>Linux</name>
+        </os>
+      </activation>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.panteleyev</groupId>
+            <artifactId>jpackage-maven-plugin</artifactId>
+            <configuration>
+              <type>DEB</type>
+              <icon>src/main/resources/ui/app-icon.png</icon>
+              <linuxShortcut>true</linuxShortcut>
+              <linuxMenuGroup>Education</linuxMenuGroup>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
 </project>

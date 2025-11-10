@@ -3,14 +3,14 @@
 > Provide a brief description of what testing enhancements are needed. This could include adding new tests or improving existing tests.
 >
 
-*Example*: Expand and refine the test suite for the `FlashcardLoginController` to include new security features and ensure comprehensive coverage of user authentication mechanisms
+*Example*: Expand and refine the test suite for the `FlashcardLoginController` to include new security features and ensure comprehensive coverage of user authentication mechanisms.
 
 ## **Objectives**
 
 > Clearly state the objectives of these testing enhancements. What specific functionality or feature are these tests targeting? Why are these tests necessary?
 >
 
-*Example*: Increase Test Coverage: Address gaps in current testing by covering new login workflows and error handling introduced in the latest update. Automate Regression
+*Example*: Increase Test Coverage: Address gaps in current testing by covering new login workflows and error handling introduced in the latest update. Automate Regression.
 
 ## **Testing Requirements**
 

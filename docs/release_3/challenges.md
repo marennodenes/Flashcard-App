@@ -1,6 +1,6 @@
 # Challenges
 
-The team has encountered several challenges during this iteration of the project, primarily due to increased technical requirements and a restructuring of the project. We identified two key challenges that we deliberately chose to focus on and address throughout the process. These were the need to carry out an intentional change of the Java version midway through the iteration, as well as the development and implementation of tests.
+The team encountered several challenges during this iteration of the project, primarily due to increased technical requirements and a restructuring of the project. For this report, we chose to focus on two key challenges: the need to change the Java version midway through the iteration, as well as developing and implementing tests.
 
 ## 1. Java version
 
@@ -16,4 +16,4 @@ The team has encountered several challenges in developing tests for our Java cla
 
 To address this, we have kept a low threshold for committing and pushing code, allowing multiple team members to contribute quickly when someone gets stuck. Although some tests have been assigned to individuals, we have worked together to find solutions. Our experience has shown that a fresh pair of eyes often makes debugging easier and more efficient.
 
-Through this collaboration, we have learned the importance of supporting each other when dealing with technically complex tasks. Being able to share challenges and solve them collectively has made the work both faster and less overwhelming. This experience has strengthened our sense of teamwork and reminded us of the value of collaboration—especially when the tasks feel difficult and demanding.
+Through this collaboration, we have learned the importance of supporting each other when dealing with technically complex tasks. Being able to share challenges and solve them collectively has made the work both faster and less overwhelming. This experience has strengthened our sense of teamwork and reminded us of the value of collaboration, especially when the tasks feel difficult and demanding.

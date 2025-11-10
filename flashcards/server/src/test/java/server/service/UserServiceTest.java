@@ -37,7 +37,6 @@ import shared.ApiConstants;
  *
  * @author chrsom
  * @author isamw
- * @author parts of class is generated with the help of claude.ai
  * @see UserService
  * @see FlashcardPersistent
  * @see ApiConstants
@@ -298,6 +297,7 @@ class UserServiceTest {
    * - IOException from persistence layer is properly handled
    *
    * @throws IOException if an I/O error occurs during user creation
+   * @see "docs/release_3/ai_tools.md"
    */
   @Test
   public void testCreateUserWithValidation() throws IOException {

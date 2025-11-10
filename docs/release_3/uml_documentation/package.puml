@@ -7,36 +7,32 @@ title flashcards
 
 package "flashcards" {
 
-    package "config" {
-        [itp.config]
-    }
-
     package "core" {
-        [itp.core]
+        [Domain Models]
     }
     
     package "fxui" {
-        [itp.fxui]
+        [JavaFX UI]
     }
 
     package "storage" {
-        [itp.storage]
+        [Persistent]
     }
 
     package "shared" {
-        [itp.shared]
+        [DTOs]
     }
 
     package "server" {
-        [itp.server]
+        [REST API]
     }
 }
 
-"itp.server" --> "itp.core" : "Depends on"
-"itp.server" --> "itp.storage" : "Depends on"
-"itp.server" --> "itp.shared" : "Depends on"
-"itp.fxui" --> "itp.shared" : "Depends on"
-"itp.shared" --> "itp.core" : "Depends on"
-"itp.storage" --> "itp.core" : "Depends on"
+"REST API" --> "Domain Models" : "Depends on"
+"REST API" --> "Persistent" : "Depends on"
+"REST API" --> "DTOs" : "Depends on"
+"JavaFX UI" --> "DTOs" : "Depends on"
+"DTOs" --> "Domain Models" : "Depends on"
+"Persistent" --> "Domain Models" : "Depends on"
 
 @enduml

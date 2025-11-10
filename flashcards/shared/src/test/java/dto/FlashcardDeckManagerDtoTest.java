@@ -14,7 +14,6 @@ import org.junit.jupiter.api.Test;
  * This test class verifies the correct construction and behavior of FlashcardDeckManagerDto,
  * including deck list handling and defensive copying.
  *
- * @author parts of this code is generated with claude.ai
  * @author marennod
  * @author ailinat
  */

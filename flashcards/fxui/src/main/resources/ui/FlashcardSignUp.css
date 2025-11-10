@@ -1,15 +1,3 @@
-@font-face {
-  font-family: 'Ubuntu';
-  src: url('../fonts/Ubuntu-Regular.ttf');
-  font-weight: normal;
-}
-
-@font-face {
-  font-family: 'Ubuntu';
-  src: url('../fonts/Ubuntu-Bold.ttf');
-  font-weight: bold;
-}
-
 #anchorPane {
   background-color: #bee7ed;
   -fx-background-color: #bee7ed;
@@ -96,9 +84,9 @@
 }
 
 .password-field {
-  font-size: 7pt;
+  font-size: 12px;
   font-family: "Ubuntu", sans-serif;
-  -fx-font-size: 7pt;
+  -fx-font-size: 12px;
   -fx-font-family: "Ubuntu", sans-serif;
 }
 

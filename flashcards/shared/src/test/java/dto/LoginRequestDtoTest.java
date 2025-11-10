@@ -10,7 +10,6 @@ import org.junit.jupiter.api.Test;
  * This test class verifies the correct construction and behavior of LoginRequestDto,
  * including username and password handling, and setter/getter methods.
  *
- * @author parts of this code is generated with claude.ai
  * @author marennod
  * @author ailinat
  */

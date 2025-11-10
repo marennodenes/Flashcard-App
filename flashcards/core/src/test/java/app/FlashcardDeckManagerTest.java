@@ -11,6 +11,7 @@ import org.junit.jupiter.api.Test;
  * Tests deck management operations including adding and removing decks.
  *
  * @author isamw
+ * @author chrsom
  * @see FlashcardDeckManager
  */
 public class FlashcardDeckManagerTest {

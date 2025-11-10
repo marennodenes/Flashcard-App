@@ -8,6 +8,7 @@ package ui {
         - {static} HttpClient HTTP_CLIENT
         - {static} ObjectMapper OBJECT_MAPPER
 
+        # ApiClient()
         + {static} HttpResponse<String> sendRequest(String uri, String httpMethod, String json)
         + {static} <T> T parseResponse(String responseBody, TypeReference<T> responseType)
         + {static} String convertObjectToJson(Object data)
@@ -17,9 +18,11 @@ package ui {
 
     class FlashcardApp {
         + {static} void main(String[] args)
+        + void start(Stage stage)
         # Parent loadLoginScene()
         # URL getLoginStylesheet()
-        + void start(Stage stage)
+        - void preloadFonts()
+        - void loadFont(String path)
     }
 
     class FlashcardController {
@@ -42,19 +45,17 @@ package ui {
         + void initialize()
         + void updateUi()
         + void updateProgress()
-        + FlashcardDto getCurrentCart()
         + void setDeck(FlashcardDeckDto deck)
         + void setCurrentUsername(String username)
-        + void setCurrentDeckName(String deckName)
+        + void flipCard()
         + void whenBackButtonIsClicked()
-        + void whenNextButtonIsClicked()
-        + void whenPreviousButtonIsClicked()
-        + void whenCardButtonIsClicked()
         + void whenLogOut(ActionEvent event)
+        - FlashcardDto getCurrentCard()
         - void goToNextCard()
         - void goToPreviousCard()
-        - void flipCard()
-
+        - void whenNextCardButtonIsClicked()
+        - void whenPreviousCardButtonIsClicked()
+        - void whenCardButtonClicked()
     }
 
     class FlashcardDeckController {
@@ -71,10 +72,10 @@ package ui {
         + void updateUi()
         + void setDeck(FlashcardDeckDto deck)
         + void setCurrentUsername(String username)
-        + void whenCreateCardButtonIsClicked()
-        + void whenDeleteButtonIsClicked()
-        + void whenBackButtonIsClicked()
+        + void whenCreateButtonIsClicked()
+        + void whenDeleteCardButtonIsClicked()
         + void whenStartLearningButtonIsClicked()
+        + void whenBackButtonIsClicked()
         + void whenLogOut()
         - void loadDeckData()
         - void cleanInputFields()
@@ -96,7 +97,7 @@ package ui {
         + void whenSignUpButtonClicked()
         - void navigateToSignUpPage()
         - void navigateToMainApp(String username)
-        - void showInLineError(String message)
+        - void showInlineError(String message)
     }
 
     class FlashcardMainController {
@@ -132,15 +133,15 @@ package ui {
         
         + void initialize()
         + void updateUi()
+        + void refreshDecks()
         + void setCurrentUsername(String username)
         + void whenNewDeckButtonIsClicked()
-        + void whenDeleteDeckButtonIsClicked()
-        + void whenADeckIsClicked(ActionEvent event)
+        + void whenDeleteDeckButtonIsClicked(ActionEvent event)
+        + void whenDeckIsClicked(ActionEvent event)
         + void whenLogout(ActionEvent event)
-        + void refreshDecks()
-        - void loadUserData()
         - void hideAllDeckButtons()
-        - void showInLineError(String message)
+        - void loadUserData()
+        - void showInlineError(String message)
     }
 
     class FlashcardSignUpController {
@@ -156,23 +157,21 @@ package ui {
         
         + void initialize()
         + void updateUi()
-        + void whenSignInButtonIsClicked()
+        + void whenSignInButtonClicked()
         + void whenBackButtonIsClicked()
         - boolean validateInput(String username, String password, String confirmPassword)
         - void createUser(String username, String password)
         - void navigateToMainApp(String username)
-        - void showInLineError(String message)
-        
-
+        - void showInlineError(String message)
     }
 
     class SceneUtils {
         - {static} double SCALE_FACTOR = 2.0
         - {static} double OFFSET_FACTOR = 1.0
          
-        + {static} Scene createScaledScene(Parent root)
-        + {static} void applyScaling(Parent root)
         - SceneUtils()
+        + {static} Scene createScaledScene(Parent root)
+        + {static} void applyScaling(Parent root)  
     }
 }
 
@@ -191,10 +190,24 @@ FlashcardSignUpController --> ApiClient : uses
 ApiClient --> ApiResponse : uses
 ApiClient --> ApiEndpoints : uses
 FlashcardApp --> FlashcardLoginController : starts with
-FlashcardLoginController --> FlashcardMainController : navigates to
-FlashcardLoginController --> FlashcardSignUpController : navigates to
-FlashcardMainController --> FlashcardDeckController : navigates to
-FlashcardDeckController --> FlashcardController : navigates to
-SceneUtils ..> FlashcardApp : used by
+FlashcardLoginController <--> FlashcardMainController : navigates to
+FlashcardLoginController <--> FlashcardSignUpController : navigates to
+FlashcardMainController <--> FlashcardDeckController : navigates to
+FlashcardDeckController <--> FlashcardController : navigates to
+FlashcardController --> FlashcardLoginController : navigates to
+FlashcardDeckController --> FlashcardLoginController : navigates to
+FlashcardSignUpController --> FlashcardMainController : navigates to
+FlashcardApp --> SceneUtils : uses
+FlashcardLoginController --> SceneUtils : uses
+FlashcardSignUpController --> SceneUtils : uses
+FlashcardMainController --> SceneUtils : uses
+FlashcardDeckController --> SceneUtils : uses
+FlashcardController --> SceneUtils : uses
+FlashcardApp --> ApiConstants : uses
+FlashcardLoginController --> ApiConstants : uses
+FlashcardSignUpController --> ApiConstants : uses
+FlashcardMainController --> ApiConstants : uses
+FlashcardDeckController --> ApiConstants : uses
+FlashcardController --> ApiConstants : uses
 
 @enduml

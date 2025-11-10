@@ -2,34 +2,37 @@
 
 ## Our Approach to AI in Development
 
-We view AI as a supportive tool rather than a replacement for our coding skills. Throughout the project, we wrote most code ourselves but turned to AI assistance when stuck on specific problems or needing guidance on best practices. This approach helped us learn while maintaining productivity and code quality. The experience has shown us how valuable AI can be as a coding partner, and we expect to continue using these tools in our future professional work to solve complex problems more efficiently.
+We used AI as a supportive tool to enhance learning, productivity, and code quality rather than replace our own coding. Most code was written manually, but AI helped with guidance, troubleshooting, and best practices. **GitHub Copilot (Claude Sonnet 4.0)** assisted with dependency management in pom.xml files, Maven configuration, testing, generated Javadoc documentation, and bug fixing. **ChatGPT** supported project setup, Java syntax, and GitHub conventions. **Claude AI** improved test organization and configured JaCoCo for coverage reporting. We also used this to set up JLink and JPackage correctly, since none of the teammembers had experience with these technologies. Together, these tools enhanced our workflow and learning throughout the project.
 
-Below are the specific AI tools we used and how they contributed to our project:
+## Classes we have used ai in
 
-## GitHub Copilot (Claude Sonnet 4.0)
+- `PasswordEncoder`: Used claude.ai to identify best practice for secure password handling and hashing.
+- `PasswordEncoderTest`: Used claude.ai verifying password encoding and matching functionality using JUnit 5.
 
-- Code cleanup and refactoring of test files (removing unnecessary comments, fixing indentation, adding public modifiers)
-- Fixed package diagram dependencies to match Maven pom.xml configurations
-- Created and validated UML class diagrams for all modules (fxui, core, shared, server, storage)
-- Helped write comprehensive Javadoc documentation with proper @param, @return, and @throws tags
-- Assisted in organizing and improving test coverage across modules
-- Fixed navigation bugs and UI controller logic throughout the project
+### fxui
 
-## **ChatGPT**
+- `Flashcardcontroller` : AI helped correct event-handling syntax and structure methods like `updateUi()` and `flipCard()` for UI updates. In `flipCard()` it was the card rotation functionality we struggled with, where **GitHub Copilot** came to good use.
+- `FlashcardDeckController`
+  - `whenCreateButtonIsClicked()`,  `whenDeleteCardButtonIsClicked()` and `loadDeckData()`: AI helped handle API endpoints and correct syntax.
+- `ApiClientTest`: AI provided guidance on writing correct tests for API handling.
+- `FlashcardDeckControllerTest`, `FlashcardLoginControllerTest`, `FlashcardMainControllerTest` and `FlashcardSignUpControllerTest`: Parts of the code were genereted with AI assistance for comprehensive test coverage and to implement headless tests, particularly in `initJavaFx()` methods.
 
-- Project setup and Java syntax questions
-- Helped with GitHub-related questions, including commit message conventions and scoping
-- Provided guidance on Maven configuration and dependency management
-- Assisted with understanding Java module system and package structure
-- Helped troubleshoot JSON serialization issues with Jackson
-- Answered questions about REST API best practices and Spring Boot configuration
+### server
 
-## **Claude AI**
+- `UserController`
+  - `loginUser()`: **GitHub Copilot** suggested initial login logic and validation patterns.
+- `DeckControllerTest`, `FlashcardControllerTest`, `UserControllerTest`: Claude AI assisted in comprehensive test coverage.
+- `FlashcardServiceTest` and `UserServiceTest`:
+  - `testGetFlashcard()`, `testGetFlashcardThrows()` and `testCreateUserWithValidation()`: AI assisted in generating tests for thorough coverage and handling mocking.
 
-- Architecture suggestions and code review for multi-module project structure
-- Generated comprehensive Javadoc documentation for classes and methods
-- Helped implement authentication system (login/signup functionality)
-- Provided guidance on DTO mapping patterns and clean architecture principles
-- Assisted with test suite organization and JUnit 5 best practices
-- Helped configure JaCoCo for code coverage reporting
-- Reviewed and suggested improvements for REST API controller implementations
+### shared
+
+- `UserMapper`: AI was used to assist in implementing the complex UserMapper code, by clarifying complex mapping between domain and DTO objects.
+- `FlashcardDeckMapperTest`, `FlashcardMapperTest`, `UserMapperTest`: AI assisted with generating tests and handling mapper syntax for tests.
+
+### storage
+
+- `Flashcardpersistent`:
+  - `readUserDataInternal()` and `writeUserDataInternal()`: AI guided logic for reading and writing to user data.
+- `FlashcardPersistentTest`:
+  - `cleanup()` : AI helped efficiently handle deletion of multiple test user files.

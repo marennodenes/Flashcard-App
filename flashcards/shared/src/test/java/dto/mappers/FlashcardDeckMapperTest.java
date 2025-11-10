@@ -17,9 +17,10 @@ import org.junit.jupiter.api.Test;
  * Unit tests for the {@link FlashcardDeckMapper} class.
  * This test class verifies the correct mapping between FlashcardDeck and FlashcardDeckDto.
  *
- * @author parts of this code is generated with claude.ai
  * @author marennod
  * @author ailinat
+ * 
+ * @see "docs/release_3/ai_tools.md"
  */
 public class FlashcardDeckMapperTest {
 
@@ -89,6 +90,8 @@ public class FlashcardDeckMapperTest {
 
   /**
    * Tests null input handling for toDto.
+   *
+   * @throws IllegalArgumentException when input is null.
    */
   @Test
   public void testToDtoNullInput() {
@@ -98,6 +101,8 @@ public class FlashcardDeckMapperTest {
 
   /**
    * Tests null input handling for fromDto.
+   *
+   * @throws IllegalArgumentException when input is null.
    */
   @Test
   public void testFromDtoNullInput() {
@@ -107,6 +112,8 @@ public class FlashcardDeckMapperTest {
 
   /**
    * Tests null input handling for toDtoList.
+   *
+   * @throws IllegalArgumentException when input is null.
    */
   @Test
   public void testToDtoListNullInput() {
@@ -116,6 +123,8 @@ public class FlashcardDeckMapperTest {
 
   /**
    * Tests null input handling for fromDtoList.
+   *
+   * @throws IllegalArgumentException when input is null.
    */
   @Test
   public void testFromDtoListNullInput() {

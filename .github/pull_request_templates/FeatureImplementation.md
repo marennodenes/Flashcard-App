@@ -2,6 +2,7 @@
 
 > Provide a brief description of the new feature being implemented.
 >
+*Example:*
 
 This pull request implements the following feature: [Feature Name]
 
@@ -9,6 +10,8 @@ This pull request implements the following feature: [Feature Name]
 
 > Explain why this feature is needed and provide context. Link to related issues or design documents if available.
 >
+*Example:*
+
 - Related issue: #[Issue Number]
 - Design document: [Link to design document]
 
@@ -16,6 +19,8 @@ This pull request implements the following feature: [Feature Name]
 
 > Provide a detailed description of the implementation, including changes to code, new files, modified files, etc.
 >
+*Example:*
+
 - Added [X] to [Y].
 - Modified [A] to support [B].
 
@@ -33,6 +38,10 @@ This pull request implements the following feature: [Feature Name]
 
 ## **Checklist**
 
+> List of what has been done.
+>
+*Example:*
+
 - [ ]  Code has been reviewed by peers.
 - [ ]  Unit tests have been written/modified.
 - [ ]  Documentation has been updated (if necessary).
@@ -41,6 +50,8 @@ This pull request implements the following feature: [Feature Name]
 ## **Contributors**
 
 > Individuals who contributed to this documentation update.
+>
+*Example:*
 
 - @username
 - @username

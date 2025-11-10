@@ -10,6 +10,7 @@ import org.junit.jupiter.api.Test;
  * Tests flashcard operations including question/answer management and validation.
  *
  * @author isamw
+ * @author chrsom
  * @see Flashcard
  */
 public class FlashcardTest {
@@ -40,12 +41,12 @@ public class FlashcardTest {
   @Test
   void testQuestion() {
     assertEquals("Question", flashcard.getQuestion());
-    flashcard.setQuestion("Hei");
-    assertEquals("Hei", flashcard.getQuestion());
+    flashcard.setQuestion("Hi");
+    assertEquals("Hi", flashcard.getQuestion());
     flashcard.setQuestion(null);
-    assertEquals("Hei", flashcard.getQuestion());
+    assertEquals("Hi", flashcard.getQuestion());
     flashcard.setQuestion("     ");
-    assertEquals("Hei", flashcard.getQuestion());
+    assertEquals("Hi", flashcard.getQuestion());
   }
 
   /**

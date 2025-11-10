@@ -12,7 +12,6 @@ import org.junit.jupiter.api.Test;
  * This test class verifies the correct construction and behavior of FlashcardDeckDto,
  * including deck name, flashcard list, and default constructor.
  *
- * @author parts of this code is generated with claude.ai
  * @author marennod
  * @author ailinat
  */

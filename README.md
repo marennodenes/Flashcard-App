@@ -32,63 +32,31 @@ To quickly test the application:
     mvn clean install -DskipTests
     ```
 
-3. Open a new terminal
-
-    **macOS**
+3. Open the `server` module in a new terminal
 
     ```bash
-    open -na Terminal
+    cd flashcards/server
     ```
 
-    **Windows (Command Prompt)**
-
-    ```bash
-   start cmd
-    ```
-
-    **Windows (PowerShell)**
-
-    ```bash
-    start powershell
-    ```
-
-    **Linux (GNOME Terminal)**
-
-    ```bash
-    gnome-terminal &
-    ```
-
-    **Linux (KDE Konsole)**
-
-    ```bash
-    konsole &
-    ```
-
-4. Open the `server` module in the new terminal
-
-    ```bash
-    cd server
-    ```
-
-5. Run the backend
+4. Run the backend
 
     ```bash
     mvn spring-boot:run
     ```
 
-6. While the backend is running, open the `fxui` module in the old terminal
+5. While the backend is running, open the `fxui` module in the old terminal
 
     ```bash
     cd fxui
     ```
 
-7. Run the app
+6. Run the app
 
     ```bash
     mvn javafx:run
     ```
 
-**Note:** Both the server (step 5) and client (step 7) must be running simultaneously.
+**Note:** Both the server (step 4) and client (step 6) must be running simultaneously.
 
 ## Building the project
 
@@ -120,99 +88,35 @@ To create an executable file that runs locally on your computer:
     mvn clean install
     ```
 
-2. Open `fxui` module
-
-    ```bash
-        cd fxui
-    ```
-
-3. When in `fxui`, run this command to run and create a executable application
-
-    ```bash
-        mvn clean package javafx:jlink jpackage:jpackage
-    ```
-
-4. To be able to use the app, you must run the REST-API `server` in our app
-
-    ```bash
-        cd server
-        mvn spring-boot:run
-    ```
-
-5. Now there has been created a Flashcards-1.0.0.dmg in `fxui/target/dist`. Locate this file and run that file.
-6. You can now use the application on your computer
-
-### Method 2: Maven
-
-1. Open the project folder
-
-    ```bash
-    cd flashcards
-    ```
-
-2. Install necessary dependencies
-
-    ```bash
-    mvn clean install
-    ```
-
-3. Open a new terminal
-
-    **macOS**
-
-    ```bash
-    open -na Terminal
-    ```
-
-    **Windows (Command Prompt)**
-
-    ```bash
-   start cmd
-    ```
-
-    **Windows (PowerShell)**
-
-    ```bash
-    start powershell
-    ```
-
-    **Linux (GNOME Terminal)**
-
-    ```bash
-    gnome-terminal &
-    ```
-
-    **Linux (KDE Konsole)**
-
-    ```bash
-    konsole &
-    ```
-
-4. Open the `server` module in the new terminal
+2. To be able to use the app, you must run the REST-API `server` in our app
 
     ```bash
     cd server
-    ```
-
-5. Run the backend
-
-    ```bash
     mvn spring-boot:run
     ```
 
-6. While the backend is running, navigate to the the `fxui` module in the old terminal
+3. Open a new terminal and the `fxui` module and run this command to run and create a executable application
 
     ```bash
-    cd fxui
+    cd flashcards/fxui
+    mvn clean package javafx:jlink jpackage:jpackage
     ```
 
-7. Run the app
+4. Now you can run the applicication
 
-    ```bash
-    mvn javafx:run
-    ```
+    **macOS & windows**
 
-**Note:** Both the server (step 5) and client (step 7) must be running simultaneously for the application to work.
+    Now there has been created a Flashcards-1.0.0.dmg in `fxui/target/dist`. Open this file.
+
+    **Linux**
+
+    Now there has been created a FlashcardsApp.desktop in `fxui`. Open this file (remember to click "Mark Executable").
+
+5. You can now use the application on your computer
+
+### Method 2: Maven
+
+- See quickstart method above.
 
 ### Method 3: VS Code
 
@@ -234,20 +138,33 @@ This structure helps separate concerns and makes the project easy to navigate.
 
 ## App design
 
+<!-- markdownlint-disable MD033 -->
+
 **Login page:** initial window when opening the app, and opens when you click "Log out" on other pages
-![Login interface](images/app/release_3/FlashcardLogin_release3.png)
+
+<img src="./images/app/release_3/flashcardlogin_empty.png" alt="login empty" width="300"> <img src="./images/app/release_3/flashcardlogin_error.png" alt="login error" width="300"><br>
 
 **Sign up page:** opens when you click "Sign up" on the Login page
-![Signup interface](images/app/release_3/FlashcardSignUp_release3.png)
+
+<img src="./images/app/release_3/flashcardsignup_empty.png" alt="signup empty" width="300"> <img src="./images/app/release_3/flashcardsignup_error.png" alt="signup error" width="300"><br>
 
 **Main dashboard:** opens after clicking "Log in" or "Sign in", or when clicking "back" on the deck management page
-![Main dashboard](images/app/release_3/FlashcardMain_release3.png)
+
+<img src="./images/app/release_3/flashcardmain_no_decks.png" alt="main empty" width="300">  <img src="./images/app/release_3/flashcardmain_error.png" alt="main error" width="300"><br>
 
 **Deck management:** opens when clicking a deck on the main dashboard, or when clicking "back" on the learning page
-![Deck management](images/app/release_3/FlashcardList_release3.png)
+
+<img src="./images/app/release_3/flashcarddeck_create_card.png" alt="create card" width="300">  <img src="./images/app/release_3/flashcarddeck_card_selected.png" alt="card selected" width="300"><br>
 
 **Learning page:** opens when clicking "Start learning" om the deck management page
-![Learning interface](images/app/release_3/FlashcardPage_release3.png)
+
+ <img src="./images/app/release_3/flashcardlearning_question.png" alt="question" width="300"> <img src="./images/app/release_3/flashcardlearning_answer.png" alt="answer" width="300"><br>
+
+**Server errors:** example of a server error that will appear as a pop up alert
+
+<img src="./images/app/release_3/flashcardlogin_popup.png" alt="server error" width="400"><br>
+
+<!-- markdownlint-enable MD033 -->
 
 ## Dependencies
 
@@ -284,17 +201,21 @@ After running `mvn test`, you can generate test coverage reports via JaCoCo:
 
 **Current test coverage:**
 
-- **core**: Instruction Coverage: 88% | Branch Coverage: 92%
-- **fxui**: Instruction Coverage: 90% | Branch Coverage: 85%
-- **shared**: Instruction Coverage: 98% | Branch Coverage: 87%
-- **server**: Instruction Coverage: 92% | Branch Coverage: 92%
-- **storage**: Instruction Coverage: 98% | Branch Coverage: 87%
+- **core**: Instruction Coverage: 86% | Branch Coverage: 90%
+- **fxui**: Instruction Coverage: 87% | Branch Coverage: 84%
+- **shared**: Instruction Coverage: 97% | Branch Coverage: 87%
+- **server**: Instruction Coverage: 95% | Branch Coverage: 91%
+- **storage**: Instruction Coverage: 100% | Branch Coverage: 95%
 
-![core JaCoCo coverage](images/jaCoCo/release_3/coreJaCoCo_release3.png)
-![fxui JaCoCo coverage](images/jaCoCo/release_3/fxuiJaCoCo_release3.png)
-![shared JaCoCo coverage](images/jaCoCo/release_3/sharedJaCoCo_release3.png)
-![server JaCoCo coverage](images/jaCoCo/release_3/serverJaCoCo_release3.png)
-![storage JaCoCo coverage](images/jaCoCo/release_3/storageJaCoCo_release3.png)
+<!-- markdownlint-disable MD033 -->
+
+<img src="./images/jaCoCo/release_3/core_jacoco_release3.png" alt="core JaCoCo coverage" width="600">
+<img src="./images/jaCoCo/release_3/fxui_jacoco_release3.png" alt="fxui JaCoCo coverage" width="600">
+<img src="./images/jaCoCo/release_3/shared_jacoco_release3.png" alt="shared JaCoCo coverage" width="600">
+<img src="./images/jaCoCo/release_3/server_jacoco_release3.png" alt="server JaCoCo coverage" width="600">
+<img src="./images/jaCoCo/release_3/storage_jacoco_release3.png" alt="storage JaCoCo coverage" width="600">
+
+<!-- markdownlint-enable MD033 -->
 
 Current coverage targets focus on core business logic and critical user workflows.
 

@@ -46,7 +46,7 @@ package core {
     }
 
     class LoginValidator {
-        - UserPersistence PERSISTENCE
+        - UserPersistence persistence
         
         + LoginValidator(UserPersistence persistence)
         + boolean createUser(String username, String password)

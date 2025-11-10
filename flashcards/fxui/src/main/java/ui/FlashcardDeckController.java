@@ -1,19 +1,13 @@
 package ui;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import dto.FlashcardDeckDto;
+import dto.FlashcardDto;
 import java.io.IOException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
-
-import com.fasterxml.jackson.core.type.TypeReference;
-
-import dto.FlashcardDto;
-import dto.FlashcardDeckDto;
-import shared.ApiConstants;
-import shared.ApiEndpoints;
-import shared.ApiResponse;
-
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -26,19 +20,22 @@ import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
+import shared.ApiConstants;
+import shared.ApiEndpoints;
+import shared.ApiResponse;
 
 /**
  * Controller for managing individual flashcard deck operations.
  * Handles adding, deleting, and viewing flashcards within a specific deck.
  * Provides navigation to the learning interface and back to the main deck list.
  * Uses REST API for data persistence instead of local storage.
- * 
+ *
  * @author marennod
  * @author marieroe
  * @author chrsom
- * 
  */
 public class FlashcardDeckController {
+  
   @FXML private TextField questionField;
   @FXML private TextField answerField;
   @FXML private ListView<FlashcardDto> listView;
@@ -65,9 +62,10 @@ public class FlashcardDeckController {
     });
     
     // Enable delete button only when a card is selected
-    listView.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
-      deleteCardButton.setDisable(newValue == null);
-    });
+    listView.getSelectionModel().selectedItemProperty().addListener((
+        observable, oldValue, newValue) -> { 
+          deleteCardButton.setDisable(newValue == null);
+        });
     
     updateUi();
   }
@@ -105,9 +103,8 @@ public class FlashcardDeckController {
 
   /**
    * Sets the deck to work with.
-   * 
+   *
    * @param deck the deck DTO to work with
-   * 
    */
   public void setDeck(FlashcardDeckDto deck) {
     if (deck != null) {
@@ -123,9 +120,8 @@ public class FlashcardDeckController {
 
   /**
    * Sets the current username for loading user data.
-   * 
+   *
    * @param username the username to set
-   * 
    */
   public void setCurrentUsername(String username) {
     if (username != null && !username.trim().isEmpty()) {
@@ -136,6 +132,8 @@ public class FlashcardDeckController {
   /**
    * Adds a new flashcard when button is clicked.
    * Creates a flashcard via REST API and reloads the deck data.
+   *
+   * @see "docs/release_3/ai_tools.md"
    */
   @FXML
   public void whenCreateButtonIsClicked() {
@@ -145,12 +143,14 @@ public class FlashcardDeckController {
     // Only create card if both fields have content
     if (q.isEmpty() || a.isEmpty() || currentDeck == null) {
       // Log validation error to terminal only, no user notification
-      System.err.println(ApiConstants.VALIDATION_ERROR + ": " + ApiConstants.FLASHCARD_QUESTION_ANSWER_EMPTY);
+      System.err.println(ApiConstants.VALIDATION_ERROR + ": " 
+          + ApiConstants.FLASHCARD_QUESTION_ANSWER_EMPTY);
       return;
     }
 
     try {
-      String url = ApiEndpoints.SERVER_BASE_URL + ApiEndpoints.FLASHCARDS + ApiEndpoints.FLASHCARD_CREATE
+      String url = ApiEndpoints.SERVER_BASE_URL + ApiEndpoints.FLASHCARDS 
+          + ApiEndpoints.FLASHCARD_CREATE
           + "?username=" + URLEncoder.encode(currentUsername, StandardCharsets.UTF_8)
           + "&deckname=" + URLEncoder.encode(currentDeck.getDeckName(), StandardCharsets.UTF_8)
           + "&question=" + URLEncoder.encode(q, StandardCharsets.UTF_8)
@@ -159,30 +159,33 @@ public class FlashcardDeckController {
       // Send empty JSON object as body since ApiClient requires it for POST requests
       // Server doesn't use the body (uses URL parameters), but ApiClient validation requires it
       ApiResponse<FlashcardDto> result = ApiClient.performApiRequest(
-        url,
-        "POST",
-        "{}", // Empty JSON object string
-        new TypeReference<ApiResponse<FlashcardDto>>() {}
+          url,
+          "POST",
+          "{}", // Empty JSON object string
+          new TypeReference<ApiResponse<FlashcardDto>>() {}
       );
 
       if (result != null && result.isSuccess()) {
         clearInputFields();
         updateUi();
       } else {
-        String errorMsg = result != null ? result.getMessage() : ApiConstants.NO_RESPONSE_FROM_SERVER;
+        String errorMsg = result != null 
+            ? result.getMessage() : ApiConstants.NO_RESPONSE_FROM_SERVER;
         
         // Check if it's a validation error (just log, no popup for validation)
-        if (errorMsg != null && (errorMsg.contains("empty") || errorMsg.contains("invalid") || 
-            errorMsg.contains("required") || errorMsg.contains("missing"))) {
+        if (errorMsg != null && (errorMsg.contains("empty") 
+            || errorMsg.contains("invalid") 
+            || errorMsg.contains("required") 
+            || errorMsg.contains("missing"))) {
           System.err.println(ApiConstants.VALIDATION_ERROR + ": " + errorMsg);
         } else {
-          // Server error - log technical details, show popup to user
+          // Server error: log technical details, show popup to user
           System.err.println(ApiConstants.SERVER_ERROR + ": " + errorMsg);
           ApiClient.showAlert(ApiConstants.SERVER_ERROR, ApiConstants.FLASHCARD_FAILED_TO_CREATE);
         }
       }
     } catch (Exception e) {
-      // Unknown error type - log technical details, show generic message to user
+      // Unknown error type: log technical details, show generic message to user
       System.err.println(ApiConstants.LOG_UNEXPECTED_ERROR + ": " + e.getMessage());
       ApiClient.showAlert(ApiConstants.SERVER_ERROR, ApiConstants.UNEXPECTED_ERROR);
     }
@@ -191,6 +194,8 @@ public class FlashcardDeckController {
   /**
    * Deletes the selected flashcard when delete button is clicked.
    * Deletes the flashcard via REST API and reloads the deck data.
+   *
+   * @see "docs/release_3/ai_tools.md"
    */
   @FXML
   public void whenDeleteCardButtonIsClicked() {
@@ -201,23 +206,25 @@ public class FlashcardDeckController {
     }
 
     try {
-      String url = ApiEndpoints.SERVER_BASE_URL + ApiEndpoints.FLASHCARDS + ApiEndpoints.FLASHCARD_DELETE
+      String url = ApiEndpoints.SERVER_BASE_URL + ApiEndpoints.FLASHCARDS 
+          + ApiEndpoints.FLASHCARD_DELETE
           + "?username=" + URLEncoder.encode(currentUsername, StandardCharsets.UTF_8)
           + "&deckname=" + URLEncoder.encode(currentDeck.getDeckName(), StandardCharsets.UTF_8)
           + "&number=" + selectedCard.getNumber();
       
       ApiResponse<Void> result = ApiClient.performApiRequest(
-        url,
-        "DELETE",
-        null,
-        new TypeReference<ApiResponse<Void>>() {}
+          url,
+          "DELETE",
+          null,
+          new TypeReference<ApiResponse<Void>>() {}
       );
 
       if (result != null && result.isSuccess()) {
         updateUi();
       } else {
         // Server error - log technical details, show popup to user
-        String errorMsg = result != null ? result.getMessage() : ApiConstants.NO_RESPONSE_FROM_SERVER;
+        String errorMsg = result != null 
+            ? result.getMessage() : ApiConstants.NO_RESPONSE_FROM_SERVER;
         System.err.println(ApiConstants.SERVER_ERROR + ": " + errorMsg);
         ApiClient.showAlert(ApiConstants.SERVER_ERROR, ApiConstants.FLASHCARD_FAILED_TO_DELETE);
       }
@@ -232,9 +239,8 @@ public class FlashcardDeckController {
    * Handles the event when the "Start Learning" button is clicked.
    * Navigates from the current scene to the flashcard learning page by loading
    * the FlashcardLearning.fxml file and switching the scene.
-   * 
+   *
    * @throws IOException if the FXML file cannot be loaded or found
-   * 
    */
   @FXML
   public void whenStartLearningButtonIsClicked() {
@@ -263,13 +269,12 @@ public class FlashcardDeckController {
    * Handles the back button click event.
    * Navigates back to the main flashcard UI.
    * Refreshes the deck list in the main controller.
-   * 
+   *
    * @throws IOException if the FXML file cannot be loaded
-   * 
    */
   @FXML
   public void whenBackButtonIsClicked() throws IOException {
-    try{
+    try {
       FXMLLoader loader = new FXMLLoader(getClass().getResource("FlashcardMain.fxml"));
       Parent root = loader.load();
 
@@ -312,6 +317,8 @@ public class FlashcardDeckController {
   
   /**
    * Loads the current deck from the REST API.
+   *
+   * @see "docs/release_3/ai_tools.md"
    */
   private void loadDeckData() {
     if (currentUsername == null || currentUsername.isEmpty()) {
@@ -319,7 +326,8 @@ public class FlashcardDeckController {
       return;
     }
     
-    if (currentDeck == null || currentDeck.getDeckName() == null || currentDeck.getDeckName().isEmpty()) {
+    if (currentDeck == null || currentDeck.getDeckName() == null 
+        || currentDeck.getDeckName().isEmpty()) {
       return;
     }
     
@@ -330,10 +338,10 @@ public class FlashcardDeckController {
           + "&deckName=" + URLEncoder.encode(currentDeck.getDeckName(), StandardCharsets.UTF_8);
       
       ApiResponse<FlashcardDeckDto> result = ApiClient.performApiRequest(
-        url,
-        "GET",
-        null,
-        new TypeReference<ApiResponse<FlashcardDeckDto>>() {}
+          url,
+          "GET",
+          null,
+          new TypeReference<ApiResponse<FlashcardDeckDto>>() {}
       );
 
       if (result != null && result.isSuccess() && result.getData() != null) {
