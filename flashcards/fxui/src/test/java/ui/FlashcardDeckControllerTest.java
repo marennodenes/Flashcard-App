@@ -37,6 +37,7 @@ import javafx.stage.Stage;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentCaptor;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 import shared.ApiConstants;
@@ -897,25 +898,28 @@ class FlashcardDeckControllerTest {
   @Test
   public void testLoadDeckDataScenarios() {
     // Prepare a deck dto with a name
-    FlashcardDeck deck = new FlashcardDeck("DeckLoad");
+    FlashcardDeck deck = new FlashcardDeck("Deck Load");
     deck.addFlashcard(new Flashcard("Q", "A"));
     FlashcardDeckDto dtoWithCard = mapper.toDto(deck);
 
     setField(controller, "currentUsername", "tester");
-    setField(controller, "currentDeck", new FlashcardDeckDto("DeckLoad", List.of()));
+    setField(controller, "currentDeck", new FlashcardDeckDto("Deck Load", List.of()));
 
     // success
     try (MockedStatic<ApiClient> api = Mockito.mockStatic(ApiClient.class)) {
-      api.when(() -> ApiClient.performApiRequest(anyString(), eq("GET"),
+      ArgumentCaptor<String> urlCaptor = ArgumentCaptor.forClass(String.class);
+      api.when(() -> ApiClient.performApiRequest(urlCaptor.capture(), eq("GET"),
               isNull(), any(TypeReference.class)))
           .thenReturn(new ApiResponse<>(true, "", dtoWithCard));
       invokePrivate(controller, "loadDeckData");
       FlashcardDeckDto after = (FlashcardDeckDto) getField(controller, "currentDeck");
       assertEquals(1, after.getDeck().size());
+      assertTrue(urlCaptor.getValue().contains("Deck%20Load"),
+          "GET URL should encode spaces as %20");
     }
 
     // failure: alert shown
-    setField(controller, "currentDeck", new FlashcardDeckDto("DeckLoad", List.of()));
+    setField(controller, "currentDeck", new FlashcardDeckDto("Deck Load", List.of()));
 
     try (MockedStatic<ApiClient> api = Mockito.mockStatic(ApiClient.class)) {
       api.when(() -> ApiClient.performApiRequest(anyString(), eq("GET"),
@@ -930,7 +934,7 @@ class FlashcardDeckControllerTest {
     }
 
     // exception: alert shown
-    setField(controller, "currentDeck", new FlashcardDeckDto("DeckLoad", List.of()));
+    setField(controller, "currentDeck", new FlashcardDeckDto("Deck Load", List.of()));
 
     try (MockedStatic<ApiClient> api = Mockito.mockStatic(ApiClient.class)) {
       api.when(() -> ApiClient.performApiRequest(anyString(), eq("GET"),

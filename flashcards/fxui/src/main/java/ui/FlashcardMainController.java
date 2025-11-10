@@ -130,9 +130,8 @@ public class FlashcardMainController {
       if (i < decks.size()) {
         FlashcardDeckDto deck = decks.get(i);
         if (deckButtons[i] != null) {
-          String decodedName = java.net.URLDecoder.decode(deck.getDeckName(), 
-              java.nio.charset.StandardCharsets.UTF_8);
-          deckButtons[i].setText(decodedName);
+          String displayName = deck.getDeckName() == null ? "" : deck.getDeckName();
+          deckButtons[i].setText(displayName);
           deckButtons[i].setDisable(false);
           deckButtons[i].setVisible(true);
           // Store deck reference in button for event handling
@@ -206,7 +205,7 @@ public class FlashcardMainController {
       }
 
       String url = ApiEndpoints.SERVER_BASE_URL + ApiEndpoints.DECKS + "/"
-          + URLEncoder.encode(deckName, StandardCharsets.UTF_8) + "?username="
+          + encodePathSegment(deckName) + "?username="
           + URLEncoder.encode(currentUsername, StandardCharsets.UTF_8);
 
       // Send empty JSON object as body since ApiClient requires it for POST requests
@@ -270,7 +269,7 @@ public class FlashcardMainController {
 
     try {
       String url = ApiEndpoints.SERVER_BASE_URL + ApiEndpoints.DECKS + "/"
-          + URLEncoder.encode(deck.getDeckName(), StandardCharsets.UTF_8) + "?username="
+          + encodePathSegment(deck.getDeckName()) + "?username="
           + URLEncoder.encode(currentUsername, StandardCharsets.UTF_8);
 
       ApiResponse<Void> result = ApiClient.performApiRequest(url, "DELETE", null,
@@ -411,5 +410,18 @@ public class FlashcardMainController {
     error = message;
     showAlert = true;
     updateUi();
+  }
+
+  /**
+   * Helper method to be able to make deck with "+" in the name. Replaces "+" with "%20".
+   *
+   * @param value the deck name to encode
+   * @return the encoded deck name, or empty string if {@code value} is {@code null}
+   */
+  private static String encodePathSegment(String value) {
+    if (value == null) {
+      return "";
+    }
+    return URLEncoder.encode(value, StandardCharsets.UTF_8).replace("+", "%20");
   }
 }
