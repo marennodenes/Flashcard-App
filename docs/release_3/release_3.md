@@ -155,7 +155,7 @@ The storage module shows the `FlashcardPersistent` class which implements the `U
 
 ## Architecture diagram
 
-<img src="./uml_documentation/screenshots/class_architecture.png" alt="archritecture" width="600">
+<img src="./uml_documentation/screenshots/architecture.png" alt="architecture" width="400">
 
 The architecture diagram provides a high-level overview of the system's structure, showing how the five modules (core, fxui, server, shared, storage) interact with each other. It illustrates the client-server separation, with the JavaFX client communicating with the Spring Boot server via REST API, and the server using the storage layer for data persistence.
 
