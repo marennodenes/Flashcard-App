@@ -6,6 +6,25 @@
   "configurations": [
     {
       "type": "java",
+      "name": "ServerApplication",
+      "request": "launch",
+      "mainClass": "server.ServerApplication",
+      "projectName": "server",
+      "vmArgs": [
+        "--add-reads",
+        "flashcards.server=ALL-UNNAMED",
+        "--add-opens",
+        "flashcards.server/server=ALL-UNNAMED",
+        "--add-opens",
+        "flashcards.server/server.controller=ALL-UNNAMED",
+        "--add-opens",
+        "flashcards.server/server.service=ALL-UNNAMED",
+        "--add-opens",
+        "java.base/java.lang=ALL-UNNAMED"
+      ]
+    },
+    {
+      "type": "java",
       "name": "FlashcardApp",
       "request": "launch",
       "mainClass": "flashcards.core/ui.FlashcardApp"

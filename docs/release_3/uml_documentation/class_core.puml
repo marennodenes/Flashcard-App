@@ -1,0 +1,107 @@
+@startuml class_core
+title Core Module - Domain Model
+
+package core {
+
+    class Flashcard {
+        - int number
+        - String question
+        - String answer
+
+        + Flashcard()
+        + Flashcard(String question, String answer)
+        + Flashcard(int number, String question, String answer)
+        + String getQuestion()
+        + void setQuestion(String question)
+        + String getAnswer()
+        + void setAnswer(String answer)
+        + int getNumber()
+        + void setNumber(int number)
+        + String toString()
+    }
+
+    class FlashcardDeck {
+        - String deckName
+        - List<Flashcard> deck
+
+        + FlashcardDeck()
+        + FlashcardDeck(String deckName)
+        + List<Flashcard> getDeck()
+        + void setDeck(List<Flashcard> deck)
+        + String getDeckName()
+        + void setDeckName(String deckName)
+        + void addFlashcard(Flashcard flashcard)
+        + boolean removeFlashcardByIndex(int index)
+        + boolean isQuestion(String current)
+    }
+
+    class FlashcardDeckManager {
+        - List<FlashcardDeck> decks
+        - {static} int MAX_DECKS = 8
+
+        + List<FlashcardDeck> getDecks()
+        + void addDeck(FlashcardDeck deck)
+        + void removeDeck(FlashcardDeck deck)
+        + void setDecks(List<FlashcardDeck> decks)
+    }
+
+    class LoginValidator {
+        - UserPersistence persistence
+        
+        + LoginValidator(UserPersistence persistence)
+        + boolean createUser(String username, String password)
+        + boolean isUsernameUnique(String username)
+        + boolean equalPasswords(String password, String confirmedPassword)
+        + boolean authenticateUser(String username, String password)
+        + User findUserByUsername(String username)
+    }
+
+    class PasswordEncoder {
+        - {static} final String ALGORITHM = "SHA-256"
+        - {static} final int SALT_LENGTH = 16
+        - {static} final SecureRandom SECURE_RANDOM
+
+        + {static} String encode(String password)
+        + {static} boolean matches(String password, String encodedPassword)
+    }
+
+    class User {
+        - String username
+        - String password
+
+        + User()
+        + User(String username, String password)
+        + String getUsername()
+        + String getPassword()
+        - void encodePassword()
+    }
+
+    class UserData {
+        - User user
+        - FlashcardDeckManager deckManager
+
+        + UserData()
+        + UserData(User user)
+        + UserData(User user, FlashcardDeckManager deckManager)
+        + User getUser()
+        + FlashcardDeckManager getDeckManager()
+        + void setDeckManager(FlashcardDeckManager deckManager)
+    }
+
+    interface UserPersistence {
+        + boolean userExists(String username)
+        + User readUserData(String username)
+        + void writeUserData(User user)
+    }
+}
+
+' Relationships
+FlashcardDeck "1" *-- "0..*" Flashcard : contains
+FlashcardDeckManager "1" *-- "0..*" FlashcardDeck : manages
+UserData "1" *-- "1" User : contains
+UserData "1" *-- "1" FlashcardDeckManager : contains
+LoginValidator --> UserPersistence : uses
+LoginValidator ..> PasswordEncoder : uses
+User ..> PasswordEncoder : uses
+
+@enduml

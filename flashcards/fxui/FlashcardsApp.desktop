@@ -1,0 +1,10 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=Flashcards
+Comment=Flashcard learning application
+Exec=/projects/gr2516/flashcards/fxui/target/flashcards/bin/flashcards
+Icon=/projects/gr2516/flashcards/fxui/target/classes/ui/app-icon.png
+Terminal=false
+Categories=Education;Java;
+StartupWMClass=FlashcardApp

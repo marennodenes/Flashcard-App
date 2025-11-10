@@ -1,87 +1,186 @@
 package ui;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import dto.LoginRequestDto;
+import dto.LoginResponseDto;
 import java.io.IOException;
-
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
+import shared.ApiConstants;
+import shared.ApiEndpoints;
+import shared.ApiResponse;
 
+/**
+ * Controller for the Flashcard Login UI. Handles user login.
+ *
+ * @author marieroe
+ * @author sofietw
+ * @author ailinat
+ */
 public class FlashcardLoginController {
+
   @FXML private Text alertMessage;
+  @FXML private Text ex;
   @FXML private Button loginButton;
   @FXML private TextField usernameField;
   @FXML private TextField passwordField;
+  @FXML private Button signUpButton;
 
   private boolean showAlert = false;
   private String error = "";
 
+  /**
+   * Initializes the controller after FXML loading.
+   * Updates the UI to initial state.
+   */
   public void initialize() {
     updateUi();
   }
 
   /**
-   * Updates the UI elements based on the current state.
-   * Shows or hides alert messages as needed.
+   * Updates the UI elements based on the current state. Shows or hides alert
+   * messages as needed.
    */
-  public void updateUi(){
+  public void updateUi() {
     if (showAlert) {
       alertMessage.setText(error);
       alertMessage.setVisible(true);
+      ex.setVisible(true);
       showAlert = false;
     } else {
       alertMessage.setVisible(false);
+      ex.setVisible(false);
     }
 
   }
 
   /**
-   * Handles login button click event.
-   * Validates username and password fields, then navigates to main app if valid.
-   * Shows error message if fields are empty.
+   * Handles login button click event. Validates username and password fields,
+   * then navigates to main app if valid. Shows inline error message if fields are empty
+   * or popup error if server connection fails.
    */
+  @FXML
   public void whenLoginButtonClicked() {
     String username = usernameField.getText().trim();
     String password = passwordField.getText().trim();
 
+    // Validate that both fields have content
     if (username.isEmpty() || password.isEmpty()) {
-      error = "Username and password\ncannot be empty";
-      showAlert = true;
-      updateUi();
+      showInlineError(ApiConstants.EMPTY_FIELDS);
     } else {
-      // Basic validation passed - proceed to main app
       try {
-        navigateToMainApp(username);
-      } catch (IOException e) {
-        error = "Failed to load main app";
-        showAlert = true;
-        updateUi();
+        // Send login request to server
+        ApiResponse<LoginResponseDto> result = null;
+        try {
+          result = ApiClient.performApiRequest(
+            ApiEndpoints.LOGIN_URL, 
+            "POST",
+            new LoginRequestDto(username, password),
+            new TypeReference<ApiResponse<LoginResponseDto>>() {}
+          );
+        } catch (RuntimeException e) {
+          // Network / server error - show popup to the user
+          System.err.println(ApiConstants.SERVER_ERROR + ": " + e.getMessage());
+          ApiClient.showAlert(ApiConstants.SERVER_ERROR, ApiConstants.SERVER_CONNECTION_ERROR);
+          return;
+        } 
+        
+        if (result.isSuccess() && result.getData() != null) {
+          LoginResponseDto loginResponse = result.getData();
+            
+          // Check if server confirmed login success
+          if (loginResponse.isSuccess()) {
+            navigateToMainApp(username);
+            return; // Exit early on success
+          } else {
+            // Use server's specific error message
+            error = loginResponse.getMessage();
+          }
+        } else {
+          error = result.getMessage();
+        }
+        
+        // Show error as text (validation error, user credentials invalid)
+        showInlineError(error);
+        
+      } catch (RuntimeException e) {
+        // Handle network/server connection errors
+        String errorMsg = e.getMessage();
+        if (errorMsg != null && errorMsg.contains("Request failed")) {
+          showInlineError(ApiConstants.SERVER_CONNECTION_ERROR);
+        } else {
+          showInlineError(ApiConstants.UNEXPECTED_ERROR);
+        }
       }
     }
   }
 
   /**
-   * Navigates to the main flashcard application.
-   * Loads the FlashcardMainUI and passes the username to the controller.
-   * 
+   * Handles the sign-up button click event. Navigates to the sign-up page where
+   * users can create new accounts. Shows error message if the sign-up page fails
+   * to load.
+   */
+  @FXML
+  public void whenSignUpButtonClicked() {
+    try {
+      navigateToSignUpPage();
+    } catch (IOException e) {
+      System.err.println(ApiConstants.LOAD_ERROR + ": " + e.getMessage());
+      ApiClient.showAlert(ApiConstants.LOAD_ERROR, ApiConstants.UNEXPECTED_ERROR);
+    }
+  }
+
+  /**
+   * Navigates to the sign-up page. Loads the FlashcardSignUpUI FXML file and
+   * switches to the sign-up scene.
+   *
+   * @throws IOException if the FXML file cannot be loaded
+   */
+  private void navigateToSignUpPage() throws IOException {
+    FXMLLoader loader = new FXMLLoader(getClass().getResource("/ui/FlashcardSignUp.fxml"));
+    Parent root = loader.load();
+
+    Stage stage = (Stage) signUpButton.getScene().getWindow();
+    stage.setScene(SceneUtils.createScaledScene(root));
+    stage.show();
+  }
+
+  /**
+   * Navigates to the main flashcard application. Loads the FlashcardMainUI and
+   * passes the username to the controller.
+   *
    * @param username the logged-in username to pass to the main controller
    * @throws IOException if the FXML file cannot be loaded
    */
-  private void navigateToMainApp(String username) throws IOException {
-    FXMLLoader loader = new FXMLLoader(getClass().getResource("FlashcardMainUI.fxml"));
-    Parent root = loader.load();
-    
-    // Get the controller and set the username
-    FlashcardMainController mainController = loader.getController();
-    mainController.setCurrentUsername(username);
-    
-    // Switch to the main scene
-    Stage stage = (Stage) loginButton.getScene().getWindow();
-    stage.setScene(new Scene(root));
-    stage.show();
+  private void navigateToMainApp(String username) {
+    try {
+      FXMLLoader loader = new FXMLLoader(getClass().getResource("/ui/FlashcardMain.fxml"));
+      Parent root = loader.load();
+      FlashcardMainController mainController = loader.getController();
+      mainController.setCurrentUsername(username);
+      Stage stage = (Stage) loginButton.getScene().getWindow();
+      stage.setScene(SceneUtils.createScaledScene(root));
+      stage.show();
+    } catch (IOException e) {
+      System.err.println(ApiConstants.LOAD_ERROR + ": " + e.getMessage());
+      ApiClient.showAlert(ApiConstants.LOAD_ERROR, ApiConstants.UNEXPECTED_ERROR);
+    }
+  }
+
+  /**
+   * Shows an inline error message without popup.
+   * Used for validation errors that should only appear as text.
+   *
+   * @param message the error message to display inline
+   */
+  private void showInlineError(String message) {
+    error = message;
+    showAlert = true;
+    updateUi();
   }
 }

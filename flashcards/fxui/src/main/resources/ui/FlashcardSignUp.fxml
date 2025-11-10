@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.String?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.PasswordField?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Text?>
+
+<AnchorPane fx:id="anchorPane" prefHeight="264.0" prefWidth="416.0" stylesheets="@FlashcardSignUp.css" xmlns="http://javafx.com/javafx/21.0.0" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ui.FlashcardSignUpController">
+   <children>
+      <Text layoutX="195.0" layoutY="79.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="textForTitles" />
+      <ImageView fitHeight="59.0" fitWidth="64.0" layoutX="16.0" layoutY="15.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@quiz-submissions-svgrepo-com.png" />
+         </image>
+      </ImageView>
+      <Text layoutX="75.0" layoutY="50.0" strokeType="OUTSIDE" strokeWidth="0.0" text="FLASH">
+         <styleClass>
+            <String fx:value="textForTitles" />
+            <String fx:value="logo" />
+         </styleClass>
+      </Text>
+
+      <Text layoutX="91.0" layoutY="79.0" strokeType="OUTSIDE" strokeWidth="0.0" text="CARDS">
+         <styleClass>
+            <String fx:value="textForTitles" />
+            <String fx:value="logo" />
+         </styleClass>
+      </Text>
+
+      <TextField fx:id="usernameField" layoutX="130.0" layoutY="125.0" />
+      <Text layoutX="49.0" layoutY="146.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="nameTag" text="Username: " />
+      <Text layoutX="55.0" layoutY="189.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="nameTag" text="Password: " />
+      <Text fx:id="alertMessage" layoutX="218.0" layoutY="71.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="alerts" text="Alert" />
+      <PasswordField fx:id="passwordField" layoutX="130.0" layoutY="169.0" prefHeight="31.0" prefWidth="165.0" />
+      <Button fx:id="signInButton" layoutX="308.0" layoutY="164.0" mnemonicParsing="false" onAction="#whenSignInButtonClicked" prefHeight="42.0" prefWidth="90.0" text="Sign up" />
+      <Text layoutX="130.0" layoutY="115.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="textForTitles" text="Create new user:" wrappingWidth="143.9228515625" />
+      <PasswordField fx:id="confirmPasswordField" layoutX="130.0" layoutY="213.0" prefHeight="31.0" prefWidth="165.0" />
+      <Text layoutX="53.0" layoutY="240.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="nameTag" text="password: " />
+      <Text layoutX="54.0" layoutY="224.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="nameTag" text="Confirm" wrappingWidth="59.0" />
+      <Button fx:id="backButton" layoutX="324.0" layoutY="10.0" mnemonicParsing="false" onAction="#whenBackButtonIsClicked" prefHeight="27.0" prefWidth="73.0" text="Back" />
+      <Text fx:id="ex" layoutX="205.0" layoutY="73.0" strokeType="OUTSIDE" strokeWidth="0.0" text="!" />
+   </children>
+</AnchorPane>

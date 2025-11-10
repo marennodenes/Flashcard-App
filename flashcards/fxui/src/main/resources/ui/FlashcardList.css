@@ -1,53 +1,83 @@
 #anchorPane {
-    -fx-background-color: #bee7ed;
+  background-color: #bee7ed;
+  -fx-background-color: #bee7ed;
 }
 .button {
-    -fx-background-color: #5c7b80;
-    -fx-text-fill: white;
-    -fx-font-weight: bold;
-    -fx-font-size: 12;
-
+  background-color: #5c7b80;
+  color: white;
+  font-weight: bold;
+  font-size: 12px;
+  font-family: "Ubuntu", sans-serif;
+  -fx-background-color: #5c7b80;
+  -fx-text-fill: white;
+  -fx-font-weight: bold;
+  -fx-font-size: 12;
+  -fx-font-family: "Ubuntu", sans-serif;
 }
 
 #listView {
-    -fx-border-color: #5c7b80;
-    -fx-border-width: 2;
-    -fx-border-radius: 3;
+  border-color: #5c7b80;
+  border-width: 2px;
+  border-radius: 3px;
+  -fx-border-color: #5c7b80;
+  -fx-border-width: 2;
+  -fx-border-radius: 3;
 }
 
 .list-view .list-cell {
-    -fx-text-fill: #5c7b80;
+  color: #5c7b80;
+  font-family: "Ubuntu", sans-serif;
+  -fx-text-fill: #5c7b80;
+  -fx-font-family: "Ubuntu", sans-serif;
 }
 
 .text-field {
-    -fx-background-color: white;
-    -fx-border-color: #5c7b80;
-    -fx-border-width: 2;
-    -fx-background-radius: 3;
-    -fx-border-radius: 3;
+  background-color: white;
+  border-color: #5c7b80;
+  border-width: 2px;
+  border-radius: 3px;
+  -fx-background-color: white;
+  -fx-border-color: #5c7b80;
+  -fx-border-width: 2;
+  -fx-background-radius: 3;
+  -fx-border-radius: 3;
 }
 
 .textForTitles {
-    -fx-fill: #5c7b80;
-    -fx-font-weight: bold;
+  fill: #5c7b80;
+  font-weight: bold;
+  -fx-fill: #5c7b80;
+  -fx-font-weight: bold;
 }
 
 .nameTag {
-    -fx-fill: #5c7b80;
-    -fx-font-size: 12;
-    -fx-font-weight: bold;
+  fill: #5c7b80;
+  font-size: 12px;
+  font-weight: bold;
+  -fx-fill: #5c7b80;
+  -fx-font-size: 12;
+  -fx-font-weight: bold;
 
 }
 
 .nameField {
-    -fx-fill: #5c7b80;
-    -fx-font-size: 9.5;
+  fill: #5c7b80;
+  font-size: 9.5px;
+  -fx-fill: #5c7b80;
+  -fx-font-size: 9.5;
 }
 
 #startLearning {
-    -fx-font-size: 15;
+  font-size: 15px;
+  -fx-font-size: 15;
 }
 
 #back {
-    -fx-font-size: 15;
+  font-size: 15px;
+  -fx-font-size: 15;
+}
+
+.logo {
+  font-size: 20px;
+  -fx-font-size: 20px;
 }

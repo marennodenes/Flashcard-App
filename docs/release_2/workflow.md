@@ -1,4 +1,5 @@
 # Workflow
+
 ## Development Methodology
 
 We apply selected practices from the Agile Scrum methodology. In particular, we use:

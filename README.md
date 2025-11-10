@@ -1,4 +1,3 @@
-
 # Flashcards Application
 
 [open in Eclipse Che](https://che.stud.ntnu.no/#https://git.ntnu.no/IT1901-2025-groups/gr2516.git)
@@ -7,16 +6,56 @@
 
 This repository contains a JavaFX application for creating and studying flashcards. Users can create profiles, organize flashcards into decks, and track their learning progress through an interactive study interface.
 
+## Architecture
+
+This application uses a **client-server architecture**:
+
+- **Server** (`flashcards/server`): Spring Boot REST API backend (runs on port 8080)
+- **Client** (`flashcards/fxui`): JavaFX desktop application
+
+Both components must be running simultaneously for the application to work. The client communicates with the server via HTTP requests to the REST API.
+
 ## Quickstart
 
 To quickly test the application:
 
-1. `cd flashcards`
-2. `mvn clean install`
-3. `cd fxui`
-4. `mvn javafx:run`
+1. Open the project folder
 
-Alternatively, use the VS Code task "Run JavaFX App" which is configured in the workspace.
+   ```bash
+   cd flashcards
+   ```
+
+2. Install necessary dependencies while skipping tests
+
+   ```bash
+   mvn clean install -DskipTests
+   ```
+
+3. Open the `server` module in a new terminal
+
+   ```bash
+   cd flashcards/server
+   ```
+
+4. Run the backend
+
+   ```bash
+   mvn spring-boot:run
+   ```
+
+5. While the backend is running, open the `fxui` module in the old terminal
+
+   ```bash
+   cd fxui
+   ```
+
+6. Run the app
+
+   ```bash
+   mvn javafx:run
+   ```
+
+**Note:** Both the server (step 4) and client (step 6) must be running simultaneously.
 
 ## Building the project
 
@@ -24,17 +63,89 @@ This project uses Maven for building and running.
 
 To build all modules and run tests:
 
-1. Navigate to the flashcards folder: `cd flashcards`
-2. Build all modules: `mvn clean install`
+1. Navigate to the flashcards folder:
+
+   ```bash
+   cd flashcards
+   ```
+
+2. Build all modules:
+
+   ```bash
+   mvn clean install
+   ```
 
 ## Running the application
 
-### Method 1: Maven
-1. Navigate to the UI module: `cd flashcards/fxui`
-2. Run the application: `mvn javafx:run`
+### Method 1: Creating a shippable product
 
-### Method 2: VS Code
-Use the configured task "Run JavaFX App" from the VS Code command palette.
+To create an executable file that runs locally on your computer:
+
+1. If not already done, make sure to build the project
+
+   ```bash
+   mvn clean install
+   ```
+
+2. To be able to use the app, you must run the REST-API `server` in our app
+
+   ```bash
+   cd server
+   mvn spring-boot:run
+   ```
+
+3. Open a new terminal and the `fxui` module and run this command to run and create a executable application
+
+   ```bash
+   cd flashcards/fxui
+   mvn clean package javafx:jlink jpackage:jpackage
+   ```
+
+4. Now you can run the applicication
+
+   **macOS & windows**
+
+   Now there has been created a Flashcards-1.0.0.dmg in `fxui/target/dist`. Open this file.
+
+   **Linux**
+
+   Now there has been created a FlashcardsApp.desktop in `fxui`. Open this file (remember to click "Mark Executable").
+
+5. You can now use the application on your computer
+
+### Method 2: Maven
+
+- See quickstart method above.
+
+### Method 3: VS Code
+
+Use the configured task "Run JavaFX App" from the VS Code command palette. **Important:** This task only starts the client, you must still run the server separately using `mvn spring-boot:run` in the `flashcards/server` directory.
+
+## User Account Requirements
+
+When creating an account, username and password must meet the following criteria:
+
+### Username Requirements
+
+- Cannot be empty or contain whitespace
+- Must be unique (not already taken by another user)
+- Cannot contain any special characters (only letters and numbers)
+
+### Password Requirements
+
+- **Minimum length**: 8 characters
+- **Uppercase letter**: At least one (A-Z)
+- **Lowercase letter**: At least one (a-z)
+- **Digit**: At least one number (0-9)
+- **Special character**: At least one non-alphanumeric character (e.g., !, @, #, $, %, etc.)
+
+**Example of valid password**: `SecurePass123!`
+
+**Security Features**:
+
+- All passwords are automatically encrypted using SHA-256 with random salt
+- Passwords are never stored in plain text
+- Login attempts validate against encrypted passwords
 
 ## Code structure
 
@@ -43,22 +154,46 @@ This structure helps separate concerns and makes the project easy to navigate.
 [flashcards](/flashcards/)
 
 - [core](/flashcards/core/) - Business logic and domain models
-- [fxui](/flashcards/fxui/) - JavaFX user interface and controllers  
+- [fxui](/flashcards/fxui/) - JavaFX user interface and controllers
+- [server](/flashcards/server/) - Spring Boot REST API backend service
+- [shared](/flashcards/shared/) - Data Transfer Objects (DTOs), mappers, and shared API interfaces
 - [storage](/flashcards/storage/) - JSON persistence and file handling
 - [config](/flashcards/config/) - Code quality configuration files (Checkstyle, SpotBugs)
 - [.vscode](/.vscode/) - VS Code workspace settings and tasks
-- [images](/images/) - Application screenshots and documentation images
 
 ## App design
 
-<img src="images/FlashcardLogin_release2.png" alt="Login interface" width="400">
-<img src="images/FlashcardMain_release2.png" alt="Main dashboard" width="400">
-<img src="images/FlashcardList_release2.png" alt="Deck management" width="400">
-<img src="images/FlashcardPage_release2.png" alt="Learning interface" width="400">
+<!-- markdownlint-disable MD033 -->
+
+**Login page:** initial window when opening the app, and opens when you click "Log out" on other pages
+
+<img src="./images/app/release_3/flashcardlogin_empty.png" alt="login empty" width="300"> <img src="./images/app/release_3/flashcardlogin_error.png" alt="login error" width="300"><br>
+
+**Sign up page:** opens when you click "Sign up" on the Login page
+
+<img src="./images/app/release_3/flashcardsignup_empty.png" alt="signup empty" width="300"> <img src="./images/app/release_3/flashcardsignup_error.png" alt="signup error" width="300"><br>
+
+**Main dashboard:** opens after clicking "Log in" or "Sign in", or when clicking "back" on the deck management page
+
+<img src="./images/app/release_3/flashcardmain_no_decks.png" alt="main empty" width="300"> <img src="./images/app/release_3/flashcardmain_error.png" alt="main error" width="300"><br>
+
+**Deck management:** opens when clicking a deck on the main dashboard, or when clicking "back" on the learning page
+
+<img src="./images/app/release_3/flashcarddeck_create_card.png" alt="create card" width="300"> <img src="./images/app/release_3/flashcarddeck_card_selected.png" alt="card selected" width="300"><br>
+
+**Learning page:** opens when clicking "Start learning" om the deck management page
+
+<img src="./images/app/release_3/flashcardlearning_question.png" alt="question" width="300"> <img src="./images/app/release_3/flashcardlearning_answer.png" alt="answer" width="300"><br>
+
+**Server errors:** example of a server error that will appear as a pop up alert
+
+<img src="./images/app/release_3/flashcardlogin_popup.png" alt="server error" width="400"><br>
+
+<!-- markdownlint-enable MD033 -->
 
 ## Dependencies
 
-- Java version 17+
+- Java version 21
 - JavaFX version 21
 - Maven version 3.9+
 - JUnit 5 (Jupiter) for testing
@@ -71,19 +206,41 @@ This structure helps separate concerns and makes the project easy to navigate.
 
 After running `mvn test`, you can generate test coverage reports via JaCoCo:
 
-1. Navigate to a specific module: `cd core` (or fxui/storage)
-2. Run `mvn jacoco:report`
-3. Open the HTML report in `target/site/jacoco/index.html`
+1. Navigate to a specific module (core, fxui, server, shared, storage)
+
+   ```bash
+   cd XXX
+   ```
+
+2. Generate the JaCoCo report by running:
+
+   ```bash
+   mvn jacoco:report
+   ```
+
+3. Open the HTML report to show JaCoCo coverage, from the module you ran tests for:
+
+   ```bash
+   open target/site/jacoco/index.html
+   ```
 
 **Current test coverage:**
 
-- **core**: Instruction Coverage: 91% | Branch Coverage: 76%
-- **fxui**: Instruction Coverage: 90% | Branch Coverage: 81%  
-- **storage**: Instruction Coverage: 100% | Branch Coverage: 100%
+- **core**: Instruction Coverage: 86% | Branch Coverage: 90%
+- **fxui**: Instruction Coverage: 87% | Branch Coverage: 84%
+- **shared**: Instruction Coverage: 97% | Branch Coverage: 87%
+- **server**: Instruction Coverage: 95% | Branch Coverage: 91%
+- **storage**: Instruction Coverage: 100% | Branch Coverage: 95%
 
-<img src="images/jaCoCo/coreJaCoCo.png" alt="Core module JaCoCo coverage" width="600">
-<img src="images/jaCoCo/fxuiJaCoCo.png" alt="FXUI module JaCoCo coverage" width="600">
-<img src="images/jaCoCo/storageJaCoCo.png" alt="Storage module JaCoCo coverage" width="600">
+<!-- markdownlint-disable MD033 -->
+
+<img src="./images/jaCoCo/release_3/core_jacoco_release3.png" alt="core JaCoCo coverage" width="600">
+<img src="./images/jaCoCo/release_3/fxui_jacoco_release3.png" alt="fxui JaCoCo coverage" width="600">
+<img src="./images/jaCoCo/release_3/shared_jacoco_release3.png" alt="shared JaCoCo coverage" width="600">
+<img src="./images/jaCoCo/release_3/server_jacoco_release3.png" alt="server JaCoCo coverage" width="600">
+<img src="./images/jaCoCo/release_3/storage_jacoco_release3.png" alt="storage JaCoCo coverage" width="600">
+
+<!-- markdownlint-enable MD033 -->
 
 Current coverage targets focus on core business logic and critical user workflows.
 
@@ -104,11 +261,12 @@ For detailed project documentation, navigate to [docs](/docs/):
 
 - [Release 1](/docs/release_1/) - Initial implementation and basic functionality
 - [Release 2](/docs/release_2/) - Enhanced features, user authentication, and quality improvements
+- [Release 3](/docs/release_3/) - Enhanced features, implementation of API in server and shared module and improved user authentication
 
 ## Use of AI
 
-As part of this project, we made use of AI-based tools to improve development efficiency and code quality. For detailed information about our AI usage, see [AI Tools documentation](/docs/release_2/ai_tools.md).
+As part of this project, we made use of AI-based tools to improve development efficiency and code quality. For detailed information about our AI usage, see [AI Tools documentation](/docs/release_3/ai_tools.md).
 
 ## Getting started
 
-See the "Building and running the project" section above for quick setup instructions. For development, ensure you have Java 17+ and Maven installed.
+See the ["Building the project"](#building-the-project) and ["Running the application"](#running-the-application) sections above for setup instructions. If you want a quick run through, see the ["Quickstart"](#quickstart) section. For development, ensure you have Java 21 and Maven installed.

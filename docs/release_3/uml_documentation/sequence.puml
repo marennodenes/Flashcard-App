@@ -1,0 +1,73 @@
+@startuml create_flashcard_deck_sequence
+!theme plain
+skinparam monochrome true
+skinparam shadowing false
+
+actor "App User" as User
+participant "FlashcardMainController" as MainController
+participant "ApiClient" as APIClient
+participant "DeckController" as DeckController
+participant "DeckService" as DeckService
+
+participant "FlashcardPersistent" as FlashcardPersistent
+participant "Data storage" as DataStorage
+
+User -> MainController : clicks "New Deck"
+activate MainController
+
+MainController -> APIClient : whenNewDeckButtonIsClicked()
+activate APIClient
+note right APIClient : sending deck object\ninto performApiRequest 
+APIClient -> APIClient : performApiRequest(url, "POST")
+APIClient -> DeckController : POST/api/v1/decks/{deckName}
+activate DeckController
+note right of DeckController : DTOs being used
+DeckController -> DeckService : createDeck(username, deckName)
+activate DeckService
+
+DeckService -> FlashcardPersistent : writeDeck(username, deckManager)
+activate FlashcardPersistent
+FlashcardPersistent -> DataStorage : writeUserDataInternal(userdata)
+activate DataStorage
+
+
+DataStorage --> FlashcardPersistent : void
+deactivate DataStorage
+
+FlashcardPersistent --> DeckService : void
+deactivate FlashcardPersistent
+DeckService --> DeckController : FlashcardDeck
+deactivate DeckService
+DeckController --> APIClient : ApiResponse<FlashcardDeckDto>
+deactivate DeckController
+APIClient --> MainController : HTTP response 200
+deactivate APIClient
+
+MainController -> APIClient : loadUserData()
+activate APIClient
+note right APIClient : sending deck object\ninto performApiRequest 
+APIClient -> APIClient : performApiRequest(url, "GET")
+/' APIClient -> APIClient : sendRequest() '/
+APIClient -> DeckController : GET/api/v1/decks
+activate DeckController
+DeckController -> DeckService : getAllDecks(username) 
+activate DeckService
+DeckService -> FlashcardPersistent : readDeck(username)
+activate FlashcardPersistent
+FlashcardPersistent -> DataStorage : readUserDataInternal(username)
+activate DataStorage
+DataStorage --> FlashcardPersistent : userData
+deactivate DataStorage
+FlashcardPersistent --> DeckService : FlashcardDeckManager
+deactivate FlashcardPersistent
+DeckService --> DeckController : FlashcardDeckManager
+deactivate DeckService
+DeckController --> APIClient : ApiResponse<FlashcardDeckManagerDto>
+deactivate DeckController
+APIClient --> MainController : HTTP response 200
+deactivate APIClient
+MainController -> MainController : updateUi()
+MainController --> User : displays updated deck list
+deactivate MainController
+
+@enduml

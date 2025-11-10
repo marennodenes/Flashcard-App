@@ -1,0 +1,38 @@
+@startuml package
+!theme plain
+skinparam monochrome true
+skinparam shadowing false
+!pragma layout smetana
+title flashcards
+
+package "flashcards" {
+
+    package "core" {
+        [Domain Models]
+    }
+    
+    package "fxui" {
+        [JavaFX UI]
+    }
+
+    package "storage" {
+        [Persistent]
+    }
+
+    package "shared" {
+        [DTOs]
+    }
+
+    package "server" {
+        [REST API]
+    }
+}
+
+"REST API" --> "Domain Models" : "Depends on"
+"REST API" --> "Persistent" : "Depends on"
+"REST API" --> "DTOs" : "Depends on"
+"JavaFX UI" --> "DTOs" : "Depends on"
+"DTOs" --> "Domain Models" : "Depends on"
+"Persistent" --> "Domain Models" : "Depends on"
+
+@enduml

@@ -1,21 +1,22 @@
 package app;
 
-
-import java.util.ArrayList;
-import java.util.List;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import java.util.ArrayList;
+import java.util.List;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 
 /**
- * Test class for FlashcardDeck functionality.
+ * Test class for {@link FlashcardDeck} functionality.
  * Tests deck operations including adding flashcards, managing deck names, and validation.
- * 
- * @author Generated with Claude Sonnet 4 via GitHub Copilot
+ *
+ * @author isamw
+ * @author chrsom
+ * @see FlashcardDeck
  */
 public class FlashcardDeckTest {
 
@@ -25,11 +26,9 @@ public class FlashcardDeckTest {
   /**
    * Sets up test fixtures before all tests.
    * Initializes a sample Flashcard and FlashcardDeck for testing.
-   * 
-   * @author Generated with Claude Sonnet 4 via GitHub Copilot
    */
   @BeforeAll
-  static void setUp(){
+  static void setUp() {
     flashcard = new Flashcard("question", "answer");
     flashcardDeck = new FlashcardDeck();
   }
@@ -39,8 +38,6 @@ public class FlashcardDeckTest {
    * Verifies that:
    * - Flashcards can be successfully added to the deck
    * - Added flashcards retain their correct question and answer values
-   * 
-   * @author Generated with Claude Sonnet 4 via GitHub Copilot
    */
   @Test
   void testAddFlashcard() {
@@ -57,11 +54,9 @@ public class FlashcardDeckTest {
    * - Deck name can be successfully set
    * - The retrieved deck name matches the set value
    * - Name persistence works correctly
-   * 
-   * @author Generated with Claude Sonnet 4 via GitHub Copilot
    */
   @Test
-  void testGetDeckName(){
+  void testGetDeckName() {
     flashcardDeck.setDeckName("test");
     assertEquals("test", flashcardDeck.getDeckName());
   }
@@ -71,12 +66,13 @@ public class FlashcardDeckTest {
    * Verifies that:
    * - The method correctly returns false for non-matching questions
    * - Question validation logic works as expected
-   * 
-   * @author Generated with Claude Sonnet 4 via GitHub Copilot
    */
   @Test
-  void testIsQuestion(){
+  void testIsQuestion() {
     assertFalse(flashcardDeck.isQuestion("wrong"));
+    Flashcard flashcard2 = new Flashcard("Q1", "A1");
+    flashcardDeck.addFlashcard(flashcard2);
+    assertTrue(flashcardDeck.isQuestion("Q1"));
   }
   
   /**
@@ -86,26 +82,23 @@ public class FlashcardDeckTest {
    * - Removing with valid index returns true
    * - The correct flashcard is removed from the deck
    * - Remaining flashcards maintain their correct positions
-   * 
-   * @author Generated with Claude Sonnet 4 via GitHub Copilot
    */
   @Test
-  void testRemoveFlashcardByIndex(){
+  void testRemoveFlashcardByIndex() {
     flashcardDeck.addFlashcard(flashcard);
     Flashcard flashcard2 = new Flashcard("question2", "answer2");
     flashcardDeck.addFlashcard(flashcard2);
     assertFalse(flashcardDeck.removeFlashcardByIndex(-1));
     assertTrue(flashcardDeck.removeFlashcardByIndex(1));
     assertEquals(flashcard, flashcardDeck.getDeck().get(0));
+    assertFalse(flashcardDeck.removeFlashcardByIndex(100));
   }
 
   /**
    * Tests the setDeck method of FlashcardDeck.
-   * 
-   * @author Generated with Claude Sonnet 4 via GitHub Copilot
    */
   @Test
-  void testSetDeck(){
+  void testSetDeck() {
     List<Flashcard> deck = new ArrayList<>();
     Flashcard flashcard2 = new Flashcard("question2", "answer2");
     deck.add(flashcard2);

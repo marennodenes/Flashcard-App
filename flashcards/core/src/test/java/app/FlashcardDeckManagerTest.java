@@ -2,17 +2,19 @@ package app;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 /**
- * Test class for FlashcardDeckManager functionality.
+ * Test class for {@link FlashcardDeckManager} functionality.
  * Tests deck management operations including adding and removing decks.
- * 
- * @author Generated with Claude Sonnet 4 via GitHub Copilot
+ *
+ * @author isamw
+ * @author chrsom
+ * @see FlashcardDeckManager
  */
 public class FlashcardDeckManagerTest {
-
   private static FlashcardDeckManager manager;
   private static FlashcardDeck flashcardDeck;
   private static Flashcard flashcard;
@@ -20,11 +22,9 @@ public class FlashcardDeckManagerTest {
   /**
    * Sets up test fixtures before all tests.
    * Initializes a FlashcardDeckManager, FlashcardDeck, and sample Flashcard.
-   * 
-   * @author Generated with Claude Sonnet 4 via GitHub Copilot
    */
   @BeforeAll
-  static void setUp(){
+  static void setUp() {
     flashcard = new Flashcard("question", "answer");
     flashcardDeck = new FlashcardDeck();
     manager = new FlashcardDeckManager();
@@ -40,12 +40,10 @@ public class FlashcardDeckManagerTest {
    * - Adding a deck with blank/whitespace name throws IllegalArgumentException
    * - Adding a null-named deck throws IllegalArgumentException
    * - Multiple valid decks can be added successfully
-   * 
-   * @author Generated with Claude Sonnet 4 via GitHub Copilot
    */
   @Test
-  void testAddDeck(){
-    assertThrows(IllegalArgumentException.class,() -> manager.addDeck(flashcardDeck));
+  void testAddDeck() {
+    assertThrows(IllegalArgumentException.class, () -> manager.addDeck(flashcardDeck));
 
     flashcardDeck.addFlashcard(flashcard);
     assertThrows(IllegalArgumentException.class, () -> manager.addDeck(flashcardDeck));
@@ -54,8 +52,8 @@ public class FlashcardDeckManagerTest {
     manager.addDeck(flashcardDeck);
     assertEquals(1, manager.getDecks().size());
 
-    FlashcardDeck nDeck = new FlashcardDeck("test");
-    assertThrows(IllegalArgumentException.class, () ->  manager.addDeck(nDeck));
+    FlashcardDeck deckn = new FlashcardDeck("test");
+    assertThrows(IllegalArgumentException.class, () ->  manager.addDeck(deckn));
 
     FlashcardDeck deck = new FlashcardDeck(" ");
     assertThrows(IllegalArgumentException.class, () ->  manager.addDeck(deck));
@@ -95,11 +93,9 @@ public class FlashcardDeckManagerTest {
    * Verifies that:
    * - Removing an existing deck decreases the deck count by 1
    * - Manager correctly updates its internal collection after removal
-   * 
-   * @author Generated with Claude Sonnet 4 via GitHub Copilot
    */
   @Test
-  void testRemoveDeck(){
+  void testRemoveDeck() {
     manager.removeDeck(flashcardDeck);
     assertEquals(7, manager.getDecks().size());
   }

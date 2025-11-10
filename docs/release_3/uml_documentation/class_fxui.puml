@@ -1,0 +1,213 @@
+@startuml class_fxui
+title FXUI Module - JavaFX User Interface
+
+left to right direction
+
+package ui {
+    class ApiClient {
+        - {static} HttpClient HTTP_CLIENT
+        - {static} ObjectMapper OBJECT_MAPPER
+
+        # ApiClient()
+        + {static} HttpResponse<String> sendRequest(String uri, String httpMethod, String json)
+        + {static} <T> T parseResponse(String responseBody, TypeReference<T> responseType)
+        + {static} String convertObjectToJson(Object data)
+        + {static} void showAlert(String title, String message)
+        + {static} <T> T performApiRequest(String url, String method, Object data, TypeReference<T> responseType)
+    }
+
+    class FlashcardApp {
+        + {static} void main(String[] args)
+        + void start(Stage stage)
+        # Parent loadLoginScene()
+        # URL getLoginStylesheet()
+        - void preloadFonts()
+        - void loadFont(String path)
+    }
+
+    class FlashcardController {
+        - Button backButton
+        - Button nextButton
+        - Button previousButton
+        - Button card
+        - ProgressBar progressBar
+        - Text usernameField
+        - Text deckNameField
+        - Text cardNumber
+        - List<FlashcardDto> deck
+        - int currentCardI
+        - String currentUsername
+        - String questionStyle
+        - String answerStyle
+        - boolean isShowingAnswer
+        - FlashcardDeckDto originalDeck
+        
+        + void initialize()
+        + void updateUi()
+        + void updateProgress()
+        + void setDeck(FlashcardDeckDto deck)
+        + void setCurrentUsername(String username)
+        + void flipCard()
+        + void whenBackButtonIsClicked()
+        + void whenLogOut(ActionEvent event)
+        - FlashcardDto getCurrentCard()
+        - void goToNextCard()
+        - void goToPreviousCard()
+        - void whenNextCardButtonIsClicked()
+        - void whenPreviousCardButtonIsClicked()
+        - void whenCardButtonClicked()
+    }
+
+    class FlashcardDeckController {
+        - TextField questionField
+        - TextField answerField
+        - ListView<FlashcardDto> listView
+        - Text username
+        - Button startLearning
+        - Button deleteCardButton
+        - FlashcardDeckDto currentDeck
+        - String currentUsername
+        
+        + void initialize()
+        + void updateUi()
+        + void setDeck(FlashcardDeckDto deck)
+        + void setCurrentUsername(String username)
+        + void whenCreateButtonIsClicked()
+        + void whenDeleteCardButtonIsClicked()
+        + void whenStartLearningButtonIsClicked()
+        + void whenBackButtonIsClicked()
+        + void whenLogOut()
+        - void loadDeckData()
+        - void cleanInputFields()
+    }
+
+    class FlashcardLoginController {
+        - Text alertMessage
+        - Text ex
+        - Button loginButton
+        - TextField usernameField
+        - TextField passwordField
+        - Button signUpButton
+        - boolean showAlert
+        - String error
+        
+        + void initialize()
+        + void updateUi()
+        + void whenLoginButtonClicked()
+        + void whenSignUpButtonClicked()
+        - void navigateToSignUpPage()
+        - void navigateToMainApp(String username)
+        - void showInlineError(String message)
+    }
+
+    class FlashcardMainController {
+        - Button deck1
+        - Button deck2
+        - Button deck3
+        - Button deck4
+        - Button deck5
+        - Button deck6
+        - Button deck7
+        - Button deck8
+        - Button deleteDeck1
+        - Button deleteDeck2
+        - Button deleteDeck3
+        - Button deleteDeck4
+        - Button deleteDeck5
+        - Button deleteDeck6
+        - Button deleteDeck7
+        - Button deleteDeck8
+        - TextField deckNameInput
+        - Button newDeckButton
+        - Button logOutButton
+        - Text usernameField
+        - Text alertMessage
+        - Text ex
+        - Text noDecks
+        - List<FlashcardDeckDto> decks 
+        - String currentUsername
+        - boolean showAlert
+        - String error
+        - Button[] deckButtons
+        - Button[] deleteButtons
+        
+        + void initialize()
+        + void updateUi()
+        + void refreshDecks()
+        + void setCurrentUsername(String username)
+        + void whenNewDeckButtonIsClicked()
+        + void whenDeleteDeckButtonIsClicked(ActionEvent event)
+        + void whenDeckIsClicked(ActionEvent event)
+        + void whenLogout(ActionEvent event)
+        - void hideAllDeckButtons()
+        - void loadUserData()
+        - void showInlineError(String message)
+    }
+
+    class FlashcardSignUpController {
+        - Text alertMessage
+        - Text ex
+        - TextField usernameField
+        - TextField passwordField
+        - TextField confirmPasswordField
+        - Button signInButton
+        - Button backButton
+        - boolean showAlert
+        - String error
+        
+        + void initialize()
+        + void updateUi()
+        + void whenSignInButtonClicked()
+        + void whenBackButtonIsClicked()
+        - boolean validateInput(String username, String password, String confirmPassword)
+        - void createUser(String username, String password)
+        - void navigateToMainApp(String username)
+        - void showInlineError(String message)
+    }
+
+    class SceneUtils {
+        - {static} double SCALE_FACTOR = 2.0
+        - {static} double OFFSET_FACTOR = 1.0
+         
+        - SceneUtils()
+        + {static} Scene createScaledScene(Parent root)
+        + {static} void applyScaling(Parent root)  
+    }
+}
+
+package shared <<external>> {
+    class ApiResponse<T>
+    class ApiEndpoints
+    class ApiConstants
+}
+
+' Relationships
+FlashcardMainController --> ApiClient : uses
+FlashcardDeckController --> ApiClient : uses
+FlashcardController --> ApiClient : uses
+FlashcardLoginController --> ApiClient : uses
+FlashcardSignUpController --> ApiClient : uses
+ApiClient --> ApiResponse : uses
+ApiClient --> ApiEndpoints : uses
+FlashcardApp --> FlashcardLoginController : starts with
+FlashcardLoginController <--> FlashcardMainController : navigates to
+FlashcardLoginController <--> FlashcardSignUpController : navigates to
+FlashcardMainController <--> FlashcardDeckController : navigates to
+FlashcardDeckController <--> FlashcardController : navigates to
+FlashcardController --> FlashcardLoginController : navigates to
+FlashcardDeckController --> FlashcardLoginController : navigates to
+FlashcardSignUpController --> FlashcardMainController : navigates to
+FlashcardApp --> SceneUtils : uses
+FlashcardLoginController --> SceneUtils : uses
+FlashcardSignUpController --> SceneUtils : uses
+FlashcardMainController --> SceneUtils : uses
+FlashcardDeckController --> SceneUtils : uses
+FlashcardController --> SceneUtils : uses
+FlashcardApp --> ApiConstants : uses
+FlashcardLoginController --> ApiConstants : uses
+FlashcardSignUpController --> ApiConstants : uses
+FlashcardMainController --> ApiConstants : uses
+FlashcardDeckController --> ApiConstants : uses
+FlashcardController --> ApiConstants : uses
+
+@enduml

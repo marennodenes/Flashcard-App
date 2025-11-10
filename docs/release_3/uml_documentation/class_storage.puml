@@ -1,0 +1,39 @@
+@startuml class_storage
+title Storage Module - Persistence Layer
+
+package storage {
+    class FlashcardPersistent {
+        - ObjectMapper objectMapper
+
+        + FlashcardPersistent()
+        + void writeDeck(String username, FlashcardDeckManager deckManager)
+        + FlashcardDeckManager readDeck(String username) 
+        + boolean dataExists(String username)
+        + User readUserData(String username)
+        + void writeUserData(User user)
+        + boolean userExists(String username)
+        - UserData readUserDataInternal(String username)
+        - void writeUserDataInternal(UserData userData)
+        - File getUserFile(String username)
+    }
+}
+
+package core <<external>> {
+    interface UserPersistence {
+        + boolean userExists(String username)
+        + User readUserData(String username)
+        + void writeUserData(User user)
+    }
+    
+    class FlashcardDeckManager
+    class User
+    class UserData
+}
+
+' Relationships
+FlashcardPersistent ..|> UserPersistence : implements
+FlashcardPersistent ..> FlashcardDeckManager : persists/loads
+FlashcardPersistent ..> User : persists/loads
+FlashcardPersistent ..> UserData : persists/loads
+
+@enduml
