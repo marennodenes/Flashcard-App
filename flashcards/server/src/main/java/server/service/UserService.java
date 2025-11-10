@@ -169,7 +169,12 @@ public class UserService {
     if (username.isEmpty() || password.isEmpty()) {
       return false;
     }
-    return isValidPassword(password);
+    LoginValidator validator = new LoginValidator(persistent);
+    try {
+      return validator.authenticateUser(username, password);
+    } catch (IllegalStateException e) {
+      return false;
+    }
   }
 
   /**

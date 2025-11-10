@@ -78,7 +78,8 @@ public class FlashcardController {
    * Updates the UI by setting the card text to display the current flashcard's question.
    * Resets the card to show the question side and updates deck name and username displays.
    * Only updates if the card button exists, the deck is not empty, and the 
-   * current card index is valid.
+   * current card index is valid. The deck name is shown exactly as stored so
+   * that special characters are displayed unchanged.
    *
    * @see "docs/release_3/ai_tools.md"
    */
@@ -88,9 +89,7 @@ public class FlashcardController {
       if (originalDeck != null && originalDeck.getDeckName() != null) {
         deckName = originalDeck.getDeckName();
       }
-      String decodedName = deckName == null ? "" : java.net.URLDecoder.decode(deckName, 
-          java.nio.charset.StandardCharsets.UTF_8);
-      decknameField.setText(decodedName);
+      decknameField.setText(deckName == null ? "" : deckName);
     }
     if (usernameField != null) {
       usernameField.setText(currentUsername == null || currentUsername.isEmpty() 

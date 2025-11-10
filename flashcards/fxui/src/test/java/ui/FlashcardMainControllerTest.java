@@ -38,6 +38,7 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.MockedConstruction;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
@@ -361,6 +362,44 @@ class FlashcardMainControllerTest {
       ActionEvent event = new ActionEvent();
       controller.whenNewDeckButtonIsClicked(event);
       assertTrue(alertMessage.isVisible());
+    }
+  }
+
+  /**
+   * Tests that deck names with spaces are encoded for the API call while the UI shows
+   * the original value unchanged.
+   *
+   * @throws Exception if test setup fails
+   */
+  @SuppressWarnings("unchecked")
+  @Test
+  public void testDeckNameEncodingAndDisplay() throws Exception {
+    try (MockedStatic<ApiClient> apiClient = mockStatic(ApiClient.class)) {
+      FlashcardDeckDto newDeckDto = new FlashcardDeckDto("Deck With Space", new ArrayList<>());
+      ApiResponse<FlashcardDeckDto> postResponse = new ApiResponse<>(true, "", newDeckDto);
+      ApiResponse<FlashcardDeckManagerDto> getResponseInitial =
+          createSuccessResponse(new ArrayList<>());
+      ApiResponse<FlashcardDeckManagerDto> getResponseAfterPost =
+          createSuccessResponse(List.of(newDeckDto));
+
+      ArgumentCaptor<String> urlCaptor = ArgumentCaptor.forClass(String.class);
+
+      apiClient.when(() -> ApiClient.performApiRequest(
+              anyString(), eq("GET"), isNull(), any(TypeReference.class)))
+          .thenReturn(getResponseInitial)
+          .thenReturn(getResponseAfterPost);
+
+      apiClient.when(() -> ApiClient.performApiRequest(
+              urlCaptor.capture(), eq("POST"), anyString(), any()))
+          .thenReturn(postResponse);
+
+      controller.setCurrentUsername("testuser");
+      deckNameInput.setText("Deck With Space");
+      controller.whenNewDeckButtonIsClicked(new ActionEvent());
+
+      assertTrue(urlCaptor.getValue().contains("Deck%20With%20Space"),
+          "POST URL should encode spaces as %20");
+      assertEquals("Deck With Space", deck1.getText(), "UI should show original deck name");
     }
   }
 

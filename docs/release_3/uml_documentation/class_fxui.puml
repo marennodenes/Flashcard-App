@@ -142,6 +142,7 @@ package ui {
         - void hideAllDeckButtons()
         - void loadUserData()
         - void showInlineError(String message)
+        - String encodePathSegment(String value)
     }
 
     class FlashcardSignUpController {

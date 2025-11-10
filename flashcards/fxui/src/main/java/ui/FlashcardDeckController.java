@@ -72,7 +72,8 @@ public class FlashcardDeckController {
 
   /**
    * Updates the flashcard list display.
-   * Shows all flashcards from the current deck in the ListView.
+   * Shows all flashcards from the current deck in the ListView. Deck names are kept unchanged
+   * in the UI while URL-encoded when communicating with the server.
    */
   public void updateUi() {
     if (username != null) {
@@ -316,7 +317,9 @@ public class FlashcardDeckController {
   }
   
   /**
-   * Loads the current deck from the REST API.
+   * Loads the current deck from the REST API. The deck name sent to the API is encoded so that
+   * spaces and other visible characters are preserved. Certain characters (for example {@code \})
+   * may still be disallowed by the server container.
    *
    * @see "docs/release_3/ai_tools.md"
    */
@@ -333,7 +336,7 @@ public class FlashcardDeckController {
     
     try {
       String url = ApiEndpoints.SERVER_BASE_URL + ApiEndpoints.DECKS + "/" 
-          + URLEncoder.encode(currentDeck.getDeckName(), StandardCharsets.UTF_8)
+          + encodePathSegment(currentDeck.getDeckName())
           + "?username=" + URLEncoder.encode(currentUsername, StandardCharsets.UTF_8)
           + "&deckName=" + URLEncoder.encode(currentDeck.getDeckName(), StandardCharsets.UTF_8);
       
@@ -363,5 +366,20 @@ public class FlashcardDeckController {
   private void clearInputFields() {
     questionField.clear();
     answerField.clear();
-  } 
+  }
+
+  /**
+   * Encodes a deck name for safe inclusion in a URL path segment while preserving the
+   * original visual representation for the user (spaces become {@code %20} instead of {@code +}).
+   * Server-level restrictions may still block characters such as the backslash.
+   *
+   * @param value the deck name to encode
+   * @return the encoded name, or empty string if {@code value} is {@code null}
+   */
+  private static String encodePathSegment(String value) {
+    if (value == null) {
+      return "";
+    }
+    return URLEncoder.encode(value, StandardCharsets.UTF_8).replace("+", "%20");
+  }
 }
