@@ -15,7 +15,6 @@ This application uses a **client-server architecture**:
 
 Both components must be running simultaneously for the application to work. The client communicates with the server via HTTP requests to the REST API.
 
-
 ## Quickstart
 
 To quickly test the application:
